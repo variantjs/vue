@@ -5,8 +5,9 @@
 <script lang="ts">
 import { ref, defineComponent, PropType, watch } from 'vue'
 
-import { CSSClass, Variants, parseVariant, WithVariantProps }  from '@variantjs/core'
+import { CSSClass, Variants, parseVariant, WithVariantProps, TInput as TInputTheme, pick } from '@variantjs/core'
 
+console.log(TInputTheme)
 type TInputProps = WithVariantProps<{}>
 
 export default defineComponent({
@@ -31,11 +32,13 @@ export default defineComponent({
     },
   },
 
-  setup: (props, { attrs }) => {
-    const customProps = ref<Record<string, any>>(parseVariant({ ...props, ...attrs}))
-
+  setup: (props) => {
+    const definedProps = pick(props, value => value!== undefined)
+    const customProps = ref<Record<string, any>>(parseVariant(definedProps, undefined, TInputTheme))
+    
     watch(() => [props.variant, props.variants, props.fixedClasses, props.classes], () => {
-      customProps.value = parseVariant({ ...props, ...attrs})
+      const definedProps = pick(props, value => value!== undefined)
+      customProps.value = parseVariant(definedProps, undefined, TInputTheme)
     });
 
     return { customProps }
