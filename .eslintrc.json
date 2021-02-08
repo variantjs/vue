@@ -1,0 +1,29 @@
+{
+  "env": {
+      "browser": true,
+      "es6": true
+  },
+  "extends": [
+    "plugin:vue/vue3-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-typescript/base"
+  ],
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+      "ecmaVersion": 2018,
+      "parser": "@typescript-eslint/parser",
+      "sourceType": "module",
+      "project": "tsconfig.json",
+      "tsconfigRootDir": "./",
+      "extraFileExtensions": [ ".vue" ]
+  },
+  "plugins": [
+    "vue",
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "max-len": "off",
+    "import/no-cycle": "off"
+  }
+}
+

@@ -1,6 +1,23 @@
+import { WithVariantProps } from '@variantjs/core'
 import { createApp } from 'vue'
-// TypeScript error? Run VSCode command
-// TypeScript: Select TypeScript version - > Use Workspace Version
-import App from './App.vue'
 
-createApp(App).mount('#app')
+import App from './App.vue'
+import { TInputProps } from './components/TInput.vue'
+
+const app = createApp(App)
+
+export type VariantJSConfiguration = {
+  TInput?: WithVariantProps<TInputProps>
+}
+
+app.use({
+  install: (app) => {
+    app.provide('theme', {
+      TInput: {
+        classes: 'gdsgds',
+      }
+    })
+  }
+})
+
+app.mount('#app')
