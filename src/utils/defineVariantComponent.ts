@@ -1,72 +1,92 @@
 import {
-  CSSClass, parseVariant, pick, Variants, WithVariantProps, Modify, ObjectWithClassName,
+  CSSClass, parseVariant, pick, Variants, WithVariantProps, ObjectWithClassName, get,
 } from '@variantjs/core';
+
 import {
+  ComponentObjectPropsOptions,
   ComponentOptionsMixin,
   ComponentOptionsWithObjectProps,
-  ComponentPropsOptions, DefineComponent, defineComponent, EmitsOptions, inject, PropType, ref, RenderFunction, SetupContext, watch,
+  ComponentOptionsWithoutProps,
+  ComponentPropsOptions,
+  ComputedOptions,
+  DefineComponent,
+  defineComponent,
+  EmitsOptions,
+  inject, MethodOptions, Prop, PropType, ref, RenderFunction, watch,
 } from 'vue';
+
 import { VariantJSConfiguration } from '../main';
 
-type VariantComponentOptions<P, RawBindings = Record<string, unknown>> = Modify<ComponentOptionsWithObjectProps<P>, {
-  setup?: (this: void, props: P, ctx: SetupContext<EmitsOptions>) => Promise<RawBindings> | RawBindings | RenderFunction | void;
-}>;
+export const setup = <PropsOptions extends WithVariantProps<Record<string, unknown>>>(componentName: keyof VariantJSConfiguration, props: PropsOptions, ctx: any, componentDefaultConfiguration: ObjectWithClassName): RawBindings | RenderFunction | void =>
+  // const globalConfiguration = inject<VariantJSConfiguration>('theme');
+  // const componentGlobalConfiguration = globalConfiguration ? globalConfiguration[componentName] : undefined;
 
-const defineVariantComponent = <P extends WithVariantProps<ComponentPropsOptions>>(
-  options: VariantComponentOptions<P>,
-  componentDefaultConfiguration: ObjectWithClassName,
-): DefineComponent<P> => {
-  const customOptions: VariantComponentOptions<P> = { ...options };
+  // const definedProps: ObjectWithClassName = pick(props, (value) => value !== undefined);
+  // const customProps = ref<ObjectWithClassName>(parseVariant(definedProps, componentGlobalConfiguration, componentDefaultConfiguration));
 
-  const mixin: ComponentOptionsMixin = {
-    props: {
-      classes: {
-        type: [String, Array, Object] as PropType<CSSClass>,
-        default: undefined,
-      },
-      fixedClasses: {
-        type: [String, Array, Object] as PropType<CSSClass>,
-        default: undefined,
-      },
-      variants: {
-        type: Object as PropType<Variants<P>>,
-        default: undefined,
-      },
-      variant: {
-        type: String as PropType<string>,
-        default: undefined,
+  // watch(() => [props.variant, props.variants, props.fixedClasses, props.classes], () => {
+  //   const definedProps2 = pick<ObjectWithClassName>(props, (value) => value !== undefined);
+  //   customProps.value = parseVariant<ObjectWithClassName>(definedProps2, componentGlobalConfiguration, componentDefaultConfiguration);
+  // });
+
+  // return { customProps };
+  ({
+    class: props.variantConfiguraton.class,
+  });
+export const mixin = (componentDefaultConfiguration: WithVariantProps<Record<string, unknown>>, componentName: keyof VariantJSConfiguration) => ({
+  props: {
+    variantConfiguraton: {
+      type: Object,
+      default: (props: WithVariantProps<Record<string, unknown>>): ObjectWithClassName => {
+        const globalConfiguration = inject<VariantJSConfiguration>('theme');
+        const componentGlobalConfiguration = globalConfiguration ? globalConfiguration[componentName] : undefined;
+        return parseVariant(props, componentGlobalConfiguration, componentDefaultConfiguration);
       },
     },
-  };
+    classes: {
+      type: [String, Array, Object] as PropType<CSSClass>,
+      default: undefined,
+    },
+    fixedClasses: {
+      type: [String, Array, Object] as PropType<CSSClass>,
+      default: undefined,
+    },
+    variants: {
+      type: Object as PropType<Variants<Record<string, unknown>>>,
+      default: undefined,
+    },
+    variant: {
+      type: String as PropType<string>,
+      default: undefined,
+    },
+  },
+});
 
-  if (customOptions.mixins) {
-    customOptions.mixins.push(mixin);
-  } else {
-    customOptions.mixins = [mixin];
-  }
+const defineVariantComponent = <
+  PropsOptions extends Readonly<ComponentPropsOptions>,
+  RawBindings,
+  D,
+  C extends ComputedOptions = {},
+  M extends MethodOptions = {},
+  Mixin extends ComponentOptionsMixin = ComponentOptionsMixin,
+  Extends extends ComponentOptionsMixin = ComponentOptionsMixin,
+  E extends EmitsOptions = Record<string, any>,
+  EE extends string = string,
+>(options: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE>): DefineComponent<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE> => {
+  const newOptions: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE> = { ...options };
+  const newProps: ComponentObjectPropsOptions<Record<string, unknown>> = {};
 
-  customOptions.setup = (props: P, ctx: SetupContext<EmitsOptions>) => {
-    const globalConfiguration = inject<VariantJSConfiguration>('theme');
-    const componentGlobalConfiguration = globalConfiguration ? globalConfiguration.TInput : undefined;
-
-    const definedProps: ObjectWithClassName = pick(props, (value) => value !== undefined);
-    const customProps = ref<ObjectWithClassName>(parseVariant(definedProps, componentGlobalConfiguration, componentDefaultConfiguration));
-
-    watch(() => [props.variant, props.variants, props.fixedClasses, props.classes], () => {
-      const definedProps2 = pick<ObjectWithClassName>(props, (value) => value !== undefined);
-      customProps.value = parseVariant<ObjectWithClassName>(definedProps2, componentGlobalConfiguration, componentDefaultConfiguration);
-    });
-
-    const extra = options.setup ? options.setup(props, ctx) : false;
-
-    if (typeof extra === 'object') {
-      return { ...extra, customProps };
+  Object.entries(options.props).forEach(([propKey, prop]) => {
+    if (prop && !Array.isArray(prop) && typeof prop === 'object') {
+      const newProp = { ...prop };
+      newProp.default = (props: WithVariantProps<Record<string, unknown>>) => get(props, `variantConfiguraton.${propKey}`, prop.default);
+      newProps[propKey] = newProp;
     }
+  });
 
-    return { customProps };
-  };
+  newOptions.props = newProps as PropsOptions;
 
-  return defineComponent(customOptions);
+  return defineComponent(newOptions);
 };
 
 export default defineVariantComponent;
