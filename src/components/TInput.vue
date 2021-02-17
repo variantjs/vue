@@ -20,9 +20,7 @@ export type TInputProps = WithVariantProps<{
   modelValue: TInputValue,
 }>;
 
-export default defineVariantComponent({
-  name: COMPONENT_NAME,
-  mixins: [mixin(componentDefaultConfiguration, COMPONENT_NAME)],
+export default defineVariantComponent(COMPONENT_NAME, {
   props: {
     modelValue: {
       type: [String, Number] as PropType<TInputValue>,
@@ -48,6 +46,6 @@ export default defineVariantComponent({
       },
     },
   },
-});
+}, componentDefaultConfiguration);
 
 </script>

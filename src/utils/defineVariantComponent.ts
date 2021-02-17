@@ -17,6 +17,8 @@ import {
 
 import { VariantJSConfiguration } from '../main';
 
+export type ComponentName = keyof VariantJSConfiguration;
+
 export const setup = <PropsOptions extends WithVariantProps<Record<string, unknown>>>(componentName: keyof VariantJSConfiguration, props: PropsOptions, ctx: any, componentDefaultConfiguration: ObjectWithClassName): RawBindings | RenderFunction | void =>
   // const globalConfiguration = inject<VariantJSConfiguration>('theme');
   // const componentGlobalConfiguration = globalConfiguration ? globalConfiguration[componentName] : undefined;
@@ -33,7 +35,8 @@ export const setup = <PropsOptions extends WithVariantProps<Record<string, unkno
   ({
     class: props.variantConfiguraton.class,
   });
-export const mixin = (componentDefaultConfiguration: WithVariantProps<Record<string, unknown>>, componentName: keyof VariantJSConfiguration) => ({
+
+export const createVariantMixin = (componentName: ComponentName, componentDefaultConfiguration: WithVariantProps<Record<string, unknown>>): Mixin => ({
   props: {
     variantConfiguraton: {
       type: Object,
@@ -72,7 +75,11 @@ const defineVariantComponent = <
   Extends extends ComponentOptionsMixin = ComponentOptionsMixin,
   E extends EmitsOptions = Record<string, any>,
   EE extends string = string,
->(options: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE>): DefineComponent<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE> => {
+>(
+    componentName: ComponentName,
+    options: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE>,
+    componentDefaultConfiguration: WithVariantProps<Record<string, unknown>>,
+  ): DefineComponent<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE> => {
   const newOptions: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE> = { ...options };
   const newProps: ComponentObjectPropsOptions<Record<string, unknown>> = {};
 
@@ -83,6 +90,15 @@ const defineVariantComponent = <
       newProps[propKey] = newProp;
     }
   });
+
+  newOptions.name = componentName;
+
+  const mixin = createVariantMixin(componentName, componentDefaultConfiguration);
+  if (Array.isArray(newOptions.mixins)) {
+    newOptions.mixins.push(mixin);
+  } else {
+    newOptions.mixins = [mixin];
+  }
 
   newOptions.props = newProps as PropsOptions;
 
