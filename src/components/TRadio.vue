@@ -11,7 +11,8 @@ import { WithVariantProps, TRadioTheme } from '@variantjs/core';
 import { PropType } from 'vue';
 import defineVariantComponent from '../utils/defineVariantComponent';
 
-export type TRadioValue = string | number | undefined | null;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type TRadioValue = string | number | boolean | undefined | null | Date | Function | symbol | TRadioValue[];
 
 export type TRadioProps = WithVariantProps<{
   modelValue: TRadioValue
