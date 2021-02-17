@@ -19,26 +19,9 @@ import { VariantJSConfiguration } from '../main';
 
 export type ComponentName = keyof VariantJSConfiguration;
 
-export const setup = <PropsOptions extends WithVariantProps<Record<string, unknown>>>(componentName: keyof VariantJSConfiguration, props: PropsOptions, ctx: any, componentDefaultConfiguration: ObjectWithClassName): RawBindings | RenderFunction | void =>
-  // const globalConfiguration = inject<VariantJSConfiguration>('theme');
-  // const componentGlobalConfiguration = globalConfiguration ? globalConfiguration[componentName] : undefined;
-
-  // const definedProps: ObjectWithClassName = pick(props, (value) => value !== undefined);
-  // const customProps = ref<ObjectWithClassName>(parseVariant(definedProps, componentGlobalConfiguration, componentDefaultConfiguration));
-
-  // watch(() => [props.variant, props.variants, props.fixedClasses, props.classes], () => {
-  //   const definedProps2 = pick<ObjectWithClassName>(props, (value) => value !== undefined);
-  //   customProps.value = parseVariant<ObjectWithClassName>(definedProps2, componentGlobalConfiguration, componentDefaultConfiguration);
-  // });
-
-  // return { customProps };
-  ({
-    class: props.variantConfiguraton.class,
-  });
-
 export const createVariantMixin = (componentName: ComponentName, componentDefaultConfiguration: WithVariantProps<Record<string, unknown>>): Mixin => ({
   props: {
-    variantConfiguraton: {
+    variantConfiguration: {
       type: Object,
       default: (props: WithVariantProps<Record<string, unknown>>): ObjectWithClassName => {
         const globalConfiguration = inject<VariantJSConfiguration>('theme');
@@ -86,7 +69,7 @@ const defineVariantComponent = <
   Object.entries(options.props).forEach(([propKey, prop]) => {
     if (prop && !Array.isArray(prop) && typeof prop === 'object') {
       const newProp = { ...prop };
-      newProp.default = (props: WithVariantProps<Record<string, unknown>>) => get(props, `variantConfiguraton.${propKey}`, prop.default);
+      newProp.default = (props: WithVariantProps<Record<string, unknown>>) => get(props, `variantConfiguration.${propKey}`, prop.default);
       newProps[propKey] = newProp;
     }
   });
