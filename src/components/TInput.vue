@@ -6,16 +6,15 @@
 </template>
 
 <script lang="ts">
-import {
-  WithVariantProps, TInputTheme,
-} from '@variantjs/core';
-
+import { WithVariantProps, TInputTheme } from '@variantjs/core';
 import { PropType } from 'vue';
 import defineVariantComponent from '../utils/defineVariantComponent';
 
-export type TInputProps = WithVariantProps<Record<string, never>>;
-
 export type TInputValue = string | number | undefined | null;
+
+export type TInputProps = WithVariantProps<{
+  modelValue: TInputValue
+}>;
 
 export default defineVariantComponent('TInput', {
   props: {

@@ -1,5 +1,8 @@
 <template>
-  <select v-bind="customProps">
+  <select
+    v-model="localValue"
+    :class="variantConfiguration.class"
+  >
     <template v-for="(option, index) in normalizedOptions">
       <template v-if="option.children && option.children.length">
         <optgroup
@@ -27,24 +30,46 @@
 
 <script lang="ts">
 import {
-  WithVariantProps, TSelect as componentDefaultConfiguration, ObjectWithClassName, normalizeOptions, NormalizedOptions,
+  WithVariantProps, TSelectTheme, normalizeOptions, NormalizedOptions, InputOptions,
 } from '@variantjs/core';
-import { defineComponent } from 'vue';
+import { PropType } from 'vue';
+import defineVariantComponent from '../utils/defineVariantComponent';
 
-export type TSelectProps = WithVariantProps<Record<string, never>>;
+export type TSelectProps = WithVariantProps<{
+  modelValue: TSelectValue,
+  options: PropType<InputOptions>
+}>;
 
-export default defineComponent({
-  name: 'TSelect',
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type TSelectValue = string | number | boolean | undefined | null | Date | Function | symbol | TSelectValue[];
+
+export default defineVariantComponent('TSelect', {
   props: {
+    modelValue: {
+      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TSelectValue>,
+      default: undefined,
+    },
     options: {
-      type: [Array, Object],
+      type: [Array, Object] as PropType<InputOptions>,
       default: undefined,
     },
   },
+  emits: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:modelValue': (_: TSelectValue) => true,
+  },
   computed: {
+    localValue: {
+      get(): TSelectValue {
+        return this.modelValue;
+      },
+      set(value: TSelectValue) {
+        this.$emit('update:modelValue', value);
+      },
+    },
     normalizedOptions(): NormalizedOptions {
       return this.options !== undefined ? normalizeOptions(this.options) : [];
     },
   },
-});
+}, TSelectTheme);
 </script>
