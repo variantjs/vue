@@ -1,0 +1,117 @@
+<template>
+  <component
+    :is="wrapperTag"
+    :class="wrapperClass"
+    :for="$attrs.id"
+  >
+    <component
+      :is="inputWrapperTag"
+      :class="variantConfiguration.classesList.inputWrapper"
+    >
+      <t-radio
+        :id="$attrs.id"
+        ref="input"
+        v-model="localValue"
+        :class="variantConfiguration.classesList.input"
+        v-bind="$attrs"
+      />
+    </component>
+    <component
+      :is="labelTag"
+      :class="variantConfiguration.classesList.label"
+    >
+      <slot>{{ label }}</slot>
+    </component>
+  </component>
+</template>
+
+<script lang="ts">
+import { TWrappedRadioTheme, TWrappedRadioClassesListKeys } from '@variantjs/core';
+import { PropType } from 'vue';
+import defineVariantComponent from '../utils/defineVariantComponent';
+import TRadio, { TRadioProps, TRadioValue } from './TRadio.vue';
+
+export type TWrappedRadioValue = TRadioValue;
+
+export type TWrappedRadioProps = TRadioProps;
+
+export default defineVariantComponent('TWrappedRadio', {
+  components: {
+    TRadio,
+  },
+  props: {
+    label: {
+      type: String as PropType<string>,
+      default: undefined,
+    },
+    labelTag: {
+      type: String as PropType<string>,
+      default: 'span',
+    },
+    wrapperTag: {
+      type: String as PropType<string>,
+      default: 'label',
+    },
+    inputWrapperTag: {
+      type: String as PropType<string>,
+      default: 'span',
+    },
+    modelValue: {
+      type: [String, Number] as PropType<TWrappedRadioValue>,
+      default: undefined,
+    },
+  },
+  inheritAttrs: false,
+  emits: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:modelValue': (_: TWrappedRadioValue) => true,
+  },
+  data() {
+    return {
+      inputChecked: this.$attrs.checked !== undefined,
+    };
+  },
+  created() {
+    if (this.$attrs.name && this.modelValue === undefined) {
+      this.emitter.on(`radioInputChecked-${this.$attrs.name}`, () => {
+        const elChecked = this.$refs.input.$el.checked;
+        if (this.inputChecked && this.inputChecked !== elChecked) {
+          this.inputChecked = elChecked;
+        }
+      });
+    }
+  },
+  watch: {
+    inputChecked(inputChecked: boolean) {
+      if (this.$attrs.name && this.modelValue === undefined && inputChecked) {
+        this.emitter.emit(`radioInputChecked-${this.$attrs.name}`);
+      }
+    },
+  },
+  computed: {
+    isChecked(): boolean {
+      if (this.modelValue === undefined) {
+        return this.inputChecked;
+      }
+
+      return JSON.stringify(this.modelValue) === JSON.stringify(this.$attrs.value);
+    },
+    wrapperClass(): string | undefined {
+      return this.isChecked && this.variantConfiguration.classesList.wrapperChecked !== undefined
+        ? this.variantConfiguration.classesList.wrapperChecked
+        : this.variantConfiguration.classesList.wrapper;
+    },
+    localValue: {
+      get(): TWrappedRadioValue {
+        return this.modelValue;
+      },
+      set(value: TWrappedRadioValue) {
+        this.inputChecked = this.$refs.input.$el.checked;
+
+        this.$emit('update:modelValue', value);
+      },
+    },
+  },
+}, TWrappedRadioTheme, TWrappedRadioClassesListKeys);
+
+</script>
