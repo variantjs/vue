@@ -37,7 +37,84 @@
       <option value="error">
         Error
       </option>
-    </select>
+    </select>-->
+
+    <!-- <t-radio
+      v-model="test"
+      name="test"
+      value="1"
+    />
+    <t-radio
+      v-model="test"
+      name="test"
+      value="2"
+    />
+    <t-radio
+      v-model="test"
+      name="test"
+      value="3"
+    /> -->
+
+    <!-- <t-wrapped-radio
+      id="test2-1"
+      v-model="test"
+      name="test2"
+      value="1"
+      label="1"
+    />
+    <t-wrapped-radio
+      id="test2-2"
+      v-model="test"
+      name="test2"
+      :value="{text: 1}"
+      label="2"
+    />
+    <t-wrapped-radio
+      id="test2-3``"
+      v-model="test"
+      name="test2"
+      value="3"
+      label="3"
+    /> -->
+
+    <div action="">
+      <t-wrapped-radio
+        name="test3"
+        :value="true"
+      >
+        gola 1
+      </t-wrapped-radio>
+      <t-wrapped-radio
+        checked
+        name="test3"
+        :value="{text: 1}"
+      >
+        Hoal 2
+      </t-wrapped-radio>
+
+      <t-wrapped-radio
+        name="test3"
+        value="3"
+      >
+        Hola 3
+      </t-wrapped-radio>
+    </div>
+
+    <t-wrapped-radio
+      name="test3"
+      :value="[1,2,3]"
+    >
+      Hola 4
+    </t-wrapped-radio>
+
+    <t-wrapped-radio
+      name="test3"
+      :value="() => {console.log('')}"
+    >
+      Hola 5
+    </t-wrapped-radio>
+
+    <p>{{ test }}</p>
 
     <t-select
       v-model="type"
@@ -48,7 +125,6 @@
       v-model="number"
       :options="[1, 2, 3]"
     />
-    {{ number }} -->
   </div>
 </template>
 
@@ -56,6 +132,9 @@
 import { defineComponent } from 'vue';
 import TInput from './components/TInput.vue';
 import TSelect from './components/TSelect.vue';
+import TRadio from './components/TRadio.vue';
+import TWrappedRadio from './components/TWrappedRadio.vue';
+import TCheckbox from './components/TCheckbox.vue';
 import './assets/tailwind.css';
 
 export default defineComponent({
@@ -63,9 +142,13 @@ export default defineComponent({
   components: {
     TInput,
     TSelect,
+    TRadio,
+    TWrappedRadio,
+    TCheckbox,
   },
   data() {
     return {
+      test: '3',
       number: 2,
       variants: {
         error: {

@@ -4,6 +4,7 @@ import {
 
 import {
   ComponentObjectPropsOptions,
+  ComponentOptionsBase,
   ComponentOptionsMixin,
   ComponentOptionsWithObjectProps,
   ComponentPropsOptions,
@@ -18,14 +19,38 @@ import { VariantJSConfiguration } from '../main';
 
 export type ComponentName = keyof VariantJSConfiguration;
 
-export const createVariantMixin = <
+const defineVariantComponent = <
+  PropsOptions extends Readonly<ComponentPropsOptions>,
+  RawBindings,
+  D,
   ClassesList extends CSSRawClassesList,
   ClassesList2 extends CSSRawClassesList,
+  C extends ComputedOptions = {},
+  M extends MethodOptions = {},
+  Mixin extends ComponentOptionsMixin = ComponentOptionsMixin,
+  Extends extends ComponentOptionsMixin = ComponentOptionsMixin,
+  E extends EmitsOptions = Record<string, any>,
+  EE extends string = string,
 >(
     componentName: ComponentName,
+    options: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE>,
     componentDefaultConfiguration: WithVariantProps<Record<string, unknown>> | WithVariantPropsAndClassesList<Record<string, unknown>, ClassesList, ClassesList2>,
-    classesListKeys: string[],
-  ): Mixin => ({
+    classesListKeys?: Readonly<string[]>,
+  ): DefineComponent<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE, WithVariantProps<Record<string, unknown>>> => {
+  const newOptions: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE> = { ...options };
+  const newProps: ComponentObjectPropsOptions<Record<string, unknown>> = {};
+
+  Object.entries(options.props).forEach(([propKey, prop]) => {
+    if (prop && !Array.isArray(prop) && typeof prop === 'object') {
+      const newProp = { ...prop };
+      newProp.default = (props: WithVariantProps<Record<string, unknown>>) => get(props, `variantConfiguration.${propKey}`, prop.default);
+      newProps[propKey] = newProp;
+    }
+  });
+
+  newOptions.name = componentName;
+
+  const mixin: ComponentOptionsBase<WithVariantProps<Record<string, unknown>>, any, any, any, any, any, any, any, any, any> = {
     props: {
       variantConfiguration: {
         type: Object,
@@ -33,7 +58,7 @@ export const createVariantMixin = <
           const globalConfiguration = inject<VariantJSConfiguration>('theme');
           const componentGlobalConfiguration = globalConfiguration ? globalConfiguration[componentName] : undefined;
           if (classesListKeys) {
-            return parseVariantWithClassesList(props, classesListKeys, componentGlobalConfiguration, componentDefaultConfiguration);
+            return parseVariantWithClassesList(props as WithVariantPropsAndClassesList<Record<string, unknown>, ClassesList, ClassesList2>, classesListKeys, componentGlobalConfiguration, componentDefaultConfiguration as WithVariantPropsAndClassesList<Record<string, unknown>, ClassesList, ClassesList2>);
           }
 
           return parseVariant(props, componentGlobalConfiguration, componentDefaultConfiguration);
@@ -56,49 +81,17 @@ export const createVariantMixin = <
         default: undefined,
       },
     },
-  });
+  };
 
-const defineVariantComponent = <
-  PropsOptions extends Readonly<ComponentPropsOptions>,
-  RawBindings,
-  D,
-  ClassesList extends CSSRawClassesList,
-  ClassesList2 extends CSSRawClassesList,
-  C extends ComputedOptions = {},
-  M extends MethodOptions = {},
-  Mixin extends ComponentOptionsMixin = ComponentOptionsMixin,
-  Extends extends ComponentOptionsMixin = ComponentOptionsMixin,
-  E extends EmitsOptions = Record<string, any>,
-  EE extends string = string,
->(
-    componentName: ComponentName,
-    options: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE>,
-    componentDefaultConfiguration: WithVariantProps<Record<string, unknown>> | WithVariantPropsAndClassesList<Record<string, unknown>, ClassesList, ClassesList2>,
-    classesListKeys?: string[],
-  ): DefineComponent<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE> => {
-  const newOptions: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE> = { ...options };
-  const newProps: ComponentObjectPropsOptions<Record<string, unknown>> = {};
-
-  Object.entries(options.props).forEach(([propKey, prop]) => {
-    if (prop && !Array.isArray(prop) && typeof prop === 'object') {
-      const newProp = { ...prop };
-      newProp.default = (props: WithVariantProps<Record<string, unknown>>) => get(props, `variantConfiguration.${propKey}`, prop.default);
-      newProps[propKey] = newProp;
-    }
-  });
-
-  newOptions.name = componentName;
-
-  const mixin = createVariantMixin(componentName, componentDefaultConfiguration, classesListKeys);
   if (Array.isArray(newOptions.mixins)) {
-    newOptions.mixins.push(mixin);
+    newOptions.mixins.push(mixin as Mixin);
   } else {
-    newOptions.mixins = [mixin];
+    newOptions.mixins = [mixin as Mixin];
   }
 
   newOptions.props = newProps as PropsOptions;
 
-  return defineComponent(newOptions);
+  return defineComponent<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE>(newOptions) as DefineComponent<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE, WithVariantProps<Record<string, unknown>>>;
 };
 
 export default defineVariantComponent;

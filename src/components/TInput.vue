@@ -16,6 +16,7 @@ export type TInputProps = WithVariantProps<{
   modelValue: TInputValue
 }>;
 
+// @vue/component
 export default defineVariantComponent('TInput', {
   props: {
     modelValue: {

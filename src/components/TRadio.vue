@@ -18,6 +18,7 @@ export type TRadioProps = WithVariantProps<{
   modelValue: TRadioValue
 }>;
 
+// @vue/component
 export default defineVariantComponent('TRadio', {
   props: {
     modelValue: {

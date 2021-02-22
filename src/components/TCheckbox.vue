@@ -18,6 +18,7 @@ export type TCheckboxProps = WithVariantProps<{
   modelValue: TCheckboxValue
 }>;
 
+// @vue/component
 export default defineVariantComponent('TCheckbox', {
   props: {
     modelValue: {

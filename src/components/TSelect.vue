@@ -43,6 +43,7 @@ export type TSelectProps = WithVariantProps<{
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type TSelectValue = string | number | boolean | undefined | null | Date | Function | symbol | TSelectValue[];
 
+// @vue/component
 export default defineVariantComponent('TSelect', {
   props: {
     modelValue: {

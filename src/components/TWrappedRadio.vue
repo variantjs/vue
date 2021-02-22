@@ -35,10 +35,12 @@ export type TWrappedRadioValue = TRadioValue;
 
 export type TWrappedRadioProps = TRadioProps;
 
-export default defineVariantComponent('TWrappedRadio', {
+// @vue/component
+const c = defineVariantComponent('TWrappedRadio', {
   components: {
     TRadio,
   },
+  inheritAttrs: false,
   props: {
     label: {
       type: String as PropType<string>,
@@ -61,7 +63,6 @@ export default defineVariantComponent('TWrappedRadio', {
       default: undefined,
     },
   },
-  inheritAttrs: false,
   emits: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     'update:modelValue': (_: TWrappedRadioValue) => true,
@@ -70,23 +71,6 @@ export default defineVariantComponent('TWrappedRadio', {
     return {
       inputChecked: this.$attrs.checked !== undefined,
     };
-  },
-  created() {
-    if (this.$attrs.name && this.modelValue === undefined) {
-      this.emitter.on(`radioInputChecked-${this.$attrs.name}`, () => {
-        const elChecked = this.$refs.input.$el.checked;
-        if (this.inputChecked && this.inputChecked !== elChecked) {
-          this.inputChecked = elChecked;
-        }
-      });
-    }
-  },
-  watch: {
-    inputChecked(inputChecked: boolean) {
-      if (this.$attrs.name && this.modelValue === undefined && inputChecked) {
-        this.emitter.emit(`radioInputChecked-${this.$attrs.name}`);
-      }
-    },
   },
   computed: {
     isChecked(): boolean {
@@ -97,6 +81,7 @@ export default defineVariantComponent('TWrappedRadio', {
       return JSON.stringify(this.modelValue) === JSON.stringify(this.$attrs.value);
     },
     wrapperClass(): string | undefined {
+      this.fixedClasses;
       return this.isChecked && this.variantConfiguration.classesList.wrapperChecked !== undefined
         ? this.variantConfiguration.classesList.wrapperChecked
         : this.variantConfiguration.classesList.wrapper;
@@ -112,6 +97,25 @@ export default defineVariantComponent('TWrappedRadio', {
       },
     },
   },
+  watch: {
+    inputChecked(inputChecked: boolean) {
+      if (this.$attrs.name && this.modelValue === undefined && inputChecked) {
+        this.emitter.emit(`radioInputChecked-${this.$attrs.name}`);
+      }
+    },
+  },
+  created() {
+    if (this.$attrs.name && this.modelValue === undefined) {
+      this.emitter.on(`radioInputChecked-${this.$attrs.name}`, () => {
+        const elChecked = this.$refs.input.$el.checked;
+        if (this.inputChecked && this.inputChecked !== elChecked) {
+          this.inputChecked = elChecked;
+        }
+      });
+    }
+  },
 }, TWrappedRadioTheme, TWrappedRadioClassesListKeys);
+
+export default c;
 
 </script>
