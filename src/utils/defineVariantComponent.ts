@@ -55,13 +55,12 @@ const defineVariantComponent = <
       variantConfiguration: {
         type: Object,
         default: (props: WithVariantProps<Record<string, unknown>> | WithVariantPropsAndClassesList<Record<string, unknown>, ClassesList, ClassesList2>): ObjectWithClassName | ObjectWithClassesList => {
-          const globalConfiguration = inject<VariantJSConfiguration>('theme');
-          const componentGlobalConfiguration = globalConfiguration ? globalConfiguration[componentName] : undefined;
+          const globalConfiguration = inject<VariantJSConfiguration>('theme', {})[componentName];
           if (classesListKeys) {
-            return parseVariantWithClassesList(props as WithVariantPropsAndClassesList<Record<string, unknown>, ClassesList, ClassesList2>, classesListKeys, componentGlobalConfiguration, componentDefaultConfiguration as WithVariantPropsAndClassesList<Record<string, unknown>, ClassesList, ClassesList2>);
+            return parseVariantWithClassesList(props as WithVariantPropsAndClassesList<Record<string, unknown>, ClassesList, ClassesList2>, classesListKeys, globalConfiguration, componentDefaultConfiguration as WithVariantPropsAndClassesList<Record<string, unknown>, ClassesList, ClassesList2>);
           }
 
-          return parseVariant(props, componentGlobalConfiguration, componentDefaultConfiguration);
+          return parseVariant(props, globalConfiguration, componentDefaultConfiguration);
         },
       },
       classes: {

@@ -1,7 +1,9 @@
 <template>
   <input
     v-model="localValue"
-    :class="variantConfiguration.class"
+    v-bind="{
+      class:variantConfiguration.class
+    }"
   >
 </template>
 
