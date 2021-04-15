@@ -81,7 +81,7 @@ const c = defineVariantComponent('TWrappedRadio', {
       return JSON.stringify(this.modelValue) === JSON.stringify(this.$attrs.value);
     },
     wrapperClass(): string | undefined {
-      this.fixedClasses;
+      // this.fixedClasses;
       return this.isChecked && this.variantConfiguration.classesList.wrapperChecked !== undefined
         ? this.variantConfiguration.classesList.wrapperChecked
         : this.variantConfiguration.classesList.wrapper;
@@ -115,6 +115,8 @@ const c = defineVariantComponent('TWrappedRadio', {
     }
   },
 }, TWrappedRadioTheme, TWrappedRadioClassesListKeys);
+
+console.log(TWrappedRadioTheme, TWrappedRadioClassesListKeys);
 
 export default c;
 
