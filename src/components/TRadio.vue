@@ -2,27 +2,21 @@
   <input
     v-model="localValue"
     type="radio"
-    :class="variantConfiguration.class"
+    v-bind="variantConfiguration"
   >
 </template>
 
 <script lang="ts">
-import { WithVariantProps, TRadioTheme } from '@variantjs/core';
+import { TRadioTheme } from '@variantjs/core';
 import { PropType } from 'vue';
 import defineVariantComponent from '../utils/defineVariantComponent';
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type TRadioValue = string | number | boolean | undefined | null | Date | Function | symbol | TRadioValue[];
-
-export type TRadioProps = WithVariantProps<{
-  modelValue: TRadioValue
-}>;
+import { TRadioValue } from '../types';
 
 // @vue/component
 export default defineVariantComponent('TRadio', {
   props: {
     modelValue: {
-      type: [String, Number] as PropType<TRadioValue>,
+      type: [String, Number, Array, Object] as PropType<TRadioValue>,
       default: undefined,
     },
   },

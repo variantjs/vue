@@ -2,27 +2,21 @@
   <input
     v-model="localValue"
     type="checkbox"
-    :class="variantConfiguration.class"
+    v-bind="variantConfiguration"
   >
 </template>
 
 <script lang="ts">
-import { WithVariantProps, TCheckboxTheme } from '@variantjs/core';
+import { TCheckboxTheme } from '@variantjs/core';
 import { PropType } from 'vue';
 import defineVariantComponent from '../utils/defineVariantComponent';
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type TCheckboxValue = string | number | boolean | undefined | null | Date | Function | symbol | TCheckboxValue[];
-
-export type TCheckboxProps = WithVariantProps<{
-  modelValue: TCheckboxValue
-}>;
+import { TCheckboxValue } from '../types';
 
 // @vue/component
 export default defineVariantComponent('TCheckbox', {
   props: {
     modelValue: {
-      type: [String, Number] as PropType<TCheckboxValue>,
+      type: [String, Number, Array, Object] as PropType<TCheckboxValue>,
       default: undefined,
     },
   },

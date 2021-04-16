@@ -1,7 +1,7 @@
 <template>
   <select
     v-model="localValue"
-    :class="variantConfiguration.class"
+    v-bind="variantConfiguration"
   >
     <template v-for="(option, index) in normalizedOptions">
       <template v-if="option.children && option.children.length">
@@ -30,18 +30,11 @@
 
 <script lang="ts">
 import {
-  WithVariantProps, TSelectTheme, normalizeOptions, NormalizedOptions, InputOptions,
+  TSelectTheme, normalizeOptions, NormalizedOptions, InputOptions,
 } from '@variantjs/core';
 import { PropType } from 'vue';
 import defineVariantComponent from '../utils/defineVariantComponent';
-
-export type TSelectProps = WithVariantProps<{
-  modelValue: TSelectValue,
-  options: PropType<InputOptions>
-}>;
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type TSelectValue = string | number | boolean | undefined | null | Date | Function | symbol | TSelectValue[];
+import { TSelectValue } from '../types';
 
 // @vue/component
 export default defineVariantComponent('TSelect', {

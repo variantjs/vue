@@ -4,10 +4,9 @@ import {
 import { createApp } from 'vue';
 
 import App from './App.vue';
-import { TSelectProps } from './components/TSelect.vue';
-import { TRadioProps } from './components/TRadio.vue';
-import { TCheckboxProps } from './components/TCheckbox.vue';
-import { TWrappedRadioProps, TInputProps } from './types/props';
+import {
+  TWrappedRadioProps, TInputProps, TRadioProps, TCheckboxProps, TSelectProps,
+} from './types';
 
 import Emitter from './utils/emitter';
 
@@ -27,12 +26,19 @@ app.use({
     a.config.globalProperties.emitter = new Emitter();
 
     const theme: VariantJSConfiguration = {
+      TSelect: {
+        autofocus: true,
+
+      },
       TInput: {
+        maxlength: 10,
+        placeholder: 'type something',
         classes: 'block w-full pl-3 pr-10 py-2 text-black placeholder-gray-400 transition duration-100 ease-in-out bg-white border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed',
-        some: 1,
         variants: {
-          test: {
-            classes: 'gsdgds',
+          error: {
+            classes: 'text-red-500',
+            maxlength: undefined,
+            placeholder: 'Something wrong happen',
           },
         },
       },

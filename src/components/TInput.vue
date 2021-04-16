@@ -1,16 +1,14 @@
 <template>
   <input
     v-model="localValue"
-    v-bind="{
-      class:variantConfiguration.class
-    }"
+    v-bind="variantConfiguration"
   >
 </template>
 
 <script lang="ts">
 import { TInputTheme } from '@variantjs/core';
 import { PropType } from 'vue';
-import { TInputValue } from '../types/props';
+import { TInputValue } from '../types';
 import defineVariantComponent from '../utils/defineVariantComponent';
 
 // @vue/component
