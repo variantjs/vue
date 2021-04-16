@@ -93,6 +93,9 @@
       </t-wrapped-radio>
 
       <t-wrapped-radio
+        :fixed-classes="{
+          wrapper: 'text-blue-500'
+        }"
         name="test3"
         value="3"
       >

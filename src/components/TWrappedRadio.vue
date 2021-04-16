@@ -6,7 +6,7 @@
   >
     <component
       :is="inputWrapperTag"
-      :class="variantConfiguration.classesList.inputWrapper"
+      :class="inputWrapperClass"
     >
       <t-radio
         :id="$attrs.id"
@@ -18,7 +18,7 @@
     </component>
     <component
       :is="labelTag"
-      :class="variantConfiguration.classesList.label"
+      :class="labelClass"
     >
       <slot>{{ label }}</slot>
     </component>
@@ -36,7 +36,7 @@ export type TWrappedRadioValue = TRadioValue;
 export type TWrappedRadioProps = TRadioProps;
 
 // @vue/component
-const c = defineVariantComponent('TWrappedRadio', {
+export default defineVariantComponent('TWrappedRadio', {
   components: {
     TRadio,
   },
@@ -81,10 +81,19 @@ const c = defineVariantComponent('TWrappedRadio', {
       return JSON.stringify(this.modelValue) === JSON.stringify(this.$attrs.value);
     },
     wrapperClass(): string | undefined {
-      // this.fixedClasses;
       return this.isChecked && this.variantConfiguration.classesList.wrapperChecked !== undefined
         ? this.variantConfiguration.classesList.wrapperChecked
         : this.variantConfiguration.classesList.wrapper;
+    },
+    inputWrapperClass(): string | undefined {
+      return this.isChecked && this.variantConfiguration.classesList.inputWrapperChecked !== undefined
+        ? this.variantConfiguration.classesList.inputWrapperChecked
+        : this.variantConfiguration.classesList.inputWrapper;
+    },
+    labelClass(): string | undefined {
+      return this.isChecked && this.variantConfiguration.classesList.labelChecked !== undefined
+        ? this.variantConfiguration.classesList.labelChecked
+        : this.variantConfiguration.classesList.label;
     },
     localValue: {
       get(): TWrappedRadioValue {
@@ -115,9 +124,5 @@ const c = defineVariantComponent('TWrappedRadio', {
     }
   },
 }, TWrappedRadioTheme, TWrappedRadioClassesListKeys);
-
-console.log(TWrappedRadioTheme, TWrappedRadioClassesListKeys);
-
-export default c;
 
 </script>
