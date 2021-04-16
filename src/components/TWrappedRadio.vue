@@ -28,12 +28,9 @@
 <script lang="ts">
 import { TWrappedRadioTheme, TWrappedRadioClassesListKeys } from '@variantjs/core';
 import { PropType } from 'vue';
+import { TWrappedRadioValue } from '../types/props';
 import defineVariantComponent from '../utils/defineVariantComponent';
-import TRadio, { TRadioProps, TRadioValue } from './TRadio.vue';
-
-export type TWrappedRadioValue = TRadioValue;
-
-export type TWrappedRadioProps = TRadioProps;
+import TRadio from './TRadio.vue';
 
 // @vue/component
 export default defineVariantComponent('TWrappedRadio', {

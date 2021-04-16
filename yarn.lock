@@ -885,10 +885,10 @@
     "@typescript-eslint/types" "4.22.0"
     eslint-visitor-keys "^2.0.0"
 
-"@variantjs/core@^0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@variantjs/core/-/core-0.0.14.tgz#c36969e9ad0c181656d1e59233f4556545297577"
-  integrity sha512-1CRAWkxCNK5kts5pkoFzyDwBuZqPw9IK00qYWEiuU46FjH0D3e6Jm5O+4zt9HVnOwByEXMtu2yOPzChrIfoOGA==
+"@variantjs/core@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@variantjs/core/-/core-0.0.16.tgz#9e2f739ef2351e61b62b3a064c080833387660b1"
+  integrity sha512-FxrY1D2ZikKhzL4dYmVM5Jqov4T8DtlJyZUFAVFMCCaorxMDjTbPSxJuGzMbF6ps+dG9/OyBRH1kJOhFXZ4/uA==
 
 "@vitejs/plugin-vue@^1.2.1":
   version "1.2.1"
@@ -9360,6 +9360,11 @@ ts-pnp@^1.1.6:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.2.0.tgz#a500ad084b0798f1c3071af391e65912c86bca92"
   integrity sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==
+
+ts-vue-plugin@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/ts-vue-plugin/-/ts-vue-plugin-0.1.3.tgz#f752752e64b315195bef3374d8115e741994e5a3"
+  integrity sha512-FBfURLnwEMc9ynbdRHjI/X0R17mCyi/BdnyMFxIU833nMeprTsCNEIZSYdDybYx04jc+LbzkjgfYVk+GeEV+Hg==
 
 tsconfig-paths@^3.9.0:
   version "3.9.0"

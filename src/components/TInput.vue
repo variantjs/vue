@@ -8,15 +8,10 @@
 </template>
 
 <script lang="ts">
-import { WithVariantProps, TInputTheme } from '@variantjs/core';
+import { TInputTheme } from '@variantjs/core';
 import { PropType } from 'vue';
+import { TInputValue } from '../types/props';
 import defineVariantComponent from '../utils/defineVariantComponent';
-
-export type TInputValue = string | number | undefined | null;
-
-export type TInputProps = WithVariantProps<{
-  modelValue: TInputValue
-}>;
 
 // @vue/component
 export default defineVariantComponent('TInput', {

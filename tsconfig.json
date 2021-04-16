@@ -13,7 +13,9 @@
     "types": [
       "vite/client",
       "jest"
-    ]
+    ],
+    "allowSyntheticDefaultImports": true,
+    "plugins": [{ "name": "ts-vue-plugin" }]
   },
   "include": [
     "src/**/*.ts",
