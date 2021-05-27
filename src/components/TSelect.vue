@@ -1,7 +1,7 @@
 <template>
   <select
     v-model="localValue"
-    v-bind="variantConfiguration"
+    v-bind="attributes"
   >
     <template v-for="(option, index) in normalizedOptions">
       <template v-if="option.children && option.children.length">
@@ -34,10 +34,10 @@ import {
 } from '@variantjs/core';
 import { PropType } from 'vue';
 import defineVariantComponent from '../utils/defineVariantComponent';
-import { TSelectValue } from '../types';
+import { TSelectProps, TSelectValue } from '../types';
 
 // @vue/component
-export default defineVariantComponent('TSelect', {
+export default defineVariantComponent<TSelectProps>('TSelect', {
   props: {
     modelValue: {
       type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TSelectValue>,

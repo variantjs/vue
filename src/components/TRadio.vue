@@ -2,7 +2,6 @@
   <input
     v-model="localValue"
     type="radio"
-    v-bind="variantConfiguration"
   >
 </template>
 

@@ -7,22 +7,28 @@
       :type="type"
       :variants="variants"
       :variant="variant"
-    />
+    />-->
 
-    <t-input /> -->
-
-    <t-input
-      v-model="id"
-      type="text"
-    />
+    <t-input />
 
     <t-input
+      id="hola"
       v-model="id"
       type="text"
-      variant="test2"
+      data-test="test"
+      :variant="variant"
     />
 
-    <p>{{ id }}</p>
+    <!--<t-input
+      v-model="id"
+      type="text"
+      :variant="variant"
+    />-->
+
+    <t-select
+      v-model="variant"
+      :options="['test2', 'test', 'error', 'ther']"
+    />
 
     <!-- {{ variant }}
 
@@ -77,7 +83,7 @@
       label="3"
     /> -->
 
-    <div action="">
+    <!--<div action="">
       <t-wrapped-radio
         name="test3"
         :value="true"
@@ -127,7 +133,7 @@
     <t-select
       v-model="number"
       :options="[1, 2, 3]"
-    />
+    />-->
   </div>
 </template>
 
@@ -161,8 +167,12 @@ export default defineComponent({
           placeholder: 'error',
           classes: 'text-red-500 placeholder-red-300 bg-red-100 border-gray-500',
         },
+        ther: {
+          classes: undefined,
+          fixedClasses: undefined,
+        },
       },
-      id: 'test',
+      id: '',
       variant: 'success',
       type: 'text',
     };

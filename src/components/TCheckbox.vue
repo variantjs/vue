@@ -2,7 +2,6 @@
   <input
     v-model="localValue"
     type="checkbox"
-    v-bind="variantConfiguration"
   >
 </template>
 
