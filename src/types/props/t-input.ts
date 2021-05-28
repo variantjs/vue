@@ -1,7 +1,7 @@
-import { WithVariantProps } from '@variantjs/core';
+import { CSSClass, WithVariantProps } from '@variantjs/core';
 import { InputHTMLAttributes } from '@vue/runtime-dom';
 import { PropType } from 'vue';
-import { ComponentWithVariantsProps } from '.';
+import { ComponentWithVariantsProps, VariantComputedAttributes } from '.';
 
 export type TInputValue = string | number | undefined | null;
 
@@ -16,13 +16,13 @@ export type TInputProps = ComponentWithVariantsProps<TInputOptions, {
   }
 }>;
 
-// export type TInputOptions = {
-//   modelValue?: TInputValue,
-// } & InputHTMLAttributes & Record<string, unknown>;
+export type TInputComputedAttributes = VariantComputedAttributes<{
+  localValue: {
+    get: () => TInputValue,
+    set: (value: TInputValue) => void,
+  }
+}>;
 
-// export type TInputProps = {
-//   modelValue: {
-//     type: PropType<TInputValue>;
-//     default: undefined;
-//   }
-// };
+export type TInputMethods = {
+  test4:() => CSSClass,
+};

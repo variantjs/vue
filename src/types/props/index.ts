@@ -30,7 +30,7 @@ export declare type ComponentWithVariantsProps<ComponentOptions extends WithVari
   },
 };
 
-export declare type ComponentWithVariantsComputed<C extends ComputedOptions> = {
+export declare type VariantComputedAttributes<C extends ComputedOptions> = {
   configuration: () => Record<string, unknown>,
   attributes: () => Record<string, unknown>,
 } & C;

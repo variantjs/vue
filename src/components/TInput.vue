@@ -8,56 +8,46 @@
 <script lang="ts">
 import { CSSClass, TInputTheme } from '@variantjs/core';
 import { PropType } from 'vue';
-import { TInputValue, TInputProps, TInputOptions } from '../types';
+import {
+  TInputValue, TInputProps, TInputOptions, TInputComputedAttributes, TInputMethods,
+} from '../types';
 import defineVariantComponent from '../utils/defineVariantComponent';
 
 const TInput = defineVariantComponent<
 TInputOptions,
 TInputProps,
-{
-  test:() => string | undefined,
-  test2: () => string | number,
-  localValue: {
-    get: () => TInputValue,
-    set: (value: TInputValue) => void,
-  }
-},
-{
-  test4: () => CSSClass,
-}
+TInputComputedAttributes,
+TInputMethods
 >('TInput', {
-      props: {
-        modelValue: {
-          type: [String, Number] as PropType<TInputValue>,
-          default: undefined,
-        },
+  props: {
+    modelValue: {
+      type: [String, Number] as PropType<TInputValue>,
+      default: undefined,
+    },
+  },
+  emits: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:modelValue': (_: TInputValue) => true,
+  },
+  methods: {
+    test4(): CSSClass {
+      return this.fixedClasses;
+    },
+  },
+  computed: {
+    localValue: {
+      get(): TInputValue {
+        const { test4 } = this;
+        const { fixedClasses } = this;
+        const { configuration } = this;
+        return this.modelValue;
       },
-      emits: {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        'update:modelValue': (_: TInputValue) => true,
+      set(value: TInputValue) {
+        this.$emit('update:modelValue', value);
       },
-      methods: {
-        test4(): CSSClass {
-          return this.fixedClasses;
-        },
-      },
-      computed: {
-        test(): string | undefined {
-          return this.variant;
-        },
-        test2(): string | number {
-          return 1;
-        },
-        localValue: {
-          get(): TInputValue {
-            return this.modelValue;
-          },
-          set(value: TInputValue) {
-            this.$emit('update:modelValue', value);
-          },
-        },
-      },
-    }, TInputTheme);
+    },
+  },
+}, TInputTheme);
 
 export default TInput;
 </script>

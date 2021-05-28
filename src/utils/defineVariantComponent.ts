@@ -15,7 +15,7 @@ import {
 } from 'vue';
 
 import { VariantJSConfiguration } from '../main';
-import { ComponentWithVariantsComputed, ComponentWithVariantsProps } from '../types';
+import { VariantComputedAttributes, ComponentWithVariantsProps } from '../types';
 
 export type ComponentName = keyof VariantJSConfiguration;
 
@@ -32,73 +32,67 @@ const defineVariantComponent = <
   EE extends string = string,
 >(
     componentName: ComponentName,
-    options: ComponentOptionsWithObjectProps<Partial<PropsOptions>, RawBindings, D, C, M, Mixin, Extends, E, EE>,
+    options: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE>,
     componentDefaultConfiguration: WithVariantProps<Record<string, unknown>>,
-  ): DefineComponent<ComponentWithVariantsProps<ComponentOptions, PropsOptions>, RawBindings, D, ComponentWithVariantsComputed<C>, M, Mixin, Extends, E, EE> => {
-  const { computed: componentComputed, props: componentProps, ...restOfOptions } = options;
-  const newOptions: ComponentOptionsWithObjectProps<
-  ComponentWithVariantsProps<ComponentOptions, PropsOptions>,
-  RawBindings,
-  D,
-  ComponentWithVariantsComputed<C>,
-  M,
-  Mixin,
-  Extends,
-  E,
-  EE
-  > = {
-    ...restOfOptions,
-    props: {
-      ...componentProps as PropsOptions,
-      classes: {
-        type: [String, Array, Object] as PropType<CSSClass>,
-        default: undefined,
-      },
-      fixedClasses: {
-        type: [String, Array, Object] as PropType<CSSClass>,
-        default: undefined,
-      },
-      variants: {
-        type: Object as PropType<Variants<ComponentOptions>>,
-        default: undefined,
-      },
-      variant: {
-        type: String as PropType<string | undefined>,
-        default: undefined,
-      },
-      definedProps: {
-        type: Array as PropType<(keyof PropsOptions)[]>,
-        default: (props: PropsOptions) : (keyof PropsOptions)[] => Object.keys(props) as (keyof PropsOptions)[],
-      },
+  ): DefineComponent<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE> => {
+  const computed: C = {
+    ...options.computed as C,
+
+    configuration(): Record<string, unknown> {
+      const globalConfiguration = get<VariantJSConfiguration, PropsOptions>(this.theme, componentName, {});
+
+      const propsValues = {} as PropsOptions;
+
+      if (this.definedProps) {
+        this.definedProps.forEach((propName) => {
+          propsValues[propName] = this[propName];
+        });
+      }
+
+      return parseVariant(propsValues, globalConfiguration, componentDefaultConfiguration);
     },
+    attributes(): Record<string, unknown> {
+      const configuration = { ...this.configuration };
+
+      if (this.definedProps) {
+        this.definedProps.forEach((propName) => {
+          delete configuration[propName];
+        });
+      }
+
+      return configuration;
+    },
+  };
+
+  const props: PropsOptions = {
+    ...options.props as PropsOptions,
+    classes: {
+      type: [String, Array, Object] as PropType<CSSClass>,
+      default: undefined,
+    },
+    fixedClasses: {
+      type: [String, Array, Object] as PropType<CSSClass>,
+      default: undefined,
+    },
+    variants: {
+      type: Object as PropType<Variants<ComponentOptions>>,
+      default: undefined,
+    },
+    variant: {
+      type: String as PropType<string | undefined>,
+      default: undefined,
+    },
+    definedProps: {
+      type: Array as PropType<(keyof PropsOptions)[]>,
+      default: (p: PropsOptions) : (keyof PropsOptions)[] => Object.keys(p) as (keyof PropsOptions)[],
+    },
+  };
+
+  const newOptions: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE> = {
+    ...options,
+    props,
     inject: ['theme'],
-    computed: {
-      ...componentComputed,
-      configuration(): Record<string, unknown> {
-        const globalConfiguration = get<VariantJSConfiguration, PropsOptions>(this.theme, componentName, {});
-
-        const propsValues = {} as PropsOptions;
-
-        if (this.definedProps) {
-          this.definedProps.forEach((propName) => {
-            propsValues[propName] = this[propName];
-          });
-        }
-
-        return parseVariant(propsValues, globalConfiguration, componentDefaultConfiguration);
-      },
-      attributes(): Record<string, unknown> {
-        const configuration = { ...this.configuration };
-
-        if (this.definedProps) {
-          this.definedProps.forEach((propName) => {
-            delete configuration[propName];
-          });
-        }
-
-        return configuration;
-      },
-    },
+    computed,
   };
 
   return defineComponent(newOptions);
