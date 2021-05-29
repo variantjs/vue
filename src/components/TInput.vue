@@ -40,6 +40,7 @@ TInputMethods
         const { test4 } = this;
         const { fixedClasses } = this;
         const { configuration } = this;
+        const { localValue } = this;
         return this.modelValue;
       },
       set(value: TInputValue) {
