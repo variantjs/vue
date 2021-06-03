@@ -25,8 +25,8 @@ export declare type ComponentWithVariantsProps<ComponentOptions extends WithVari
     default: undefined;
   },
   definedProps: {
-    type: PropType<(keyof PropsOptions)[]>;
-    default: (props: PropsOptions) => (keyof PropsOptions)[];
+    type: PropType<(keyof PropsOptions | 'classes' | 'fixedClasses' | 'variants' | 'variant' | 'definedProps')[]>;
+    default: (props: ComponentOptions) => (keyof PropsOptions | 'classes' | 'fixedClasses' | 'variants' | 'variant' | 'definedProps')[];
   },
 };
 
