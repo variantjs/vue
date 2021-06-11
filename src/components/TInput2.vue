@@ -6,15 +6,12 @@
 </template>
 
 <script lang="ts">
-import { CSSClass, TInputTheme, Variants } from '@variantjs/core';
 import {
-  ComputedOptions,
-  defineComponent, EmitsOptions, MethodOptions, PropType,
-} from 'vue';
-import {
-  TInputValue, TInputProps, TInputOptions, TInputComputedAttributes, TInputMethods, ComponentWithVariantsProps,
-} from '../types';
-import defineVariantComponent from '../utils/defineVariantComponent';
+  CSSClass, get, parseVariant, TInputTheme, Variants,
+} from '@variantjs/core';
+import { camelize, defineComponent, inject, PropType } from 'vue';
+import { VariantJSConfiguration } from '../main';
+import { TInputValue, TInputProps, TInputOptions } from '../types';
 
 const props: TInputProps = {
   classes: {
@@ -43,29 +40,12 @@ const props: TInputProps = {
   },
 };
 
-const emits: EmitsOptions = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  'update:modelValue': (_: TInputValue) => true,
-};
-
-// type ComputedGetter<T> = (ctx?: TInputProps) => T;
-
-// type ComputedSetter<T> = (v: T) => void;
-
-// interface WritableComputedOptions<T> {
-//   get: ComputedGetter<T>;
-//   set: ComputedSetter<T>;
-// }
-
-// // Record<string, ComputedGetter<any> | WritableComputedOptions<any>>
-
-// const computed: Record<string, {
-//   localValue: WritableComputedOptions<TInputValue>
-// }> = , ;
-
-const TInput = defineComponent({
+const TInputStandalone = defineComponent({
   props,
-  emits,
+  emits: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:modelValue': (_: TInputValue) => true,
+  },
   computed: {
     localValue: {
       get(): TInputValue {
@@ -79,6 +59,33 @@ const TInput = defineComponent({
         this.$emit('update:modelValue', value);
       },
     },
+    configuration(): TInputOptions {
+      const theme = inject<VariantJSConfiguration>('theme');
+      const globalConfiguration = get<VariantJSConfiguration, TInputOptions>(theme || {}, 'TInput', {});
+
+      const propsValues: Record<string, unknown> = {};
+
+      const manualAttributes = Object.keys(this.$.vnode.props || {});
+      
+      manualAttributes.forEach((attributeName) => {
+        const normalizedAttribute = camelize(attributeName) as keyof TInputProps;
+        propsValues[normalizedAttribute] = this[normalizedAttribute];
+      });
+
+      return parseVariant(propsValues as TInputOptions, globalConfiguration, TInputTheme);
+    },
+
+    attributes(): Record<string, unknown> {
+      const configuration = { ...this.configuration };
+
+      if (this.definedProps) {
+        this.definedProps.forEach((propName) => {
+          delete configuration[propName];
+        });
+      }
+
+      return configuration;
+    },
   },
   methods: {
     test4(): CSSClass {
@@ -87,79 +94,5 @@ const TInput = defineComponent({
   },
 });
 
-// const TInput = defineVariantComponent<
-// TInputOptions,
-// TInputProps,
-// TInputComputedAttributes,
-// TInputMethods
-// >('TInput', {
-//   props: {
-//     modelValue: {
-//       type: [String, Number] as PropType<TInputValue>,
-//       default: undefined,
-//     },
-//   },
-//   emits: {
-//     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//     'update:modelValue': (_: TInputValue) => true,
-//   },
-//   methods: {
-//     test4(): CSSClass {
-//       return this.fixedClasses;
-//     },
-//   },
-//   computed: {
-//     localValue: {
-//       get(): TInputValue {
-//         const { test4 } = this;
-//         const { fixedClasses } = this;
-//         const { configuration } = this;
-//         const { localValue } = this;
-//         return this.modelValue;
-//       },
-//       set(value: TInputValue) {
-//         this.$emit('update:modelValue', value);
-//       },
-//     },
-//   },
-// }, TInputTheme);
-
-// const TInput = defineVariantComponent<
-// TInputOptions,
-// TInputProps,
-// TInputComputedAttributes,
-// TInputMethods
-// >('TInput', {
-//   props: {
-//     modelValue: {
-//       type: [String, Number] as PropType<TInputValue>,
-//       default: undefined,
-//     },
-//   },
-//   emits: {
-//     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//     'update:modelValue': (_: TInputValue) => true,
-//   },
-//   methods: {
-//     test4(): CSSClass {
-//       return this.fixedClasses;
-//     },
-//   },
-//   computed: {
-//     localValue: {
-//       get(): TInputValue {
-//         const { test4 } = this;
-//         const { fixedClasses } = this;
-//         const { configuration } = this;
-//         const { localValue } = this;
-//         return this.modelValue;
-//       },
-//       set(value: TInputValue) {
-//         this.$emit('update:modelValue', value);
-//       },
-//     },
-//   },
-// }, TInputTheme);
-
-export default TInput;
+export default TInputStandalone;
 </script>
