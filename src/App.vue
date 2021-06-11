@@ -9,11 +9,11 @@
       :variant="variant"
     />-->
 
-    <t-input-2
+    <t-input
       variant="error"
     />
 
-    <t-input-2
+    <t-input
       id="hola"
       v-model="id"
       type="text"
@@ -143,22 +143,20 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import TInput from './components/TInput.vue';
-import TInput2 from './components/TInput2.vue';
 import TSelect from './components/TSelect.vue';
-import TRadio from './components/TRadio.vue';
-import TWrappedRadio from './components/TWrappedRadio.vue';
-import TCheckbox from './components/TCheckbox.vue';
+// import TRadio from './components/TRadio.vue';
+// import TWrappedRadio from './components/TWrappedRadio.vue';
+// import TCheckbox from './components/TCheckbox.vue';
 import './assets/tailwind.css';
 
 export default defineComponent({
   name: 'App',
   components: {
     TInput,
-    TInput2,
     TSelect,
-    TRadio,
-    TWrappedRadio,
-    TCheckbox,
+    // TRadio,
+    // TWrappedRadio,
+    // TCheckbox,
   },
   data() {
     return {

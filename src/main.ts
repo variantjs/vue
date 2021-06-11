@@ -5,7 +5,7 @@ import { createApp } from 'vue';
 
 import App from './App.vue';
 import {
-  TWrappedRadioProps, TInputProps, TRadioProps, TCheckboxProps, TSelectProps, TInputOptions,
+  TWrappedRadioProps, TRadioProps, TCheckboxProps, TInputOptions, TSelectOptions,
 } from './types';
 
 import Emitter from './utils/emitter';
@@ -14,7 +14,7 @@ const app = createApp(App);
 
 export type VariantJSConfiguration = {
   TInput?: TInputOptions
-  TSelect?: TSelectProps
+  TSelect?: TSelectOptions
   TRadio?: WithVariantProps<TRadioProps>
   TCheckbox?: WithVariantProps<TCheckboxProps>
   TWrappedRadio?: WithVariantPropsAndClassesList<TWrappedRadioProps, TWrappedRadioClassesList, TWrappedRadioClassesList>

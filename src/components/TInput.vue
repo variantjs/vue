@@ -6,15 +6,15 @@
 </template>
 
 <script lang="ts">
-import { CSSClass, TInputTheme } from '@variantjs/core';
-import { PropType } from 'vue';
-import {
-  TInputValue, TInputProps, TInputOptions, TInputComputedAttributes, TInputMethods,
-} from '../types';
-import defineVariantComponent from '../utils/defineVariantComponent';
+import { TInputTheme } from '@variantjs/core';
+import { defineComponent, PropType } from 'vue';
+import { getProps, getComputed } from '../utils/defineVariantComponent';
+import { TInputValue, TInputOptions } from '../types';
 
-const TInput = defineVariantComponent('TInput', {
+export default defineComponent({
+  name: 'TInput',
   props: {
+    ...getProps<TInputOptions>(),
     modelValue: {
       type: [String, Number] as PropType<TInputValue>,
       default: undefined,
@@ -24,18 +24,10 @@ const TInput = defineVariantComponent('TInput', {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     'update:modelValue': (_: TInputValue) => true,
   },
-  methods: {
-    test4(): CSSClass {
-      return this.fixedClasses;
-    },
-  },
   computed: {
+    ...getComputed<TInputOptions>(TInputTheme, 'TInput'),
     localValue: {
       get(): TInputValue {
-        const { test4 } = this;
-        const { fixedClasses } = this;
-        const { configuration } = this;
-        const { localValue } = this;
         return this.modelValue;
       },
       set(value: TInputValue) {
@@ -43,7 +35,5 @@ const TInput = defineVariantComponent('TInput', {
       },
     },
   },
-}, TInputTheme);
-
-export default TInput;
+});
 </script>

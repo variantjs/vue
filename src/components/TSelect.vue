@@ -32,13 +32,15 @@
 import {
   TSelectTheme, normalizeOptions, NormalizedOptions, InputOptions,
 } from '@variantjs/core';
-import { PropType } from 'vue';
-import defineVariantComponent from '../utils/defineVariantComponent';
-import { TSelectProps, TSelectValue } from '../types';
+import { defineComponent, PropType } from 'vue';
+import { getProps, getComputed } from '../utils/defineVariantComponent';
+import { TSelectOptions, TSelectValue } from '../types';
 
 // @vue/component
-export default defineVariantComponent<TSelectProps>('TSelect', {
+export default defineComponent({
+  name: 'TSelect',
   props: {
+    ...getProps<TSelectOptions>(),
     modelValue: {
       type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TSelectValue>,
       default: undefined,
@@ -53,6 +55,7 @@ export default defineVariantComponent<TSelectProps>('TSelect', {
     'update:modelValue': (_: TSelectValue) => true,
   },
   computed: {
+    ...getComputed<TSelectOptions>(TSelectTheme, 'TSelect'),
     localValue: {
       get(): TSelectValue {
         return this.modelValue;
@@ -65,5 +68,5 @@ export default defineVariantComponent<TSelectProps>('TSelect', {
       return this.options !== undefined ? normalizeOptions(this.options) : [];
     },
   },
-}, TSelectTheme);
+});
 </script>
