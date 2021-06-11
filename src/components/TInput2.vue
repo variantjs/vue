@@ -7,15 +7,18 @@
 
 <script lang="ts">
 import {
-  CSSClass, get, parseVariant, TInputTheme, Variants,
+  CSSClass, get, ObjectWithClassName, parseVariant, TInputTheme, Variants, WithVariantProps,
 } from '@variantjs/core';
+import { ComputedOptions } from '@vue/test-utils/dist/mount';
 import {
-  camelize, defineComponent, inject, PropType,
+  camelize, ComponentInternalInstance, ComponentPublicInstance, defineComponent, inject, PropType,
 } from 'vue';
 import { VariantJSConfiguration } from '../main';
-import { TInputValue, TInputProps, TInputOptions } from '../types';
+import {
+  TInputValue, TInputProps, TInputOptions, VariantComputedAttributes, ComponentWithVariantsProps,
+} from '../types';
 
-const props: TInputProps = {
+const props = {
   classes: {
     type: [String, Array, Object] as PropType<CSSClass>,
     default: undefined,
@@ -32,23 +35,63 @@ const props: TInputProps = {
     type: String as PropType<string | undefined>,
     default: undefined,
   },
-  definedProps: {
-    type: Array as PropType<(keyof TInputProps)[]>,
-    default: (p: TInputOptions) : (keyof TInputProps)[] => Object.keys(p) as (keyof TInputProps)[],
-  },
-  modelValue: {
-    type: [String, Number] as PropType<TInputValue>,
-    default: undefined,
-  },
 };
 
+const extractDefinedProps = (ctx: ComponentPublicInstance): string[] => {
+  const validProps = Object.keys(ctx.$props);
+  const definedProps = Object.keys(ctx.$.vnode.props || {})
+    .map((propName) => camelize(propName))
+    .filter((propName) => validProps.includes(propName));
+
+  return definedProps;
+};
+
+const getComputed = <ComponentOptions extends Record<string, unknown>>(defaultConfiguration: ComponentOptions, componentName: keyof VariantJSConfiguration) => ({
+  configuration(ctx: ComponentPublicInstance): ComponentOptions {
+    const theme = inject<VariantJSConfiguration>('theme');
+
+    const globalConfiguration = get<VariantJSConfiguration, ComponentOptions>(theme || {}, componentName, {});
+
+    const propsValues: Record<string, unknown> = {};
+
+    const definedProps = extractDefinedProps(ctx);
+
+    definedProps.forEach((attributeName) => {
+      const normalizedAttribute = camelize(attributeName);
+      propsValues[normalizedAttribute] = (ctx.$props as Record<string, unknown>)[normalizedAttribute];
+    });
+
+    return parseVariant(propsValues as ComponentOptions, globalConfiguration, defaultConfiguration);
+  },
+
+  attributes(ctx: ComponentPublicInstance): Record<string, unknown> {
+    const configuration: Record<string, unknown> = { ...this.configuration };
+
+    const definedProps = extractDefinedProps(ctx);
+
+    definedProps.forEach((attributeName) => {
+      const normalizedAttribute = camelize(attributeName);
+      delete configuration[normalizedAttribute];
+    });
+
+    return configuration;
+  },
+});
+
 const TInputStandalone = defineComponent({
-  props,
+  props: {
+    ...props,
+    modelValue: {
+      type: [String, Number] as PropType<TInputValue>,
+      default: undefined,
+    },
+  },
   emits: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     'update:modelValue': (_: TInputValue) => true,
   },
   computed: {
+    ...getComputed<TInputOptions>(TInputTheme, 'TInput'),
     localValue: {
       get(): TInputValue {
         const { test4 } = this;
@@ -61,33 +104,7 @@ const TInputStandalone = defineComponent({
         this.$emit('update:modelValue', value);
       },
     },
-    configuration(): TInputOptions {
-      const theme = inject<VariantJSConfiguration>('theme');
-      const globalConfiguration = get<VariantJSConfiguration, TInputOptions>(theme || {}, 'TInput', {});
 
-      const propsValues: Record<string, unknown> = {};
-
-      const manualAttributes = Object.keys(this.$.vnode.props || {});
-
-      manualAttributes.forEach((attributeName) => {
-        const normalizedAttribute = camelize(attributeName) as keyof TInputProps;
-        propsValues[normalizedAttribute] = this[normalizedAttribute];
-      });
-
-      return parseVariant(propsValues as TInputOptions, globalConfiguration, TInputTheme);
-    },
-
-    attributes(): Record<string, unknown> {
-      const configuration = { ...this.configuration };
-
-      if (this.definedProps) {
-        this.definedProps.forEach((propName) => {
-          delete configuration[propName];
-        });
-      }
-
-      return configuration;
-    },
   },
   methods: {
     test4(): CSSClass {

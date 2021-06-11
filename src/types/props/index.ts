@@ -7,7 +7,13 @@ export * from './t-checkbox';
 export * from './t-select';
 export * from './t-wrapped-radio';
 
-export declare type ComponentWithVariantsProps<ComponentOptions extends WithVariantProps<Record<string, unknown>>, PropsOptions extends Readonly<ComponentPropsOptions>> = PropsOptions & {
+export declare type ComponentWithVariantsProps<ComponentOptions extends WithVariantProps<Record<string, unknown>> = {
+  classes?: CSSClass;
+  fixedClasses?: CSSClass;
+  variants?: Variants<Record<string, unknown>>;
+  variant?: string;
+  class?: string;
+}, PropsOptions extends Readonly<ComponentPropsOptions> = {
   classes: {
     type: PropType<CSSClass>;
     default: undefined;
@@ -24,13 +30,26 @@ export declare type ComponentWithVariantsProps<ComponentOptions extends WithVari
     type:PropType<string | undefined>;
     default: undefined;
   },
-  definedProps: {
-    type: PropType<(keyof PropsOptions | 'classes' | 'fixedClasses' | 'variants' | 'variant' | 'definedProps')[]>;
-    default: (props: ComponentOptions) => (keyof PropsOptions | 'classes' | 'fixedClasses' | 'variants' | 'variant' | 'definedProps')[];
+}> = PropsOptions & {
+  classes: {
+    type: PropType<CSSClass>;
+    default: undefined;
+  },
+  fixedClasses: {
+    type: PropType<CSSClass>;
+    default: undefined;
+  },
+  variants: {
+    type: PropType<Variants<ComponentOptions>>;
+    default: undefined;
+  },
+  variant: {
+    type:PropType<string | undefined>;
+    default: undefined;
   },
 };
 
-export declare type VariantComputedAttributes<C extends ComputedOptions> = {
-  configuration: () => Record<string, unknown>,
+export declare type VariantComputedAttributes<C extends ComputedOptions = {}> = C & {
+  configuration: (ctx: any) => WithVariantProps<Record<string, unknown>>,
   attributes: () => Record<string, unknown>,
-} & C;
+};

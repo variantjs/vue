@@ -13,12 +13,7 @@ import {
 } from '../types';
 import defineVariantComponent from '../utils/defineVariantComponent';
 
-const TInput = defineVariantComponent<
-TInputOptions,
-TInputProps,
-TInputComputedAttributes,
-TInputMethods
->('TInput', {
+const TInput = defineVariantComponent('TInput', {
   props: {
     modelValue: {
       type: [String, Number] as PropType<TInputValue>,

@@ -3,6 +3,7 @@ import {
 } from '@variantjs/core';
 import { ComputedGetter, WritableComputedOptions } from '@vue/reactivity';
 import {
+  camelize,
   ComponentOptionsMixin,
   ComponentOptionsWithObjectProps,
   ComponentPropsOptions,
@@ -11,6 +12,7 @@ import {
   defineComponent,
   EmitsOptions,
   ExtractPropTypes,
+  inject,
   MethodOptions,
   Prop,
   PropType,
@@ -21,65 +23,44 @@ import { VariantComputedAttributes, ComponentWithVariantsProps } from '../types'
 
 export type ComponentName = keyof VariantJSConfiguration;
 
-export declare function defineComponent2<
-  PropsOptions extends Readonly<ComponentPropsOptions>,
-  RawBindings,
-  D,
+const defineVariantComponent = <
+  ComponentOptions extends Record<string, unknown> = {},
+  PropsOptions extends Readonly<ComponentPropsOptions> = {
+    classes: {
+      type: PropType<CSSClass>;
+      default: undefined;
+    },
+    fixedClasses: {
+      type: PropType<CSSClass>;
+      default: undefined;
+    },
+    variants: {
+      type: PropType<Variants<ComponentOptions>>;
+      default: undefined;
+    },
+    variant: {
+      type:PropType<string | undefined>;
+      default: undefined;
+    },
+  },
+  RawBindings = {},
+  D = {},
   C extends ComputedOptions = {},
   M extends MethodOptions = {},
   Mixin extends ComponentOptionsMixin = ComponentOptionsMixin,
   Extends extends ComponentOptionsMixin = ComponentOptionsMixin,
   E extends EmitsOptions = Record<string, any>,
   EE extends string = string,
->(options: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE>): DefineComponent<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE>;
 
-const defineVariantComponent = <
-  ComponentOptions extends WithVariantProps<Record<string, unknown>>,
-  PropsOptions extends Readonly<ComponentPropsOptions>,
-  C = Record<string, ComputedGetter<any> | WritableComputedOptions<any>>,
-  M extends MethodOptions = Record<string, any>,
-  RawBindings = Record<string, any>,
-  D = Record<string, any>,
-  Mixin extends ComponentOptionsMixin = ComponentOptionsMixin,
-  Extends extends ComponentOptionsMixin = ComponentOptionsMixin,
-  E extends EmitsOptions = Record<string, any>,
-  EE extends string = string,
 >(
     componentName: ComponentName,
-    options: ComponentOptionsWithObjectProps<Partial<PropsOptions>, RawBindings, D, C, M, Mixin, Extends, E, EE>,
+    options: ComponentOptionsWithObjectProps<PropsOptions, RawBindings, D, C, M, Mixin, Extends, E, EE>,
     componentDefaultConfiguration: WithVariantProps<Record<string, unknown>>,
   ): DefineComponent<ComponentWithVariantsProps<ComponentOptions, PropsOptions>, RawBindings, D, VariantComputedAttributes<C>, M, Mixin, Extends, E, EE> => {
-  const computed: VariantComputedAttributes<C> = {
+  console.log('wait');
 
-    ...options.computed as C,
-
-    configuration(): Record<string, unknown> {
-      const globalConfiguration = get<VariantJSConfiguration, PropsOptions>(this.theme, componentName, {});
-
-      const propsValues = {} as PropsOptions;
-
-      if (this.definedProps) {
-        this.definedProps.forEach((propName) => {
-          propsValues[propName] = this[propName];
-        });
-      }
-
-      return parseVariant(propsValues, globalConfiguration, componentDefaultConfiguration);
-    },
-    attributes(): Record<string, unknown> {
-      const configuration = { ...this.configuration };
-
-      if (this.definedProps) {
-        this.definedProps.forEach((propName) => {
-          delete configuration[propName];
-        });
-      }
-
-      return configuration;
-    },
-  };
-
-  const props: ComponentWithVariantsProps<ComponentOptions, PropsOptions> = {
+  const props: ComponentWithVariantsProps<ComponentOptions> = {
+    ...options.props,
     classes: {
       type: [String, Array, Object] as PropType<CSSClass>,
       default: undefined,
@@ -96,21 +77,63 @@ const defineVariantComponent = <
       type: String as PropType<string | undefined>,
       default: undefined,
     },
-    definedProps: {
-      type: Array as PropType<(keyof PropsOptions)[]>,
-      default: (p: PropsOptions) : (keyof PropsOptions)[] => Object.keys(p) as (keyof PropsOptions)[],
+  };
+
+  // const computed: VariantComputedAttributes<C> = ;
+
+  const newOptions: ComponentOptionsWithObjectProps<ComponentWithVariantsProps<ComponentOptions>, RawBindings, D, VariantComputedAttributes<C>, M, Mixin, Extends, E, EE> = {
+    ...options,
+    props: {
+      ...options.props,
+      classes: {
+        type: [String, Array, Object] as PropType<CSSClass>,
+        default: undefined,
+      },
+      fixedClasses: {
+        type: [String, Array, Object] as PropType<CSSClass>,
+        default: undefined,
+      },
+      variants: {
+        type: Object as PropType<Variants<ComponentOptions>>,
+        default: undefined,
+      },
+      variant: {
+        type: String as PropType<string | undefined>,
+        default: undefined,
+      },
     },
-    ...options.props as PropsOptions,
-  };
+    computed: {
+      ...options.computed as C,
+      configuration(ctx: any): WithVariantProps<Record<string, unknown>> {
+        const theme = inject<VariantJSConfiguration>('theme');
+        const globalConfiguration = get<VariantJSConfiguration, ComponentOptions>(theme || {}, componentName, {});
 
-  const newOptions: ComponentOptionsWithObjectProps<ComponentWithVariantsProps<ComponentOptions, PropsOptions>, RawBindings, D, VariantComputedAttributes<C>, M, Mixin, Extends, E, EE> = {
-    // ...options,
-    props,
-    inject: ['theme'],
-    computed,
-  };
+        const propsValues: Record<string, unknown> = {};
 
-  return defineComponent(newOptions);
+        const manualAttributes = Object.keys(ctx.$.vnode.props || {});
+        manualAttributes.forEach((attributeName) => {
+          const normalizedAttribute = camelize(attributeName) as keyof PropsOptions;
+          propsValues[normalizedAttribute] = this[normalizedAttribute];
+        });
+
+        return parseVariant(propsValues as ComponentOptions, globalConfiguration, componentDefaultConfiguration);
+      },
+
+      attributes(): Record<string, unknown> {
+        const configuration = { ...this.configuration };
+
+        const manualAttributes = Object.keys(this.$.vnode.props || {});
+        manualAttributes.forEach((attributeName) => {
+          const normalizedAttribute = camelize(attributeName) as keyof PropsOptions;
+          delete configuration[normalizedAttribute];
+        });
+
+        return configuration;
+      },
+    },
+  } as ComponentOptionsWithObjectProps<ComponentWithVariantsProps<ComponentOptions>, RawBindings, D, VariantComputedAttributes<C>, M, Mixin, Extends, E, EE>;
+
+  return defineComponent(newOptions) as DefineComponent<ComponentWithVariantsProps<ComponentOptions, PropsOptions>, RawBindings, D, VariantComputedAttributes<C>, M, Mixin, Extends, E, EE>;
 };
 
 export default defineVariantComponent;

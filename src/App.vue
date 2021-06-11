@@ -11,7 +11,6 @@
 
     <t-input-2
       variant="error"
-      
     />
 
     <t-input-2
@@ -20,6 +19,7 @@
       type="text"
       data-test="test"
       :variant="variant"
+      classes="sadgadsgs xxs"
     />
 
     <!--<t-input
