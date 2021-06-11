@@ -9,7 +9,9 @@
 import {
   CSSClass, get, parseVariant, TInputTheme, Variants,
 } from '@variantjs/core';
-import { camelize, defineComponent, inject, PropType } from 'vue';
+import {
+  camelize, defineComponent, inject, PropType,
+} from 'vue';
 import { VariantJSConfiguration } from '../main';
 import { TInputValue, TInputProps, TInputOptions } from '../types';
 
@@ -66,7 +68,7 @@ const TInputStandalone = defineComponent({
       const propsValues: Record<string, unknown> = {};
 
       const manualAttributes = Object.keys(this.$.vnode.props || {});
-      
+
       manualAttributes.forEach((attributeName) => {
         const normalizedAttribute = camelize(attributeName) as keyof TInputProps;
         propsValues[normalizedAttribute] = this[normalizedAttribute];

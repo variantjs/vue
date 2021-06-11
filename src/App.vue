@@ -9,9 +9,12 @@
       :variant="variant"
     />-->
 
-    <t-input />
+    <t-input-2
+      variant="error"
+      
+    />
 
-    <t-input
+    <t-input-2
       id="hola"
       v-model="id"
       type="text"
@@ -140,6 +143,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import TInput from './components/TInput.vue';
+import TInput2 from './components/TInput2.vue';
 import TSelect from './components/TSelect.vue';
 import TRadio from './components/TRadio.vue';
 import TWrappedRadio from './components/TWrappedRadio.vue';
@@ -150,6 +154,7 @@ export default defineComponent({
   name: 'App',
   components: {
     TInput,
+    TInput2,
     TSelect,
     TRadio,
     TWrappedRadio,
