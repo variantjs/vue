@@ -5,7 +5,7 @@ import { createApp } from 'vue';
 
 import App from './App.vue';
 import {
-  TWrappedRadioProps, TRadioProps, TCheckboxProps, TInputOptions, TSelectOptions,
+  TWrappedRadioProps, TRadioProps, TCheckboxProps, TInputOptions, TSelectOptions, TCheckboxOptions,
 } from './types';
 
 import Emitter from './utils/emitter';
@@ -16,7 +16,7 @@ export type VariantJSConfiguration = {
   TInput?: TInputOptions
   TSelect?: TSelectOptions
   TRadio?: WithVariantProps<TRadioProps>
-  TCheckbox?: WithVariantProps<TCheckboxProps>
+  TCheckbox?: TCheckboxOptions
   TWrappedRadio?: WithVariantPropsAndClassesList<TWrappedRadioProps, TWrappedRadioClassesList, TWrappedRadioClassesList>
 };
 
@@ -26,6 +26,10 @@ app.use({
     a.config.globalProperties.emitter = new Emitter();
 
     const theme: VariantJSConfiguration = {
+      TCheckbox: {
+        type: 'checkbox',
+        variant: 'tes',
+      },
       TSelect: {
         autofocus: true,
         'data-something': 'somethign',

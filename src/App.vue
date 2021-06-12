@@ -10,6 +10,9 @@
     />-->
 
     <t-input
+      :variant="undefined"
+    />
+    <t-input
       variant="error"
     />
 
@@ -48,21 +51,28 @@
       </option>
     </select>-->
 
-    <!-- <t-radio
-      v-model="test"
+    <t-checkbox
+      v-model="test2"
       name="test"
       value="1"
+      variant="test"
+      :variants="{
+        test: {
+          classes: 'text-red-500 border-red-500'
+        }
+      }"
     />
-    <t-radio
-      v-model="test"
+    <t-checkbox
+      v-model="test2"
       name="test"
       value="2"
+      classes="text-blue-500 border-blue-500"
     />
-    <t-radio
-      v-model="test"
+    <t-checkbox
+      v-model="test2"
       name="test"
       value="3"
-    /> -->
+    />
 
     <!-- <t-wrapped-radio
       id="test2-1"
@@ -146,7 +156,7 @@ import TInput from './components/TInput.vue';
 import TSelect from './components/TSelect.vue';
 // import TRadio from './components/TRadio.vue';
 // import TWrappedRadio from './components/TWrappedRadio.vue';
-// import TCheckbox from './components/TCheckbox.vue';
+import TCheckbox from './components/TCheckbox.vue';
 import './assets/tailwind.css';
 
 export default defineComponent({
@@ -156,11 +166,12 @@ export default defineComponent({
     TSelect,
     // TRadio,
     // TWrappedRadio,
-    // TCheckbox,
+    TCheckbox,
   },
   data() {
     return {
       test: '3',
+      test2: [],
       number: 2,
       variants: {
         error: {
