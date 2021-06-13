@@ -6,6 +6,7 @@ import {
 } from 'vue';
 
 import { VariantJSConfiguration } from '../main';
+import { ComponentWithVariantsProps, VariantComputedAttributes } from '../types';
 
 const extractDefinedProps = (ctx: ComponentPublicInstance): string[] => {
   const validProps = Object.keys(ctx.$props);
@@ -17,7 +18,7 @@ const extractDefinedProps = (ctx: ComponentPublicInstance): string[] => {
   return definedProps;
 };
 
-export const getProps = <ComponentOptions extends Record<string, unknown>>() => ({
+export const getProps = <ComponentOptions extends Record<string, unknown>>() : ComponentWithVariantsProps => ({
   classes: {
     type: [String, Array, Object] as PropType<CSSClass>,
     default: undefined,
@@ -36,7 +37,7 @@ export const getProps = <ComponentOptions extends Record<string, unknown>>() => 
   },
 });
 
-export const getComputed = <ComponentOptions extends Record<string, unknown>>(defaultConfiguration: ComponentOptions, componentName: keyof VariantJSConfiguration) => ({
+export const getComputed = <ComponentOptions extends Record<string, unknown>>(defaultConfiguration: ComponentOptions, componentName: keyof VariantJSConfiguration): VariantComputedAttributes => ({
   configuration(ctx: ComponentPublicInstance): ComponentOptions {
     const theme = inject<VariantJSConfiguration>('theme');
 

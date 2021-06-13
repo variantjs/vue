@@ -1,5 +1,7 @@
 import { CSSClass, Variants, WithVariantProps } from '@variantjs/core';
-import { ComponentPropsOptions, ComputedOptions, PropType } from 'vue';
+import {
+  ComponentPropsOptions, ComponentPublicInstance, ComputedOptions, PropType,
+} from 'vue';
 
 export * from './t-input';
 export * from './t-radio';
@@ -49,7 +51,7 @@ export declare type ComponentWithVariantsProps<ComponentOptions extends WithVari
   },
 };
 
-export declare type VariantComputedAttributes<C extends ComputedOptions = {}> = C & {
-  configuration: (ctx: any) => WithVariantProps<Record<string, unknown>>,
-  attributes: () => Record<string, unknown>,
+export declare type VariantComputedAttributes<C extends ComputedOptions = Record<string, any>> = C & {
+  configuration: (ctx: ComponentPublicInstance) => WithVariantProps<Record<string, unknown>>,
+  attributes: (ctx: ComponentPublicInstance) => Record<string, unknown>,
 };
