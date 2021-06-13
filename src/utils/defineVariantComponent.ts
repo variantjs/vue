@@ -4,10 +4,12 @@ import {
 import {
   camelize, ComponentPublicInstance, inject, PropType,
 } from 'vue';
+
 import { VariantJSConfiguration } from '../main';
 
 const extractDefinedProps = (ctx: ComponentPublicInstance): string[] => {
   const validProps = Object.keys(ctx.$props);
+
   const definedProps = Object.keys(ctx.$.vnode.props || {})
     .map((propName) => camelize(propName))
     .filter((propName) => validProps.includes(propName));

@@ -10,9 +10,11 @@
     />-->
 
     <t-input
+      v-model="test"
       :variant="undefined"
     />
     <t-input
+      v-model="test"
       variant="error"
     />
 
