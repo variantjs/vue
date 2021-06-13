@@ -39,9 +39,9 @@ export const getProps = <ComponentOptions extends Record<string, unknown>>() : C
 
 export const getComputed = <ComponentOptions extends Record<string, unknown>>(defaultConfiguration: ComponentOptions, componentName: keyof VariantJSConfiguration): VariantComputedAttributes => ({
   configuration(ctx: ComponentPublicInstance): ComponentOptions {
-    const theme = inject<VariantJSConfiguration>('theme');
+    const theme = inject<VariantJSConfiguration>('theme', {});
 
-    const globalConfiguration = get<VariantJSConfiguration, ComponentOptions>(theme || {}, componentName, {});
+    const globalConfiguration = get<VariantJSConfiguration, ComponentOptions>(theme, componentName, {});
 
     const propsValues: Record<string, unknown> = {};
 
