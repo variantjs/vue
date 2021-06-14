@@ -5,6 +5,7 @@ module.exports = {
   },
   collectCoverageFrom: [
     "src/**/*.{vue,ts}",
-    "!**/node_modules/**"
+    "!**/node_modules/**",
+    "!**/*.d.ts"
   ]
 }
