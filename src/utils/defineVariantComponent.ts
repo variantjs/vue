@@ -8,7 +8,7 @@ import {
 import { VariantJSConfiguration } from '../main';
 import { ComponentWithVariantsProps, VariantComputedAttributes } from '../types';
 
-const extractDefinedProps = (ctx: ComponentPublicInstance): string[] => {
+export const extractDefinedProps = (ctx: ComponentPublicInstance): string[] => {
   const validProps = Object.keys(ctx.$props);
 
   const definedProps = Object.keys(ctx.$.vnode.props || {})
