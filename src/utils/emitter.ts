@@ -45,9 +45,11 @@ export default class Emitter {
 
     const index = events.findIndex((c) => c === callback);
 
-    if (index >= 0) {
-      events.splice(index, 1);
-      this.events[name] = events;
+    if (index < 0) {
+      return;
     }
+
+    events.splice(index, 1);
+    this.events[name] = events;
   }
 }
