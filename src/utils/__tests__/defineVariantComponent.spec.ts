@@ -1,6 +1,6 @@
 /* eslint-disable vue/one-component-per-file */
 import { ComponentPublicInstance } from 'vue';
-import { getProps, getComputed, extractDefinedProps } from '../../utils/defineVariantComponent';
+import { getProps, getComputed, extractDefinedProps } from '../defineVariantComponent';
 
 describe('getProps()', () => {
   it('get the default variant props', () => {
