@@ -5,6 +5,7 @@
     "serve": "vite preview",
     "build": "vue-tsc --noEmit && vite build",
     "test": "jest",
+    "test:watch": "jest --watch",
     "dev": "vite",
     "lint": "eslint src --fix"
   },
@@ -20,6 +21,7 @@
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/cli-plugin-unit-jest": "^5.0.0-beta.2",
     "@vue/compiler-sfc": "^3.0.5",
+    "@vue/test-utils": "^2.0.0-rc.6",
     "autoprefixer": "^10.2.5",
     "eslint": "^7.27.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
@@ -36,6 +38,7 @@
     "vite": "^2.3.7",
     "vue": "^3.1.1",
     "vue-jest": "^5.0.0-alpha.10",
+    "vue-loader": "^16.2.0",
     "vue-tsc": "^0.0.24"
   },
   "peerDependencies": {
