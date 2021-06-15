@@ -8,13 +8,12 @@
 <script lang="ts">
 import { TInputTheme } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
-import { useVModel } from '../use';
-import { getProps, getComputed } from '../utils/defineVariantComponent';
+import { useVModel, useConfiguration, useAttributes } from '../use';
+import getProps from '../utils/getProps';
 import { TInputValue, TInputOptions } from '../types';
 
 export default defineComponent({
   name: 'TInput',
-
   props: {
     ...getProps<TInputOptions>(),
     modelValue: {
@@ -24,8 +23,9 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const localValue = useVModel(props, 'modelValue', emit);
-    return { localValue };
+    const configuration = useConfiguration<TInputOptions>(TInputTheme);
+    const attributes = useAttributes<TInputOptions>(TInputTheme);
+    return { localValue, configuration, attributes };
   },
-  computed: getComputed<TInputOptions>(TInputTheme, 'TInput'),
 });
 </script>
