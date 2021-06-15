@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { shallowMount } from '@vue/test-utils';
 import TInput from '@/components/TInput.vue';
 import { TInputTheme } from '@variantjs/core';
@@ -141,5 +142,101 @@ describe('TInput.vue', () => {
       const elementValue = (values as any)[key];
       expect(wrapper.vm.$el[elementValue.keyName || key]).toBe(elementValue.new);
     });
+  });
+
+  it('set the model value', () => {
+    const modelValue = 'original value';
+
+    const wrapper = shallowMount(TInput, {
+      props: {
+        modelValue,
+      },
+    });
+
+    expect(wrapper.vm.$el.value).toBe(modelValue);
+  });
+
+  it('emits an update event with the input value', () => {
+    const modelValue = 'original value';
+
+    const wrapper = shallowMount(TInput, {
+      props: {
+        modelValue,
+      },
+    });
+
+    const inputValue = 'new value';
+
+    wrapper.setValue(inputValue);
+
+    expect(wrapper.emitted('update:modelValue')).toBeTruthy();
+
+    // assert event count
+    expect(wrapper.emitted('update:modelValue')?.length).toBe(1);
+
+    // assert event payload
+    expect(wrapper.emitted('update:modelValue')![0]).toEqual([inputValue]);
+  });
+
+  it('emits native input events', () => {
+    const onChange = jest.fn();
+    const onBlur = jest.fn();
+    const onFocus = jest.fn();
+    const onKeyup = jest.fn();
+    const onInput = jest.fn();
+
+    const wrapper = shallowMount(TInput, {
+      attrs: {
+        onChange,
+        onBlur,
+        onFocus,
+        onKeyup,
+        onInput,
+      },
+    });
+
+    const input = wrapper.vm.$el;
+
+    input.dispatchEvent(new Event('change'));
+    expect(onChange).toHaveBeenCalled();
+
+    input.dispatchEvent(new FocusEvent('focus'));
+    expect(onFocus).toHaveBeenCalled();
+
+    input.dispatchEvent(new FocusEvent('blur'));
+    expect(onBlur).toHaveBeenCalled();
+
+    input.dispatchEvent(new InputEvent('input'));
+    expect(onInput).toHaveBeenCalled();
+
+    input.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
+    expect(onKeyup).toHaveBeenCalled();
+  });
+
+  it('has native input methods', () => {
+    const wrapper = shallowMount(TInput);
+
+    const input = wrapper.vm.$el;
+
+    expect(typeof input.click).toBe('function');
+    expect(typeof input.select).toBe('function');
+    expect(typeof input.setSelectionRange).toBe('function');
+    expect(typeof input.setRangeText).toBe('function');
+  });
+
+  it('triggers custom events', async () => {
+    const onCustom = jest.fn();
+
+    const wrapper = shallowMount(TInput, {
+      attrs: {
+        onCustom,
+      },
+    });
+    const input = wrapper.vm.$el as HTMLInputElement;
+
+    const evt = new CustomEvent('custom', { detail: 'my-custom-event' });
+    input.dispatchEvent(evt);
+
+    expect(onCustom).toHaveBeenCalled();
   });
 });
