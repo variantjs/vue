@@ -9,13 +9,13 @@
 import { TInputTheme } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { useVModel, useConfiguration, useAttributes } from '../use';
-import getProps from '../utils/getProps';
+import getVariantProps from '../utils/getVariantProps';
 import { TInputValue, TInputOptions } from '../types';
 
 export default defineComponent({
   name: 'TInput',
   props: {
-    ...getProps<TInputOptions>(),
+    ...getVariantProps<TInputOptions>(),
     modelValue: {
       type: [String, Number] as PropType<TInputValue>,
       default: undefined,
