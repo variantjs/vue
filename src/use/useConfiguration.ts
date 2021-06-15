@@ -1,5 +1,5 @@
 import {
-  computed, inject, camelize, getCurrentInstance, ComponentInternalInstance, ComputedRef,
+  computed, inject, camelize, getCurrentInstance, ComponentInternalInstance, ComputedRef, watch,
 } from 'vue';
 import {
   get, parseVariant,
@@ -23,16 +23,18 @@ export default function useConfiguration<ComponentOptions extends Record<string,
   const variantGlobalConfiguration = inject<VariantJSConfiguration>('configuration', {});
   const componentGlobalConfiguration = get<VariantJSConfiguration, ComponentOptions>(variantGlobalConfiguration, vm?.type.name as keyof VariantJSConfiguration, {});
 
-  const propsValues: Record<string, unknown> = {};
+  return computed(() => {
+    const propsValues: Record<string, unknown> = {};
 
-  extractDefinedProps(vm).forEach((attributeName) => {
-    const normalizedAttribute = camelize(attributeName);
-    propsValues[normalizedAttribute] = vm.props[normalizedAttribute];
+    extractDefinedProps(vm).forEach((attributeName) => {
+      const normalizedAttribute = camelize(attributeName);
+      propsValues[normalizedAttribute] = vm.props[normalizedAttribute];
+    });
+
+    if (vm.vnode.props?.class) {
+      propsValues.class = vm.vnode.props?.class;
+    }
+
+    return parseVariant(propsValues as ComponentOptions, componentGlobalConfiguration, defaultConfiguration);
   });
-
-  if (vm.vnode.props?.class) {
-    propsValues.class = vm.vnode.props?.class;
-  }
-
-  return computed(() => parseVariant(propsValues as ComponentOptions, componentGlobalConfiguration, defaultConfiguration));
 }
