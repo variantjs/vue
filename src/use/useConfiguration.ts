@@ -6,8 +6,8 @@ import {
 } from '@variantjs/core';
 import { VariantJSConfiguration } from '..';
 
-export const extractDefinedProps = (vm: ComponentInternalInstance | null): string[] => {
-  const validProps = Object.keys(vm?.props || {});
+export const extractDefinedProps = (vm: ComponentInternalInstance): string[] => {
+  const validProps = Object.keys(vm.props);
 
   const definedProps = Object.keys(vm?.vnode.props || {})
     .map((propName) => camelize(propName))
@@ -17,7 +17,9 @@ export const extractDefinedProps = (vm: ComponentInternalInstance | null): strin
 };
 
 export default function useConfiguration<ComponentOptions extends Record<string, unknown>>(defaultConfiguration: ComponentOptions): ComputedRef<ComponentOptions> {
-  const vm = getCurrentInstance();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const vm = getCurrentInstance()!;
+
   const variantGlobalConfiguration = inject<VariantJSConfiguration>('configuration', {});
   const componentGlobalConfiguration = get<VariantJSConfiguration, ComponentOptions>(variantGlobalConfiguration, vm?.type.name as keyof VariantJSConfiguration, {});
 
@@ -25,7 +27,7 @@ export default function useConfiguration<ComponentOptions extends Record<string,
 
   extractDefinedProps(vm).forEach((attributeName) => {
     const normalizedAttribute = camelize(attributeName);
-    propsValues[normalizedAttribute] = (vm?.props || {})[normalizedAttribute];
+    propsValues[normalizedAttribute] = vm.props[normalizedAttribute];
   });
 
   return computed(() => parseVariant(propsValues as ComponentOptions, componentGlobalConfiguration, defaultConfiguration));

@@ -1,6 +1,4 @@
-import {
-  defineComponent, createApp, h,
-} from 'vue';
+import { defineComponent, createApp, h } from 'vue';
 import variantJsPlugin, { VariantJSConfiguration } from '../..';
 
 type InstanceType<V> = V extends { new (...arg: any[]): infer X } ? X : never;
@@ -19,7 +17,11 @@ export function mount<V>(Comp: V, configuration?: VariantJSConfiguration): VM<V>
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function useSetup<V>(setup: () => V, configuration?: VariantJSConfiguration, componentName: keyof VariantJSConfiguration = 'TInput') {
+export function useSetup<V>(
+  setup: () => V,
+  configuration?: VariantJSConfiguration,
+  componentName: keyof VariantJSConfiguration = 'TInput',
+) {
   const Comp = defineComponent({
     name: componentName,
     setup,

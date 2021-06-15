@@ -4,7 +4,8 @@ import {
 import useConfiguration, { extractDefinedProps } from './useConfiguration';
 
 export default function useAttributes<ComponentOptions extends Record<string, unknown>>(defaultConfiguration: ComponentOptions): ComputedRef<Record<string, unknown>> {
-  const vm = getCurrentInstance();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const vm = getCurrentInstance()!;
 
   const configuration = useConfiguration<ComponentOptions>(defaultConfiguration);
 
