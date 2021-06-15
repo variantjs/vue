@@ -33,14 +33,15 @@ import {
   TSelectTheme, normalizeOptions, NormalizedOptions, InputOptions,
 } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
-import { getProps, getComputed } from '../utils/defineVariantComponent';
+import getVariantProps from '../utils/getVariantProps';
 import { TSelectOptions, TSelectValue } from '../types';
+import { useVModel, useConfiguration, useAttributes } from '../use';
 
 // @vue/component
 export default defineComponent({
   name: 'TSelect',
   props: {
-    ...getProps<TSelectOptions>(),
+    ...getVariantProps<TSelectOptions>(),
     modelValue: {
       type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TSelectValue>,
       default: undefined,
@@ -50,20 +51,14 @@ export default defineComponent({
       default: undefined,
     },
   },
-  emits: {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    'update:modelValue': (_: TSelectValue) => true,
+  setup(props) {
+    const localValue = useVModel(props, 'modelValue');
+    const configuration = useConfiguration<TSelectOptions>(TSelectTheme);
+    const attributes = useAttributes<TSelectOptions>(TSelectTheme);
+
+    return { localValue, configuration, attributes };
   },
   computed: {
-    ...getComputed<TSelectOptions>(TSelectTheme, 'TSelect'),
-    localValue: {
-      get(): TSelectValue {
-        return this.modelValue;
-      },
-      set(value: TSelectValue) {
-        this.$emit('update:modelValue', value);
-      },
-    },
     normalizedOptions(): NormalizedOptions {
       return this.options !== undefined ? normalizeOptions(this.options) : [];
     },
