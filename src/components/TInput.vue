@@ -28,10 +28,5 @@ export default defineComponent({
 
     return { localValue, configuration, attributes };
   },
-  methods: {
-    getSome(): TInputValue {
-      return this.localValue;
-    },
-  },
 });
 </script>
