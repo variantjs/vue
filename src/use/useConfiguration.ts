@@ -9,7 +9,7 @@ import { VariantJSConfiguration } from '..';
 export const extractDefinedProps = (vm: ComponentInternalInstance): string[] => {
   const validProps = Object.keys(vm.props);
 
-  const definedProps = Object.keys(vm?.vnode.props || {})
+  const definedProps = Object.keys(vm.vnode.props || {})
     .map((propName) => camelize(propName))
     .filter((propName) => validProps.includes(propName));
 
@@ -29,6 +29,10 @@ export default function useConfiguration<ComponentOptions extends Record<string,
     const normalizedAttribute = camelize(attributeName);
     propsValues[normalizedAttribute] = vm.props[normalizedAttribute];
   });
+
+  if (vm.vnode.props?.class) {
+    propsValues.class = vm.vnode.props?.class;
+  }
 
   return computed(() => parseVariant(propsValues as ComponentOptions, componentGlobalConfiguration, defaultConfiguration));
 }

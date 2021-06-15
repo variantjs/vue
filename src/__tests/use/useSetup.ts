@@ -1,17 +1,21 @@
-import { defineComponent, createApp, h } from 'vue';
+/* eslint-disable vue/one-component-per-file */
+import {
+  defineComponent, createApp, h, ComponentPropsOptions,
+} from 'vue';
 import variantJsPlugin, { VariantJSConfiguration } from '../..';
 
 type InstanceType<V> = V extends { new (...arg: any[]): infer X } ? X : never;
 type VM<V> = InstanceType<V> & { unmount(): void };
 
-export function mount<V>(Comp: V, configuration?: VariantJSConfiguration): VM<V> {
+export function mount<V>(Comp: V, attributes?: Record<string, unknown>, configuration?: VariantJSConfiguration): VM<V> {
   const el = document.createElement('div');
-  const app = createApp(Comp);
+  const app = createApp(Comp, attributes);
 
   app.use(variantJsPlugin, configuration);
 
   const unmount = () => app.unmount();
   const comp = app.mount(el) as any as VM<V>;
+
   comp.unmount = unmount;
   return comp;
 }
@@ -20,15 +24,20 @@ export function mount<V>(Comp: V, configuration?: VariantJSConfiguration): VM<V>
 export function useSetup<V>(
   setup: () => V,
   configuration?: VariantJSConfiguration,
+  attributes?: Record<string, unknown>,
+  props: ComponentPropsOptions = {},
   componentName: keyof VariantJSConfiguration = 'TInput',
 ) {
-  const Comp = defineComponent({
+  const componentOptions = {
     name: componentName,
+    props,
     setup,
     render() {
       return h('div', []);
     },
-  });
+  };
 
-  return mount(Comp, configuration);
+  const Comp = defineComponent(componentOptions);
+
+  return mount(Comp, attributes, configuration);
 }

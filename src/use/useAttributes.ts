@@ -1,21 +1,19 @@
-import {
-  computed, getCurrentInstance, ComputedRef, camelize,
-} from 'vue';
-import useConfiguration, { extractDefinedProps } from './useConfiguration';
+import { ObjectWithClassName } from '@variantjs/core';
+import { computed, getCurrentInstance, ComputedRef } from 'vue';
+import useConfiguration from './useConfiguration';
 
-export default function useAttributes<ComponentOptions extends Record<string, unknown>>(defaultConfiguration: ComponentOptions): ComputedRef<Record<string, unknown>> {
+export default function useAttributes<ComponentOptions extends ObjectWithClassName>(defaultConfiguration: ComponentOptions): ComputedRef<Record<string, unknown>> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const vm = getCurrentInstance()!;
 
   const configuration = useConfiguration<ComponentOptions>(defaultConfiguration);
 
   const result = computed(() => {
-    const attributes: Record<string, unknown> = { ...configuration.value };
+    const attributes = vm.attrs;
 
-    extractDefinedProps(vm).forEach((attributeName) => {
-      const normalizedAttribute = camelize(attributeName);
-      delete attributes[normalizedAttribute];
-    });
+    if (configuration.value.class) {
+      attributes.class = configuration.value.class;
+    }
 
     return attributes;
   });

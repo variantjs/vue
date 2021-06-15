@@ -63,4 +63,17 @@ describe('useConfiguration', () => {
       });
     }, configuration);
   });
+
+  it('merges the class that is used as attribute', () => {
+    useSetup(() => {
+      const data = useConfiguration({});
+      expect(data.value).toEqual({
+        class: 'font-semibold border-red-500 text-red-500',
+      });
+    }, {}, {
+      fixedClasses: 'text-red-500',
+      classes: 'border-red-500',
+      class: 'font-semibold',
+    }, ['fixedClasses', 'classes']);
+  });
 });
