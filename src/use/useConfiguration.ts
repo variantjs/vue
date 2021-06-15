@@ -18,8 +18,8 @@ export const extractDefinedProps = (vm: ComponentInternalInstance | null): strin
 
 export default function useConfiguration<ComponentOptions extends Record<string, unknown>>(defaultConfiguration: ComponentOptions): ComputedRef<ComponentOptions> {
   const vm = getCurrentInstance();
-  const localConfiguration = inject<VariantJSConfiguration>('configuration', {});
-  const globalConfiguration = get<VariantJSConfiguration, ComponentOptions>(localConfiguration, vm?.type.name as keyof VariantJSConfiguration, {});
+  const variantGlobalConfiguration = inject<VariantJSConfiguration>('configuration', {});
+  const componentGlobalConfiguration = get<VariantJSConfiguration, ComponentOptions>(variantGlobalConfiguration, vm?.type.name as keyof VariantJSConfiguration, {});
 
   const propsValues: Record<string, unknown> = {};
 
@@ -28,5 +28,5 @@ export default function useConfiguration<ComponentOptions extends Record<string,
     propsValues[normalizedAttribute] = (vm?.props || {})[normalizedAttribute];
   });
 
-  return computed(() => parseVariant(propsValues as ComponentOptions, globalConfiguration, defaultConfiguration));
+  return computed(() => parseVariant(propsValues as ComponentOptions, componentGlobalConfiguration, defaultConfiguration));
 }
