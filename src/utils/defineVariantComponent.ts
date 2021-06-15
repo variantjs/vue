@@ -5,7 +5,7 @@ import {
   camelize, ComponentPublicInstance, inject, PropType,
 } from 'vue';
 
-import { VariantJSConfiguration } from '../main';
+import { VariantJSConfiguration } from '..';
 import { ComponentWithVariantsProps, VariantComputedAttributes } from '../types';
 
 export const extractDefinedProps = (ctx: ComponentPublicInstance): string[] => {
@@ -39,9 +39,9 @@ export const getProps = <ComponentOptions extends Record<string, unknown>>() : C
 
 export const getComputed = <ComponentOptions extends Record<string, unknown>>(defaultConfiguration: ComponentOptions, componentName: keyof VariantJSConfiguration): VariantComputedAttributes => ({
   configuration(ctx: ComponentPublicInstance): ComponentOptions {
-    const theme = inject<VariantJSConfiguration>('theme', {});
+    const localConfiguration = inject<VariantJSConfiguration>('configuration', {});
 
-    const globalConfiguration = get<VariantJSConfiguration, ComponentOptions>(theme, componentName, {});
+    const globalConfiguration = get<VariantJSConfiguration, ComponentOptions>(localConfiguration, componentName, {});
 
     const propsValues: Record<string, unknown> = {};
 

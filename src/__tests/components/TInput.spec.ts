@@ -18,7 +18,7 @@ describe('TInput.vue', () => {
     const wrapper = shallowMount(TInput, {
       global: {
         provide: {
-          theme: {
+          configuration: {
             TInput: {
               classes: undefined,
             },

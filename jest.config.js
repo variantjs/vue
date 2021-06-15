@@ -7,5 +7,6 @@ module.exports = {
     "src/**/*.{vue,ts}",
     "!**/node_modules/**",
     "!**/*.d.ts"
-  ]
+  ],
+  testMatch: [ "**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ],
 }

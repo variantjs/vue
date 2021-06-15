@@ -4,8 +4,8 @@ import { InputHTMLAttributes } from '@vue/runtime-dom';
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type TRadioValue = string | number | boolean | undefined | null | Date | Function | symbol | TRadioValue[];
 
-export type TRadioProps = WithVariantProps<{
+export type TRadioOptions = WithVariantProps<{
   modelValue?: TRadioValue
 } & InputHTMLAttributes & {
   type: 'radio'
-}>;
+} & Record<string, unknown>>;
