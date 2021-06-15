@@ -21,11 +21,17 @@ export default defineComponent({
       default: undefined,
     },
   },
-  setup(props, { emit }) {
-    const localValue = useVModel(props, 'modelValue', emit);
+  setup(props) {
+    const localValue = useVModel(props, 'modelValue');
     const configuration = useConfiguration<TInputOptions>(TInputTheme);
     const attributes = useAttributes<TInputOptions>(TInputTheme);
+
     return { localValue, configuration, attributes };
+  },
+  methods: {
+    getSome(): TInputValue {
+      return this.localValue;
+    },
   },
 });
 </script>
