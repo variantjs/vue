@@ -29,13 +29,13 @@
 </template>
 
 <script lang="ts">
-import {
-  TSelectTheme, normalizeOptions, NormalizedOptions, InputOptions,
-} from '@variantjs/core';
+import { TSelectTheme, InputOptions } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import getVariantProps from '../utils/getVariantProps';
 import { TSelectOptions, TSelectValue } from '../types';
-import { useVModel, useConfiguration, useAttributes } from '../use';
+import {
+  useVModel, useConfiguration, useAttributes, useMultioptions,
+} from '../use';
 
 // @vue/component
 export default defineComponent({
@@ -55,13 +55,12 @@ export default defineComponent({
     const localValue = useVModel(props, 'modelValue');
     const configuration = useConfiguration<TSelectOptions>(TSelectTheme);
     const attributes = useAttributes<TSelectOptions>(TSelectTheme);
+    const normalizedOptions = useMultioptions(props, 'options');
 
-    return { localValue, configuration, attributes };
+    return {
+      localValue, configuration, attributes, normalizedOptions,
+    };
   },
-  computed: {
-    normalizedOptions(): NormalizedOptions {
-      return this.options !== undefined ? normalizeOptions(this.options) : [];
-    },
-  },
+
 });
 </script>
