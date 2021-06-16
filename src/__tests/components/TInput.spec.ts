@@ -46,8 +46,8 @@ describe('TInput.vue', () => {
     });
     expect(wrapper.vm.$el.disabled).toBe(false);
 
-    wrapper.setProps({ disabled: true });
-    await wrapper.vm.$nextTick();
+    await wrapper.setProps({ disabled: true });
+
     expect(wrapper.vm.$el.disabled).toBe(true);
   });
 
@@ -133,9 +133,7 @@ describe('TInput.vue', () => {
       newProps[key as any] = elementValue.new;
     });
 
-    wrapper.setProps(newProps);
-
-    await wrapper.vm.$nextTick();
+    await wrapper.setProps(newProps);
 
     // Check for the new values
     Object.keys(values).forEach((key) => {
