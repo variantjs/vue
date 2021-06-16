@@ -29,10 +29,12 @@
 </template>
 
 <script lang="ts">
-import { TSelectTheme, InputOptions } from '@variantjs/core';
-import { defineComponent, PropType } from 'vue';
+import { TSelectTheme } from '@variantjs/core';
+import { defineComponent } from 'vue';
 import getVariantProps from '../utils/getVariantProps';
-import { TSelectOptions, TSelectValue } from '../types';
+import {
+  GetPropType, TSelectOptions,
+} from '../types';
 import {
   useVModel, useConfiguration, useAttributes, useMultioptions,
 } from '../use';
@@ -43,11 +45,15 @@ export default defineComponent({
   props: {
     ...getVariantProps<TSelectOptions>(),
     modelValue: {
-      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TSelectValue>,
+      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as GetPropType<TSelectOptions, 'modelValue'>,
       default: undefined,
     },
     options: {
-      type: [Array, Object] as PropType<InputOptions>,
+      type: [Array, Object] as GetPropType<TSelectOptions, 'options'>,
+      default: undefined,
+    },
+    multiple: {
+      type: [String, Boolean] as GetPropType<TSelectOptions, 'multiple'>,
       default: undefined,
     },
   },
@@ -61,6 +67,5 @@ export default defineComponent({
       localValue, configuration, attributes, normalizedOptions,
     };
   },
-
 });
 </script>
