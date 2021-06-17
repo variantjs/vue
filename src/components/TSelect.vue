@@ -35,7 +35,7 @@ import { defineComponent, PropType } from 'vue';
 import getVariantProps from '../utils/getVariantProps';
 import { Truthy, TSelectOptions, TSelectValue } from '../types';
 import {
-  useVModelMulipleable, useConfiguration, useAttributes, useMultioptions,
+  useMulipleableVModel, useConfiguration, useAttributes, useMultioptions,
 } from '../use';
 
 // @vue/component
@@ -57,7 +57,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const localValue = useVModelMulipleable(props, 'modelValue');
+    const localValue = useMulipleableVModel(props, 'modelValue');
     const configuration = useConfiguration<TSelectOptions>(TSelectTheme);
     const attributes = useAttributes<TSelectOptions>(TSelectTheme);
     const normalizedOptions = useMultioptions(props, 'options');

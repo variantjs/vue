@@ -1,10 +1,10 @@
-import useVModelMultipleable from '../../use/useVModelMulipleable';
+import useMulipleableVModel from '../../use/useMulipleableVModel';
 import { useSetup } from './useSetup';
 
-describe('useVModelMultipleable.spec', () => {
+describe('useMulipleableVModel.spec', () => {
   it('should return an empty array if multiple and no value', () => {
     useSetup(() => {
-      const data = useVModelMultipleable({
+      const data = useMulipleableVModel({
         modelValue: undefined,
         multiple: true,
       }, 'modelValue');
@@ -14,7 +14,7 @@ describe('useVModelMultipleable.spec', () => {
 
   it('should return an array if multiple is an empty string', () => {
     useSetup(() => {
-      const data = useVModelMultipleable({
+      const data = useMulipleableVModel({
         modelValue: undefined,
         multiple: '',
       }, 'modelValue');
@@ -23,7 +23,7 @@ describe('useVModelMultipleable.spec', () => {
   });
   it('should return an array if multiple is `true` string', () => {
     useSetup(() => {
-      const data = useVModelMultipleable({
+      const data = useMulipleableVModel({
         modelValue: undefined,
         multiple: 'true',
       }, 'modelValue');
@@ -33,7 +33,7 @@ describe('useVModelMultipleable.spec', () => {
 
   it('should return an array if multiple is `false` strin', () => {
     useSetup(() => {
-      const data = useVModelMultipleable({
+      const data = useMulipleableVModel({
         modelValue: undefined,
         multiple: 'false',
       }, 'modelValue');
@@ -43,7 +43,7 @@ describe('useVModelMultipleable.spec', () => {
 
   it('should return undefined multiple is `false`', () => {
     useSetup(() => {
-      const data = useVModelMultipleable({
+      const data = useMulipleableVModel({
         modelValue: undefined,
         multiple: false,
       }, 'modelValue');
@@ -53,7 +53,7 @@ describe('useVModelMultipleable.spec', () => {
 
   it('should return the default value', () => {
     useSetup(() => {
-      const data = useVModelMultipleable({
+      const data = useMulipleableVModel({
         modelValue: 'default',
         multiple: true,
       }, 'modelValue');
