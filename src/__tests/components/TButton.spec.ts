@@ -167,4 +167,70 @@ describe('TButton.vue', () => {
 
     expect(onCustom).toHaveBeenCalled();
   });
+
+  it('default to button tag', () => {
+    const wrapper = shallowMount(TButton);
+
+    expect(wrapper.vm.$el.tagName).toBe('BUTTON');
+  });
+
+  it('accepts anchor tag', () => {
+    const wrapper = shallowMount(TButton, {
+      props: { tagName: 'a' },
+    });
+
+    expect(wrapper.vm.$el.tagName).toBe('A');
+  });
+
+  // it('uses anchor tag when has href attribute', () => {
+  //   const wrapper = shallowMount(TButton, {
+  //     propsData: { href: 'https://www.vue-tailwind.com/' },
+  //   });
+
+  //   expect(wrapper.vm.$el.tagName).toBe('A');
+  // });
+
+  // it('get the default regular props in regular circustancies', () => {
+  //   const wrapper = shallowMount(TButton);
+
+  //   expect(Object.keys(wrapper.vm.getAttributes())).toEqual(['id', 'value', 'autofocus', 'disabled', 'name', 'href', 'type']);
+  // });
+
+  // it('uses router-link props when `to` prop is defined and the route link component is defined', () => {
+  //   const wrapper = shallowMount(TButton, {
+  //     propsData: { to: '/some-place' },
+  //     computed: {
+  //       isRouterLinkComponentAvailable() {
+  //         return true;
+  //       },
+  //     },
+  //   });
+
+  //   expect(Object.keys(wrapper.vm.getAttributes())).toEqual(['to', 'replace', 'append', 'tag', 'activeClass', 'exact', 'event', 'exactActiveClass', 'id', 'value', 'autofocus', 'disabled', 'name', 'type']);
+  // });
+
+  // it('uses native button for inertia when tag name is not `a`', () => {
+  //   const wrapper = shallowMount(TButton, {
+  //     propsData: { tagName: 'button', href: '/test' },
+  //     computed: {
+  //       isInertiaLinkComponentAvailable() {
+  //         return true;
+  //       },
+  //     },
+  //   });
+
+  //   expect(Object.keys(wrapper.vm.getAttributes())).toEqual(['id', 'value', 'autofocus', 'disabled', 'name', 'href', 'type']);
+  // });
+
+  // it('uses native button when native is set', () => {
+  //   const wrapper = shallowMount(TButton, {
+  //     propsData: { to: '/some-place', native: true },
+  //     computed: {
+  //       isRouterLinkComponentAvailable() {
+  //         return true;
+  //       },
+  //     },
+  //   });
+
+  //   expect(Obje
 });

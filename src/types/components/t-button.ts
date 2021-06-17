@@ -1,4 +1,6 @@
 import { WithVariantProps } from '@variantjs/core';
-import { ButtonHTMLAttributes } from 'vue';
+import { ButtonHTMLAttributes, ComponentPropsOptions } from 'vue';
 
-export type TButtonOptions = WithVariantProps<ButtonHTMLAttributes & Record<string, unknown>>;
+export type TButtonOptions = WithVariantProps<ComponentPropsOptions<{
+  tagName?: string
+}> & ButtonHTMLAttributes & Record<string, unknown>>;

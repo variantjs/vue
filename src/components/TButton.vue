@@ -1,9 +1,10 @@
 <template>
-  <button
+  <component
+    :is="tagName"
     v-bind="attributes"
   >
     <slot />
-  </button>
+  </component>
 </template>
 
 <script lang="ts">
@@ -15,7 +16,16 @@ import { TButtonOptions } from '../types';
 
 export default defineComponent({
   name: 'TButton',
-  props: getVariantProps<TButtonOptions>(),
+  props: {
+    ...getVariantProps<TButtonOptions>(),
+    tagName: {
+      type: String,
+      default: 'button',
+      validator(value: string) {
+        return ['button', 'a'].indexOf(value) !== -1;
+      },
+    },
+  },
   setup() {
     const configuration = useConfiguration<TButtonOptions>(TButtonTheme);
     const attributes = useAttributes<TButtonOptions>(TButtonTheme);
