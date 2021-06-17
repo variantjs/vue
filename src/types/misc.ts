@@ -1,3 +1,3 @@
-type Booleanish = boolean | 'true' | 'false';
+type Truthy = boolean | string;
 
-export { Booleanish };
+export { Truthy };

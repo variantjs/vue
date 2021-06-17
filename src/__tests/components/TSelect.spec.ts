@@ -40,7 +40,71 @@ describe('TSelect.vue', () => {
       },
     });
 
-    expect(wrapper.vm.$el.value).toBe(value);
+    expect(wrapper.vm.localValue).toBe(value);
+    expect(wrapper.vm.$el.value).toEqual(value);
+  });
+
+  it('adds the multiple attribute', async () => {
+    const wrapper = shallowMount(TSelect, {
+      props: { multiple: false },
+    });
+    expect(wrapper.vm.$el.multiple).toBe(false);
+
+    await wrapper.setProps({ multiple: true });
+
+    expect(wrapper.vm.$el.multiple).toBe(true);
+  });
+
+  it('handles multiptions', async () => {
+    const value = ['B', 'C'];
+    const wrapper = shallowMount(TSelect, {
+      props: {
+        modelValue: value,
+        multiple: true,
+        options: ['A', 'B', 'C'],
+      },
+    });
+
+    const select = wrapper.vm.$el;
+
+    expect(wrapper.vm.localValue).toEqual(value);
+
+    const values = Array
+      .from(select.querySelectorAll('option:checked'))
+      .map((el) => (el as HTMLOptionElement).value);
+
+    expect(values).toEqual(value);
+
+    const newValue = ['A', 'C'];
+
+    // await wrapper.setValue(newValue, 'modelValue');
+    await wrapper.setProps({
+      modelValue: newValue,
+    });
+
+    expect(wrapper.vm.localValue).toEqual(newValue);
+
+    const newValues = Array
+      .from(select.querySelectorAll('option:checked'))
+      .map((el) => (el as HTMLOptionElement).value);
+
+    expect(newValues).toEqual(newValue);
+  });
+
+  it('assigns undefined as default', () => {
+    const wrapper = shallowMount(TSelect);
+
+    expect(wrapper.vm.localValue).toBeUndefined();
+  });
+
+  it('assigns an array as default to multiptions', () => {
+    const wrapper = shallowMount(TSelect, {
+      props: {
+        multiple: true,
+      },
+    });
+
+    expect(wrapper.vm.localValue).toEqual([]);
   });
 
   it('disables the select', async () => {

@@ -2,6 +2,7 @@
   <select
     v-model="localValue"
     v-bind="attributes"
+    :multiple="multiple"
   >
     <template v-for="(option, index) in normalizedOptions">
       <template v-if="option.children && option.children.length">
@@ -29,14 +30,12 @@
 </template>
 
 <script lang="ts">
-import { TSelectTheme } from '@variantjs/core';
-import { defineComponent } from 'vue';
+import { InputOptions, TSelectTheme } from '@variantjs/core';
+import { defineComponent, PropType } from 'vue';
 import getVariantProps from '../utils/getVariantProps';
+import { Truthy, TSelectOptions, TSelectValue } from '../types';
 import {
-  GetPropType, TSelectOptions,
-} from '../types';
-import {
-  useVModel, useConfiguration, useAttributes, useMultioptions,
+  useVModelMulipleable, useConfiguration, useAttributes, useMultioptions,
 } from '../use';
 
 // @vue/component
@@ -45,20 +44,20 @@ export default defineComponent({
   props: {
     ...getVariantProps<TSelectOptions>(),
     modelValue: {
-      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as GetPropType<TSelectOptions, 'modelValue'>,
+      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TSelectValue>,
       default: undefined,
     },
     options: {
-      type: [Array, Object] as GetPropType<TSelectOptions, 'options'>,
+      type: [Array, Object] as PropType<InputOptions>,
       default: undefined,
     },
     multiple: {
-      type: [String, Boolean] as GetPropType<TSelectOptions, 'multiple'>,
-      default: undefined,
+      type: [String, Boolean] as PropType<Truthy>,
+      default: false,
     },
   },
   setup(props) {
-    const localValue = useVModel(props, 'modelValue');
+    const localValue = useVModelMulipleable(props, 'modelValue');
     const configuration = useConfiguration<TSelectOptions>(TSelectTheme);
     const attributes = useAttributes<TSelectOptions>(TSelectTheme);
     const normalizedOptions = useMultioptions(props, 'options');
