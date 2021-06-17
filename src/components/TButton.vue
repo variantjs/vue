@@ -1,6 +1,7 @@
 <template>
   <component
-    :is="tagName"
+    :is="guessedTagName"
+    :href="href"
     v-bind="attributes"
   >
     <slot />
@@ -25,12 +26,25 @@ export default defineComponent({
         return ['button', 'a'].indexOf(value) !== -1;
       },
     },
+    href: {
+      type: String,
+      default: undefined,
+    },
   },
   setup() {
     const configuration = useConfiguration<TButtonOptions>(TButtonTheme);
     const attributes = useAttributes<TButtonOptions>(TButtonTheme);
 
     return { configuration, attributes };
+  },
+  computed: {
+    guessedTagName(): string {
+      if (this.href !== undefined) {
+        return 'a';
+      }
+
+      return this.tagName;
+    },
   },
 });
 </script>

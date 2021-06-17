@@ -182,13 +182,14 @@ describe('TButton.vue', () => {
     expect(wrapper.vm.$el.tagName).toBe('A');
   });
 
-  // it('uses anchor tag when has href attribute', () => {
-  //   const wrapper = shallowMount(TButton, {
-  //     propsData: { href: 'https://www.vue-tailwind.com/' },
-  //   });
+  it('uses anchor tag when has href attribute', () => {
+    const wrapper = shallowMount(TButton, {
+      props: { href: 'https://www.vexilo.com/' },
+    });
 
-  //   expect(wrapper.vm.$el.tagName).toBe('A');
-  // });
+    expect(wrapper.vm.$el.tagName).toBe('A');
+    expect(wrapper.vm.$el.href).toBe('https://www.vexilo.com/');
+  });
 
   // it('get the default regular props in regular circustancies', () => {
   //   const wrapper = shallowMount(TButton);
@@ -198,7 +199,7 @@ describe('TButton.vue', () => {
 
   // it('uses router-link props when `to` prop is defined and the route link component is defined', () => {
   //   const wrapper = shallowMount(TButton, {
-  //     propsData: { to: '/some-place' },
+  //     props: { to: '/some-place' },
   //     computed: {
   //       isRouterLinkComponentAvailable() {
   //         return true;
@@ -211,7 +212,7 @@ describe('TButton.vue', () => {
 
   // it('uses native button for inertia when tag name is not `a`', () => {
   //   const wrapper = shallowMount(TButton, {
-  //     propsData: { tagName: 'button', href: '/test' },
+  //     props: { tagName: 'button', href: '/test' },
   //     computed: {
   //       isInertiaLinkComponentAvailable() {
   //         return true;
@@ -224,7 +225,7 @@ describe('TButton.vue', () => {
 
   // it('uses native button when native is set', () => {
   //   const wrapper = shallowMount(TButton, {
-  //     propsData: { to: '/some-place', native: true },
+  //     props: { to: '/some-place', native: true },
   //     computed: {
   //       isRouterLinkComponentAvailable() {
   //         return true;
