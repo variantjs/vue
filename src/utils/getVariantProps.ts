@@ -1,8 +1,8 @@
 import { CSSClass, Variants } from '@variantjs/core';
 import { PropType } from 'vue';
-import { ComponentWithVariantsProps } from '../types';
+import { VariantJSProps } from '../types';
 
-const getVariantProps = <ComponentOptions extends Record<string, unknown>>() : ComponentWithVariantsProps => ({
+const getVariantProps = <ComponentOptions extends Record<string, unknown>>() : VariantJSProps => ({
   classes: {
     type: [String, Array, Object] as PropType<CSSClass>,
     default: undefined,

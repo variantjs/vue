@@ -2,7 +2,8 @@
 import {
   defineComponent, createApp, h, ComponentPropsOptions,
 } from 'vue';
-import variantJsPlugin, { VariantJSConfiguration } from '../..';
+import variantJsPlugin from '../..';
+import { VariantJSConfiguration } from '../../types';
 
 type InstanceType<V> = V extends { new (...arg: any[]): infer X } ? X : never;
 type VM<V> = InstanceType<V> & { unmount(): void };

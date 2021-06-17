@@ -1,10 +1,8 @@
 import {
-  computed, inject, camelize, getCurrentInstance, ComponentInternalInstance, ComputedRef, watch,
+  computed, inject, camelize, getCurrentInstance, ComponentInternalInstance, ComputedRef,
 } from 'vue';
-import {
-  get, parseVariant,
-} from '@variantjs/core';
-import { VariantJSConfiguration } from '..';
+import { get, parseVariant } from '@variantjs/core';
+import { Data, VariantJSConfiguration } from '../types';
 
 export const extractDefinedProps = (vm: ComponentInternalInstance): string[] => {
   const validProps = Object.keys(vm.props);
@@ -16,7 +14,7 @@ export const extractDefinedProps = (vm: ComponentInternalInstance): string[] => 
   return definedProps;
 };
 
-export default function useConfiguration<ComponentOptions extends Record<string, unknown>>(defaultConfiguration: ComponentOptions): ComputedRef<ComponentOptions> {
+export default function useConfiguration<ComponentOptions extends Data>(defaultConfiguration: ComponentOptions): ComputedRef<ComponentOptions> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const vm = getCurrentInstance()!;
 
@@ -24,7 +22,7 @@ export default function useConfiguration<ComponentOptions extends Record<string,
   const componentGlobalConfiguration = get<VariantJSConfiguration, ComponentOptions>(variantGlobalConfiguration, vm?.type.name as keyof VariantJSConfiguration, {});
 
   return computed(() => {
-    const propsValues: Record<string, unknown> = {};
+    const propsValues: Data = {};
 
     extractDefinedProps(vm).forEach((attributeName) => {
       const normalizedAttribute = camelize(attributeName);

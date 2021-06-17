@@ -1,15 +1,11 @@
 import { CSSClass, Variants, WithVariantProps } from '@variantjs/core';
-import {
-  ComponentPropsOptions, ComponentPublicInstance, ComputedOptions, PropType,
-} from 'vue';
+import { ComponentPropsOptions, PropType } from 'vue';
+import { TCheckboxOptions } from './components/t-checkbox';
+import { TInputOptions } from './components/t-input';
+import { TRadioOptions } from './components/t-radio';
+import { TSelectOptions } from './components/t-select';
 
-export * from './t-input';
-export * from './t-radio';
-export * from './t-checkbox';
-export * from './t-select';
-export * from './t-wrapped-radio';
-
-export declare type ComponentWithVariantsProps<ComponentOptions extends WithVariantProps<Record<string, unknown>> = {
+type VariantJSProps<ComponentOptions extends WithVariantProps<Record<string, unknown>> = {
   classes?: CSSClass;
   fixedClasses?: CSSClass;
   variants?: Variants<Record<string, unknown>>;
@@ -51,7 +47,11 @@ export declare type ComponentWithVariantsProps<ComponentOptions extends WithVari
   },
 };
 
-export declare type VariantComputedAttributes<C extends ComputedOptions = Record<string, any>> = C & {
-  configuration: (ctx: ComponentPublicInstance) => WithVariantProps<Record<string, unknown>>,
-  attributes: (ctx: ComponentPublicInstance) => Record<string, unknown>,
+type VariantJSConfiguration = {
+  TInput?: TInputOptions
+  TSelect?: TSelectOptions
+  TRadio?: TRadioOptions
+  TCheckbox?: TCheckboxOptions
 };
+
+export { VariantJSConfiguration, VariantJSProps };

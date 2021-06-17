@@ -1,6 +1,7 @@
 import { computed, getCurrentInstance, WritableComputedRef } from 'vue';
+import { Data } from '../types';
 
-export default function useVModel<P extends Record<string, unknown>, K extends keyof P>(
+export default function useVModel<P extends Data, K extends keyof P>(
   props: P,
   key: K,
 ): WritableComputedRef<P[K]> {

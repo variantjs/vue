@@ -1,8 +1,4 @@
-type EmitterFunction = (...args : unknown[]) => void;
-
-type EmitterEvents = {
-  [key: string]: EmitterFunction[]
-};
+import { EmitterEvents, EmitterFunction } from '../types';
 
 export default class Emitter {
   private events: EmitterEvents = {};

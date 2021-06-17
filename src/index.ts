@@ -1,17 +1,8 @@
 import { App } from 'vue';
 
-import {
-  TRadioOptions, TCheckboxOptions, TInputOptions, TSelectOptions,
-} from './types';
+import { VariantJSConfiguration } from './types';
 
 import Emitter from './utils/emitter';
-
-export type VariantJSConfiguration = {
-  TInput?: TInputOptions
-  TSelect?: TSelectOptions
-  TRadio?: TRadioOptions
-  TCheckbox?: TCheckboxOptions
-};
 
 export default {
   install: (app: App<Element>, configuration: VariantJSConfiguration = {}): void => {

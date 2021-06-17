@@ -1,7 +1,7 @@
 import { computed, getCurrentInstance, WritableComputedRef } from 'vue';
-import { Truthy } from '../types';
+import { Data, Truthy } from '../types';
 
-export default function useMulipleableVModel<P extends Record<string, unknown> & {
+export default function useMulipleableVModel<P extends Data & {
   multiple: Truthy
 }, K extends keyof P>(
   props: P,

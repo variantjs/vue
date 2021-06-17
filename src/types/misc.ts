@@ -1,3 +1,5 @@
 type Truthy = boolean | string;
 
-export { Truthy };
+type Data = Record<string, unknown>;
+
+export { Truthy, Data };
