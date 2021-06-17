@@ -7,17 +7,17 @@
 
 <script lang="ts">
 import { TInputTheme } from '@variantjs/core';
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { useVModel, useConfiguration, useAttributes } from '../use';
 import getVariantProps from '../utils/getVariantProps';
-import { TInputOptions, GetPropType } from '../types';
+import { TInputOptions, TInputValue } from '../types';
 
 export default defineComponent({
   name: 'TInput',
   props: {
     ...getVariantProps<TInputOptions>(),
     modelValue: {
-      type: [String, Number] as GetPropType<TInputOptions, 'modelValue'>,
+      type: [String, Number] as PropType<TInputValue>,
       default: undefined,
     },
   },
