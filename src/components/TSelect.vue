@@ -4,28 +4,11 @@
     v-bind="attributes"
     :multiple="multiple"
   >
-    <template v-for="(option, index) in normalizedOptions">
-      <template v-if="option.children && option.children.length">
-        <optgroup
-          :key="`${option.value}-${index}`"
-          :label="option.text !== undefined ? String(option.text) : undefined"
-        >
-          <option
-            v-for="(childrenOption, index2) in option.children"
-            :key="`${childrenOption.value}-${index}-${index2}`"
-            :value="childrenOption.value"
-            v-text="childrenOption.text"
-          />
-        </optgroup>
-      </template>
-      <template v-else>
-        <option
-          :key="`${option.value}-${index}`"
-          :value="option.value"
-          v-text="option.text"
-        />
-      </template>
-    </template>
+    <t-select-option
+      v-for="(option, index) in normalizedOptions"
+      :key="`${option.value}-${index}`"
+      :option="option"
+    />
   </select>
 </template>
 
@@ -37,10 +20,14 @@ import { Truthy, TSelectOptions, TSelectValue } from '../types';
 import {
   useMulipleableVModel, useConfiguration, useAttributes, useMultioptions,
 } from '../use';
+import TSelectOption from './TSelect/TSelectOption.vue';
 
 // @vue/component
 export default defineComponent({
   name: 'TSelect',
+  components: {
+    TSelectOption,
+  },
   props: {
     ...getVariantProps<TSelectOptions>(),
     modelValue: {

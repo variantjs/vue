@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import TSelect from '@/components/TSelect.vue';
 import { TSelectTheme } from '@variantjs/core';
 
@@ -33,7 +33,7 @@ describe('TSelect.vue', () => {
 
   it('selects the props.value', () => {
     const value = 'B';
-    const wrapper = shallowMount(TSelect, {
+    const wrapper = mount(TSelect, {
       props: {
         modelValue: value,
         options: ['A', 'B', 'C'],
@@ -57,7 +57,7 @@ describe('TSelect.vue', () => {
 
   it('handles multiptions', async () => {
     const value = ['B', 'C'];
-    const wrapper = shallowMount(TSelect, {
+    const wrapper = mount(TSelect, {
       props: {
         modelValue: value,
         multiple: true,
