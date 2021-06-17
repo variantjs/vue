@@ -25,7 +25,7 @@
           </label>
         </div>
 
-        <!-- <t-button>My button</t-button> -->
+        <t-button>My button</t-button>
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@ import TSelect from './components/TSelect.vue';
 import TRadio from './components/TRadio.vue';
 import TCheckbox from './components/TCheckbox.vue';
 import TTextarea from './components/TTextarea.vue';
-// import TButton from './t-button';
+import TButton from './components/TButton.vue';
 
 export default defineComponent({
   name: 'App',
@@ -49,7 +49,7 @@ export default defineComponent({
     TRadio,
     TCheckbox,
     TSelect,
-    // TButton,
+    TButton,
   },
   data() {
     return {
