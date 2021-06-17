@@ -9,4 +9,9 @@ module.exports = {
     "!**/*.d.ts"
   ],
   testMatch: [ "**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ],
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/src/main.ts",
+    "/src/App.vue",
+  ]
 }
