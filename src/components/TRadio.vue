@@ -2,37 +2,34 @@
   <input
     v-model="localValue"
     type="radio"
+    v-bind="attributes"
   >
 </template>
 
 <script lang="ts">
 import { TRadioTheme } from '@variantjs/core';
-import { PropType } from 'vue';
-import defineVariantComponent from '../utils/defineVariantComponent';
-import { TRadioValue } from '../types';
+import { defineComponent, PropType } from 'vue';
+import { TRadioOptions, TRadioValue } from '../types';
+import getVariantProps from '../utils/getVariantProps';
+import { useAttributes, useConfiguration, useVModel } from '../use';
 
 // @vue/component
-export default defineVariantComponent('TRadio', {
+export default defineComponent({
+  name: 'TRadio',
   props: {
+    ...getVariantProps<TRadioOptions>(),
     modelValue: {
-      type: [String, Number, Array, Object] as PropType<TRadioValue>,
+      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TRadioValue>,
       default: undefined,
     },
   },
-  emits: {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    'update:modelValue': (_: TRadioValue) => true,
+  setup(props) {
+    const localValue = useVModel(props, 'modelValue');
+    const configuration = useConfiguration<TRadioOptions>(TRadioTheme);
+    const attributes = useAttributes<TRadioOptions>(TRadioTheme);
+
+    return { localValue, configuration, attributes };
   },
-  computed: {
-    localValue: {
-      get(): TRadioValue {
-        return this.modelValue;
-      },
-      set(value: TRadioValue) {
-        this.$emit('update:modelValue', value);
-      },
-    },
-  },
-}, TRadioTheme);
+});
 
 </script>
