@@ -6,6 +6,9 @@
     <t-button to="/theme">
       Theme
     </t-button>
+    <t-button to="/attributes">
+      Attributes
+    </t-button>
     <t-button to="/options">
       Options
     </t-button>
