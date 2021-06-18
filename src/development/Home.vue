@@ -1,8 +1,14 @@
 <template>
   <div>
     <div class="grid grid-cols-1 gap-6">
-      <t-input placeholder="My placeholder" />
-      <t-textarea placeholder="My placeholder" />
+      <t-input
+        v-model="model"
+        placeholder="My placeholder"
+      />
+      <t-textarea
+        v-model="model"
+        placeholder="My placeholder"
+      />
       <t-select :options="options" />
       <label class="flex items-center">
         <t-checkbox checked />
@@ -25,6 +31,22 @@
       </div>
 
       <t-button>My button</t-button>
+      <t-button
+        :title="model"
+        type="submit"
+        class="text-red-600"
+      >
+        My button
+      </t-button>
+      <t-button
+        :title="model"
+        type="submit"
+        fixed-classes="text-red-500"
+        classes="border-red-500"
+        class="font-semibold"
+      >
+        My button
+      </t-button>
     </div>
   </div>
 </template>
@@ -51,6 +73,7 @@ export default defineComponent({
   },
   data() {
     return {
+      model: '',
       options: [
         'Option A',
         'Option B',
