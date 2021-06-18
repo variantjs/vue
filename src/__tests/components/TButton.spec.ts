@@ -191,24 +191,58 @@ describe('TButton.vue', () => {
     expect(wrapper.vm.$el.href).toBe('https://www.vexilo.com/');
   });
 
-  // it('get the default regular props in regular circustancies', () => {
-  //   const wrapper = shallowMount(TButton);
+  describe('Router Link', () => {
+    it('has router link related props', () => {
+      const props = {
+        to: '/something',
+        replace: true,
+        activeClass: 'activeClass',
+        exactActiveClass: 'exactActiveClass',
+        custom: true,
+        ariaCurrentValue: 'location',
+      };
 
-  //   expect(Object.keys(wrapper.vm.getAttributes())).toEqual(['id', 'value', 'autofocus', 'disabled', 'name', 'href', 'type']);
-  // });
+      type RouterProps = typeof props;
 
-  // it('uses router-link props when `to` prop is defined and the route link component is defined', () => {
-  //   const wrapper = shallowMount(TButton, {
-  //     props: { to: '/some-place' },
-  //     computed: {
-  //       isRouterLinkComponentAvailable() {
-  //         return true;
-  //       },
-  //     },
-  //   });
+      const wrapper = shallowMount(TButton, {
+        props,
+      });
 
-  //   expect(Object.keys(wrapper.vm.getAttributes())).toEqual(['to', 'replace', 'append', 'tag', 'activeClass', 'exact', 'event', 'exactActiveClass', 'id', 'value', 'autofocus', 'disabled', 'name', 'type']);
-  // });
+      Object.keys(props).forEach((key) => {
+        expect(wrapper.vm[key]).toBe(props[key as keyof RouterProps]);
+      });
+    });
+
+    it('doesnt have a router link component by default', () => {
+      const wrapper = shallowMount(TButton);
+      expect(wrapper.vm.routerLinkComponentAvailable).toBe(false);
+    });
+
+    it('can determine when a router link component is available', () => {
+      const wrapper = shallowMount(TButton);
+      wrapper.vm.$options.components.RouterLink = {};
+      expect(wrapper.vm.routerLinkComponentAvailable).toBe(true);
+    });
+
+    it('determine that a router link component is available if has a NuxtLink', () => {
+      const wrapper = shallowMount(TButton);
+      wrapper.vm.$options.components.NuxtLink = {};
+      expect(wrapper.vm.routerLinkComponentAvailable).toBe(true);
+    });
+
+    // it('uses router-link props when `to` prop is defined and the route link component is defined', () => {
+    //   const wrapper = shallowMount(TButton, {
+    //     props: { to: '/some-place' },
+    //     computed: {
+    //       isRouterLinkComponentAvailable() {
+    //         return true;
+    //       },
+    //     },
+    //   });
+
+    //   expect(Object.keys(wrapper.vm.getAttributes())).toEqual(['to', 'replace', 'append', 'tag', 'activeClass', 'exact', 'event', 'exactActiveClass', 'id', 'value', 'autofocus', 'disabled', 'name', 'type']);
+    // });
+  });
 
   // it('uses native button for inertia when tag name is not `a`', () => {
   //   const wrapper = shallowMount(TButton, {

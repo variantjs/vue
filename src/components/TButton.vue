@@ -10,10 +10,10 @@
 
 <script lang="ts">
 import { TButtonTheme } from '@variantjs/core';
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { useConfiguration, useAttributes } from '../use';
 import getVariantProps from '../utils/getVariantProps';
-import { TButtonOptions } from '../types';
+import { TButtonOptions, VueRouteAriaCurrentValue, VueRouteRouteLocationRaw } from '../types';
 
 export default defineComponent({
   name: 'TButton',
@@ -30,6 +30,31 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+    // RouterLink Props
+    to: {
+      type: [String, Object] as PropType<VueRouteRouteLocationRaw>,
+      default: undefined,
+    },
+    replace: {
+      type: Boolean,
+      default: false,
+    },
+    activeClass: {
+      type: String,
+      default: undefined,
+    },
+    exactActiveClass: {
+      type: String,
+      default: undefined,
+    },
+    custom: {
+      type: Boolean,
+      default: false,
+    },
+    ariaCurrentValue: {
+      type: String as PropType<VueRouteAriaCurrentValue>,
+      default: 'page',
+    },
   },
   setup() {
     const configuration = useConfiguration<TButtonOptions>(TButtonTheme);
@@ -44,6 +69,14 @@ export default defineComponent({
       }
 
       return this.tagName;
+    },
+    routerLinkComponentAvailable(): boolean {
+      const { components } = this.$options;
+      if (components === undefined) {
+        return false;
+      }
+
+      return components.RouterLink !== undefined || components.NuxtLink !== undefined;
     },
   },
 });

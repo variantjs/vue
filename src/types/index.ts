@@ -8,3 +8,4 @@ export { TButtonOptions } from './components/t-button';
 export { Truthy, Data } from './misc';
 export { ObjectWithProperties, KeysOfType } from './helpers';
 export { EmitterEvents, EmitterFunction } from './utils';
+export { VueRouteAriaCurrentValue, VueRouteRouteLocationRaw } from './vueRouter';
