@@ -13,5 +13,6 @@ module.exports = {
     "/node_modules/",
     "/src/main.ts",
     "/src/App.vue",
+    "/src/development/",
   ]
 }
