@@ -1,5 +1,7 @@
 import { ObjectWithClassName } from '@variantjs/core';
-import { computed, getCurrentInstance, ComputedRef } from 'vue';
+import {
+  computed, getCurrentInstance, ComputedRef,
+} from 'vue';
 import { Data } from '../types';
 import useConfiguration from './useConfiguration';
 
@@ -10,11 +12,13 @@ export default function useAttributes<ComponentOptions extends ObjectWithClassNa
   const configuration = useConfiguration<ComponentOptions>(defaultConfiguration);
 
   const result = computed(() => {
-    const attributes = vm.attrs;
+    const attributes: Data = { ...configuration.value };
 
-    if (configuration.value.class) {
-      attributes.class = configuration.value.class;
-    }
+    // Attributes are everything from the configuration that is not a prop
+    const validProps = Object.keys(vm.props);
+    validProps.forEach((propName) => {
+      delete attributes[propName];
+    });
 
     return attributes;
   });

@@ -29,10 +29,6 @@ export default function useConfiguration<ComponentOptions extends Data>(defaultC
       propsValues[normalizedAttribute] = vm.props[normalizedAttribute];
     });
 
-    if (vm.vnode.props?.class) {
-      propsValues.class = vm.vnode.props?.class;
-    }
-
     return parseVariant(propsValues as ComponentOptions, componentGlobalConfiguration, defaultConfiguration);
   });
 }

@@ -40,6 +40,16 @@ describe('TRadio.vue', () => {
     expect(wrapper.vm.$el.value).toBe(value);
   });
 
+  it('doesnt add the modelValue as attribute', () => {
+    const value = 'input value';
+    const wrapper = shallowMount(TRadio, {
+      props: { modelValue: value },
+      attrs: { value },
+    });
+
+    expect(wrapper.vm.$el.attributes.modelValue).toBeUndefined();
+  });
+
   it('set as checked if model value is same as value', async () => {
     const value = 'input value';
     const wrapper = shallowMount(TRadio, {

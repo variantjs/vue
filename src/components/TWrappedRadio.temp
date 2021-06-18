@@ -37,7 +37,6 @@ export default defineVariantComponent('TWrappedRadio', {
   components: {
     TRadio,
   },
-  inheritAttrs: false,
   props: {
     label: {
       type: String as PropType<string>,

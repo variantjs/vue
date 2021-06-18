@@ -40,6 +40,15 @@ describe('TInput.vue', () => {
     expect(wrapper.vm.$el.value).toBe(value);
   });
 
+  it('doesnt add the modelValue as attribute', () => {
+    const value = 'input value';
+    const wrapper = shallowMount(TInput, {
+      props: { modelValue: value },
+    });
+
+    expect(wrapper.vm.$el.attributes.modelValue).toBeUndefined();
+  });
+
   it('disables the input', async () => {
     const wrapper = shallowMount(TInput, {
       props: { disabled: false },

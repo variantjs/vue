@@ -44,6 +44,16 @@ describe('TSelect.vue', () => {
     expect(wrapper.vm.$el.value).toEqual(value);
   });
 
+  it('doesnt add the modelValue as attribute', () => {
+    const value = 'B';
+    const wrapper = shallowMount(TSelect, {
+      props: { modelValue: value, options: ['A', 'B', 'C'] },
+
+    });
+
+    expect(wrapper.vm.$el.attributes.modelValue).toBeUndefined();
+  });
+
   it('adds the multiple attribute', async () => {
     const wrapper = shallowMount(TSelect, {
       props: { multiple: false },

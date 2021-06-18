@@ -40,6 +40,15 @@ describe('TTextarea.vue', () => {
     expect(wrapper.vm.$el.value).toBe(value);
   });
 
+  it('doesnt add the modelValue as attribute', () => {
+    const value = 'textarea value';
+    const wrapper = shallowMount(TTextarea, {
+      props: { modelValue: value },
+    });
+
+    expect(wrapper.vm.$el.attributes.modelValue).toBeUndefined();
+  });
+
   it('disables the textarea', async () => {
     const wrapper = shallowMount(TTextarea, {
       props: { disabled: false },

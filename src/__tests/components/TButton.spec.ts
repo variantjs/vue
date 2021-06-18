@@ -53,6 +53,14 @@ describe('TButton.vue', () => {
     expect(wrapper.vm.$el.value).toBe(value);
   });
 
+  it('doesnt add the tagName as attribute', () => {
+    const wrapper = shallowMount(TButton, {
+      props: { tagName: 'a' },
+    });
+
+    expect(wrapper.vm.$el.attributes.tagName).toBeUndefined();
+  });
+
   it('disables the button', async () => {
     const wrapper = shallowMount(TButton, {
       props: { disabled: false },
@@ -78,9 +86,9 @@ describe('TButton.vue', () => {
       },
     });
 
-    const button = wrapper.vm.$el;
+    const button = wrapper.vm.$el as HTMLButtonElement;
     expect(button.type).toBe('button');
-    expect(button['data-id']).toBe('something');
+    expect(button.dataset.id).toBe('something');
   });
 
   it('prioritizes the attribute over the configuratiion', async () => {
