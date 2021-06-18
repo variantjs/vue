@@ -1,5 +1,6 @@
 import { WithVariantProps } from '@variantjs/core';
-import { ButtonHTMLAttributes, ComponentPropsOptions } from 'vue';
+import { ButtonHTMLAttributes } from 'vue';
+import { Data } from '../misc';
 import { VueRouteAriaCurrentValue, VueRouteRouteLocationRaw } from '../vueRouter';
 
 type RouterLinkProps = {
@@ -11,7 +12,7 @@ type RouterLinkProps = {
   ariaCurrentValue?: VueRouteAriaCurrentValue,
 };
 
-export type TButtonOptions = WithVariantProps<ComponentPropsOptions<{
+export type TButtonOptions = WithVariantProps<{
   tagName?: string
   href?: string
-} & RouterLinkProps> & ButtonHTMLAttributes & Record<string, unknown>>;
+} & RouterLinkProps> & ButtonHTMLAttributes & Data;

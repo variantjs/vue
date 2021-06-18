@@ -1,18 +1,22 @@
 <template>
   <div class="flex justify-center mb-4 space-x-4">
-    <router-link to="/">
+    <t-button to="/">
       Home
-    </router-link>
-    <router-link to="/about">
+    </t-button>
+    <t-button to="/about">
       About
-    </router-link>
+    </t-button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import TButton from '../components/TButton.vue';
 
 export default defineComponent({
   name: 'AppMenu',
+  components: {
+    TButton,
+  },
 });
 </script>

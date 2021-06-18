@@ -64,6 +64,45 @@ describe('TButton.vue', () => {
     expect(wrapper.vm.$el.disabled).toBe(true);
   });
 
+  it('adds the configuration attribute', async () => {
+    const wrapper = shallowMount(TButton, {
+      global: {
+        provide: {
+          configuration: {
+            TButton: {
+              type: 'button',
+              'data-id': 'something',
+            },
+          },
+        },
+      },
+    });
+
+    const button = wrapper.vm.$el;
+    expect(button.type).toBe('button');
+    expect(button['data-id']).toBe('something');
+  });
+
+  it('prioritizes the attribute over the configuratiion', async () => {
+    const wrapper = shallowMount(TButton, {
+      global: {
+        provide: {
+          configuration: {
+            TButton: {
+              type: 'button',
+            },
+          },
+        },
+      },
+      attrs: {
+        type: 'submit',
+      },
+    });
+
+    const button = wrapper.vm.$el;
+    expect(button.type).toBe('submit');
+  });
+
   it('accepts misc button attributes', async () => {
     const wrapper = shallowMount(TButton);
 
@@ -219,29 +258,132 @@ describe('TButton.vue', () => {
     });
 
     it('can determine when a router link component is available', () => {
-      const wrapper = shallowMount(TButton);
-      wrapper.vm.$options.components.RouterLink = {};
+      const RouterLink = {
+        name: 'RouterLink',
+        template: '',
+      };
+
+      const wrapper = shallowMount(TButton, {
+        global: {
+          components: {
+            RouterLink,
+          },
+        },
+      });
+
       expect(wrapper.vm.routerLinkComponentAvailable).toBe(true);
     });
 
     it('determine that a router link component is available if has a NuxtLink', () => {
-      const wrapper = shallowMount(TButton);
+      const NuxtLink = {
+        name: 'NuxtLink',
+        template: '',
+      };
+
+      const wrapper = shallowMount(TButton, {
+        global: {
+          components: {
+            NuxtLink,
+          },
+        },
+      });
+
       wrapper.vm.$options.components.NuxtLink = {};
       expect(wrapper.vm.routerLinkComponentAvailable).toBe(true);
     });
 
-    // it('uses router-link props when `to` prop is defined and the route link component is defined', () => {
-    //   const wrapper = shallowMount(TButton, {
-    //     props: { to: '/some-place' },
-    //     computed: {
-    //       isRouterLinkComponentAvailable() {
-    //         return true;
-    //       },
-    //     },
-    //   });
+    it('uses a router-link when `to` prop is defined and the route link component is available', () => {
+      const RouterLink = {
+        name: 'RouterLink',
+        template: '',
+      };
 
-    //   expect(Object.keys(wrapper.vm.getAttributes())).toEqual(['to', 'replace', 'append', 'tag', 'activeClass', 'exact', 'event', 'exactActiveClass', 'id', 'value', 'autofocus', 'disabled', 'name', 'type']);
-    // });
+      const wrapper = shallowMount(TButton, {
+        global: {
+          components: {
+            RouterLink,
+          },
+        },
+        props: {
+          to: '/some-place',
+          classes: undefined,
+        },
+      });
+
+      expect(wrapper.vm.useRouterLink).toBe(true);
+      expect(wrapper.getComponent(RouterLink)).toBeTruthy();
+    });
+
+    it('doesnt use a router-link when `to` prop is not defined even if route link component is available', () => {
+      const RouterLink = {
+        name: 'RouterLink',
+        template: '',
+      };
+
+      const wrapper = shallowMount(TButton, {
+        global: {
+          components: {
+            RouterLink,
+          },
+        },
+      });
+
+      expect(wrapper.vm.useRouterLink).toBe(false);
+    });
+
+    it('uses a nuxt-link when `to` prop is defined and the nuxt-link component is available', () => {
+      const NuxtLink = {
+        name: 'NuxtLink',
+        template: '',
+      };
+
+      const wrapper = shallowMount(TButton, {
+        global: {
+          components: {
+            NuxtLink,
+          },
+        },
+        props: {
+          to: '/some-place',
+          classes: undefined,
+        },
+      });
+
+      expect(wrapper.vm.useRouterLink).toBe(true);
+      expect(wrapper.getComponent(NuxtLink)).toBeTruthy();
+    });
+
+    it('adds the routerLink related prop', () => {
+      const props = {
+        to: '/something',
+        replace: true,
+        activeClass: 'activeClass',
+        exactActiveClass: 'exactActiveClass',
+        custom: true,
+        ariaCurrentValue: 'location',
+      };
+
+      const RouterLink = {
+        name: 'RouterLink',
+        template: '',
+        props: Object.keys(props),
+      };
+
+      const wrapper = shallowMount(TButton, {
+        global: {
+          components: {
+            RouterLink,
+          },
+        },
+        props: {
+          ...props,
+          href: '/something',
+        },
+      });
+
+      const component = wrapper.getComponent(RouterLink);
+      expect(component.props()).toEqual(props);
+    });
   });
 
   // it('uses native button for inertia when tag name is not `a`', () => {

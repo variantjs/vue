@@ -1,7 +1,21 @@
 <template>
   <component
+    :is="routerLinkTag"
+    v-if="useRouterLink"
+    :to="configuration.to"
+    :replace="configuration.replace"
+    :active-class="configuration.activeClass"
+    :exact-active-class="configuration.exactActiveClass"
+    :custom="configuration.custom"
+    :aria-current-value="configuration.ariaCurrentValue"
+    v-bind="attributes"
+  >
+    <slot />
+  </component>
+  <component
     :is="guessedTagName"
-    :href="href"
+    v-else
+    :href="configuration.href"
     v-bind="attributes"
   >
     <slot />
@@ -26,6 +40,7 @@ export default defineComponent({
         return ['button', 'a'].indexOf(value) !== -1;
       },
     },
+    // Handled attributes
     href: {
       type: String,
       default: undefined,
@@ -64,19 +79,34 @@ export default defineComponent({
   },
   computed: {
     guessedTagName(): string {
-      if (this.href !== undefined) {
+      if (this.configuration.href !== undefined) {
         return 'a';
       }
 
       return this.tagName;
     },
     routerLinkComponentAvailable(): boolean {
-      const { components } = this.$options;
+      return this.routerLinkTag !== null;
+    },
+    useRouterLink(): boolean {
+      return this.configuration.to !== undefined && this.routerLinkComponentAvailable;
+    },
+    routerLinkTag(): string | null {
+      const { components } = this.$.appContext;
+
       if (components === undefined) {
-        return false;
+        return null;
       }
 
-      return components.RouterLink !== undefined || components.NuxtLink !== undefined;
+      if (components.RouterLink !== undefined) {
+        return 'RouterLink';
+      }
+
+      if (components.NuxtLink !== undefined) {
+        return 'NuxtLink';
+      }
+
+      return null;
     },
   },
 });

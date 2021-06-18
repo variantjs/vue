@@ -11,7 +11,11 @@ const app = createApp(App);
 
 app.use(router);
 
-const configuration: VariantJSConfiguration = {};
+const configuration: VariantJSConfiguration = {
+  TButton: {
+    type: 'button',
+  },
+};
 
 app.use(variantJsPlugin, configuration);
 
