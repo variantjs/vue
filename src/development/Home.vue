@@ -31,22 +31,6 @@
       </div>
 
       <t-button>My button</t-button>
-      <t-button
-        :title="model"
-        type="submit"
-        class="text-red-600"
-      >
-        My button
-      </t-button>
-      <t-button
-        :title="model"
-        type="submit"
-        fixed-classes="text-red-500"
-        classes="border-red-500"
-        class="font-semibold"
-      >
-        My button
-      </t-button>
     </div>
   </div>
 </template>

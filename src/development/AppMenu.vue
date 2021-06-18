@@ -3,6 +3,9 @@
     <t-button to="/">
       Home
     </t-button>
+    <t-button to="/theme">
+      Theme
+    </t-button>
     <t-button to="/options">
       Options
     </t-button>
