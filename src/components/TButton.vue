@@ -94,10 +94,6 @@ export default defineComponent({
     routerLinkTag(): string | null {
       const { components } = this.$.appContext;
 
-      if (components === undefined) {
-        return null;
-      }
-
       if (components.RouterLink !== undefined) {
         return 'RouterLink';
       }
