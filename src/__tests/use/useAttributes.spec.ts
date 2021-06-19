@@ -1,17 +1,18 @@
-import { WithVariantProps } from '@variantjs/core';
-import { Data } from '../../types';
+import { useConfiguration } from '../../use';
 import useAttributes from '../../use/useAttributes';
 import { useSetup } from './useSetup';
 
 describe('useAttributes', () => {
   it('contains the configuration the attributes', () => {
     useSetup(() => {
-      const data = useAttributes<WithVariantProps<{
-        placeholder: string
-      }>>({
+      const props = {
         placeholder: 'Hello World',
-      });
-      expect(data.value).toEqual({
+      };
+
+      const configuration = useConfiguration(props);
+      const attributes = useAttributes(configuration);
+
+      expect(attributes.value).toEqual({
         placeholder: 'Hello World',
       });
     }, {}, {});
@@ -19,12 +20,16 @@ describe('useAttributes', () => {
 
   it('contains the class + classes + fixedClasses', () => {
     useSetup(() => {
-      const data = useAttributes<WithVariantProps<Data>>({
+      const props = {
         fixedClasses: 'text-red-500',
         classes: 'border-red-500',
         class: 'font-semibold',
-      });
-      expect(data.value).toEqual({
+      };
+
+      const configuration = useConfiguration(props);
+      const attributes = useAttributes(configuration);
+
+      expect(attributes.value).toEqual({
         class: 'font-semibold border-red-500 text-red-500',
       });
     }, {}, {}, ['fixedClasses', 'classes']);
@@ -32,14 +37,15 @@ describe('useAttributes', () => {
 
   it('adds the configurations attributes', () => {
     useSetup(() => {
-      const data = useAttributes<WithVariantProps<{
-        type?: string
-        'data-id'?: string,
-      }>>({
+      const props = {
         type: 'button',
         'data-id': 'something',
-      });
-      expect(data.value).toEqual({
+      };
+
+      const configuration = useConfiguration(props);
+      const attributes = useAttributes(configuration);
+
+      expect(attributes.value).toEqual({
         type: 'button',
         'data-id': 'something',
       });
@@ -48,14 +54,13 @@ describe('useAttributes', () => {
 
   it('doesnt add the configurations attributes defined as a props', () => {
     useSetup(() => {
-      const data = useAttributes<WithVariantProps<{
-        type?: string
-        'data-id'?: string,
-      }>>({
+      const props = {
         type: 'button',
         'data-id': 'something',
-      });
-      expect(data.value).toEqual({
+      };
+      const configuration = useConfiguration(props);
+      const attributes = useAttributes(configuration);
+      expect(attributes.value).toEqual({
         'data-id': 'something',
       });
     }, {}, {}, ['type']);

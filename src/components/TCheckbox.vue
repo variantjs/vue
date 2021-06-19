@@ -26,7 +26,7 @@ export default defineComponent({
   setup(props) {
     const localValue = useVModel(props, 'modelValue');
     const configuration = useConfiguration<TCheckboxOptions>(TCheckboxTheme);
-    const attributes = useAttributes<TCheckboxOptions>(TCheckboxTheme);
+    const attributes = useAttributes<TCheckboxOptions>(configuration);
 
     return { localValue, configuration, attributes };
   },

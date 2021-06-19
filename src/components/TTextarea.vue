@@ -24,7 +24,7 @@ export default defineComponent({
   setup(props) {
     const localValue = useVModel(props, 'modelValue');
     const configuration = useConfiguration<TTextareaOptions>(TTextareaTheme);
-    const attributes = useAttributes<TTextareaOptions>(TTextareaTheme);
+    const attributes = useAttributes<TTextareaOptions>(configuration);
 
     return { localValue, configuration, attributes };
   },
