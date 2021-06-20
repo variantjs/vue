@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="grid grid-cols-1 gap-6">
+    <t-card>
+      <template #header>
+        <h1>List of components</h1>
+      </template>
+
       <t-input
         v-model="model"
         placeholder="My placeholder"
@@ -31,7 +35,11 @@
       </div>
 
       <t-button>My button</t-button>
-    </div>
+
+      <template #footer>
+        <h1>Footer content</h1>
+      </template>
+    </t-card>
   </div>
 </template>
 
@@ -44,6 +52,7 @@ import TRadio from '../components/TRadio.vue';
 import TCheckbox from '../components/TCheckbox.vue';
 import TTextarea from '../components/TTextarea.vue';
 import TButton from '../components/TButton.vue';
+import TCard from '../components/TCard.vue';
 
 export default defineComponent({
   name: 'App',
@@ -54,6 +63,7 @@ export default defineComponent({
     TCheckbox,
     TSelect,
     TButton,
+    TCard,
   },
   data() {
     return {

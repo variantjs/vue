@@ -4,7 +4,13 @@
       <p>Gets the same placeholder attribute from different sources</p>
 
       <p>From the attribute</p>
-      <t-input placeholder="Defined on the attribute" />
+      <t-input
+        v-model="model"
+        placeholder="Defined on the attribute"
+      />
+
+      <p>Placeholder from the value (v-model) of input above</p>
+      <t-input :placeholder="model" />
 
       <p>From the attribute (to ensure is overriden)</p>
       <t-input
@@ -41,6 +47,11 @@ export default defineComponent({
         },
       },
     });
+  },
+  data() {
+    return {
+      model: null,
+    };
   },
 
 });
