@@ -7,7 +7,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "dev": "vite",
-    "lint": "eslint src --fix"
+    "lint": "eslint src --fix",
+    "link": "ln -nsf ../core/dist node_modules/@variantjs/core"
   },
   "dependencies": {
     "@variantjs/core": "^0.0.16"

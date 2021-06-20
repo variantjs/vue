@@ -10,7 +10,7 @@
 import { TRadioTheme } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { TRadioOptions, TRadioValue } from '../types';
-import getVariantProps from '../utils/getVariantProps';
+import { getVariantProps } from '../utils/getVariantProps';
 import { useAttributes, useConfiguration, useVModel } from '../use';
 
 // @vue/component

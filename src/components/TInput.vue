@@ -9,7 +9,7 @@
 import { TInputTheme } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { useVModel, useConfiguration, useAttributes } from '../use';
-import getVariantProps from '../utils/getVariantProps';
+import { getVariantProps } from '../utils/getVariantProps';
 import { TInputOptions, TInputValue } from '../types';
 
 export default defineComponent({

@@ -26,7 +26,7 @@
 import { TButtonTheme } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { useConfiguration, useAttributes } from '../use';
-import getVariantProps from '../utils/getVariantProps';
+import { getVariantProps } from '../utils/getVariantProps';
 import { TButtonOptions, VueRouteAriaCurrentValue, VueRouteRouteLocationRaw } from '../types';
 
 export default defineComponent({

@@ -1,3 +1,4 @@
+import { isPrimitive, pick } from '@variantjs/core';
 import {
   computed, getCurrentInstance, ComputedRef,
 } from 'vue';
@@ -8,14 +9,8 @@ export default function useAttributes<ComponentOptions extends Data>(configurati
   const vm = getCurrentInstance()!;
 
   const result = computed(() => {
-    const attributes: Data = { ...configuration.value };
-
-    // Attributes are everything from the configuration that is not a prop
-    const validProps = Object.keys(vm.props);
-    validProps.forEach((propName) => {
-      delete attributes[propName];
-    });
-
+    const availableProps = Object.keys(vm.props);
+    const attributes = pick(configuration.value, (value, key) => isPrimitive(value) && !availableProps.includes(String(key)));
     return attributes;
   });
 

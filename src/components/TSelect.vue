@@ -15,7 +15,7 @@
 <script lang="ts">
 import { InputOptions, TSelectTheme } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
-import getVariantProps from '../utils/getVariantProps';
+import { getVariantProps } from '../utils/getVariantProps';
 import { Truthy, TSelectOptions, TSelectValue } from '../types';
 import {
   useMulipleableVModel, useConfiguration, useAttributes, useMultioptions,

@@ -9,7 +9,7 @@
 import { TTextareaTheme } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { useVModel, useConfiguration, useAttributes } from '../use';
-import getVariantProps from '../utils/getVariantProps';
+import { getVariantProps } from '../utils/getVariantProps';
 import { TTextareaOptions, TTextareaValue } from '../types';
 
 export default defineComponent({
