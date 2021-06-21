@@ -31,30 +31,12 @@
 </template>
 
 <script lang="ts">
-// import { TCardTheme } from '@variantjs/core';
+import { TCardTheme, TCardThemeKeys } from '@variantjs/core';
 import { defineComponent } from 'vue';
-import { CSSClass } from '@variantjs/core';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
-import TTag from './TTag.vue';
 import { TCardOptions } from '../types';
-
-// @TODO move this to the core library
-const TCardTheme = {
-  classes: {
-    wrapper: 'border rounded shadow-sm bg-white border-gray-100',
-    body: 'p-3',
-    header: 'border-b border-gray-100 p-3 rounded-t',
-    footer: 'border-gray-100 border-t p-3 rounded-b',
-  },
-};
-
-type TCardThemeClassesList = {
-  'wrapper': CSSClass,
-  'body': CSSClass,
-  'header': CSSClass,
-  'footer': CSSClass,
-};
+import TTag from './TTag.vue';
 
 // @vue/component
 export default defineComponent({
@@ -63,7 +45,7 @@ export default defineComponent({
     TTag,
   },
   props: {
-    ...getVariantPropsWithClassesList<TCardOptions, TCardThemeClassesList, TCardThemeClassesList>(),
+    ...getVariantPropsWithClassesList<TCardOptions, TCardThemeKeys>(),
     tagName: {
       type: String,
       default: 'div',
@@ -87,7 +69,6 @@ export default defineComponent({
 
     return { configuration, attributes };
   },
-
 });
 
 </script>

@@ -5,7 +5,7 @@ import { get, parseVariantWithClassesList } from '@variantjs/core';
 import { Data, VariantJSConfiguration } from '../types';
 import { extractDefinedProps } from './useConfiguration';
 
-export default function useConfigurationWithClassesList<ComponentOptions extends Data>(defaultConfiguration: ComponentOptions, classesListKeys: Array<string>): ComputedRef<ComponentOptions> {
+export default function useConfigurationWithClassesList<ComponentOptions extends Data>(defaultConfiguration: ComponentOptions, classesListKeys: string[]): ComputedRef<ComponentOptions> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const vm = getCurrentInstance()!;
 
