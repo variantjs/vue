@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <t-card>
+    <template #header>
+      Simple component
+    </template>
+
     <div class="grid grid-cols-1 gap-6">
       <p>Disable all classes</p>
 
@@ -72,13 +76,112 @@
       </t-button>
     </div>
   </div>
+
+  <t-card>
+    <template #header>
+      Complex for component
+    </template>
+
+    <div class="grid grid-cols-1 gap-6">
+      <p>Disable all classes</p>
+
+      <div class="p-2 bg-gray-100 transparency">
+        <t-card
+          :fixed-classes="{
+            wrapper: '',
+            body: '',
+            header: '',
+            footer: '',
+          }"
+          :classes="{
+            wrapper: '',
+            body: '',
+            header: '',
+            footer: '',
+          }"
+        >
+          Im a card without styles
+        </t-card>
+      </div>
+
+      <p>Override the wrapper class with the native `class`</p>
+      <t-card class="border-red-600">
+        I should have a red border
+      </t-card>
+
+      <p>Get the variant from...</p>
+
+      <div class="flex space-x-3">
+        <label class="flex items-center">
+          <t-radio
+            v-model="variant"
+            :value="null"
+            name="variant-card"
+          />
+
+          <span class="ml-2">Default</span>
+        </label>
+        <label class="flex items-center">
+          <t-radio
+            v-model="variant"
+            value="error"
+            name="variant-card"
+          />
+
+          <span class="ml-2">Error</span>
+        </label>
+        <label class="flex items-center">
+          <t-radio
+            v-model="variant"
+            value="success"
+            name="variant-card"
+          />
+
+          <span class="ml-2">Success</span>
+        </label>
+      </div>
+
+      <t-card
+        :variant="variant"
+        :variants="cardVariants"
+      >
+        ...the variant  prop
+      </t-card>
+
+      <!-- <t-card
+        :classes="[{
+          'block px-4 py-2 text-white transition duration-100 ease-in-out bg-red-500 border border-transparent rounded shadow-sm hover:bg-red-600 focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed': variant === 'error'
+        }, variant !== 'error' ? defaultCardTheme : '']"
+      >
+        ...a condition
+      </t-card> -->
+
+      <t-card
+        :classes="{
+          body: {
+            'p-3 text-red-600 bg-red-100': variant === 'error',
+            'p-3 text-green-600 bg-green-100': variant === 'success',
+          },
+        }"
+      >
+        ...a condition
+      </t-card>
+
+      <t-card
+        :variant="variant"
+      >
+        ...the configuration
+      </t-card>
+    </div>
+  </t-card>
 </template>
 
 <script lang="ts">
-import { TButtonTheme } from '@variantjs/core';
+import { TButtonTheme, TCardTheme } from '@variantjs/core';
 import { defineComponent, provide } from 'vue';
 import TButton from '../components/TButton.vue';
 import TRadio from '../components/TRadio.vue';
+import TCard from '../components/TCard.vue';
 
 const variants = {
   error: {
@@ -89,16 +192,36 @@ const variants = {
   },
 };
 
+const cardVariants = {
+  error: {
+    fixedClasses: {
+      body: 'text-white',
+    },
+    classes: {
+      body: 'p-3 bg-red-600',
+    },
+  },
+  success: {
+    classes: {
+      body: 'p-3 text-green-600 bg-green-100',
+    },
+  },
+};
+
 export default defineComponent({
   name: 'Theme',
   components: {
     TButton,
     TRadio,
+    TCard,
   },
   setup() {
     provide('configuration', {
       TButton: {
         variants,
+      },
+      TCard: {
+        variants: cardVariants,
       },
     });
   },
@@ -107,6 +230,8 @@ export default defineComponent({
       variants,
       variant: 'error',
       defaultTheme: TButtonTheme.classes,
+      cardVariants,
+      defaultCardTheme: TCardTheme.classes,
     };
   },
 });

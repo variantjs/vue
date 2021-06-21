@@ -1,5 +1,5 @@
 import { WithVariantProps } from '@variantjs/core';
-import { InputHTMLAttributes } from '@vue/runtime-dom';
+import { InputHTMLAttributes } from 'vue';
 
 export type TInputValue = string | number | undefined | null;
 

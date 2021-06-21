@@ -2,7 +2,7 @@
   <select
     v-model="localValue"
     v-bind="attributes"
-    :multiple="multiple"
+    :multiple="!! multiple"
   >
     <t-select-option
       v-for="(option, index) in normalizedOptions"

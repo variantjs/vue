@@ -1,6 +1,6 @@
 import { InputOptions, WithVariantProps } from '@variantjs/core';
-import { SelectHTMLAttributes } from '@vue/runtime-dom';
-import { ComponentPropsOptions } from 'vue';
+import { SelectHTMLAttributes, ComponentPropsOptions } from 'vue';
+
 import { Truthy } from '../misc';
 
 // eslint-disable-next-line @typescript-eslint/ban-types

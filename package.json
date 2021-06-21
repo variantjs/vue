@@ -10,9 +10,6 @@
     "lint": "eslint src --fix",
     "link": "ln -nsf ../core/dist node_modules/@variantjs/core"
   },
-  "dependencies": {
-    "@variantjs/core": "^0.0.16"
-  },
   "devDependencies": {
     "@tailwindcss/forms": "^0.3.2",
     "@testing-library/vue": "^6.4.2",
@@ -45,5 +42,8 @@
   },
   "peerDependencies": {
     "vue": "^3.1.1"
+  },
+  "dependencies": {
+    "@variantjs/core": "^0.0.17"
   }
 }

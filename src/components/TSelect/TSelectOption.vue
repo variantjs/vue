@@ -3,7 +3,7 @@
     v-if="hasChildren"
     :data-value="option.value !== undefined ? String(option.value) : undefined"
     :label="option.text !== undefined ? String(option.text) : undefined"
-    :disabled="option.disabled"
+    :disabled="!! option.disabled"
   >
     <t-select-option
       v-for="(childrenOption, index) in option.children"
@@ -13,8 +13,8 @@
   </optgroup>
   <option
     v-else
-    :value="option.value"
-    :disabled="option.disabled"
+    :value="option.value === null ? undefined : option.value"
+    :disabled="!! option.disabled"
     v-text="option.text"
   />
 </template>

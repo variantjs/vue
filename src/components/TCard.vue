@@ -1,12 +1,12 @@
 <template>
   <t-tag
-    :class="configuration.classesList.wrapper"
+    :class="configuration.classesList?.wrapper"
     :tag-name="tagName"
   >
     <t-tag
       v-if="$slots.header || header"
       ref="header"
-      :class="configuration.classesList.header"
+      :class="configuration.classesList?.header"
       :text="header"
     >
       <slot name="header" />
@@ -14,7 +14,7 @@
     <t-tag
       v-if="$slots.default || body"
       ref="body"
-      :class="configuration.classesList.body"
+      :class="configuration.classesList?.body"
       :text="body"
     >
       <slot />
@@ -22,7 +22,7 @@
     <t-tag
       v-if="$slots.footer || footer"
       ref="footer"
-      :class="configuration.classesList.footer"
+      :class="configuration.classesList?.footer"
       :text="footer"
     >
       <slot name="footer" />

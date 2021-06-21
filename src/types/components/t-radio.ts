@@ -1,5 +1,5 @@
 import { WithVariantProps } from '@variantjs/core';
-import { InputHTMLAttributes } from '@vue/runtime-dom';
+import { InputHTMLAttributes } from 'vue';
 import { ObjectWithProperties } from '../helpers';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
