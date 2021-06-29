@@ -7,6 +7,7 @@ export { TSelectValue, TSelectOptions } from './components/t-select';
 export { TButtonOptions } from './components/t-button';
 export { TCardOptions } from './components/t-card';
 export { TTagOptions } from './components/t-tag';
+export { TInputGroupOptions, TInputGroupValidChilElementsKeys } from './components/t-input-group';
 export { Truthy, Data } from './misc';
 export { ObjectWithProperties, KeysOfType } from './helpers';
 export { EmitterEvents, EmitterFunction } from './utils';

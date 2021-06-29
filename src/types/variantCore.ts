@@ -8,6 +8,7 @@ import { TButtonOptions } from './components/t-button';
 import { TCardOptions } from './components/t-card';
 import { TCheckboxOptions } from './components/t-checkbox';
 import { TInputOptions } from './components/t-input';
+import { TInputGroupOptions } from './components/t-input-group';
 import { TRadioOptions } from './components/t-radio';
 import { TSelectOptions } from './components/t-select';
 import { TTagOptions } from './components/t-tag';
@@ -104,6 +105,7 @@ type VariantJSConfiguration = {
   TTextarea?: TTextareaOptions
   TTag?: TTagOptions
   TCard?: TCardOptions
+  TInputGroup?: TInputGroupOptions
 };
 
 export { VariantJSConfiguration, VariantJSProps, VariantJSWithClassesListProps };
