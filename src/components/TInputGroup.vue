@@ -1,5 +1,6 @@
 <template>
-  <div
+  <component
+    :is="tagName"
     ref="wrapper"
     :class="configuration.classesList?.wrapper"
     v-bind="attributes"
@@ -19,7 +20,7 @@
         {{ configuration[element.name === 'default' ? 'body' : element.name] }}
       </template>
     </component>
-  </div>
+  </component>
 </template>
 
 <script lang="ts">
@@ -50,6 +51,26 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+    tagName: {
+      type: String,
+      default: 'div',
+    },
+    bodyTagName: {
+      type: String,
+      default: 'div',
+    },
+    labelTagName: {
+      type: String,
+      default: 'label',
+    },
+    feedbackTagName: {
+      type: String,
+      default: 'div',
+    },
+    descriptionTagName: {
+      type: String,
+      default: 'div',
+    },
     sortedElements: {
       type: Array as PropType<TInputGroupValidChilElementsKeys>,
       default: (): TInputGroupValidChilElementsKeys => (['label', 'default', 'feedback', 'description']),
@@ -68,7 +89,7 @@ export default defineComponent({
   computed: {
     elementsToRender(): Array<{
       name: 'label' | 'default' | 'feedback' | 'description',
-      tagName: 'div' | 'label',
+      tagName: string,
     }> {
       const { configuration } = this;
       const slots = this.$slots;
@@ -76,7 +97,7 @@ export default defineComponent({
         .filter((e) => (e === 'default' ? (!!configuration.body || !!slots.default) : (!!configuration[e] || !!slots[e])))
         .map((e) => ({
           name: e,
-          tagName: e === 'label' ? 'label' : 'div',
+          tagName: e === 'default' ? configuration.bodyTagName : configuration[`${e}TagName`] as string,
         }));
     },
   },

@@ -9,5 +9,10 @@ export type TInputGroupOptions = WithVariantPropsAndClassesList<{
   description?: string
   feedback?: string
   body?: string
-  sortedElements?: TInputGroupValidChilElementsKeys
+  sortedElements?: TInputGroupValidChilElementsKeys,
+  tagName: string,
+  bodyTagName: string,
+  labelTagName: string,
+  feedbackTagName: string,
+  descriptionTagName: string,
 }, TCardConfigKeys> & HTMLAttributes & Data;

@@ -170,7 +170,60 @@ describe('TInputGroup.vue', () => {
     expect(body.innerHTML).toBe('from the prop');
   });
 
-  it('uses a `label` for the label element', () => {
+  it('uses default tagNames for elements', () => {
+    const wrapper = shallowMount(TInputGroup, {
+      slots: {
+        default: 'the body',
+        label: 'the label',
+        feedback: 'the feedback',
+        description: 'the description',
+      },
+    });
+
+    const els = wrapper.vm.$el.children;
+    const label = els[0];
+    const body = els[1];
+    const feedback = els[2];
+    const description = els[3];
+
+    expect(label.tagName).toBe('LABEL');
+    expect(body.tagName).toBe('DIV');
+    expect(feedback.tagName).toBe('DIV');
+    expect(description.tagName).toBe('DIV');
+  });
+
+  it('accepts different tagNames for elements', () => {
+    const wrapper = shallowMount(TInputGroup, {
+      props: {
+        tagName: 'fieldset',
+        bodyTagName: 'table',
+        labelTagName: 'span',
+        feedbackTagName: 'a',
+        descriptionTagName: 'p',
+      },
+      slots: {
+        default: 'the body',
+        label: 'the label',
+        feedback: 'the feedback',
+        description: 'the description',
+      },
+    });
+
+    const wrap = wrapper.vm.$el;
+    const els = wrap.children;
+    const label = els[0];
+    const body = els[1];
+    const feedback = els[2];
+    const description = els[3];
+
+    expect(wrap.tagName).toBe('FIELDSET');
+    expect(label.tagName).toBe('SPAN');
+    expect(body.tagName).toBe('TABLE');
+    expect(feedback.tagName).toBe('A');
+    expect(description.tagName).toBe('P');
+  });
+
+  it('uses a `div` for the element', () => {
     const wrapper = shallowMount(TInputGroup, {
       props: {
         label: 'im a label',
