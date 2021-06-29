@@ -164,6 +164,10 @@
       >
         ...the configuration
       </t-card>
+
+      <t-card>
+        ...the configuration
+      </t-card>
     </div>
   </t-card>
 </template>
@@ -213,6 +217,9 @@ export default defineComponent({
         variants,
       },
       TCard: {
+        tagName: 'a',
+        href: '#',
+        footer: 'copy',
         variants: cardVariants,
       },
     });

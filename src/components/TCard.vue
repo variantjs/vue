@@ -1,61 +1,49 @@
 <template>
   <component
-    :is="tagName"
+    :is="configuration.tagName"
     :class="configuration.classesList?.wrapper"
+    v-bind="attributes"
   >
-    <template
-      v-if="$slots.header || header"
+    <div
+      v-if="$slots.header || configuration.header"
       ref="header"
+      :class="configuration.classesList?.header"
     >
-      <div
-        v-if="header !== undefined"
-        :class="configuration.classesList?.header"
-      >
-        {{ header }}
-      </div>
-      <div
+      <template v-if="configuration.header !== undefined">
+        {{ configuration.header }}
+      </template>
+      <slot
         v-else
-        :class="configuration.classesList?.header"
-      >
-        <slot name="header" />
-      </div>
-    </template>
+        name="header"
+      />
+    </div>
 
-    <template
-      v-if="$slots.default || body"
+    <div
+      v-if="$slots.default || configuration.body"
       ref="body"
+      :class="configuration.classesList?.body"
     >
-      <div
-        v-if="body !== undefined"
-        :class="configuration.classesList?.body"
+      <template
+        v-if="configuration.body !== undefined"
       >
-        {{ body }}
-      </div>
-      <div
-        v-else
-        :class="configuration.classesList?.body"
-      >
-        <slot />
-      </div>
-    </template>
+        {{ configuration.body }}
+      </template>
+      <slot v-else />
+    </div>
 
-    <template
-      v-if="$slots.footer || footer"
-      ref="header"
+    <div
+      v-if="$slots.footer || configuration.footer"
+      ref="footer"
+      :class="configuration.classesList?.footer"
     >
-      <div
-        v-if="footer !== undefined"
-        :class="configuration.classesList?.footer"
-      >
-        {{ footer }}
-      </div>
-      <div
+      <template v-if="configuration.footer !== undefined">
+        {{ configuration.footer }}
+      </template>
+      <slot
         v-else
-        :class="configuration.classesList?.footer"
-      >
-        <slot name="footer" />
-      </div>
-    </template>
+        name="footer"
+      />
+    </div>
   </component>
 </template>
 

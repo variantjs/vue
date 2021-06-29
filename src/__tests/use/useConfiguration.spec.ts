@@ -63,4 +63,25 @@ describe('useConfiguration', () => {
       });
     }, configuration);
   });
+
+  it('should use the default values from the props if not overriden', () => {
+    const configuration = {};
+    const attrs = {};
+    const props = {
+      placeholder: {
+        type: String,
+        default: 'Hello world',
+      },
+    };
+    useSetup(() => {
+      const data = useConfiguration({
+        maxlength: '2',
+      });
+
+      expect(data.value).toEqual({
+        maxlength: '2',
+        placeholder: 'Hello world',
+      });
+    }, configuration, attrs, props);
+  });
 });

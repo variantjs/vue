@@ -20,6 +20,11 @@ export default function useConfigurationWithClassesList<ComponentOptions extends
       propsValues[normalizedAttribute] = vm.props[normalizedAttribute];
     });
 
-    return parseVariantWithClassesList(propsValues as ComponentOptions, classesListKeys, componentGlobalConfiguration, defaultConfiguration);
+    const result = parseVariantWithClassesList(propsValues as ComponentOptions, classesListKeys, componentGlobalConfiguration, defaultConfiguration);
+
+    return {
+      ...vm.props,
+      ...result,
+    };
   });
 }

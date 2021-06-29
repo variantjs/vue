@@ -29,6 +29,11 @@ export default function useConfiguration<ComponentOptions extends Data>(defaultC
       propsValues[normalizedAttribute] = vm.props[normalizedAttribute];
     });
 
-    return parseVariant(propsValues as ComponentOptions, componentGlobalConfiguration, defaultConfiguration);
+    const result = parseVariant(propsValues as ComponentOptions, componentGlobalConfiguration, defaultConfiguration);
+
+    return {
+      ...vm.props,
+      ...result,
+    };
   });
 }

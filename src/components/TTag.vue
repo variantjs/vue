@@ -1,6 +1,11 @@
 <template>
-  <component :is="tagName">
-    <slot v-if="text !== undefined" />
+  <component
+    :is="configuration.tagName"
+    v-bind="attributes"
+  >
+    <template v-if="configuration.text !== undefined">
+      {{ configuration.text }}
+    </template>
     <slot v-else />
   </component>
 </template>

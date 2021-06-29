@@ -142,4 +142,52 @@ describe('TCard.vue', () => {
     expect(body.className).toBe(TCardTheme.classes.body);
     expect(footer.className).toBe(TCardTheme.classes.footer);
   });
+
+  it('adds html attributes', () => {
+    const wrapper = shallowMount(TCard, {
+      attrs: {
+        id: 'my-id',
+      },
+    });
+
+    const wrap = wrapper.vm.$el as HTMLDivElement;
+
+    expect(wrap.getAttribute('id')).toBe('my-id');
+  });
+
+  it('adds attributes from global configuration', () => {
+    const wrapper = shallowMount(TCard, {
+      global: {
+        provide: {
+          configuration: {
+            TCard: {
+              id: 'my-id',
+            },
+          },
+        },
+      },
+    });
+
+    const wrap = wrapper.vm.$el as HTMLDivElement;
+
+    expect(wrap.getAttribute('id')).toBe('my-id');
+  });
+
+  it('used the props from global configuration', () => {
+    const wrapper = shallowMount(TCard, {
+      global: {
+        provide: {
+          configuration: {
+            TCard: {
+              tagName: 'table',
+              footer: 'Copyright @alfonsobires',
+            },
+          },
+        },
+      },
+    });
+
+    expect(wrapper.vm.$el.tagName).toBe('TABLE');
+    expect(wrapper.vm.$el.querySelector('div').innerHTML).toBe('Copyright @alfonsobires');
+  });
 });
