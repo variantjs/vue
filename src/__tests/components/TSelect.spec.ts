@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { mount, shallowMount } from '@vue/test-utils';
 import TSelect from '@/components/TSelect.vue';
-import { TSelectTheme } from '@variantjs/core';
+import { TSelectConfig } from '@variantjs/core';
 
 describe('TSelect.vue', () => {
   it('renders the select', () => {
@@ -12,7 +12,7 @@ describe('TSelect.vue', () => {
   it('renders the select with a default set of classes', () => {
     const wrapper = shallowMount(TSelect);
 
-    expect(wrapper.html()).toBe(`<select class="${TSelectTheme.classes}"></select>`);
+    expect(wrapper.html()).toBe(`<select class="${TSelectConfig.classes}"></select>`);
   });
 
   it('renders the select without attributes if no default theme', () => {

@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts">
+import { TTagConfig } from '@variantjs/core';
 import { defineComponent } from 'vue';
 import { TTagOptions } from '../types';
 import { getVariantProps } from '../utils/getVariantProps';
@@ -31,7 +32,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const configuration = useConfiguration<TTagOptions>({});
+    const configuration = useConfiguration<TTagOptions>(TTagConfig);
     const attributes = useAttributes<TTagOptions>(configuration);
 
     return { configuration, attributes };

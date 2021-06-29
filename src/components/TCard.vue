@@ -46,21 +46,17 @@
 </template>
 
 <script lang="ts">
-import { TCardTheme, TCardThemeKeys } from '@variantjs/core';
+import { TCardConfig, TCardConfigKeys } from '@variantjs/core';
 import { defineComponent } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
 import { TCardOptions } from '../types';
-import TTag from './TTag.vue';
 
 // @vue/component
 export default defineComponent({
   name: 'TCard',
-  components: {
-    TTag,
-  },
   props: {
-    ...getVariantPropsWithClassesList<TCardOptions, TCardThemeKeys>(),
+    ...getVariantPropsWithClassesList<TCardOptions, TCardConfigKeys>(),
     tagName: {
       type: String,
       default: 'div',
@@ -79,7 +75,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const configuration = useConfigurationWithClassesList<TCardOptions>(TCardTheme, ['wrapper', 'body', 'header', 'footer']);
+    const configuration = useConfigurationWithClassesList<TCardOptions>(TCardConfig, ['wrapper', 'body', 'header', 'footer']);
     const attributes = useAttributes<TCardOptions>(configuration);
 
     return { configuration, attributes };

@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import TCard from '@/components/TCard.vue';
-import { TCardTheme } from '@variantjs/core';
+import { TCardConfig } from '@variantjs/core';
 
 describe('TCard.vue', () => {
   it('renders the component without errors', () => {
@@ -137,10 +137,10 @@ describe('TCard.vue', () => {
     const body = els[1];
     const footer = els[2];
 
-    expect(wrap.className).toBe(TCardTheme.classes.wrapper);
-    expect(header.className).toBe(TCardTheme.classes.header);
-    expect(body.className).toBe(TCardTheme.classes.body);
-    expect(footer.className).toBe(TCardTheme.classes.footer);
+    expect(wrap.className).toBe(TCardConfig.classes.wrapper);
+    expect(header.className).toBe(TCardConfig.classes.header);
+    expect(body.className).toBe(TCardConfig.classes.body);
+    expect(footer.className).toBe(TCardConfig.classes.footer);
   });
 
   it('adds html attributes', () => {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { shallowMount } from '@vue/test-utils';
 import TButton from '@/components/TButton.vue';
-import { TButtonTheme } from '@variantjs/core';
+import { TButtonConfig } from '@variantjs/core';
 
 describe('TButton.vue', () => {
   it('renders the button', () => {
@@ -12,7 +12,7 @@ describe('TButton.vue', () => {
   it('renders the button with a default set of classes', () => {
     const wrapper = shallowMount(TButton);
 
-    expect(wrapper.html()).toBe(`<button class="${TButtonTheme.classes}"></button>`);
+    expect(wrapper.html()).toBe(`<button class="${TButtonConfig.classes}"></button>`);
   });
 
   it('renders the button without attributes if no default theme', () => {

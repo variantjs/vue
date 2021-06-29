@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { shallowMount } from '@vue/test-utils';
 import TCheckbox from '@/components/TCheckbox.vue';
-import { TCheckboxTheme } from '@variantjs/core';
+import { TCheckboxConfig } from '@variantjs/core';
 
 describe('TCheckbox.vue', () => {
   it('renders the input', () => {
@@ -12,7 +12,7 @@ describe('TCheckbox.vue', () => {
   it('renders the radio input with a default set of classes', () => {
     const wrapper = shallowMount(TCheckbox);
 
-    expect(wrapper.html()).toBe(`<input type="checkbox" class="${TCheckboxTheme.classes}">`);
+    expect(wrapper.html()).toBe(`<input type="checkbox" class="${TCheckboxConfig.classes}">`);
   });
 
   it('renders the input without attributes if no default theme', () => {

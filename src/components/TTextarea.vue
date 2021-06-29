@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { TTextareaTheme } from '@variantjs/core';
+import { TTextareaConfig } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { useVModel, useConfiguration, useAttributes } from '../use';
 import { getVariantProps } from '../utils/getVariantProps';
@@ -23,7 +23,7 @@ export default defineComponent({
   },
   setup(props) {
     const localValue = useVModel(props, 'modelValue');
-    const configuration = useConfiguration<TTextareaOptions>(TTextareaTheme);
+    const configuration = useConfiguration<TTextareaOptions>(TTextareaConfig);
     const attributes = useAttributes<TTextareaOptions>(configuration);
 
     return { localValue, configuration, attributes };

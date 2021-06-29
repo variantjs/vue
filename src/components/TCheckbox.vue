@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { TCheckboxTheme } from '@variantjs/core';
+import { TCheckboxConfig } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { TCheckboxOptions, TCheckboxValue } from '../types';
 import { getVariantProps } from '../utils/getVariantProps';
@@ -25,7 +25,7 @@ export default defineComponent({
   },
   setup(props) {
     const localValue = useVModel(props, 'modelValue');
-    const configuration = useConfiguration<TCheckboxOptions>(TCheckboxTheme);
+    const configuration = useConfiguration<TCheckboxOptions>(TCheckboxConfig);
     const attributes = useAttributes<TCheckboxOptions>(configuration);
 
     return { localValue, configuration, attributes };

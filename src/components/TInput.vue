@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { TInputTheme } from '@variantjs/core';
+import { TInputConfig } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { useVModel, useConfiguration, useAttributes } from '../use';
 import { getVariantProps } from '../utils/getVariantProps';
@@ -23,7 +23,7 @@ export default defineComponent({
   },
   setup(props) {
     const localValue = useVModel(props, 'modelValue');
-    const configuration = useConfiguration<TInputOptions>(TInputTheme);
+    const configuration = useConfiguration<TInputOptions>(TInputConfig);
     const attributes = useAttributes<TInputOptions>(configuration);
 
     return { localValue, configuration, attributes };

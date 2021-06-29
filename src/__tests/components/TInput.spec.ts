@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { shallowMount } from '@vue/test-utils';
 import TInput from '@/components/TInput.vue';
-import { TInputTheme } from '@variantjs/core';
+import { TInputConfig } from '@variantjs/core';
 
 describe('TInput.vue', () => {
   it('renders the input', () => {
@@ -12,7 +12,7 @@ describe('TInput.vue', () => {
   it('renders the input with a default set of classes', () => {
     const wrapper = shallowMount(TInput);
 
-    expect(wrapper.html()).toBe(`<input class="${TInputTheme.classes}">`);
+    expect(wrapper.html()).toBe(`<input class="${TInputConfig.classes}">`);
   });
 
   it('renders the input without attributes if no default theme', () => {

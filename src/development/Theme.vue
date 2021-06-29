@@ -173,7 +173,7 @@
 </template>
 
 <script lang="ts">
-import { TButtonTheme, TCardTheme } from '@variantjs/core';
+import { TButtonConfig, TCardConfig } from '@variantjs/core';
 import { defineComponent, provide } from 'vue';
 import TButton from '../components/TButton.vue';
 import TRadio from '../components/TRadio.vue';
@@ -225,9 +225,9 @@ export default defineComponent({
     return {
       variants,
       variant: 'error',
-      defaultTheme: TButtonTheme.classes,
+      defaultTheme: TButtonConfig.classes,
       cardVariants,
-      defaultCardTheme: TCardTheme.classes,
+      defaultCardConfig: TCardConfig.classes,
     };
   },
 });

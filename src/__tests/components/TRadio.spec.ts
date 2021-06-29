@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { shallowMount } from '@vue/test-utils';
 import TRadio from '@/components/TRadio.vue';
-import { TRadioTheme } from '@variantjs/core';
+import { TRadioConfig } from '@variantjs/core';
 
 describe('TRadio.vue', () => {
   it('renders the input', () => {
@@ -12,7 +12,7 @@ describe('TRadio.vue', () => {
   it('renders the radio input with a default set of classes', () => {
     const wrapper = shallowMount(TRadio);
 
-    expect(wrapper.html()).toBe(`<input type="radio" class="${TRadioTheme.classes}">`);
+    expect(wrapper.html()).toBe(`<input type="radio" class="${TRadioConfig.classes}">`);
   });
 
   it('renders the input without attributes if no default theme', () => {

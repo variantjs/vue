@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { InputOptions, TSelectTheme } from '@variantjs/core';
+import { InputOptions, TSelectConfig } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantProps } from '../utils/getVariantProps';
 import { Truthy, TSelectOptions, TSelectValue } from '../types';
@@ -45,7 +45,7 @@ export default defineComponent({
   },
   setup(props) {
     const localValue = useMulipleableVModel(props, 'modelValue');
-    const configuration = useConfiguration<TSelectOptions>(TSelectTheme);
+    const configuration = useConfiguration<TSelectOptions>(TSelectConfig);
     const attributes = useAttributes<TSelectOptions>(configuration);
     const normalizedOptions = useMultioptions(props, 'options');
 

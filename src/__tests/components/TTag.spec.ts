@@ -1,6 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 import TTag from '@/components/TTag.vue';
-// import { TTagTheme } from '@variantjs/core';
 
 describe('TTag.vue', () => {
   it('renders the component without errors', () => {

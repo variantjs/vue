@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { shallowMount } from '@vue/test-utils';
 import TTextarea from '@/components/TTextarea.vue';
-import { TTextareaTheme } from '@variantjs/core';
+import { TTextareaConfig } from '@variantjs/core';
 
 describe('TTextarea.vue', () => {
   it('renders the textarea', () => {
@@ -12,7 +12,7 @@ describe('TTextarea.vue', () => {
   it('renders the textarea with a default set of classes', () => {
     const wrapper = shallowMount(TTextarea);
 
-    expect(wrapper.html()).toBe(`<textarea class="${TTextareaTheme.classes}"></textarea>`);
+    expect(wrapper.html()).toBe(`<textarea class="${TTextareaConfig.classes}"></textarea>`);
   });
 
   it('renders the textarea without attributes if no default theme', () => {

@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { TButtonTheme } from '@variantjs/core';
+import { TButtonConfig } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { useConfiguration, useAttributes } from '../use';
 import { getVariantProps } from '../utils/getVariantProps';
@@ -72,7 +72,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const configuration = useConfiguration<TButtonOptions>(TButtonTheme);
+    const configuration = useConfiguration<TButtonOptions>(TButtonConfig);
     const attributes = useAttributes<TButtonOptions>(configuration);
 
     return { configuration, attributes };

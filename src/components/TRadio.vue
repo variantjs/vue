@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { TRadioTheme } from '@variantjs/core';
+import { TRadioConfig } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { TRadioOptions, TRadioValue } from '../types';
 import { getVariantProps } from '../utils/getVariantProps';
@@ -25,7 +25,7 @@ export default defineComponent({
   },
   setup(props) {
     const localValue = useVModel(props, 'modelValue');
-    const configuration = useConfiguration<TRadioOptions>(TRadioTheme);
+    const configuration = useConfiguration<TRadioOptions>(TRadioConfig);
     const attributes = useAttributes<TRadioOptions>(configuration);
 
     return { localValue, configuration, attributes };
