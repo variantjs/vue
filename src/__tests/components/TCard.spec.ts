@@ -101,7 +101,7 @@ describe('TCard.vue', () => {
     expect(wrapper.vm.$el.querySelector('div').innerHTML).toBe('Im a card!');
   });
 
-  it('prioritizes props over slots', () => {
+  it('prioritizes slots over props', () => {
     const wrapper = shallowMount(TCard, {
       props: {
         header: 'Im a header!',
@@ -110,16 +110,16 @@ describe('TCard.vue', () => {
       },
       slots: {
         default: 'default slot',
-        header: 'hader slot',
+        header: 'header slot',
         footer: 'footer slot',
       },
     });
 
     const els = wrapper.vm.$el.querySelectorAll('div');
     expect(els.length).toBe(3);
-    expect(els[0].innerHTML).toBe('Im a header!');
-    expect(els[1].innerHTML).toBe('Im a card!');
-    expect(els[2].innerHTML).toBe('Im a footer!');
+    expect(els[0].innerHTML).toBe('header slot');
+    expect(els[1].innerHTML).toBe('default slot');
+    expect(els[2].innerHTML).toBe('footer slot');
   });
 
   it('has a default theme', () => {

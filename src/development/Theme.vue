@@ -217,9 +217,6 @@ export default defineComponent({
         variants,
       },
       TCard: {
-        tagName: 'a',
-        href: '#',
-        footer: 'copy',
         variants: cardVariants,
       },
     });

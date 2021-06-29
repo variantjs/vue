@@ -3,10 +3,10 @@
     :is="configuration.tagName"
     v-bind="attributes"
   >
-    <template v-if="configuration.text !== undefined">
+    <slot v-if="$slots.default !== undefined" />
+    <template v-else>
       {{ configuration.text }}
     </template>
-    <slot v-else />
   </component>
 </template>
 

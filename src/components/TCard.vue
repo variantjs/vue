@@ -9,13 +9,13 @@
       ref="header"
       :class="configuration.classesList?.header"
     >
-      <template v-if="configuration.header !== undefined">
-        {{ configuration.header }}
-      </template>
       <slot
-        v-else
+        v-if="$slots.header !== undefined"
         name="header"
       />
+      <template v-else>
+        {{ configuration.header }}
+      </template>
     </div>
 
     <div
@@ -23,12 +23,10 @@
       ref="body"
       :class="configuration.classesList?.body"
     >
-      <template
-        v-if="configuration.body !== undefined"
-      >
+      <slot v-if="$slots.default !== undefined" />
+      <template v-else>
         {{ configuration.body }}
       </template>
-      <slot v-else />
     </div>
 
     <div
@@ -36,13 +34,13 @@
       ref="footer"
       :class="configuration.classesList?.footer"
     >
-      <template v-if="configuration.footer !== undefined">
-        {{ configuration.footer }}
-      </template>
       <slot
-        v-else
+        v-if="$slots.footer !== undefined"
         name="footer"
       />
+      <template v-else>
+        {{ configuration.footer }}
+      </template>
     </div>
   </component>
 </template>

@@ -27,7 +27,7 @@ describe('TTag.vue', () => {
     expect(wrapper.vm.$el.innerHTML).toBe('Im a tag!');
   });
 
-  it('prioritizes text prop over slot', () => {
+  it('prioritizes slot over test prop', () => {
     const wrapper = shallowMount(TTag, {
       props: {
         text: 'Im a tag!',
@@ -37,7 +37,7 @@ describe('TTag.vue', () => {
       },
     });
 
-    expect(wrapper.vm.$el.innerHTML).toBe('Im a tag!');
+    expect(wrapper.vm.$el.innerHTML).toBe('default slot');
   });
 
   it('adds the attributes', () => {
