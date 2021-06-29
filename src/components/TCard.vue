@@ -1,33 +1,62 @@
 <template>
-  <t-tag
+  <component
+    :is="tagName"
     :class="configuration.classesList?.wrapper"
-    :tag-name="tagName"
   >
-    <t-tag
+    <template
       v-if="$slots.header || header"
       ref="header"
-      :class="configuration.classesList?.header"
-      :text="header"
     >
-      <slot name="header" />
-    </t-tag>
-    <t-tag
+      <div
+        v-if="header !== undefined"
+        :class="configuration.classesList?.header"
+      >
+        {{ header }}
+      </div>
+      <div
+        v-else
+        :class="configuration.classesList?.header"
+      >
+        <slot name="header" />
+      </div>
+    </template>
+
+    <template
       v-if="$slots.default || body"
       ref="body"
-      :class="configuration.classesList?.body"
-      :text="body"
     >
-      <slot />
-    </t-tag>
-    <t-tag
+      <div
+        v-if="body !== undefined"
+        :class="configuration.classesList?.body"
+      >
+        {{ body }}
+      </div>
+      <div
+        v-else
+        :class="configuration.classesList?.body"
+      >
+        <slot />
+      </div>
+    </template>
+
+    <template
       v-if="$slots.footer || footer"
-      ref="footer"
-      :class="configuration.classesList?.footer"
-      :text="footer"
+      ref="header"
     >
-      <slot name="footer" />
-    </t-tag>
-  </t-tag>
+      <div
+        v-if="footer !== undefined"
+        :class="configuration.classesList?.footer"
+      >
+        {{ footer }}
+      </div>
+      <div
+        v-else
+        :class="configuration.classesList?.footer"
+      >
+        <slot name="footer" />
+      </div>
+    </template>
+  </component>
 </template>
 
 <script lang="ts">
