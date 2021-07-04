@@ -2,14 +2,20 @@
   <button
     id="headlessui-menu-button-1"
     ref="trigger"
-    class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
     type="button"
     aria-haspopup="true"
     aria-expanded="true"
     aria-controls="headlessui-menu-items-80"
+    :class="configuration.classesList?.trigger"
     @click.prevent="toggle"
   >
-    Options
+    <slot
+      v-if="$slots.trigger !== undefined"
+      name="trigger"
+    />
+    <template v-else>
+      {{ configuration.text }}
+    </template>
   </button>
 
   <teleport
@@ -17,167 +23,24 @@
     :disabled="! configuration.teleport"
   >
     <transition
-      enter-active-class="transition duration-100 ease-out"
-      enter-from-class="transform scale-95 opacity-0"
-      enter-to-class="transform scale-100 opacity-100"
-      leave-active-class="transition duration-75 ease-in"
-      leave-from-class="transform scale-100 opacity-100"
-      leave-to-class="transform scale-95 opacity-0"
+      :enter-active-class="configuration.classesList?.enterActiveClass"
+      :enter-from-class="configuration.classesList?.enterFromClass"
+      :enter-to-class="configuration.classesList?.enterToClass"
+      :leave-active-class="configuration.classesList?.leaveActiveClass"
+      :leave-from-class="configuration.classesList?.leaveFromClass"
+      :leave-to-class="configuration.classesList?.leaveToClass"
       @after-leave="dropdownAfterLeave"
     >
       <div
         v-show="shown || !popperIsAdjusted"
         id="headlessui-menu-items-80"
         ref="dropdown"
-        class="w-56 bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        :class="configuration.classesList?.dropdown"
         aria-labelledby="headlessui-menu-button-1"
         role="menu"
         tabindex="0"
       >
-        <div
-          class="px-1 py-1 "
-          role="none"
-        >
-          <button
-            id="headlessui-menu-item-81"
-            class="flex items-center w-full px-2 py-2 text-sm text-gray-900 rounded-md group"
-            role="menuitem"
-            tabindex="-1"
-          >
-            <svg
-              class="w-5 h-5 mr-2"
-              aria-hidden="true"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            ><path
-              d="M4 13V16H7L16 7L13 4L4 13Z"
-              fill="#EDE9FE"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /></svg>Edit
-          </button><button
-            id="headlessui-menu-item-82"
-            class="flex items-center w-full px-2 py-2 text-sm text-gray-900 rounded-md group"
-            role="menuitem"
-            tabindex="-1"
-          >
-            <svg
-              class="w-5 h-5 mr-2"
-              aria-hidden="true"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            ><path
-              d="M4 4H12V12H4V4Z"
-              fill="#EDE9FE"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /><path
-              d="M8 8H16V16H8V8Z"
-              fill="#EDE9FE"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /></svg>Duplicate
-          </button>
-        </div><div
-          class="px-1 py-1"
-          role="none"
-        >
-          <button
-            id="headlessui-menu-item-83"
-            class="flex items-center w-full px-2 py-2 text-sm text-gray-900 rounded-md group"
-            role="menuitem"
-            tabindex="-1"
-          >
-            <svg
-              class="w-5 h-5 mr-2"
-              aria-hidden="true"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            ><rect
-              x="5"
-              y="8"
-              width="10"
-              height="8"
-              fill="#EDE9FE"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /><rect
-              x="4"
-              y="4"
-              width="12"
-              height="4"
-              fill="#EDE9FE"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /><path
-              d="M8 12H12"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /></svg>Archive
-          </button><button
-            id="headlessui-menu-item-84"
-            class="flex items-center w-full px-2 py-2 text-sm text-gray-900 rounded-md group"
-            role="menuitem"
-            tabindex="-1"
-          >
-            <svg
-              class="w-5 h-5 mr-2"
-              aria-hidden="true"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            ><path
-              d="M10 4H16V10"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /><path
-              d="M16 4L8 12"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /><path
-              d="M8 6H4V16H14V12"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /></svg>Move
-          </button>
-        </div><div
-          class="px-1 py-1"
-          role="none"
-        >
-          <button
-            id="headlessui-menu-item-85"
-            class="flex items-center w-full px-2 py-2 text-sm text-gray-900 rounded-md group"
-            role="menuitem"
-            tabindex="-1"
-          >
-            <svg
-              class="w-5 h-5 mr-2 text-violet-400"
-              aria-hidden="true"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            ><rect
-              x="5"
-              y="6"
-              width="10"
-              height="10"
-              fill="#EDE9FE"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /><path
-              d="M3 6H17"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /><path
-              d="M8 6V4H12V6"
-              stroke="#A78BFA"
-              stroke-width="2"
-            /></svg>Delete
-          </button>
-        </div>
+        <slot />
       </div>
     </transition>
   </teleport>
@@ -211,6 +74,20 @@ export default defineComponent({
   name: 'TDropdown',
   props: {
     ...getVariantPropsWithClassesList<TDropdownOptions, TDropdownConfigKeys>(),
+    text: {
+      type: String,
+      default: undefined,
+    },
+
+    teleport: {
+      type: Boolean,
+      default: false,
+    },
+    teleportTo: {
+      type: [String, Object] as PropType<string | HTMLElement>,
+      default: 'body',
+    },
+
     tagName: {
       type: String,
       default: 'div',
@@ -223,10 +100,7 @@ export default defineComponent({
       type: String,
       default: 'div',
     },
-    text: {
-      type: String,
-      default: undefined,
-    },
+
     disabled: {
       type: Boolean,
       default: undefined,
@@ -250,15 +124,6 @@ export default defineComponent({
     show: {
       type: Boolean,
       default: false,
-    },
-
-    teleport: {
-      type: Boolean,
-      default: false,
-    },
-    teleportTo: {
-      type: String,
-      default: 'body',
     },
 
     placement: {
@@ -300,7 +165,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const configuration = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, ['button', 'wrapper', 'dropdownWrapper', 'dropdown', 'enterClass', 'enterActiveClass', 'enterToClass', 'leaveClass', 'leaveActiveClass', 'leaveToClass']);
+    const configuration = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, ['trigger', 'dropdown', 'enterFromClass', 'enterActiveClass', 'enterToClass', 'leaveFromClass', 'leaveActiveClass', 'leaveToClass']);
     const attributes = useAttributes<TDropdownOptions>(configuration);
 
     return { configuration, attributes };

@@ -16,7 +16,7 @@ export type TDropdownOptions = WithVariantPropsAndClassesList<{
   show?: boolean,
 
   teleport?: boolean,
-  teleportTo?: string,
+  teleportTo?: string | HTMLElement,
 
   placement?: Placement,
   popperOptions?: Options,
