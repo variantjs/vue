@@ -1,12 +1,14 @@
 <template>
+  <!-- id="headlessui-menu-button-1" -->
   <button
-    id="headlessui-menu-button-1"
     ref="trigger"
     type="button"
     aria-haspopup="true"
     aria-expanded="true"
     aria-controls="headlessui-menu-items-80"
     :class="configuration.classesList?.trigger"
+    :disabled="configuration.disabled"
+    v-bind="allAttributes"
     @click.prevent="toggle"
   >
     <slot
@@ -54,7 +56,7 @@ import { TDropdownConfig, TDropdownConfigKeys } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
-import { TDropdownOptions } from '../types';
+import { Data, TDropdownOptions } from '../types';
 
 const debounce = (func: (...args: any[]) => void, wait = 200) => {
   let timeout: ReturnType<typeof setTimeout> | undefined;
@@ -179,6 +181,12 @@ export default defineComponent({
     };
   },
   computed: {
+    allAttributes(): Data {
+      return {
+        ...this.attributes,
+        ...this.$attrs,
+      };
+    },
     fullPopperOptions(): Options {
       let { popperOptions } = this.configuration;
 

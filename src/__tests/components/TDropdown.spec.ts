@@ -171,4 +171,89 @@ describe('TDropdown.vue', () => {
 
     expect(document.querySelector('#teleport-here')!.textContent).toBe('The body');
   });
+
+  it('the trigger is a button with type `button`', async () => {
+    const wrapper = mount(TDropdown);
+
+    const trigger = wrapper.get('button');
+
+    expect(trigger.attributes().type).toBe('button');
+    expect(trigger.element.tagName).toBe('BUTTON');
+  });
+
+  it('disables the dropdown', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        disabled: true,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+    const { dropdown } = wrapper.vm.$refs;
+
+    await dropdownIsReady(wrapper);
+
+    expect(trigger.attributes().disabled).toBeDefined();
+
+    await trigger.trigger('click');
+
+    expect(wrapper.vm.shown).toBe(false);
+
+    expect(dropdown.style.display).toBe('none');
+  });
+
+  it('applies the attributes to the trigger button', () => {
+    const wrapper = mount(TDropdown, {
+      attrs: {
+        id: 'my-id',
+        'data-foo': 'bar',
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    expect(trigger.attributes().id).toBe('my-id');
+    expect(trigger.attributes()['data-foo']).toBe('bar');
+  });
+
+  it('applies the attributes that comes from the configuration the trigger button', () => {
+    const wrapper = mount(TDropdown, {
+      global: {
+        provide: {
+          configuration: {
+            TDropdown: {
+              id: 'my-id',
+              'data-foo': 'bar',
+            },
+          },
+        },
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    expect(trigger.attributes().id).toBe('my-id');
+    expect(trigger.attributes()['data-foo']).toBe('bar');
+  });
+
+  it('prioritizes the local attributes', () => {
+    const wrapper = mount(TDropdown, {
+      global: {
+        provide: {
+          configuration: {
+            TDropdown: {
+              id: 'my-id',
+            },
+          },
+        },
+      },
+      attrs: {
+        id: 'my-local-id',
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    expect(trigger.attributes().id).toBe('my-local-id');
+  });
 });
