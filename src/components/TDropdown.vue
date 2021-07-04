@@ -1,6 +1,7 @@
 <template>
   <!-- id="headlessui-menu-button-1" -->
-  <button
+  <component
+    :is="tagName"
     ref="trigger"
     type="button"
     aria-haspopup="true"
@@ -18,7 +19,7 @@
     <template v-else>
       {{ configuration.text }}
     </template>
-  </button>
+  </component>
 
   <teleport
     :to="configuration.teleportTo"
@@ -33,17 +34,16 @@
       :leave-to-class="configuration.classesList?.leaveToClass"
       @after-leave="dropdownAfterLeave"
     >
-      <div
+      <component
+        :is="dropdownTagName"
         v-show="shown || !popperIsAdjusted"
-        id="headlessui-menu-items-80"
         ref="dropdown"
         :class="configuration.classesList?.dropdown"
-        aria-labelledby="headlessui-menu-button-1"
-        role="menu"
         tabindex="0"
+        v-bind="dropdownAttributes"
       >
         <slot />
-      </div>
+      </component>
     </transition>
   </teleport>
 </template>
@@ -80,7 +80,6 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
-
     teleport: {
       type: Boolean,
       default: false,
@@ -89,20 +88,18 @@ export default defineComponent({
       type: [String, Object] as PropType<string | HTMLElement>,
       default: 'body',
     },
-
     tagName: {
       type: String,
-      default: 'div',
-    },
-    dropdownWrapperTagName: {
-      type: String,
-      default: 'div',
+      default: 'button',
     },
     dropdownTagName: {
       type: String,
       default: 'div',
     },
-
+    dropdownAttributes: {
+      type: Object,
+      default: undefined,
+    },
     disabled: {
       type: Boolean,
       default: undefined,
@@ -127,7 +124,6 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-
     placement: {
       type: String as PropType<Placement>,
       default: undefined,

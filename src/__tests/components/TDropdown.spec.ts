@@ -115,6 +115,29 @@ describe('TDropdown.vue', () => {
     expect(dropdown.style.display).toBe('');
   });
 
+  it('hides the dropdown when the trigger is pressed two times', async () => {
+    const wrapper = mount(TDropdown);
+
+    const trigger = wrapper.get('button');
+    const { dropdown } = wrapper.vm.$refs;
+
+    await dropdownIsReady(wrapper);
+
+    expect(dropdown.style.display).toBe('none');
+
+    await trigger.trigger('click');
+
+    expect(wrapper.vm.shown).toBe(true);
+
+    expect(dropdown.style.display).toBe('');
+
+    await trigger.trigger('click');
+
+    expect(wrapper.vm.shown).toBe(false);
+
+    expect(dropdown.style.display).toBe('none');
+  });
+
   it('doesnt teleports the dropdown by default', () => {
     const wrapper = mount(TDropdown);
 
@@ -202,6 +225,22 @@ describe('TDropdown.vue', () => {
     expect(dropdown.style.display).toBe('none');
   });
 
+  it('applies the dropdownAttributes to the dropdown', () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        dropdownAttributes: {
+          id: 'my-id',
+          'data-foo': 'bar',
+        },
+      },
+    });
+
+    const { dropdown } = wrapper.vm.$refs;
+
+    expect(dropdown.getAttribute('id')).toBe('my-id');
+    expect(dropdown.getAttribute('data-foo')).toBe('bar');
+  });
+
   it('applies the attributes to the trigger button', () => {
     const wrapper = mount(TDropdown, {
       attrs: {
@@ -255,5 +294,29 @@ describe('TDropdown.vue', () => {
     const trigger = wrapper.get('button');
 
     expect(trigger.attributes().id).toBe('my-local-id');
+  });
+
+  it('uses the set tagName ', () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        tagName: 'a',
+      },
+    });
+
+    const { trigger } = wrapper.vm.$refs;
+
+    expect(trigger.tagName).toBe('A');
+  });
+
+  it('uses the set dropdownTagName ', () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        dropdownTagName: 'ul',
+      },
+    });
+
+    const { dropdown } = wrapper.vm.$refs;
+
+    expect(dropdown.tagName).toBe('UL');
   });
 });

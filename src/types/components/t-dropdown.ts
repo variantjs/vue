@@ -6,9 +6,11 @@ import { Data } from '../misc';
 export type TDropdownOptions = WithVariantPropsAndClassesList<{
   text?: string,
   disabled?: boolean,
+
   tagName?: string,
-  dropdownWrapperTagName?: string,
   dropdownTagName?: string,
+  dropdownAttributes?: Data,
+
   toggleOnFocus?: boolean,
   toggleOnClick?: boolean,
   toggleOnHover?: boolean,
@@ -20,5 +22,4 @@ export type TDropdownOptions = WithVariantPropsAndClassesList<{
 
   placement?: Placement,
   popperOptions?: Options,
-
 }, TDropdownConfigKeys> & HTMLAttributes & Data;
