@@ -1,5 +1,4 @@
 <template>
-  <!-- id="headlessui-menu-button-1" -->
   <component
     :is="tagName"
     ref="trigger"
@@ -10,7 +9,11 @@
     :class="configuration.classesList?.trigger"
     :disabled="configuration.disabled"
     v-bind="allAttributes"
-    @click.prevent="toggle"
+    @click="onClick"
+    @focus="onFocus"
+    @blur="onBlur"
+    @mouseover="onMouseover"
+    @mouseleave="onMouseleave"
   >
     <slot
       v-if="$slots.trigger !== undefined"
@@ -232,9 +235,7 @@ export default defineComponent({
     dropdownAfterLeave() {
       this.getDropdownElement().style.removeProperty('visibility');
     },
-    toggle(): void {
-      this.shown = !this.shown;
-    },
+
     async updatePopper() {
       if (this.shown) {
         return;
@@ -267,6 +268,48 @@ export default defineComponent({
     getTriggerElement(): HTMLButtonElement {
       const { trigger } = this.$refs;
       return trigger as HTMLButtonElement;
+    },
+    doToggle(): void {
+      this.shown = !this.shown;
+    },
+    doShow(): void {
+      this.shown = true;
+    },
+    doHide(): void {
+      this.shown = false;
+    },
+    onClick(e: MouseEvent): void {
+      if (this.configuration.toggleOnClick) {
+        this.doToggle();
+      }
+
+      this.$emit('click', e);
+    },
+    onFocus(e: FocusEvent): void {
+      if (this.configuration.toggleOnFocus) {
+        this.doShow();
+      }
+      this.$emit('focus', e);
+    },
+    onBlur(e: FocusEvent): void {
+      if (this.configuration.toggleOnFocus) {
+        this.doHide();
+      }
+      this.$emit('blur', e);
+    },
+    onMouseover(e: MouseEvent): void {
+      if (this.configuration.toggleOnHover) {
+        this.doShow();
+      }
+
+      this.$emit('mouseover', e);
+    },
+    onMouseleave(e: MouseEvent): void {
+      if (this.configuration.toggleOnHover) {
+        this.doHide();
+      }
+
+      this.$emit('mouseleave', e);
     },
   },
 });

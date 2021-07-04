@@ -319,4 +319,142 @@ describe('TDropdown.vue', () => {
 
     expect(dropdown.tagName).toBe('UL');
   });
+
+  it('doesnt toggle the dropdown on click if toggleOnClick is set to `false`', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnClick: false,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('click');
+
+    expect(wrapper.vm.shown).toBe(false);
+
+    await trigger.trigger('click');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('doesnt toggle the dropdown on focus  by default', async () => {
+    const wrapper = mount(TDropdown);
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('focus');
+
+    expect(wrapper.vm.shown).toBe(false);
+
+    await trigger.trigger('blur');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('toggles the dropdown on focus if option is set', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnFocus: true,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('focus');
+
+    expect(wrapper.vm.shown).toBe(true);
+
+    await trigger.trigger('blur');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('doesnt toggle the dropdown on hover  by default', async () => {
+    const wrapper = mount(TDropdown);
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('hover');
+
+    expect(wrapper.vm.shown).toBe(false);
+
+    await trigger.trigger('blur');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('toggles the dropdown on hover if option is set', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnHover: true,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('mouseover');
+
+    expect(wrapper.vm.shown).toBe(true);
+
+    await trigger.trigger('mouseleave');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('emits native button events', () => {
+    const onClick = jest.fn();
+    const onBlur = jest.fn();
+    const onFocus = jest.fn();
+    const onKeyup = jest.fn();
+
+    const wrapper = mount(TDropdown, {
+      attrs: {
+        onClick,
+        onBlur,
+        onFocus,
+        onKeyup,
+      },
+    });
+
+    const { trigger } = wrapper.vm.$refs;
+
+    trigger.dispatchEvent(new MouseEvent('click'));
+    expect(onClick).toHaveBeenCalled();
+
+    trigger.dispatchEvent(new FocusEvent('focus'));
+    expect(onFocus).toHaveBeenCalled();
+
+    trigger.dispatchEvent(new FocusEvent('blur'));
+    expect(onBlur).toHaveBeenCalled();
+
+    trigger.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
+    expect(onKeyup).toHaveBeenCalled();
+  });
+
+  it('triggers custom events', async () => {
+    const onCustom = jest.fn();
+
+    const wrapper = mount(TDropdown, {
+      attrs: {
+        onCustom,
+      },
+    });
+    const { trigger } = wrapper.vm.$refs;
+
+    const evt = new CustomEvent('custom', { detail: 'my-custom-event' });
+    trigger.dispatchEvent(evt);
+
+    expect(onCustom).toHaveBeenCalled();
+  });
 });
