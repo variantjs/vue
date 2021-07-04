@@ -10,8 +10,8 @@ export default function useAttributes<ComponentOptions extends Data>(configurati
 
   const result = computed(() => {
     const availableProps = Object.keys(vm.props);
-    const attributes = pick(configuration.value, (value, key) => isPrimitive(value) && !availableProps.includes(String(key)));
-    return attributes;
+
+    return pick(configuration.value, (value, key) => isPrimitive(value) && !availableProps.includes(String(key)));
   });
 
   return result;
