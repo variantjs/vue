@@ -457,4 +457,81 @@ describe('TDropdown.vue', () => {
 
     expect(onCustom).toHaveBeenCalled();
   });
+
+  it('display the dropdown if `show` prop is set ', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+      },
+    });
+
+    const { dropdown } = wrapper.vm.$refs;
+
+    await dropdownIsReady(wrapper);
+
+    expect(wrapper.vm.shown).toBe(true);
+    expect(wrapper.vm.popperIsAdjusted).toBe(true);
+
+    expect(dropdown.style.display).toBe('');
+  });
+
+  it('emits `update:show` when show property is updated', async () => {
+    const wrapper = mount(TDropdown);
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('click');
+
+    expect(wrapper.emitted()).toHaveProperty('update:show', [[true]]);
+
+    await trigger.trigger('click');
+
+    expect(wrapper.emitted()).toHaveProperty('update:show', [[true], [false]]);
+  });
+
+  it('shows the modal if the `show` props changes', async () => {
+    const wrapper = mount(TDropdown);
+
+    await dropdownIsReady(wrapper);
+
+    await wrapper.setProps({
+      show: true,
+    });
+
+    expect(wrapper.vm.shown).toBe(true);
+  });
+
+  it('hides the modal if the `show` props changes', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+      },
+    });
+
+    await dropdownIsReady(wrapper);
+
+    await wrapper.setProps({
+      show: false,
+    });
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  // it('doesnt hides outsid ', async () => {
+  //   const wrapper = mount(TDropdown, {
+  //     props: {
+  //       show: true,
+  //     },
+  //   });
+
+  //   const { dropdown } = wrapper.vm.$refs;
+
+  //   await dropdownIsReady(wrapper);
+
+  //   expect(wrapper.vm.shown).toBe(true);
+
+  //   expect(dropdown.style.display).toBe('');
+  // });
 });

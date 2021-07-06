@@ -74,6 +74,20 @@ const debounce = (func: (...args: any[]) => void, wait = 200) => {
   };
 };
 
+const defaultPopperOptions: Options = {
+  placement: 'bottom',
+  modifiers: [
+    {
+      name: 'offset',
+      options: {
+        offset: [0, 10],
+      },
+    },
+  ],
+  strategy: 'absolute',
+  onFirstUpdate: undefined,
+};
+
 // @vue/component
 export default defineComponent({
   name: 'TDropdown',
@@ -157,12 +171,7 @@ export default defineComponent({
     },
     popperOptions: {
       type: Object as PropType<Options>,
-      default: (): Options => ({
-        placement: 'bottom',
-        modifiers: [],
-        strategy: 'absolute',
-        onFirstUpdate: undefined,
-      }),
+      default: (): Options => defaultPopperOptions,
     },
   },
   setup() {
@@ -171,10 +180,10 @@ export default defineComponent({
 
     return { configuration, attributes };
   },
-  data() {
+  data({ configuration }) {
     return {
       popperIsAdjusted: false,
-      shown: false,
+      shown: configuration.show,
       popper: null as Instance | null,
       popperAdjusterListener: null as null | (() => void),
     };
@@ -190,12 +199,7 @@ export default defineComponent({
       let { popperOptions } = this.configuration;
 
       if (popperOptions === undefined) {
-        popperOptions = {
-          placement: 'bottom',
-          modifiers: [],
-          strategy: 'absolute',
-          onFirstUpdate: undefined,
-        };
+        popperOptions = defaultPopperOptions;
       }
 
       if (this.configuration.placement !== undefined) {
@@ -212,6 +216,18 @@ export default defineComponent({
       };
 
       return popperOptions;
+    },
+  },
+  watch: {
+    shown(shown: boolean) {
+      this.$emit('update:show', shown);
+    },
+    show(show: boolean) {
+      if (show) {
+        this.doShow();
+      } else {
+        this.doHide();
+      }
     },
   },
   mounted() {
@@ -257,7 +273,11 @@ export default defineComponent({
       this.popper.destroy();
     },
     async createPopper() {
-      this.getDropdownElement().style.visibility = 'hidden';
+      if (!this.shown) {
+        // Used to `hide` the dropdown while the position is adjusted
+        // for the popper plugin
+        this.getDropdownElement().style.visibility = 'hidden';
+      }
 
       this.popper = createPopper(this.getTriggerElement(), this.getDropdownElement(), this.fullPopperOptions);
     },
