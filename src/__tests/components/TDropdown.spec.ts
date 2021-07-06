@@ -444,7 +444,7 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(true);
   });
 
-  it('doesnt toggle the dropdown on hover  by default', async () => {
+  it('doesnt toggle the dropdown on hover by default', async () => {
     const wrapper = mount(TDropdown);
 
     const trigger = wrapper.get('button');

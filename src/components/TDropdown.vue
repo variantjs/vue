@@ -320,14 +320,15 @@ export default defineComponent({
       this.$emit('focus', e);
     },
     onBlur(e: FocusEvent): void {
-      if (this.configuration.toggleOnFocus
-        && !elementIsTargetOrTargetChild(e.relatedTarget, this.getDropdownElement())
-        && !elementIsTargetOrTargetChild(e.relatedTarget, this.getTriggerElement())
-      ) {
+      if (this.configuration.toggleOnFocus && !this.targetIsChild(e)) {
         this.doHide();
       }
 
       this.$emit('blur', e);
+    },
+    targetIsChild(e: FocusEvent | MouseEvent): boolean {
+      return elementIsTargetOrTargetChild(e.relatedTarget, this.getDropdownElement())
+        || elementIsTargetOrTargetChild(e.relatedTarget, this.getTriggerElement());
     },
     onMouseover(e: MouseEvent): void {
       if (this.configuration.toggleOnHover) {
