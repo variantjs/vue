@@ -222,7 +222,7 @@ export default defineComponent({
     shown(shown: boolean) {
       this.$emit('update:show', shown);
     },
-    show(show: boolean) {
+    'configuration.show': function configurationShowWatch(show: boolean) {
       if (show) {
         this.doShow();
       } else {

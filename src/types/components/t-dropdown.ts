@@ -14,8 +14,10 @@ export type TDropdownOptions = WithVariantPropsAndClassesList<{
   toggleOnFocus?: boolean,
   toggleOnClick?: boolean,
   toggleOnHover?: boolean,
-  hideOnLeaveTimeout?: number,
+
   show?: boolean,
+
+  hideOnLeaveTimeout?: number,
 
   teleport?: boolean,
   teleportTo?: string | HTMLElement,
