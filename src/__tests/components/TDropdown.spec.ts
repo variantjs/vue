@@ -4,6 +4,7 @@ import {
 } from '@vue/test-utils';
 import TDropdown from '@/components/TDropdown.vue';
 import { TDropdownConfig } from '@variantjs/core';
+import { h } from 'vue';
 
 const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<void> = (wrapper: VueWrapper<any>) => new Promise((resolve) => {
   // 1. Until component is mounted
@@ -374,6 +375,73 @@ describe('TDropdown.vue', () => {
     await trigger.trigger('blur');
 
     expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('doesnt hides the dropdown if blur in the the dropdown', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnFocus: true,
+      },
+    });
+
+    const triggerButton = wrapper.get('button');
+
+    const { dropdown } = wrapper.vm.$refs;
+
+    await dropdownIsReady(wrapper);
+
+    await triggerButton.trigger('blur', {
+      relatedTarget: dropdown,
+    });
+
+    expect(wrapper.vm.shown).toBe(true);
+  });
+
+  it('doesnt hides the dropdown if blur in the the trigger', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnFocus: true,
+      },
+    });
+
+    const triggerButton = wrapper.get('button');
+
+    const { trigger } = wrapper.vm.$refs;
+
+    await dropdownIsReady(wrapper);
+
+    await triggerButton.trigger('blur', {
+      relatedTarget: trigger,
+    });
+
+    expect(wrapper.vm.shown).toBe(true);
+  });
+
+  it('doesnt hides the dropdown if blur in an element inside the dropdown', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnFocus: true,
+      },
+      slots: {
+        default: h('button', 'focus me'),
+      },
+    });
+
+    const triggerButton = wrapper.get('button');
+
+    const { dropdown } = wrapper.vm.$refs;
+    const button = dropdown.querySelector('button');
+
+    await dropdownIsReady(wrapper);
+
+    await triggerButton.trigger('blur', {
+      relatedTarget: button,
+    });
+
+    expect(wrapper.vm.shown).toBe(true);
   });
 
   it('doesnt toggle the dropdown on hover  by default', async () => {

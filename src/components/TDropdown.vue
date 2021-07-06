@@ -74,6 +74,14 @@ const debounce = (func: (...args: any[]) => void, wait = 200) => {
   };
 };
 
+const elementIsTargetOrTargetChild = (relatedTarget: EventTarget | null, wrapper: HTMLElement) : boolean => {
+  if (!(relatedTarget instanceof Element)) {
+    return false;
+  }
+
+  return wrapper.contains(relatedTarget);
+};
+
 const defaultPopperOptions: Options = {
   placement: 'bottom',
   modifiers: [
@@ -312,9 +320,13 @@ export default defineComponent({
       this.$emit('focus', e);
     },
     onBlur(e: FocusEvent): void {
-      if (this.configuration.toggleOnFocus) {
+      if (this.configuration.toggleOnFocus
+        && !elementIsTargetOrTargetChild(e.relatedTarget, this.getDropdownElement())
+        && !elementIsTargetOrTargetChild(e.relatedTarget, this.getTriggerElement())
+      ) {
         this.doHide();
       }
+
       this.$emit('blur', e);
     },
     onMouseover(e: MouseEvent): void {
