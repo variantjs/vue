@@ -697,19 +697,27 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(false);
   });
 
-  // it('doesnt hides outsid ', async () => {
-  //   const wrapper = mount(TDropdown, {
-  //     props: {
-  //       show: true,
-  //     },
-  //   });
+  it('creates a popper instance', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        placement: 'top',
+      },
+    });
 
-  //   const { dropdown } = wrapper.vm.$refs;
+    await dropdownIsReady(wrapper);
 
-  //   await dropdownIsReady(wrapper);
+    expect(wrapper.vm.popper).toBeTruthy();
+  });
 
-  //   expect(wrapper.vm.shown).toBe(true);
+  it('overrides the popper placement if placement is set', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        placement: 'top',
+      },
+    });
 
-  //   expect(dropdown.style.display).toBe('');
-  // });
+    await dropdownIsReady(wrapper);
+
+    expect(wrapper.vm.popper.state.placement).toBe('top');
+  });
 });

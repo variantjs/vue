@@ -57,48 +57,17 @@
 import {
   createPopper, Instance, Options, Placement,
 } from '@popperjs/core';
-import { TDropdownConfig, TDropdownConfigKeys } from '@variantjs/core';
+import {
+  TDropdownConfig,
+  TDropdownConfigKeys,
+  debounce,
+  elementIsTargetOrTargetChild,
+  TDropdownPopperDefaultOptions as defaultPopperOptions,
+} from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
 import { Data, TDropdownOptions } from '../types';
-
-const debounce = (func: (...args: any[]) => void, wait = 200) => {
-  let timeout: ReturnType<typeof setTimeout> | undefined;
-
-  return (...args: any[]) => {
-    clearTimeout(timeout);
-
-    timeout = setTimeout(() => {
-      timeout = undefined;
-      func(args);
-    }, wait);
-
-    if (!timeout) func(args);
-  };
-};
-
-const elementIsTargetOrTargetChild = (relatedTarget: EventTarget | null, wrapper: HTMLElement) : boolean => {
-  if (!(relatedTarget instanceof Element)) {
-    return false;
-  }
-
-  return wrapper.contains(relatedTarget);
-};
-
-const defaultPopperOptions: Options = {
-  placement: 'bottom',
-  modifiers: [
-    {
-      name: 'offset',
-      options: {
-        offset: [0, 10],
-      },
-    },
-  ],
-  strategy: 'absolute',
-  onFirstUpdate: undefined,
-};
 
 // @vue/component
 export default defineComponent({
