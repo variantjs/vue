@@ -243,7 +243,8 @@ export default defineComponent({
 
       this.popperIsAdjusted = false;
 
-      await this.popper?.update();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await this.popper!.update();
 
       this.popperIsAdjusted = true;
     },

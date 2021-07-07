@@ -498,6 +498,23 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(false);
   });
 
+  it('doesnt toggles the dropdown on hover if option is not set', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnHover: false,
+        hideOnLeaveTimeout: null,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('mouseover');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
   it('hides the dropdown if mouseleave the dropdown', async () => {
     const wrapper = mount(TDropdown, {
       props: {
