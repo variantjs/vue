@@ -705,6 +705,38 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.popper).toBeTruthy();
   });
 
+  it('destroys the popper instance after unmounted', async () => {
+    const wrapper = mount(TDropdown);
+
+    await dropdownIsReady(wrapper);
+
+    const mockMethod = jest.spyOn(wrapper.vm.popper, 'destroy');
+
+    expect(wrapper.vm.popper).toBeTruthy();
+
+    wrapper.unmount();
+
+    expect(mockMethod).toHaveBeenCalled();
+  });
+
+  it('clears the hidetimeout when unmounted', async () => {
+    jest.useFakeTimers();
+
+    const jestMock = jest.fn();
+
+    const wrapper = mount(TDropdown);
+
+    wrapper.vm.hideTimeout = setTimeout(jestMock, 100);
+
+    wrapper.unmount();
+
+    jest.advanceTimersByTime(100);
+
+    expect(jestMock).not.toHaveBeenCalled();
+
+    jest.useRealTimers();
+  });
+
   it('accepts undefined as the placement', async () => {
     const wrapper = mount(TDropdown, {
       props: {
@@ -784,6 +816,48 @@ describe('TDropdown.vue', () => {
     jest.advanceTimersByTime(200);
 
     expect(mockMethod).toHaveBeenCalled();
+
+    jest.useRealTimers();
+  });
+
+  it('adds a listener to resize popper when windows resize ', async () => {
+    const wrapper = mount(TDropdown);
+
+    jest.useFakeTimers();
+
+    const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
+
+    expect(mockMethod).not.toHaveBeenCalled();
+
+    window.dispatchEvent(new Event('resize'));
+
+    expect(mockMethod).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(200);
+
+    expect(mockMethod).toHaveBeenCalled();
+
+    jest.useRealTimers();
+  });
+
+  it('removes the listener to resize and scroll after component is unmounted', async () => {
+    jest.useFakeTimers();
+
+    const wrapper = mount(TDropdown);
+
+    const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
+
+    wrapper.unmount();
+
+    expect(mockMethod).not.toHaveBeenCalled();
+
+    window.dispatchEvent(new Event('scroll'));
+
+    expect(mockMethod).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(200);
+
+    expect(mockMethod).not.toHaveBeenCalled();
 
     jest.useRealTimers();
   });

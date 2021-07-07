@@ -220,7 +220,14 @@ export default defineComponent({
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     window.removeEventListener('resize', this.popperAdjusterListener!);
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    window.removeEventListener('scroll', this.popperAdjusterListener!);
+
     this.destroyPopper();
+
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+    }
   },
   methods: {
     dropdownAfterLeave() {
