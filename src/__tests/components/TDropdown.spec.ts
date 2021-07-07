@@ -546,6 +546,39 @@ describe('TDropdown.vue', () => {
     jest.useRealTimers();
   });
 
+  it('clears the hidetimeout if something receives mouseover ', async () => {
+    jest.useFakeTimers();
+
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnHover: true,
+        hideOnLeaveTimeout: 500,
+      },
+    });
+
+    const button = wrapper.get('button');
+    const dropdown = wrapper.get('div');
+
+    await dropdownIsReady(wrapper);
+
+    await dropdown.trigger('mouseleave');
+
+    expect(wrapper.vm.shown).toBe(true);
+
+    jest.advanceTimersByTime(499);
+
+    await button.trigger('mouseover');
+
+    expect(wrapper.vm.shown).toBe(true);
+
+    jest.advanceTimersByTime(500);
+
+    expect(wrapper.vm.shown).toBe(true);
+
+    jest.useRealTimers();
+  });
+
   it('doesnt hides the dropdown if mouseleave the dropdown', async () => {
     const wrapper = mount(TDropdown, {
       props: {
@@ -719,6 +752,18 @@ describe('TDropdown.vue', () => {
     expect(mockMethod).toHaveBeenCalled();
   });
 
+  it('doesnt destroys the popper instance if doesnt exists yet', async () => {
+    const wrapper = mount(TDropdown);
+
+    const mockMethod = jest.spyOn(wrapper.vm.popper, 'destroy');
+
+    wrapper.vm.popper = null;
+
+    wrapper.unmount();
+
+    expect(mockMethod).not.toHaveBeenCalled();
+  });
+
   it('clears the hidetimeout when unmounted', async () => {
     jest.useFakeTimers();
 
@@ -860,5 +905,19 @@ describe('TDropdown.vue', () => {
     expect(mockMethod).not.toHaveBeenCalled();
 
     jest.useRealTimers();
+  });
+
+  it('the dropdownAfterLeave method removes the `visibility` property', async () => {
+    const wrapper = mount(TDropdown);
+
+    const { dropdown } = wrapper.vm.$refs;
+
+    dropdown.style.visibility = 'hidden';
+
+    expect(dropdown.style.visibility).toBe('hidden');
+
+    wrapper.vm.dropdownAfterLeave();
+
+    expect(dropdown.style.visibility).toBe('');
   });
 });
