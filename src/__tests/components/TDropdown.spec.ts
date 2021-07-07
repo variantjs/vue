@@ -444,7 +444,7 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(true);
   });
 
-  it('hides the dropdown on dropdown blur', async () => {
+  it('hides the dropdown on trigger blur', async () => {
     const wrapper = mount(TDropdown, {
       props: {
         show: true,
@@ -459,6 +459,72 @@ describe('TDropdown.vue', () => {
     await trigger.trigger('blur');
 
     expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('hides the dropdown on dropdown blur', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnFocus: true,
+      },
+    });
+
+    const dropdown = wrapper.get('div');
+
+    await dropdownIsReady(wrapper);
+
+    await dropdown.trigger('blur');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('hides the dropdown on blur a child element of the dropdown', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnFocus: true,
+      },
+      slots: {
+        default: h('button', {}, 'blur me'),
+      },
+    });
+
+    const { dropdown } = wrapper.vm.$refs;
+
+    await dropdownIsReady(wrapper);
+
+    const button = dropdown.querySelector('button') as HTMLButtonElement;
+
+    button.dispatchEvent(new FocusEvent('blur'));
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('removes the child element blur handler if toggleOnFocus changes', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnFocus: true,
+      },
+      slots: {
+        default: h('button', {}, 'blur me'),
+      },
+    });
+
+    wrapper.setProps({
+      toggleOnFocus: false,
+    });
+
+    const { dropdown } = wrapper.vm.$refs;
+
+    await dropdownIsReady(wrapper);
+
+    const button = dropdown.querySelector('button') as HTMLButtonElement;
+
+    button.dispatchEvent(new FocusEvent('blur'));
+
+    expect(wrapper.vm.shown).toBe(true);
+    expect(wrapper.vm.focusableElements).toEqual([]);
   });
 
   it('doesnt toggle the dropdown on hover by default', async () => {

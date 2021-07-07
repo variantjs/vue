@@ -8,6 +8,7 @@
       <t-input
         v-model="model"
         placeholder="My placeholder"
+        type="text"
       />
       <t-textarea
         v-model="model"
@@ -36,34 +37,6 @@
 
       <t-button>My button</t-button>
 
-      <t-dropdown text="Click me">
-        <template #default="{ hide, blurHandler }">
-          <div>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-              @blur="blurHandler"
-            >
-              Your Profile
-            </button>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-              @blur="blurHandler"
-            >
-              Settings
-            </button>
-
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              @click="hide"
-            >
-              Close me
-            </button>
-          </div>
-        </template>
-      </t-dropdown>
-
       <template #footer>
         <h1>Footer content</h1>
       </template>
@@ -81,7 +54,6 @@ import TCheckbox from '../components/TCheckbox.vue';
 import TTextarea from '../components/TTextarea.vue';
 import TButton from '../components/TButton.vue';
 import TCard from '../components/TCard.vue';
-import TDropdown from '../components/TDropdown.vue';
 
 export default defineComponent({
   name: 'App',
@@ -93,7 +65,6 @@ export default defineComponent({
     TSelect,
     TButton,
     TCard,
-    TDropdown,
   },
   data() {
     return {
@@ -108,3 +79,11 @@ export default defineComponent({
 
 });
 </script>
+
+<style>
+  input[type=text]:after {
+    display: block;
+    content: 'x';
+
+  }
+</style>

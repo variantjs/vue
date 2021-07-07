@@ -15,6 +15,9 @@
     <t-button to="/multioptions">
       MultiOptions
     </t-button>
+    <t-button to="/dropdown">
+      Dropdown
+    </t-button>
     <t-button to="/about">
       About
     </t-button>

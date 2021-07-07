@@ -46,6 +46,7 @@
         v-bind="dropdownAttributes"
         @mouseover="mouseoverHandler"
         @mouseleave="mouseleaveHandler"
+        @blur="blurHandler"
       >
         <slot />
       </component>
@@ -62,12 +63,26 @@ import {
   TDropdownConfigKeys,
   debounce,
   elementIsTargetOrTargetChild,
+  // getFocusableElements,
+  // isTouchDevice,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
 } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
 import { Data, TDropdownOptions } from '../types';
+
+// @TODO remove
+const getFocusableElements = (element: HTMLElement): Array<HTMLElement> => Array
+  .from(element.querySelectorAll(
+    'a, button, input, textarea, select, details, [contenteditable], [tabindex]:not([tabindex="-1"])',
+  ))
+  .filter((el) => !el.hasAttribute('disabled')) as Array<HTMLElement>;
+
+// @TODO remove
+const isTouchDevice = (w: Window = window, n: Navigator = navigator): boolean => (('ontouchstart' in w)
+     || (n.maxTouchPoints > 0)
+     || (n.msMaxTouchPoints > 0));
 
 // @vue/component
 export default defineComponent({
@@ -148,7 +163,7 @@ export default defineComponent({
     },
     popperOptions: {
       type: Object as PropType<Options>,
-      default: (): Options => defaultPopperOptions,
+      default: (): Options => defaultPopperOptions as Options,
     },
   },
   setup() {
@@ -164,6 +179,7 @@ export default defineComponent({
       popper: null as Instance | null,
       popperAdjusterListener: null as null | (() => void),
       hideTimeout: null as ReturnType<typeof setTimeout> | null,
+      focusableElements: [] as Array<HTMLElement>,
     };
   },
   computed: {
@@ -195,6 +211,17 @@ export default defineComponent({
   watch: {
     shown(shown: boolean) {
       this.$emit('update:show', shown);
+    },
+    'configuration.toggleOnFocus': {
+      async handler(toggleOnFocus: boolean) {
+        await this.$nextTick();
+        if (toggleOnFocus) {
+          this.addBlurListenersToChildElements();
+        } else {
+          this.removeBlurListenersFromChildElements();
+        }
+      },
+      immediate: true,
     },
     'configuration.show': function configurationShowWatch(show: boolean) {
       if (show) {
@@ -230,11 +257,21 @@ export default defineComponent({
     }
   },
   methods: {
+    addBlurListenersToChildElements(): void {
+      const dropdown = this.getDropdownElement();
+
+      this.focusableElements = getFocusableElements(dropdown);
+      this.focusableElements.forEach((element) => element.addEventListener('blur', this.blurHandler));
+    },
+    removeBlurListenersFromChildElements(): void {
+      this.focusableElements.forEach((element) => element.removeEventListener('blur', this.blurHandler));
+      this.focusableElements = [];
+    },
     dropdownAfterLeave() {
       this.getDropdownElement().style.removeProperty('visibility');
     },
 
-    async updatePopper() {
+    async updatePopper(): Promise<void> {
       if (this.shown) {
         return;
       }
@@ -276,11 +313,11 @@ export default defineComponent({
       this.shown = !this.shown;
     },
     doShow(): void {
-      this.shown = true;
-
       if (this.hideTimeout) {
         clearTimeout(this.hideTimeout);
       }
+
+      this.shown = true;
     },
     doHide(): void {
       this.shown = false;
@@ -325,7 +362,7 @@ export default defineComponent({
       this.$emit('mouseleave', e);
     },
 
-    hideAfterTimeout() {
+    hideAfterTimeout(): void {
       if (!this.configuration.hideOnLeaveTimeout) {
         this.doHide();
       } else {
