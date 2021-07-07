@@ -125,11 +125,7 @@ export default defineComponent({
     placement: {
       type: String as PropType<Placement>,
       default: undefined,
-      validator(value: string | undefined) {
-        if (value === undefined) {
-          return true;
-        }
-
+      validator(value: string) {
         // The value must match one of these strings
         return [
           'auto',
@@ -178,11 +174,7 @@ export default defineComponent({
       };
     },
     fullPopperOptions(): Options {
-      let { popperOptions } = this.configuration;
-
-      if (popperOptions === undefined) {
-        popperOptions = defaultPopperOptions;
-      }
+      const popperOptions = this.configuration.popperOptions as Options;
 
       if (this.configuration.placement !== undefined) {
         popperOptions.placement = this.configuration.placement;
@@ -227,6 +219,7 @@ export default defineComponent({
   beforeUnmount() {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     window.removeEventListener('resize', this.popperAdjusterListener!);
+
     this.destroyPopper();
   },
   methods: {

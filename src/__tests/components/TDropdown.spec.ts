@@ -3,7 +3,7 @@ import {
   mount, VueWrapper,
 } from '@vue/test-utils';
 import TDropdown from '@/components/TDropdown.vue';
-import { TDropdownConfig } from '@variantjs/core';
+import { TDropdownConfig, TDropdownPopperDefaultOptions } from '@variantjs/core';
 import { h } from 'vue';
 
 const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<void> = (wrapper: VueWrapper<any>) => new Promise((resolve) => {
@@ -698,17 +698,24 @@ describe('TDropdown.vue', () => {
   });
 
   it('creates a popper instance', async () => {
-    const wrapper = mount(TDropdown, {
-      props: {
-        placement: 'top',
-      },
-    });
+    const wrapper = mount(TDropdown);
 
     await dropdownIsReady(wrapper);
 
     expect(wrapper.vm.popper).toBeTruthy();
   });
 
+  it('accepts undefined as the placement', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        placement: undefined,
+      },
+    });
+
+    await dropdownIsReady(wrapper);
+
+    expect(wrapper.vm.popper.state.placement).toBe(TDropdownPopperDefaultOptions.placement);
+  });
   it('overrides the popper placement if placement is set', async () => {
     const wrapper = mount(TDropdown, {
       props: {
@@ -719,5 +726,65 @@ describe('TDropdown.vue', () => {
     await dropdownIsReady(wrapper);
 
     expect(wrapper.vm.popper.state.placement).toBe('top');
+  });
+
+  it('has a default the popper configuration', async () => {
+    const wrapper = mount(TDropdown);
+
+    await dropdownIsReady(wrapper);
+
+    expect(wrapper.vm.popperOptions).toEqual(TDropdownPopperDefaultOptions);
+  });
+
+  it('assigns the default popper configuration if undefined', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        popperOptions: undefined,
+      },
+    });
+
+    await dropdownIsReady(wrapper);
+
+    expect(wrapper.vm.popperOptions).toEqual(TDropdownPopperDefaultOptions);
+  });
+
+  it('adds a listener to resize popper when windows resize ', async () => {
+    const wrapper = mount(TDropdown);
+
+    jest.useFakeTimers();
+
+    const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
+
+    expect(mockMethod).not.toHaveBeenCalled();
+
+    window.dispatchEvent(new Event('resize'));
+
+    expect(mockMethod).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(200);
+
+    expect(mockMethod).toHaveBeenCalled();
+
+    jest.useRealTimers();
+  });
+
+  it('adds a listener to resize popper when windows scroll ', async () => {
+    const wrapper = mount(TDropdown);
+
+    jest.useFakeTimers();
+
+    const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
+
+    expect(mockMethod).not.toHaveBeenCalled();
+
+    window.dispatchEvent(new Event('scroll'));
+
+    expect(mockMethod).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(200);
+
+    expect(mockMethod).toHaveBeenCalled();
+
+    jest.useRealTimers();
   });
 });
