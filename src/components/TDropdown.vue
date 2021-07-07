@@ -9,8 +9,8 @@
     :class="configuration.classesList?.trigger"
     :disabled="configuration.disabled"
     v-bind="allAttributes"
-    @click="clicHandler"
-    @focus="focuseHandler"
+    @click="clickHandler"
+    @focus="focusHandler"
     @blur="blurHandler"
     @mouseover="mouseoverHandler"
     @mouseleave="mouseleaveHandler"
@@ -44,6 +44,7 @@
         :class="configuration.classesList?.dropdown"
         tabindex="0"
         v-bind="dropdownAttributes"
+        @mouseover="mouseoverHandler"
         @mouseleave="mouseleaveHandler"
       >
         <slot />
@@ -64,13 +65,15 @@ import { Data, TDropdownOptions } from '../types';
 
 const debounce = (func: (...args: any[]) => void, wait = 200) => {
   let timeout: ReturnType<typeof setTimeout> | undefined;
-  return function debounceFn(...args: any[]) {
-    const later = () => {
+
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
       timeout = undefined;
       func(args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    }, wait);
+
     if (!timeout) func(args);
   };
 };
@@ -195,6 +198,7 @@ export default defineComponent({
       shown: configuration.show,
       popper: null as Instance | null,
       popperAdjusterListener: null as null | (() => void),
+      hideTimeout: null as ReturnType<typeof setTimeout> | null,
     };
   },
   computed: {
@@ -303,21 +307,26 @@ export default defineComponent({
     },
     doShow(): void {
       this.shown = true;
+
+      if (this.hideTimeout) {
+        clearTimeout(this.hideTimeout);
+      }
     },
     doHide(): void {
       this.shown = false;
     },
-    clicHandler(e: MouseEvent): void {
+    clickHandler(e: MouseEvent): void {
       if (this.configuration.toggleOnClick) {
         this.doToggle();
       }
 
       this.$emit('click', e);
     },
-    focuseHandler(e: FocusEvent): void {
+    focusHandler(e: FocusEvent): void {
       if (this.configuration.toggleOnFocus) {
         this.doShow();
       }
+
       this.$emit('focus', e);
     },
     blurHandler(e: FocusEvent): void {
@@ -340,10 +349,21 @@ export default defineComponent({
     },
     mouseleaveHandler(e: MouseEvent): void {
       if (this.configuration.toggleOnHover && !this.targetIsChild(e)) {
-        this.doHide();
+        this.hideAfterTimeout();
       }
 
       this.$emit('mouseleave', e);
+    },
+
+    hideAfterTimeout() {
+      if (!this.configuration.hideOnLeaveTimeout) {
+        this.doHide();
+      } else {
+        this.hideTimeout = setTimeout(() => {
+          this.doHide();
+          this.hideTimeout = null;
+        }, this.configuration.hideOnLeaveTimeout);
+      }
     },
   },
 });

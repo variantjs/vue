@@ -477,10 +477,11 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(false);
   });
 
-  it('toggles the dropdown on hover if option is set', async () => {
+  it('toggles the dropdown on hover immediatly if option is set', async () => {
     const wrapper = mount(TDropdown, {
       props: {
         toggleOnHover: true,
+        hideOnLeaveTimeout: null,
       },
     });
 
@@ -502,6 +503,7 @@ describe('TDropdown.vue', () => {
       props: {
         show: true,
         toggleOnHover: true,
+        hideOnLeaveTimeout: null,
       },
     });
 
@@ -514,11 +516,42 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(false);
   });
 
+  it('hides the dropdown after the timeout', async () => {
+    jest.useFakeTimers();
+
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnHover: true,
+        hideOnLeaveTimeout: 500,
+      },
+    });
+
+    const dropdown = wrapper.get('div');
+
+    await dropdownIsReady(wrapper);
+
+    await dropdown.trigger('mouseleave');
+
+    expect(wrapper.vm.shown).toBe(true);
+
+    jest.advanceTimersByTime(499);
+
+    expect(wrapper.vm.shown).toBe(true);
+
+    jest.advanceTimersByTime(1);
+
+    expect(wrapper.vm.shown).toBe(false);
+
+    jest.useRealTimers();
+  });
+
   it('doesnt hides the dropdown if mouseleave the dropdown', async () => {
     const wrapper = mount(TDropdown, {
       props: {
         show: true,
         toggleOnHover: true,
+        hideOnLeaveTimeout: null,
       },
     });
 
@@ -540,6 +573,7 @@ describe('TDropdown.vue', () => {
       props: {
         show: true,
         toggleOnHover: true,
+        hideOnLeaveTimeout: null,
       },
     });
 
