@@ -9,11 +9,11 @@
     :class="configuration.classesList?.trigger"
     :disabled="configuration.disabled"
     v-bind="allAttributes"
-    @click="onClick"
-    @focus="onFocus"
-    @blur="onBlur"
-    @mouseover="onMouseover"
-    @mouseleave="onMouseleave"
+    @click="clicHandler"
+    @focus="focuseHandler"
+    @blur="blurHandler"
+    @mouseover="mouseoverHandler"
+    @mouseleave="mouseleaveHandler"
   >
     <slot
       v-if="$slots.trigger !== undefined"
@@ -44,6 +44,7 @@
         :class="configuration.classesList?.dropdown"
         tabindex="0"
         v-bind="dropdownAttributes"
+        @mouseleave="mouseleaveHandler"
       >
         <slot />
       </component>
@@ -306,20 +307,20 @@ export default defineComponent({
     doHide(): void {
       this.shown = false;
     },
-    onClick(e: MouseEvent): void {
+    clicHandler(e: MouseEvent): void {
       if (this.configuration.toggleOnClick) {
         this.doToggle();
       }
 
       this.$emit('click', e);
     },
-    onFocus(e: FocusEvent): void {
+    focuseHandler(e: FocusEvent): void {
       if (this.configuration.toggleOnFocus) {
         this.doShow();
       }
       this.$emit('focus', e);
     },
-    onBlur(e: FocusEvent): void {
+    blurHandler(e: FocusEvent): void {
       if (this.configuration.toggleOnFocus && !this.targetIsChild(e)) {
         this.doHide();
       }
@@ -330,15 +331,15 @@ export default defineComponent({
       return elementIsTargetOrTargetChild(e.relatedTarget, this.getDropdownElement())
         || elementIsTargetOrTargetChild(e.relatedTarget, this.getTriggerElement());
     },
-    onMouseover(e: MouseEvent): void {
+    mouseoverHandler(e: MouseEvent): void {
       if (this.configuration.toggleOnHover) {
         this.doShow();
       }
 
       this.$emit('mouseover', e);
     },
-    onMouseleave(e: MouseEvent): void {
-      if (this.configuration.toggleOnHover) {
+    mouseleaveHandler(e: MouseEvent): void {
+      if (this.configuration.toggleOnHover && !this.targetIsChild(e)) {
         this.doHide();
       }
 

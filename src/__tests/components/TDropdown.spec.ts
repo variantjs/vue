@@ -444,6 +444,23 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(true);
   });
 
+  it('hides the dropdown on dropdown blur', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnFocus: true,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('blur');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
   it('doesnt toggle the dropdown on hover by default', async () => {
     const wrapper = mount(TDropdown);
 
@@ -478,6 +495,65 @@ describe('TDropdown.vue', () => {
     await trigger.trigger('mouseleave');
 
     expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('hides the dropdown if mouseleave the dropdown', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnHover: true,
+      },
+    });
+
+    const dropdown = wrapper.get('div');
+
+    await dropdownIsReady(wrapper);
+
+    await dropdown.trigger('mouseleave');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('doesnt hides the dropdown if mouseleave the dropdown', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnHover: true,
+      },
+    });
+
+    const triggerButton = wrapper.get('button');
+
+    const { dropdown } = wrapper.vm.$refs;
+
+    await dropdownIsReady(wrapper);
+
+    await triggerButton.trigger('mouseleave', {
+      relatedTarget: dropdown,
+    });
+
+    expect(wrapper.vm.shown).toBe(true);
+  });
+
+  it('doesnt hides the dropdown if mouseleave the trigger', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnHover: true,
+      },
+    });
+
+    const triggerButton = wrapper.get('button');
+
+    const { trigger } = wrapper.vm.$refs;
+
+    await dropdownIsReady(wrapper);
+
+    await triggerButton.trigger('mouseleave', {
+      relatedTarget: trigger,
+    });
+
+    expect(wrapper.vm.shown).toBe(true);
   });
 
   it('emits native button events', () => {
