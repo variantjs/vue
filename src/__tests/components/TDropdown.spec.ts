@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
-  mount, VueWrapper,
+  mount, shallowMount, VueWrapper,
 } from '@vue/test-utils';
 import TDropdown from '@/components/TDropdown.vue';
 import { TDropdownConfig, TDropdownPopperDefaultOptions } from '@variantjs/core';
@@ -73,6 +73,12 @@ describe('TDropdown.vue', () => {
     });
 
     expect(wrapper.find('button').text()).toBe('Press me!');
+  });
+
+  it('renders an empty button if no slot or text', () => {
+    const wrapper = mount(TDropdown);
+
+    expect(wrapper.find('button').text()).toBe('');
   });
 
   it('prioritizes the slot over the text prop', () => {
@@ -1114,5 +1120,75 @@ describe('TDropdown.vue', () => {
     wrapper.vm.dropdownAfterLeave();
 
     expect(dropdown.style.visibility).toBe('');
+  });
+
+  it('ignores mouseoverHandler action in touch-only devices', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnHover: true,
+      },
+    });
+
+    wrapper.vm.isTouchOnlyDevice = true;
+
+    const action = jest.spyOn(wrapper.vm, 'doShow');
+
+    const trigger = wrapper.get('button');
+
+    await trigger.trigger('mouseover');
+
+    expect(action).not.toHaveBeenCalled();
+  });
+
+  it('ignores mouseleaveHandler action in touch-only devices', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnHover: true,
+      },
+    });
+
+    wrapper.vm.isTouchOnlyDevice = true;
+
+    const action = jest.spyOn(wrapper.vm, 'targetIsChild');
+
+    const trigger = wrapper.get('button');
+
+    await trigger.trigger('mouseleave');
+
+    expect(action).not.toHaveBeenCalled();
+  });
+
+  it('ignores focusHandler action in touch-only devices', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnFocus: true,
+      },
+    });
+
+    wrapper.vm.isTouchOnlyDevice = true;
+
+    const trigger = wrapper.get('button');
+
+    await trigger.trigger('focus');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('ignores blurHandler action in touch-only devices', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnFocus: true,
+      },
+    });
+
+    wrapper.vm.isTouchOnlyDevice = true;
+
+    const action = jest.spyOn(wrapper.vm, 'targetIsChild');
+
+    const trigger = wrapper.get('button');
+
+    await trigger.trigger('blur');
+
+    expect(action).not.toHaveBeenCalled();
   });
 });
