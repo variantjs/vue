@@ -100,7 +100,11 @@ describe('TDropdown.vue', () => {
   });
 
   it('shows the dropdown when the trigger is pressed', async () => {
-    const wrapper = mount(TDropdown);
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnClick: true,
+      },
+    });
 
     const trigger = wrapper.get('button');
     const { dropdown } = wrapper.vm.$refs;
@@ -117,7 +121,11 @@ describe('TDropdown.vue', () => {
   });
 
   it('hides the dropdown when the trigger is pressed two times', async () => {
-    const wrapper = mount(TDropdown);
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnClick: true,
+      },
+    });
 
     const trigger = wrapper.get('button');
     const { dropdown } = wrapper.vm.$refs;
@@ -772,17 +780,11 @@ describe('TDropdown.vue', () => {
   it('emits `update:show` when show property is updated', async () => {
     const wrapper = mount(TDropdown);
 
-    const trigger = wrapper.get('button');
-
     await dropdownIsReady(wrapper);
 
-    await trigger.trigger('click');
+    wrapper.vm.doShow();
 
-    expect(wrapper.emitted()).toHaveProperty('update:show', [[true]]);
-
-    await trigger.trigger('click');
-
-    expect(wrapper.emitted()).toHaveProperty('update:show', [[true], [false]]);
+    expect(wrapper.emitted()).toHaveProperty('update:show');
   });
 
   it('shows the modal if the `show` props changes', async () => {

@@ -44,9 +44,9 @@
         :class="configuration.classesList?.dropdown"
         tabindex="0"
         v-bind="dropdownAttributes"
+        @blur="blurHandler"
         @mouseover="mouseoverHandler"
         @mouseleave="mouseleaveHandler"
-        @blur="blurHandler"
       >
         <slot />
       </component>
@@ -63,26 +63,16 @@ import {
   TDropdownConfigKeys,
   debounce,
   elementIsTargetOrTargetChild,
-  // getFocusableElements,
-  // isTouchDevice,
+  getFocusableElements,
+  isTouchOnlyDevice,
+  throttle,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
+  DebouncedFn,
 } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
 import { Data, TDropdownOptions } from '../types';
-
-// @TODO remove
-const getFocusableElements = (element: HTMLElement): Array<HTMLElement> => Array
-  .from(element.querySelectorAll(
-    'a, button, input, textarea, select, details, [contenteditable], [tabindex]:not([tabindex="-1"])',
-  ))
-  .filter((el) => !el.hasAttribute('disabled')) as Array<HTMLElement>;
-
-// @TODO remove
-const isTouchDevice = (w: Window = window, n: Navigator = navigator): boolean => (('ontouchstart' in w)
-     || (n.maxTouchPoints > 0)
-     || (n.msMaxTouchPoints > 0));
 
 // @vue/component
 export default defineComponent({
@@ -119,11 +109,11 @@ export default defineComponent({
     },
     toggleOnFocus: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     toggleOnClick: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     toggleOnHover: {
       type: Boolean,
@@ -174,12 +164,14 @@ export default defineComponent({
   },
   data({ configuration }) {
     return {
+      isTouchOnlyDevice: isTouchOnlyDevice(),
       popperIsAdjusted: false,
       shown: configuration.show,
       popper: null as Instance | null,
-      popperAdjusterListener: null as null | (() => void),
+      popperAdjusterListener: null as null | DebouncedFn,
       hideTimeout: null as ReturnType<typeof setTimeout> | null,
       focusableElements: [] as Array<HTMLElement>,
+      throttledToggle: null as null | (() => void),
     };
   },
   computed: {
@@ -207,14 +199,31 @@ export default defineComponent({
 
       return popperOptions;
     },
+    shouldShowWhenClicked(): boolean {
+      return this.isTouchOnlyDevice && this.configuration.toggleOnFocus === true;
+    },
   },
   watch: {
     shown(shown: boolean) {
       this.$emit('update:show', shown);
+
+      // @TODO move to his own method
+      if (this.isTouchOnlyDevice) {
+        if (shown) {
+          window.addEventListener('touchstart', this.touchstartHandler);
+        } else {
+          window.removeEventListener('touchstart', this.touchstartHandler);
+        }
+      }
     },
     'configuration.toggleOnFocus': {
       async handler(toggleOnFocus: boolean) {
+        if (this.isTouchOnlyDevice) {
+          return;
+        }
+
         await this.$nextTick();
+
         if (toggleOnFocus) {
           this.addBlurListenersToChildElements();
         } else {
@@ -242,6 +251,7 @@ export default defineComponent({
   },
   created() {
     this.popperAdjusterListener = debounce(this.updatePopper, 200);
+    this.throttledToggle = throttle(this.doToggle, 200);
   },
   beforeUnmount() {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -254,6 +264,10 @@ export default defineComponent({
 
     if (this.hideTimeout) {
       clearTimeout(this.hideTimeout);
+    }
+
+    if (this.popperAdjusterListener) {
+      this.popperAdjusterListener.cancel();
     }
   },
   methods: {
@@ -310,7 +324,11 @@ export default defineComponent({
       return trigger as HTMLButtonElement;
     },
     doToggle(): void {
-      this.shown = !this.shown;
+      if (!this.shown) {
+        this.doShow();
+      } else {
+        this.doHide();
+      }
     },
     doShow(): void {
       if (this.hideTimeout) {
@@ -323,45 +341,75 @@ export default defineComponent({
       this.shown = false;
     },
     clickHandler(e: MouseEvent): void {
-      if (this.configuration.toggleOnClick) {
-        this.doToggle();
-      }
-
       this.$emit('click', e);
-    },
-    focusHandler(e: FocusEvent): void {
-      if (this.configuration.toggleOnFocus) {
+
+      if (this.configuration.toggleOnClick) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.throttledToggle!();
+      } else if (this.shouldShowWhenClicked) {
         this.doShow();
       }
-
-      this.$emit('focus', e);
     },
-    blurHandler(e: FocusEvent): void {
-      if (this.configuration.toggleOnFocus && !this.targetIsChild(e)) {
-        this.doHide();
+    focusHandler(e: FocusEvent): void {
+      this.$emit('focus', e);
+
+      if (this.isTouchOnlyDevice) {
+        return;
       }
 
-      this.$emit('blur', e);
+      if (this.configuration.toggleOnFocus) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.throttledToggle!();
+      }
     },
-    targetIsChild(e: FocusEvent | MouseEvent): boolean {
-      return elementIsTargetOrTargetChild(e.relatedTarget, this.getDropdownElement())
-        || elementIsTargetOrTargetChild(e.relatedTarget, this.getTriggerElement());
+    blurHandler(e: FocusEvent): void {
+      this.$emit('blur', e);
+
+      if (this.isTouchOnlyDevice) {
+        return;
+      }
+
+      if (this.configuration.toggleOnFocus && !this.targetIsChild(e.relatedTarget)) {
+        this.doHide();
+      }
+    },
+    targetIsChild(target: EventTarget | null): boolean {
+      return elementIsTargetOrTargetChild(target, this.getDropdownElement())
+        || elementIsTargetOrTargetChild(target, this.getTriggerElement());
     },
     mouseoverHandler(e: MouseEvent): void {
+      this.$emit('mouseover', e);
+
+      if (this.isTouchOnlyDevice) {
+        return;
+      }
+
       if (this.configuration.toggleOnHover) {
         this.doShow();
       }
-
-      this.$emit('mouseover', e);
     },
     mouseleaveHandler(e: MouseEvent): void {
-      if (this.configuration.toggleOnHover && !this.targetIsChild(e)) {
-        this.hideAfterTimeout();
+      this.$emit('mouseleave', e);
+
+      if (this.isTouchOnlyDevice) {
+        return;
       }
 
-      this.$emit('mouseleave', e);
+      if (this.configuration.toggleOnHover && !this.targetIsChild(e.relatedTarget)) {
+        this.hideAfterTimeout();
+      }
     },
+    touchstartHandler(e: TouchEvent) {
+      this.$emit('touchstart', e);
 
+      if (this.targetIsChild(e.target)) {
+        return;
+      }
+
+      if (this.configuration.toggleOnFocus || this.configuration.toggleOnHover) {
+        this.doHide();
+      }
+    },
     hideAfterTimeout(): void {
       if (!this.configuration.hideOnLeaveTimeout) {
         this.doHide();
