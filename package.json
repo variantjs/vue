@@ -4,8 +4,8 @@
   "scripts": {
     "serve": "vite preview",
     "build": "vue-tsc --noEmit && vite build",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "jest -t",
+    "test:watch": "jest --watch -t",
     "dev": "vite",
     "lint": "eslint src --fix",
     "link": "ln -nsf ../core/dist node_modules/@variantjs/core"

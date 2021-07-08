@@ -113,7 +113,7 @@ export default defineComponent({
     },
     toggleOnClick: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     toggleOnHover: {
       type: Boolean,

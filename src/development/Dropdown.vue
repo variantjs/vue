@@ -6,10 +6,14 @@
       </template>
 
       <TInputGroup
-        label="Toggle on focus (default)"
+        label="Toggle on focus"
         class="mb-4"
       >
-        <t-dropdown text="Toggle on focus">
+        <t-dropdown
+          text="Toggle on focus"
+          toggle-on-focus
+          :toggle-on-click="false"
+        >
           <div>
             <button
               class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
@@ -35,6 +39,8 @@
         <t-dropdown
           class="mt-2"
           text="Toggle on focus without focusable elements"
+          toggle-on-focus
+          :toggle-on-click="false"
         >
           <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius dolores nesciunt rem iure blanditiis sunt minima porro quam cum iste neque aut culpa quas reprehenderit doloribus, eveniet vero atque id?</p>
         </t-dropdown>
@@ -46,6 +52,8 @@
       >
         <t-dropdown
           toggle-on-hover
+          :toggle-on-click="false"
+          :toggle-on-focus="false"
           text="Toggle on hover"
         >
           <div>
@@ -108,9 +116,7 @@
         class="mb-4"
       >
         <t-dropdown
-          toggle-on-click
-          toggle-on-focus
-          text="Toggle on click, focus"
+          text="Toggle on click, focus (default)"
         >
           <div>
             <button
@@ -175,6 +181,8 @@
           v-model:show="show"
           class="mt-2"
           text="Shows as the checkbox"
+          toggle-on-click
+          toggle-on-focus
         >
           <div>
             <button

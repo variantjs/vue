@@ -120,7 +120,7 @@ describe('TDropdown.vue', () => {
     expect(dropdown.style.display).toBe('');
   });
 
-  it('hides the dropdown when the trigger is pressed two times', async () => {
+  it('shows the dropdown when the trigger is pressed ', async () => {
     const wrapper = mount(TDropdown, {
       props: {
         toggleOnClick: true,
@@ -139,6 +139,20 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(true);
 
     expect(dropdown.style.display).toBe('');
+  });
+
+  it('hides the dropdown when the trigger is pressed and is openede ', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        toggleOnClick: true,
+        show: true,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+    const { dropdown } = wrapper.vm.$refs;
+
+    await dropdownIsReady(wrapper);
 
     await trigger.trigger('click');
 
@@ -349,8 +363,48 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(false);
   });
 
-  it('doesnt toggle the dropdown on focus  by default', async () => {
-    const wrapper = mount(TDropdown);
+  it('shows the dropdown on click by default', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        // To avoid false positives
+        toggleOnFocus: false,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('click');
+
+    expect(wrapper.vm.shown).toBe(true);
+  });
+
+  it('hides the dropdown on click by default', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        // To avoid false positives
+        toggleOnFocus: false,
+        show: true,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('click');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('shows the dropdown on focus by default', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        // To avoid false positives
+        toggleOnClick: false,
+      },
+    });
 
     const trigger = wrapper.get('button');
 
@@ -358,11 +412,53 @@ describe('TDropdown.vue', () => {
 
     await trigger.trigger('focus');
 
-    expect(wrapper.vm.shown).toBe(false);
+    expect(wrapper.vm.shown).toBe(true);
+  });
+
+  it('hides the dropdown on blur by default', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        // To avoid false positives
+        toggleOnClick: false,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
 
     await trigger.trigger('blur');
 
     expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('doesnt shows the dropdown on hover by default', async () => {
+    const wrapper = mount(TDropdown);
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('hover');
+
+    expect(wrapper.vm.shown).toBe(false);
+  });
+
+  it('doesnt hides the drodown on hoverout by default', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('hover');
+
+    expect(wrapper.vm.shown).toBe(true);
   });
 
   it('toggles the dropdown on focus if option is set', async () => {
@@ -780,11 +876,25 @@ describe('TDropdown.vue', () => {
   it('emits `update:show` when show property is updated', async () => {
     const wrapper = mount(TDropdown);
 
-    await dropdownIsReady(wrapper);
-
     wrapper.vm.doShow();
 
-    expect(wrapper.emitted()).toHaveProperty('update:show');
+    await wrapper.vm.$nextTick();
+
+    // assert event has been emitted
+    expect(wrapper.emitted()['update:show']).toBeTruthy();
+
+    // assert event payload
+    expect(wrapper.emitted()['update:show']).toEqual([[true]]);
+
+    wrapper.vm.doHide();
+
+    await wrapper.vm.$nextTick();
+
+    // assert event has been emitted
+    expect(wrapper.emitted()['update:show']).toBeTruthy();
+
+    // assert event payload
+    expect(wrapper.emitted()['update:show']).toEqual([[true], [false]]);
   });
 
   it('shows the modal if the `show` props changes', async () => {
