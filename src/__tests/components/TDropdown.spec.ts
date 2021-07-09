@@ -428,6 +428,23 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(true);
   });
 
+  it('doesnt hide the dropdown when focus when doesnt have the `toggleOnFocus` options', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        show: true,
+        toggleOnFocus: false,
+      },
+    });
+
+    const trigger = wrapper.get('button');
+
+    await dropdownIsReady(wrapper);
+
+    await trigger.trigger('focus');
+
+    expect(wrapper.vm.shown).toBe(true);
+  });
+
   it('hides the dropdown on blur by default', async () => {
     const wrapper = mount(TDropdown, {
       props: {
@@ -1242,7 +1259,7 @@ describe('TDropdown.vue', () => {
       const wrapper = mount(TDropdown, {
         props: {
           toggleOnHover: true,
-          toggleOnFocus: true,
+          toggleOnFocus: false,
           toggleOnClick: false,
         },
       });

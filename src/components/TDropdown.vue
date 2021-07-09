@@ -200,7 +200,8 @@ export default defineComponent({
       return popperOptions;
     },
     shouldShowWhenClicked(): boolean {
-      return this.isTouchOnlyDevice && (this.configuration.toggleOnFocus === true || this.configuration.toggleOnHover === true);
+      return this.isTouchOnlyDevice
+        && (this.configuration.toggleOnFocus === true || this.configuration.toggleOnHover === true);
     },
   },
   watch: {
@@ -240,35 +241,20 @@ export default defineComponent({
   mounted() {
     this.createPopper();
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    window.addEventListener('resize', this.popperAdjusterListener!);
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    window.addEventListener('scroll', this.popperAdjusterListener!);
+    this.initPopperAdjusterListener();
 
     if (this.isTouchOnlyDevice && this.shown) {
       window.addEventListener('touchstart', this.touchstartHandler);
     }
   },
   created() {
-    this.popperAdjusterListener = debounce(this.updatePopper, 200);
     this.throttledToggle = throttle(this.doToggle, 200);
   },
   beforeUnmount() {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    window.removeEventListener('resize', this.popperAdjusterListener!);
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    window.removeEventListener('scroll', this.popperAdjusterListener!);
-
-    this.destroyPopper();
+    this.disablePopperAdjusterListener();
 
     if (this.hideTimeout) {
       clearTimeout(this.hideTimeout);
-    }
-
-    if (this.popperAdjusterListener) {
-      this.popperAdjusterListener.cancel();
     }
 
     if (this.isTouchOnlyDevice && this.shown) {
@@ -276,6 +262,24 @@ export default defineComponent({
     }
   },
   methods: {
+    initPopperAdjusterListener() {
+      this.popperAdjusterListener = debounce(this.updatePopper, 200);
+
+      window.addEventListener('resize', this.popperAdjusterListener);
+
+      window.addEventListener('scroll', this.popperAdjusterListener);
+    },
+    disablePopperAdjusterListener() {
+      const popperAdjusterListener = this.popperAdjusterListener as DebouncedFn;
+
+      window.removeEventListener('resize', popperAdjusterListener);
+
+      window.removeEventListener('scroll', popperAdjusterListener);
+
+      popperAdjusterListener.cancel();
+
+      this.destroyPopper();
+    },
     onShown() {
       if (this.isTouchOnlyDevice) {
         window.addEventListener('touchstart', this.touchstartHandler);
