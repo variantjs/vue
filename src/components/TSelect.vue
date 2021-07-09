@@ -1,8 +1,8 @@
 <template>
   <select
     v-model="localValue"
+    :multiple="configuration.multiple"
     v-bind="attributes"
-    :multiple="!! multiple"
   >
     <t-select-option
       v-for="(option, index) in normalizedOptions"
