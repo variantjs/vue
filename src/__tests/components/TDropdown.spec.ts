@@ -1130,20 +1130,20 @@ describe('TDropdown.vue', () => {
   });
 
   describe('touch-only devices', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let windowSpy: any;
 
-    const windowSpy = jest.spyOn(window, 'window', 'get');
-    const windowImplementation = Object.assign(window, {
-      matchMedia: () => ({
-        matches: true,
-      }),
-    });
+    beforeAll(() => {
+      windowSpy = jest.spyOn(window, 'window', 'get');
+      const windowImplementation = Object.assign(window, {
+        matchMedia: () => ({
+          matches: true,
+        }),
+      });
 
-    beforeEach(() => {
       windowSpy.mockImplementation(() => windowImplementation);
     });
 
-    afterEach(() => {
+    afterAll(() => {
       windowSpy.mockRestore();
     });
 
