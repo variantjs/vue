@@ -17,6 +17,9 @@
   >
     <slot
       v-if="$slots.trigger !== undefined"
+      :configuration="configuration"
+      :is-show="shown"
+      :popper="popper"
       name="trigger"
     />
     <template v-else>
@@ -48,7 +51,13 @@
         @mouseover="mouseoverHandler"
         @mouseleave="mouseleaveHandler"
       >
-        <slot />
+        <slot
+          :show="doShow"
+          :hide="doHide"
+          :toggle="doToggle"
+          :configuration="configuration"
+          :popper="popper"
+        />
       </component>
     </transition>
   </teleport>

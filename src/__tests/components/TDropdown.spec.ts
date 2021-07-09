@@ -5,13 +5,7 @@ import {
 import TDropdown from '@/components/TDropdown.vue';
 import { TDropdownConfig, TDropdownPopperDefaultOptions } from '@variantjs/core';
 import { h } from 'vue';
-
-const touchOnlyWindowMock: Window = {
-  ...window,
-  matchMedia: () => ({
-    matches: true,
-  }),
-} as unknown as Window;
+import { Data } from '../../types';
 
 const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<void> = (wrapper: VueWrapper<any>) => new Promise((resolve) => {
   // 1. Until component is mounted
@@ -26,6 +20,17 @@ const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<void> = (wrapper: V
     });
   });
 });
+
+const scopedParamsAsString = (params: Data) : string => {
+  const keys = Object.keys(params);
+  const result: Data = {};
+  keys.filter((key) => key !== 'key').forEach((key) => {
+    result[key] = typeof params[key];
+  });
+  return JSON.stringify(result);
+};
+
+const parseScopedParams = (paramsAsString: string) : Data => JSON.parse(paramsAsString);
 
 describe('TDropdown.vue', () => {
   it('renders the component', () => {
@@ -80,6 +85,40 @@ describe('TDropdown.vue', () => {
     });
 
     expect(wrapper.find('button').text()).toBe('Press me!');
+  });
+
+  it('exposes the `isShow` variable and the configuration ', () => {
+    const wrapper = mount(TDropdown, {
+      slots: {
+        trigger: (params) => scopedParamsAsString(params),
+      },
+    });
+
+    const scopeParamKeys = parseScopedParams(wrapper.text());
+
+    expect(scopeParamKeys).toEqual({
+      isShow: 'boolean',
+      configuration: 'object',
+      popper: 'object',
+    });
+  });
+
+  it('exposes the `toggle`, `show` and `hide` methods and the configuration to the dropdown slot ', () => {
+    const wrapper = mount(TDropdown, {
+      slots: {
+        default: (params) => scopedParamsAsString(params),
+      },
+    });
+
+    const scopeParamKeys = parseScopedParams(wrapper.text());
+
+    expect(scopeParamKeys).toEqual({
+      show: 'function',
+      hide: 'function',
+      toggle: 'function',
+      configuration: 'object',
+      popper: 'object',
+    });
   });
 
   it('renders an empty button if no slot or text', () => {
