@@ -14,26 +14,29 @@
           toggle-on-focus
           :toggle-on-click="false"
         >
-          <div>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Your Profile
-            </button>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Settings
-            </button>
+          <template #default="{ hide }">
+            <div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Your Profile
+              </button>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Settings
+              </button>
 
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-            >
-              Close me
-            </button>
-          </div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                @click="hide"
+              >
+                Close me
+              </button>
+            </div>
+          </template>
         </t-dropdown>
 
         <t-dropdown
@@ -56,26 +59,29 @@
           :toggle-on-focus="false"
           text="Toggle on hover"
         >
-          <div>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Your Profile
-            </button>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Settings
-            </button>
+          <template #default="{ hide }">
+            <div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Your Profile
+              </button>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Settings
+              </button>
 
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-            >
-              Close me
-            </button>
-          </div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                @click="hide"
+              >
+                Close me
+              </button>
+            </div>
+          </template>
         </t-dropdown>
       </TInputGroup>
 
@@ -88,26 +94,29 @@
           :toggle-on-focus="false"
           text="Toggle on click"
         >
-          <div>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Your Profile
-            </button>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Settings
-            </button>
+          <template #default="{ hide }">
+            <div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Your Profile
+              </button>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Settings
+              </button>
 
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-            >
-              Close me
-            </button>
-          </div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                @click="hide"
+              >
+                Close me
+              </button>
+            </div>
+          </template>
         </t-dropdown>
       </TInputGroup>
 
@@ -118,26 +127,29 @@
         <t-dropdown
           text="Toggle on click, focus (default)"
         >
-          <div>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Your Profile
-            </button>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Settings
-            </button>
+          <template #default="{ hide }">
+            <div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Your Profile
+              </button>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Settings
+              </button>
 
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-            >
-              Close me
-            </button>
-          </div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                @click="hide"
+              >
+                Close me
+              </button>
+            </div>
+          </template>
         </t-dropdown>
         <t-dropdown
           class="mt-2"
@@ -146,26 +158,29 @@
           toggle-on-hover
           text="Toggle on click, focus + hover"
         >
-          <div>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Your Profile
-            </button>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Settings
-            </button>
+          <template #default="{ hide }">
+            <div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Your Profile
+              </button>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Settings
+              </button>
 
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-            >
-              Close me
-            </button>
-          </div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                @click="hide"
+              >
+                Close me
+              </button>
+            </div>
+          </template>
         </t-dropdown>
       </TInputGroup>
 
@@ -184,26 +199,29 @@
           toggle-on-click
           toggle-on-focus
         >
-          <div>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Your Profile
-            </button>
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-              role="menuitem"
-            >
-              Settings
-            </button>
+          <template #default="{ hide }">
+            <div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Your Profile
+              </button>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                role="menuitem"
+              >
+                Settings
+              </button>
 
-            <button
-              class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-            >
-              Close me
-            </button>
-          </div>
+              <button
+                class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                @click="hide"
+              >
+                Close me
+              </button>
+            </div>
+          </template>
         </t-dropdown>
       </TInputGroup>
     </t-card>
