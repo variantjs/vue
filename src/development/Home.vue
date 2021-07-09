@@ -5,6 +5,10 @@
         <h1>List of components</h1>
       </template>
 
+      <t-alert>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam id iusto quas quaerat quasi cum alias consequuntur perspiciatis, quam ea. Quibusdam incidunt ex vel illum ab quaerat, sed tempora beatae!
+      </t-alert>
+
       <t-input
         v-model="model"
         placeholder="My placeholder"
@@ -54,6 +58,7 @@ import TCheckbox from '../components/TCheckbox.vue';
 import TTextarea from '../components/TTextarea.vue';
 import TButton from '../components/TButton.vue';
 import TCard from '../components/TCard.vue';
+import TAlert from '../components/TAlert.vue';
 
 export default defineComponent({
   name: 'App',
@@ -65,6 +70,7 @@ export default defineComponent({
     TSelect,
     TButton,
     TCard,
+    TAlert,
   },
   data() {
     return {

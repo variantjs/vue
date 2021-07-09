@@ -18,6 +18,9 @@
     <t-button to="/dropdown">
       Dropdown
     </t-button>
+    <t-button to="/alert">
+      Alert
+    </t-button>
     <t-button to="/about">
       About
     </t-button>
