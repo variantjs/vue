@@ -1238,6 +1238,22 @@ describe('TDropdown.vue', () => {
       expect(wrapper.vm.shown).toBe(true);
     });
 
+    it('shows the dropdown when clicked on touch-only devices if `toggleOnHover` is set even if `toggleOnClick` is false', async () => {
+      const wrapper = mount(TDropdown, {
+        props: {
+          toggleOnHover: true,
+          toggleOnFocus: true,
+          toggleOnClick: false,
+        },
+      });
+
+      const trigger = wrapper.get('button');
+
+      await trigger.trigger('click');
+
+      expect(wrapper.vm.shown).toBe(true);
+    });
+
     it('adds the `touchstartHandler` to the current window when dropdown is shown and is isTouchOnlyDevice', async () => {
       const wrapper = mount(TDropdown);
 
@@ -1281,6 +1297,87 @@ describe('TDropdown.vue', () => {
       wrapper.unmount();
 
       expect(removeSpy).toHaveBeenCalledWith('touchstart', wrapper.vm.touchstartHandler);
+    });
+
+    it('hides the dropdown if toggle on focus is set and when touch outside', async () => {
+      const wrapper = mount(TDropdown, {
+        props: {
+          toggleOnFocus: true,
+          toggleOnClick: false,
+          show: true,
+        },
+      });
+
+      await dropdownIsReady(wrapper);
+
+      window.dispatchEvent(new TouchEvent('touchstart'));
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.shown).toBe(false);
+    });
+
+    it('doesnt hides the dropdown if touch a children even if toggle on focus is set', async () => {
+      const wrapper = mount(TDropdown, {
+        props: {
+          toggleOnFocus: true,
+          toggleOnClick: false,
+          show: true,
+        },
+      });
+
+      await dropdownIsReady(wrapper);
+
+      window.dispatchEvent(new TouchEvent('touchstart', {
+        targetTouches: [
+          {
+            identifier: 1,
+            target: wrapper.vm.$refs.dropdown as EventTarget,
+          } as Touch,
+        ],
+      }));
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.shown).toBe(true);
+    });
+
+    it('hides the dropdown if toggle on hover is set and when touch outside', async () => {
+      const wrapper = mount(TDropdown, {
+        props: {
+          toggleOnFocus: false,
+          toggleOnClick: false,
+          toggleOnHover: true,
+          show: true,
+        },
+      });
+
+      await dropdownIsReady(wrapper);
+
+      window.dispatchEvent(new TouchEvent('touchstart'));
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.shown).toBe(false);
+    });
+
+    it('doesnt hides the dropdown if toggle on hover and toggle on focus is not set when touch outside', async () => {
+      const wrapper = mount(TDropdown, {
+        props: {
+          toggleOnFocus: false,
+          toggleOnClick: false,
+          toggleOnHover: false,
+          show: true,
+        },
+      });
+
+      await dropdownIsReady(wrapper);
+
+      window.dispatchEvent(new TouchEvent('touchstart'));
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.shown).toBe(true);
     });
   });
 });

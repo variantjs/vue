@@ -200,7 +200,7 @@ export default defineComponent({
       return popperOptions;
     },
     shouldShowWhenClicked(): boolean {
-      return this.isTouchOnlyDevice && this.configuration.toggleOnFocus === true;
+      return this.isTouchOnlyDevice && (this.configuration.toggleOnFocus === true || this.configuration.toggleOnHover === true);
     },
   },
   watch: {
@@ -417,7 +417,7 @@ export default defineComponent({
     touchstartHandler(e: TouchEvent) {
       this.$emit('touchstart', e);
 
-      if (this.targetIsChild(e.target)) {
+      if (Array.from(e.targetTouches).some((touch) => this.targetIsChild(touch.target))) {
         return;
       }
 
