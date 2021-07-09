@@ -2,7 +2,7 @@
   <component
     :is="tagName"
     ref="trigger"
-    type="button"
+    :type="tagName === 'button' ? 'button' : undefined"
     :aria-expanded="shown"
     :class="configuration.classesList?.trigger"
     :disabled="configuration.disabled"
