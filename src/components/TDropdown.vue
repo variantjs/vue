@@ -207,13 +207,10 @@ export default defineComponent({
     shown(shown: boolean) {
       this.$emit('update:show', shown);
 
-      // @TODO move to his own method
-      if (this.isTouchOnlyDevice) {
-        if (shown) {
-          window.addEventListener('touchstart', this.touchstartHandler);
-        } else {
-          window.removeEventListener('touchstart', this.touchstartHandler);
-        }
+      if (shown) {
+        this.onShown();
+      } else {
+        this.onHidden();
       }
     },
     'configuration.toggleOnFocus': {
@@ -248,6 +245,10 @@ export default defineComponent({
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     window.addEventListener('scroll', this.popperAdjusterListener!);
+
+    if (this.isTouchOnlyDevice && this.shown) {
+      window.addEventListener('touchstart', this.touchstartHandler);
+    }
   },
   created() {
     this.popperAdjusterListener = debounce(this.updatePopper, 200);
@@ -269,8 +270,22 @@ export default defineComponent({
     if (this.popperAdjusterListener) {
       this.popperAdjusterListener.cancel();
     }
+
+    if (this.isTouchOnlyDevice && this.shown) {
+      window.removeEventListener('touchstart', this.touchstartHandler);
+    }
   },
   methods: {
+    onShown() {
+      if (this.isTouchOnlyDevice) {
+        window.addEventListener('touchstart', this.touchstartHandler);
+      }
+    },
+    onHidden() {
+      if (this.isTouchOnlyDevice) {
+        window.removeEventListener('touchstart', this.touchstartHandler);
+      }
+    },
     addBlurListenersToChildElements(): void {
       const dropdown = this.getDropdownElement();
 

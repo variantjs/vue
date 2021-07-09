@@ -6,6 +6,13 @@ import TDropdown from '@/components/TDropdown.vue';
 import { TDropdownConfig, TDropdownPopperDefaultOptions } from '@variantjs/core';
 import { h } from 'vue';
 
+const touchOnlyWindowMock: Window = {
+  ...window,
+  matchMedia: () => ({
+    matches: true,
+  }),
+} as unknown as Window;
+
 const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<void> = (wrapper: VueWrapper<any>) => new Promise((resolve) => {
   // 1. Until component is mounted
   wrapper.vm.$nextTick().then(() => {
@@ -1122,73 +1129,158 @@ describe('TDropdown.vue', () => {
     expect(dropdown.style.visibility).toBe('');
   });
 
-  it('ignores mouseoverHandler action in touch-only devices', async () => {
-    const wrapper = mount(TDropdown, {
-      props: {
-        toggleOnHover: true,
-      },
+  describe('touch-only devices', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+    const windowSpy = jest.spyOn(window, 'window', 'get');
+    const windowImplementation = Object.assign(window, {
+      matchMedia: () => ({
+        matches: true,
+      }),
     });
 
-    wrapper.vm.isTouchOnlyDevice = true;
-
-    const action = jest.spyOn(wrapper.vm, 'doShow');
-
-    const trigger = wrapper.get('button');
-
-    await trigger.trigger('mouseover');
-
-    expect(action).not.toHaveBeenCalled();
-  });
-
-  it('ignores mouseleaveHandler action in touch-only devices', async () => {
-    const wrapper = mount(TDropdown, {
-      props: {
-        toggleOnHover: true,
-      },
+    beforeEach(() => {
+      windowSpy.mockImplementation(() => windowImplementation);
     });
 
-    wrapper.vm.isTouchOnlyDevice = true;
-
-    const action = jest.spyOn(wrapper.vm, 'targetIsChild');
-
-    const trigger = wrapper.get('button');
-
-    await trigger.trigger('mouseleave');
-
-    expect(action).not.toHaveBeenCalled();
-  });
-
-  it('ignores focusHandler action in touch-only devices', async () => {
-    const wrapper = mount(TDropdown, {
-      props: {
-        toggleOnFocus: true,
-      },
+    afterEach(() => {
+      windowSpy.mockRestore();
     });
 
-    wrapper.vm.isTouchOnlyDevice = true;
+    it('detects touch only devces', () => {
+      expect(window.matchMedia('(any-hover: none)')).toEqual({
+        matches: true,
+      });
 
-    const trigger = wrapper.get('button');
+      const wrapper = mount(TDropdown);
 
-    await trigger.trigger('focus');
-
-    expect(wrapper.vm.shown).toBe(false);
-  });
-
-  it('ignores blurHandler action in touch-only devices', async () => {
-    const wrapper = mount(TDropdown, {
-      props: {
-        toggleOnFocus: true,
-      },
+      expect(wrapper.vm.isTouchOnlyDevice).toBe(true);
     });
 
-    wrapper.vm.isTouchOnlyDevice = true;
+    it('ignores mouseoverHandler action in touch-only devices', async () => {
+      const wrapper = mount(TDropdown, {
+        props: {
+          toggleOnHover: true,
+        },
+      });
 
-    const action = jest.spyOn(wrapper.vm, 'targetIsChild');
+      wrapper.vm.isTouchOnlyDevice = true;
 
-    const trigger = wrapper.get('button');
+      const action = jest.spyOn(wrapper.vm, 'doShow');
 
-    await trigger.trigger('blur');
+      const trigger = wrapper.get('button');
 
-    expect(action).not.toHaveBeenCalled();
+      await trigger.trigger('mouseover');
+
+      expect(action).not.toHaveBeenCalled();
+    });
+
+    it('ignores mouseleaveHandler action in touch-only devices', async () => {
+      const wrapper = mount(TDropdown, {
+        props: {
+          toggleOnHover: true,
+        },
+      });
+
+      wrapper.vm.isTouchOnlyDevice = true;
+
+      const action = jest.spyOn(wrapper.vm, 'targetIsChild');
+
+      const trigger = wrapper.get('button');
+
+      await trigger.trigger('mouseleave');
+
+      expect(action).not.toHaveBeenCalled();
+    });
+
+    it('ignores focusHandler action in touch-only devices', async () => {
+      const wrapper = mount(TDropdown, {
+        props: {
+          toggleOnFocus: true,
+        },
+      });
+
+      const trigger = wrapper.get('button');
+
+      await trigger.trigger('focus');
+
+      expect(wrapper.vm.shown).toBe(false);
+    });
+
+    it('ignores blurHandler action in touch-only devices', async () => {
+      const wrapper = mount(TDropdown, {
+        props: {
+          toggleOnFocus: true,
+        },
+      });
+
+      const action = jest.spyOn(wrapper.vm, 'targetIsChild');
+
+      const trigger = wrapper.get('button');
+
+      await trigger.trigger('blur');
+
+      expect(action).not.toHaveBeenCalled();
+    });
+
+    it('shows the dropdown when clicked on touch-only devices if `toggleOnFocus` is set even if `toggleOnClick` is false', async () => {
+      const wrapper = mount(TDropdown, {
+        props: {
+          toggleOnFocus: true,
+          toggleOnClick: false,
+        },
+      });
+
+      const trigger = wrapper.get('button');
+
+      await trigger.trigger('click');
+
+      expect(wrapper.vm.shown).toBe(true);
+    });
+
+    it('adds the `touchstartHandler` to the current window when dropdown is shown and is isTouchOnlyDevice', async () => {
+      const wrapper = mount(TDropdown);
+
+      const addSpy = jest.spyOn(window, 'addEventListener');
+      const removeSpy = jest.spyOn(window, 'removeEventListener');
+
+      wrapper.vm.doShow();
+
+      await wrapper.vm.$nextTick();
+
+      expect(addSpy).toHaveBeenCalledWith('touchstart', wrapper.vm.touchstartHandler);
+
+      wrapper.vm.doHide();
+
+      await wrapper.vm.$nextTick();
+
+      expect(removeSpy).toHaveBeenCalledWith('touchstart', wrapper.vm.touchstartHandler);
+    });
+
+    it('adds the `touchstartHandler` if the component is shown when mounted', async () => {
+      const addSpy = jest.spyOn(window, 'addEventListener');
+
+      const wrapper = mount(TDropdown, {
+        props: {
+          show: true,
+        },
+      });
+
+      expect(addSpy).toHaveBeenCalledWith('touchstart', wrapper.vm.touchstartHandler);
+    });
+
+    it('removes the `touchstartHandler` if the component when component is unmounted', async () => {
+      const removeSpy = jest.spyOn(window, 'removeEventListener');
+
+      const wrapper = mount(TDropdown, {
+        props: {
+          show: true,
+        },
+      });
+
+      wrapper.unmount();
+
+      expect(removeSpy).toHaveBeenCalledWith('touchstart', wrapper.vm.touchstartHandler);
+    });
   });
 });
