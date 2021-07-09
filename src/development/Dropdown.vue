@@ -254,11 +254,3 @@ export default defineComponent({
 
 });
 </script>
-
-<style>
-  input[type=text]:after {
-    display: block;
-    content: 'x';
-
-  }
-</style>
