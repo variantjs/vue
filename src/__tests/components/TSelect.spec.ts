@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { mount, shallowMount } from '@vue/test-utils';
 import TSelect from '@/components/TSelect.vue';
 import { TSelectConfig } from '@variantjs/core';

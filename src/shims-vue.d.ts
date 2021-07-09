@@ -1,6 +1,9 @@
-declare module '*.vue' {
-  import { DefineComponent } from 'vue';
+import { DefineComponent } from 'vue';
+import { Data } from './types';
 
-  const component: DefineComponent<{}, {}, any>;
+declare module '*.vue' {
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const component: DefineComponent<Data, Data, any>;
   export default component;
 }

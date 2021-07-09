@@ -5,6 +5,7 @@ import {
 import variantJsPlugin from '../..';
 import { VariantJSConfiguration } from '../../types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type InstanceType<V> = V extends { new (...arg: any[]): infer X } ? X : never;
 
 type VM<V> = InstanceType<V> & { unmount(): void };
@@ -15,6 +16,7 @@ export function mount<V>(Comp: V, attributes?: Record<string, unknown>, configur
 
   app.use(variantJsPlugin, configuration);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return app.mount(el) as any as VM<V>;
 }
 

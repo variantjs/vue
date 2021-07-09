@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {
-  mount, shallowMount, VueWrapper,
-} from '@vue/test-utils';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { mount, VueWrapper } from '@vue/test-utils';
 import TDropdown from '@/components/TDropdown.vue';
 import { TDropdownConfig, TDropdownPopperDefaultOptions } from '@variantjs/core';
 import { h } from 'vue';

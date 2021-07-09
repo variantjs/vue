@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { shallowMount } from '@vue/test-utils';
 import TInput from '@/components/TInput.vue';
 import { TInputConfig } from '@variantjs/core';
