@@ -959,10 +959,10 @@
     "@typescript-eslint/types" "4.25.0"
     eslint-visitor-keys "^2.0.0"
 
-"@variantjs/core@^0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@variantjs/core/-/core-0.0.23.tgz#3ea0602fb19bb59ef93c2a1b98ee651cc7392880"
-  integrity sha512-xYebkHQLFIArGq0NK2ZYf0ovvhvRNC+2H7nIWLGQ/BIIYZ1EFqyeMRb94xdNrZNlqFiKEeNIaGbqlBBwZwxgzQ==
+"@variantjs/core@^0.0.24":
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/@variantjs/core/-/core-0.0.24.tgz#d3a6351f799c1c63fbb9fb02653385f54cb4de8b"
+  integrity sha512-pAHVV/D5tg5OiJfxsDonWzSS2xtNJrCjQ4qcpW2LaaN5yJoVn/N2nfBQdXhCIsCu62A1sIQO9YMfdb2LJXS8rA==
 
 "@vitejs/plugin-vue@^1.2.3":
   version "1.2.3"

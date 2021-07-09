@@ -45,6 +45,6 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.9.2",
-    "@variantjs/core": "^0.0.23"
+    "@variantjs/core": "^0.0.24"
   }
 }
