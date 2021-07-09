@@ -84,6 +84,7 @@ import { Data, TDropdownOptions } from '../types';
 // @vue/component
 export default defineComponent({
   name: 'TDropdown',
+  inheritAttrs: false,
   props: {
     ...getVariantPropsWithClassesList<TDropdownOptions, TDropdownConfigKeys>(),
     text: {
@@ -163,6 +164,15 @@ export default defineComponent({
       default: (): Options => defaultPopperOptions as Options,
     },
   },
+  emits: {
+    'update:show': (show: boolean) => typeof show === 'boolean',
+    focus: (e: FocusEvent) => e instanceof FocusEvent,
+    blur: (e: FocusEvent) => e instanceof FocusEvent,
+    click: (e: MouseEvent) => e instanceof MouseEvent,
+    mouseover: (e: MouseEvent) => e instanceof MouseEvent,
+    mouseleave: (e: MouseEvent) => e instanceof MouseEvent,
+    touchstart: (e: TouchEvent) => e instanceof TouchEvent,
+  },
   setup() {
     const configuration = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, ['trigger', 'dropdown', 'enterFromClass', 'enterActiveClass', 'enterToClass', 'leaveFromClass', 'leaveActiveClass', 'leaveToClass']);
     const attributes = useAttributes<TDropdownOptions>(configuration);
@@ -173,7 +183,7 @@ export default defineComponent({
     return {
       isTouchOnlyDevice: isTouchOnlyDevice(),
       popperIsAdjusted: false,
-      shown: configuration.show,
+      shown: (configuration as unknown as TDropdownOptions).show,
       popper: null as Instance | null,
       popperAdjusterListener: null as null | DebouncedFn,
       hideTimeout: null as ReturnType<typeof setTimeout> | null,
@@ -212,9 +222,8 @@ export default defineComponent({
     },
   },
   watch: {
-    shown(shown: boolean) {
+    shown(shown: boolean): void {
       this.$emit('update:show', shown);
-
       if (shown) {
         this.onShown();
       } else {
@@ -222,22 +231,22 @@ export default defineComponent({
       }
     },
     'configuration.toggleOnFocus': {
-      async handler(toggleOnFocus: boolean) {
+      handler(toggleOnFocus: boolean): void {
         if (this.isTouchOnlyDevice) {
           return;
         }
 
-        await this.$nextTick();
-
-        if (toggleOnFocus) {
-          this.addBlurListenersToChildElements();
-        } else {
-          this.removeBlurListenersFromChildElements();
-        }
+        this.$nextTick().then(() => {
+          if (toggleOnFocus) {
+            this.addBlurListenersToChildElements();
+          } else {
+            this.removeBlurListenersFromChildElements();
+          }
+        });
       },
       immediate: true,
     },
-    'configuration.show': function configurationShowWatch(show: boolean) {
+    'configuration.show': function configurationShowWatch(show: boolean): void {
       if (show) {
         this.doShow();
       } else {
@@ -269,14 +278,14 @@ export default defineComponent({
     }
   },
   methods: {
-    initPopperAdjusterListener() {
+    initPopperAdjusterListener() : void {
       this.popperAdjusterListener = debounce(this.updatePopper, 200);
 
       window.addEventListener('resize', this.popperAdjusterListener);
 
       window.addEventListener('scroll', this.popperAdjusterListener);
     },
-    disablePopperAdjusterListener() {
+    disablePopperAdjusterListener() : void {
       const popperAdjusterListener = this.popperAdjusterListener as DebouncedFn;
 
       window.removeEventListener('resize', popperAdjusterListener);
@@ -287,12 +296,12 @@ export default defineComponent({
 
       this.destroyPopper();
     },
-    onShown() {
+    onShown(): void {
       if (this.isTouchOnlyDevice) {
         window.addEventListener('touchstart', this.touchstartHandler);
       }
     },
-    onHidden() {
+    onHidden(): void {
       if (this.isTouchOnlyDevice) {
         window.removeEventListener('touchstart', this.touchstartHandler);
       }
@@ -307,7 +316,7 @@ export default defineComponent({
       this.focusableElements.forEach((element) => element.removeEventListener('blur', this.blurHandler));
       this.focusableElements = [];
     },
-    dropdownAfterLeave() {
+    dropdownAfterLeave(): void {
       this.getDropdownElement().style.removeProperty('visibility');
     },
 
@@ -332,7 +341,7 @@ export default defineComponent({
 
       this.popper.destroy();
     },
-    async createPopper() {
+    createPopper(): void {
       if (!this.shown) {
         // Used to `hide` the dropdown while the position is adjusted
         // for the popper plugin

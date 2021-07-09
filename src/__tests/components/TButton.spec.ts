@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { shallowMount } from '@vue/test-utils';
-import TButton from '@/components/TButton.vue';
 import { TButtonConfig } from '@variantjs/core';
+import TButton from '../../components/TButton.vue';
 
 describe('TButton.vue', () => {
   it('renders the button', () => {
@@ -394,29 +395,4 @@ describe('TButton.vue', () => {
       expect(component.props()).toEqual(props);
     });
   });
-
-  // it('uses native button for inertia when tag name is not `a`', () => {
-  //   const wrapper = shallowMount(TButton, {
-  //     props: { tagName: 'button', href: '/test' },
-  //     computed: {
-  //       isInertiaLinkComponentAvailable() {
-  //         return true;
-  //       },
-  //     },
-  //   });
-
-  //   expect(Object.keys(wrapper.vm.getAttributes())).toEqual(['id', 'value', 'autofocus', 'disabled', 'name', 'href', 'type']);
-  // });
-
-  // it('uses native button when native is set', () => {
-  //   const wrapper = shallowMount(TButton, {
-  //     props: { to: '/some-place', native: true },
-  //     computed: {
-  //       isRouterLinkComponentAvailable() {
-  //         return true;
-  //       },
-  //     },
-  //   });
-
-  //   expect(Obje
 });

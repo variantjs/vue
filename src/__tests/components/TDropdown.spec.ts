@@ -155,6 +155,7 @@ describe('TDropdown.vue', () => {
     const wrapper = mount(TDropdown, {
       props: {
         toggleOnClick: true,
+        toggleOnFocus: false,
       },
     });
 
@@ -168,29 +169,6 @@ describe('TDropdown.vue', () => {
     await trigger.trigger('click');
 
     expect(wrapper.vm.shown).toBe(true);
-
-    expect(dropdown.style.display).toBe('');
-  });
-
-  it('shows the dropdown when the trigger is pressed ', async () => {
-    const wrapper = mount(TDropdown, {
-      props: {
-        toggleOnClick: true,
-      },
-    });
-
-    const trigger = wrapper.get('button');
-    const { dropdown } = wrapper.vm.$refs;
-
-    await dropdownIsReady(wrapper);
-
-    expect(dropdown.style.display).toBe('none');
-
-    await trigger.trigger('click');
-
-    expect(wrapper.vm.shown).toBe(true);
-
-    expect(dropdown.style.display).toBe('');
   });
 
   it('hides the dropdown when the trigger is pressed and is openede ', async () => {
@@ -202,15 +180,12 @@ describe('TDropdown.vue', () => {
     });
 
     const trigger = wrapper.get('button');
-    const { dropdown } = wrapper.vm.$refs;
 
     await dropdownIsReady(wrapper);
 
     await trigger.trigger('click');
 
     expect(wrapper.vm.shown).toBe(false);
-
-    expect(dropdown.style.display).toBe('none');
   });
 
   it('doesnt teleports the dropdown by default', () => {
@@ -883,14 +858,12 @@ describe('TDropdown.vue', () => {
     const onClick = jest.fn();
     const onBlur = jest.fn();
     const onFocus = jest.fn();
-    const onKeyup = jest.fn();
 
     const wrapper = mount(TDropdown, {
       attrs: {
         onClick,
         onBlur,
         onFocus,
-        onKeyup,
       },
     });
 
@@ -904,9 +877,6 @@ describe('TDropdown.vue', () => {
 
     trigger.dispatchEvent(new FocusEvent('blur'));
     expect(onBlur).toHaveBeenCalled();
-
-    trigger.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
-    expect(onKeyup).toHaveBeenCalled();
   });
 
   it('triggers custom events', async () => {
