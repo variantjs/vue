@@ -11,19 +11,16 @@ export default defineComponent({
   name: 'TIcon',
   props: {
     icon: {
-      type: Object as PropType<Element>,
+      type: [Object, String] as PropType<Element | string>,
       required: true,
-      validator: (icon: Element) => icon.tagName === 'svg',
-    },
-    iconName: {
-      type: String,
-      required: true,
+      // validator: (icon: Element) => icon.tagName === 'svg',
     },
   },
   data() {
     return {
-      child: svgToVueComponent(this.icon, this.iconName),
+      child: svgToVueComponent(this.icon),
     };
   },
+
 });
 </script>

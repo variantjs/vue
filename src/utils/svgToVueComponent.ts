@@ -5,13 +5,31 @@ const icons: {
   [key: string]: VNode
 } = {};
 
-const svgToVueComponent = (el: Element, iconName?: string): VNode => {
-  if (iconName !== undefined && icons[iconName]) {
-    return icons[iconName];
+const svgToVueComponent = (el: Element | string, deep = 0): VNode => {
+  let iconAsString: string | null = null;
+
+  if (deep === 0) {
+    iconAsString = typeof el === 'string' ? el : el.outerHTML;
+
+    if (icons[iconAsString]) {
+      return icons[iconAsString];
+    }
   }
 
-  const attributes = Array.from(el.attributes);
-  const children = Array.from(el.children);
+  let elToConvert: Element | null | string = el;
+
+  if (typeof elToConvert === 'string') {
+    const div = document.createElement('div');
+    div.innerHTML = elToConvert;
+    elToConvert = div.firstElementChild;
+  }
+
+  if (elToConvert === null) {
+    return h('');
+  }
+
+  const attributes = Array.from(elToConvert.attributes);
+  const children = Array.from(elToConvert.children);
   const attrs: VNodeProps & Data = {};
 
   attributes
@@ -20,10 +38,10 @@ const svgToVueComponent = (el: Element, iconName?: string): VNode => {
       attrs[attribute.name] = attribute.value;
     });
 
-  const component = h(el.tagName, attrs, children.map((child) => svgToVueComponent(child)));
+  const component = h(elToConvert.tagName, attrs, children.map((child) => svgToVueComponent(child, deep + 1)));
 
-  if (iconName !== undefined) {
-    icons[iconName] = component;
+  if (deep === 0 && iconAsString !== null) {
+    icons[iconAsString] = component;
   }
 
   return component;

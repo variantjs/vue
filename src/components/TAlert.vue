@@ -38,7 +38,6 @@
         <t-icon
           :class="configuration.classesList?.closeIcon"
           :icon="closeIcon"
-          icon-name="closeIcon"
         />
       </button>
     </component>
@@ -88,7 +87,7 @@ export default defineComponent({
       default: undefined,
     },
     closeIcon: {
-      type: Object as PropType<Element>,
+      type: [Object, String] as PropType<Element | string>,
       default: () => closeIcon,
     },
   },
