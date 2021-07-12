@@ -25,6 +25,7 @@
         <t-alert
           v-model:show="show"
           class="mt-2"
+          :close-icon="customCloseIcon"
         >
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati ipsam necessitatibus deserunt quas dolorum at laboriosam, expedita eveniet facere excepturi non hic esse! Facere, illum qui? Minus iste porro quidem!
         </t-alert>
@@ -41,9 +42,6 @@ import TCard from '../components/TCard.vue';
 import TAlert from '../components/TAlert.vue';
 import TInputGroup from '../components/TInputGroup.vue';
 
-// <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-//   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-// </svg>
 export default defineComponent({
   name: 'App',
   components: {
@@ -55,6 +53,9 @@ export default defineComponent({
   data() {
     return {
       show: true,
+      customCloseIcon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+</svg>`,
     };
   },
   mounted() {},

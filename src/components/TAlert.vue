@@ -35,9 +35,9 @@
         class="relative flex items-center justify-center flex-shrink-0 w-6 h-6 ml-4 text-blue-500 transition duration-100 ease-in-out rounded hover:bg-blue-200 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
         @click="doHide"
       >
-        <t-icon
-          :class="configuration.classesList?.closeIcon"
+        <icon
           :icon="closeIcon"
+          :class="configuration.classesList?.closeIcon"
         />
       </button>
     </component>
@@ -45,20 +45,20 @@
 </template>
 
 <script lang="ts">
-import { TAlertConfig, TAlertConfigKeys, closeIcon } from '@variantjs/core';
-import {
-  defineComponent, PropType,
-} from 'vue';
+import { TAlertConfig, TAlertConfigKeys } from '@variantjs/core';
+import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
-import { TAlertOptions } from '../types';
-import TIcon from './TIcon.vue';
+import { IconProp, TAlertOptions } from '../types';
+import Icon from '../icons/Icon.vue';
+import CloseIcon from '../icons/CloseIcon.vue';
 
 // @vue/component
 export default defineComponent({
   name: 'TAlert',
   components: {
-    TIcon,
+    Icon,
+    CloseIcon,
   },
   props: {
     ...getVariantPropsWithClassesList<TAlertOptions, TAlertConfigKeys>(),
@@ -87,8 +87,8 @@ export default defineComponent({
       default: undefined,
     },
     closeIcon: {
-      type: [Object, String] as PropType<Element | string>,
-      default: () => closeIcon,
+      type: [Object, String] as PropType<IconProp>,
+      default: (): IconProp => CloseIcon,
     },
   },
   emits: {

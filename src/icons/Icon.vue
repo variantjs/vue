@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
+import { IconProp } from '../types';
 import svgToVueComponent from '../utils/svgToVueComponent';
 
 // @vue/component
@@ -11,16 +12,14 @@ export default defineComponent({
   name: 'TIcon',
   props: {
     icon: {
-      type: [Object, String] as PropType<Element | string>,
+      type: [Object, String] as PropType<IconProp>,
       required: true,
-      // validator: (icon: Element) => icon.tagName === 'svg',
     },
   },
   data() {
     return {
-      child: svgToVueComponent(this.icon),
+      child: this.icon instanceof Element || typeof this.icon === 'string' ? svgToVueComponent(this.icon) : this.icon,
     };
   },
-
 });
 </script>
