@@ -25,7 +25,7 @@ const svgToVueComponent = (el: Element | string, deep = 0): VNode => {
   }
 
   if (elToConvert === null) {
-    return h('');
+    return h('span');
   }
 
   const attributes = Array.from(elToConvert.attributes);
