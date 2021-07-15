@@ -235,4 +235,32 @@ describe('TAlert.vue', () => {
       configuration: 'object',
     });
   });
+
+  it('syncs the `shown` value with the prop configuration', async () => {
+    const wrapper = mount(TAlert);
+
+    await wrapper.setProps({
+      show: false,
+    });
+
+    expect(wrapper.vm.shown).toBe(false);
+
+    await wrapper.setProps({
+      show: true,
+    });
+
+    expect(wrapper.vm.shown).toBe(true);
+  });
+
+  it('hides or shows the component with the doToggle method', () => {
+    const wrapper = mount(TAlert);
+
+    wrapper.vm.doToggle();
+
+    expect(wrapper.vm.shown).toBe(false);
+
+    wrapper.vm.doToggle();
+
+    expect(wrapper.vm.shown).toBe(true);
+  });
 });
