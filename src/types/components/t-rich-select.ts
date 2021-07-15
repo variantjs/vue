@@ -1,0 +1,33 @@
+import { InputOptions, TRichSelectConfigKeys, WithVariantPropsAndClassesList } from '@variantjs/core';
+import { HTMLAttributes } from 'vue';
+import { Data } from '../misc';
+import { TSelectValue } from './t-select';
+
+export type AjaxResults = Promise<{
+  results: InputOptions;
+  hasMorePages?: boolean;
+}>;
+
+export type TRichSelectOptions = WithVariantPropsAndClassesList<{
+  modelValue?: TSelectValue,
+  options?: InputOptions,
+  multiple?: boolean,
+  valueAttribute?: boolean,
+  textAttribute?: boolean,
+  delay?: number,
+  fetchOptions?: (query: string, nextPage?: number) => AjaxResults,
+  minimumInputLength?: number,
+  minimumInputLengthText?: ((minimumInputLength: number, query?: string) => string) | string,
+  minimumResultsForSearch?: number,
+  hideSearchBox?: boolean,
+  openOnFocus?: boolean,
+  closeOnSelect?: boolean,
+  selectOnClose?: boolean,
+  clearable?: boolean,
+  placeholder?: string,
+  searchBoxPlaceholder?: string,
+  noResultsText?: string,
+  searchingText?: string,
+  loadingMoreResultsText?: string,
+  maxHeight?: number,
+}, TRichSelectConfigKeys> & HTMLAttributes & Data;
