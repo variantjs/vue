@@ -1,47 +1,58 @@
 <template>
-  <transition
-    :enter-active-class="configuration.classesList?.enterActiveClass"
-    :enter-from-class="configuration.classesList?.enterFromClass"
-    :enter-to-class="configuration.classesList?.enterToClass"
-    :leave-active-class="configuration.classesList?.leaveActiveClass"
-    :leave-from-class="configuration.classesList?.leaveFromClass"
-    :leave-to-class="configuration.classesList?.leaveToClass"
+  <transitionable
+    :classes-list="configuration.classesList"
+    :enabled="animate"
   >
     <component
       :is="tagName"
       v-if="shown"
-      :class="configuration.classesList?.wrapper"
       v-bind="attributes"
+      ref="wrapper"
+      :class="configuration.classesList?.wrapper"
     >
       <component
-        :is="tagName"
+        :is="bodyTagName"
+        ref="body"
         :class="configuration.classesList?.body"
       >
         <slot
-          v-if="$slots.default !== undefined"
           :show="doShow"
           :hide="doHide"
           :toggle="doToggle"
           :configuration="configuration"
-        />
-        <template v-else>
+        >
           {{ configuration.text }}
-        </template>
+        </slot>
       </component>
 
       <button
+        v-if="dismissible"
+        ref="close"
         type="button"
         :class="configuration.classesList?.close"
-        class="relative flex items-center justify-center flex-shrink-0 w-6 h-6 ml-4 text-blue-500 transition duration-100 ease-in-out rounded hover:bg-blue-200 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
         @click="doHide"
       >
-        <icon
-          :icon="closeIcon"
-          :class="configuration.classesList?.closeIcon"
-        />
+        <slot
+          name="closeButton"
+          :show="doShow"
+          :hide="doHide"
+          :toggle="doToggle"
+          :configuration="configuration"
+        >
+          <custom-icon
+            v-if="closeIcon"
+            ref="closeIcon"
+            :icon="closeIcon"
+            :class="configuration.classesList?.closeIcon"
+          />
+          <close-icon
+            v-else
+            ref="closeIcon"
+          />
+        </slot>
       </button>
     </component>
-  </transition>
+  </transitionable>
 </template>
 
 <script lang="ts">
@@ -50,15 +61,17 @@ import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
 import { IconProp, TAlertOptions } from '../types';
-import Icon from '../icons/Icon.vue';
+import CustomIcon from '../icons/CustomIcon.vue';
 import CloseIcon from '../icons/CloseIcon.vue';
+import Transitionable from './Transitionable.vue';
 
 // @vue/component
 export default defineComponent({
   name: 'TAlert',
   components: {
-    Icon,
+    CustomIcon,
     CloseIcon,
+    Transitionable,
   },
   props: {
     ...getVariantPropsWithClassesList<TAlertOptions, TAlertConfigKeys>(),
@@ -86,9 +99,13 @@ export default defineComponent({
       type: Number,
       default: undefined,
     },
+    animate: {
+      type: Boolean,
+      default: true,
+    },
     closeIcon: {
       type: [Object, String] as PropType<IconProp>,
-      default: (): IconProp => CloseIcon,
+      default: undefined,
     },
   },
   emits: {
@@ -103,9 +120,9 @@ export default defineComponent({
   data({ configuration }) {
     return {
       shown: (configuration as unknown as TAlertOptions).show,
+      timer: null as ReturnType<typeof setTimeout> | null,
     };
   },
-
   watch: {
     shown(shown: boolean): void {
       this.$emit('update:show', shown);
@@ -117,6 +134,16 @@ export default defineComponent({
         this.doHide();
       }
     },
+  },
+  mounted() {
+    if (this.timeout) {
+      this.timer = setTimeout(() => this.doHide(), this.timeout);
+    }
+  },
+  unmounted() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
   },
   methods: {
     doToggle(): void {
@@ -130,6 +157,10 @@ export default defineComponent({
       this.shown = true;
     },
     doHide(): void {
+      if (this.timer) {
+        clearTimeout(this.timer);
+      }
+
       this.shown = false;
     },
   },

@@ -14,28 +14,21 @@
     @mouseleave="mouseleaveHandler"
   >
     <slot
-      v-if="$slots.trigger !== undefined"
       :configuration="configuration"
       :is-show="shown"
       :popper="popper"
       name="trigger"
-    />
-    <template v-else>
+    >
       {{ configuration.text }}
-    </template>
+    </slot>
   </component>
 
   <teleport
     :to="configuration.teleportTo"
     :disabled="! configuration.teleport"
   >
-    <transition
-      :enter-active-class="configuration.classesList?.enterActiveClass"
-      :enter-from-class="configuration.classesList?.enterFromClass"
-      :enter-to-class="configuration.classesList?.enterToClass"
-      :leave-active-class="configuration.classesList?.leaveActiveClass"
-      :leave-from-class="configuration.classesList?.leaveFromClass"
-      :leave-to-class="configuration.classesList?.leaveToClass"
+    <transitionable
+      :classes-list="configuration.classesList"
       @after-leave="dropdownAfterLeave"
     >
       <component
@@ -57,7 +50,7 @@
           :popper="popper"
         />
       </component>
-    </transition>
+    </transitionable>
   </teleport>
 </template>
 
@@ -80,10 +73,11 @@ import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
 import { Data, TDropdownOptions } from '../types';
-
+import Transitionable from './Transitionable.vue';
 // @vue/component
 export default defineComponent({
   name: 'TDropdown',
+  components: { Transitionable },
   inheritAttrs: false,
   props: {
     ...getVariantPropsWithClassesList<TDropdownOptions, TDropdownConfigKeys>(),

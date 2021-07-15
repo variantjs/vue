@@ -10,12 +10,11 @@
       :class="configuration.classesList?.header"
     >
       <slot
-        v-if="$slots.header !== undefined"
         name="header"
-      />
-      <template v-else>
+        :configuration="configuration"
+      >
         {{ configuration.header }}
-      </template>
+      </slot>
     </div>
 
     <div
@@ -23,10 +22,9 @@
       ref="body"
       :class="configuration.classesList?.body"
     >
-      <slot v-if="$slots.default !== undefined" />
-      <template v-else>
+      <slot :configuration="configuration">
         {{ configuration.body }}
-      </template>
+      </slot>
     </div>
 
     <div
@@ -35,12 +33,11 @@
       :class="configuration.classesList?.footer"
     >
       <slot
-        v-if="$slots.footer !== undefined"
         name="footer"
-      />
-      <template v-else>
+        :configuration="configuration"
+      >
         {{ configuration.footer }}
-      </template>
+      </slot>
     </div>
   </component>
 </template>

@@ -5,7 +5,7 @@ import { mount, VueWrapper } from '@vue/test-utils';
 import TDropdown from '@/components/TDropdown.vue';
 import { TDropdownConfig, TDropdownPopperDefaultOptions } from '@variantjs/core';
 import { h } from 'vue';
-import { Data } from '../../types';
+import { scopedParamsAsString, parseScopedParams } from '../testUtils';
 
 const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<void> = (wrapper: VueWrapper<any>) => new Promise((resolve) => {
   // 1. Until component is mounted
@@ -20,17 +20,6 @@ const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<void> = (wrapper: V
     });
   });
 });
-
-const scopedParamsAsString = (params: Data) : string => {
-  const keys = Object.keys(params);
-  const result: Data = {};
-  keys.filter((key) => key !== 'key').forEach((key) => {
-    result[key] = typeof params[key];
-  });
-  return JSON.stringify(result);
-};
-
-const parseScopedParams = (paramsAsString: string) : Data => JSON.parse(paramsAsString);
 
 describe('TDropdown.vue', () => {
   it('renders the component', () => {

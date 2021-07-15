@@ -9,7 +9,7 @@ import svgToVueComponent from '../utils/svgToVueComponent';
 
 // @vue/component
 export default defineComponent({
-  name: 'TIcon',
+  name: 'CustomIcon',
   props: {
     icon: {
       type: [Object, String] as PropType<IconProp>,
