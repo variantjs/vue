@@ -159,6 +159,7 @@ export default defineComponent({
     doHide(): void {
       if (this.timer) {
         clearTimeout(this.timer);
+        this.timer = null;
       }
 
       this.shown = false;

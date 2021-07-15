@@ -135,6 +135,20 @@ describe('TAlert.vue', () => {
     jest.useRealTimers();
   });
 
+  it('doesnt clear the timeout if not defined', async () => {
+    jest.useFakeTimers();
+
+    const timeoutSpy = spyOn(window, 'setTimeout');
+    const clearTimeoutSpy = spyOn(window, 'clearTimeout');
+
+    const wrapper = mount(TAlert);
+
+    wrapper.unmount();
+
+    expect(timeoutSpy).not.toHaveBeenCalled();
+    expect(clearTimeoutSpy).not.toHaveBeenCalled();
+  });
+
   it('clears the `timeout` when the element is unmounted', async () => {
     jest.useFakeTimers();
 
@@ -155,6 +169,20 @@ describe('TAlert.vue', () => {
     expect(hideAction).not.toHaveBeenCalled();
 
     jest.useRealTimers();
+  });
+
+  it('clears the `timeout` when the element is hidden manually', async () => {
+    const clearTimeoutSpy = spyOn(window, 'clearTimeout');
+
+    const wrapper = mount(TAlert, {
+      props: {
+        timeout: 500,
+      },
+    });
+
+    wrapper.vm.doHide();
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
   });
 
   it('animates the alert as default', async () => {
