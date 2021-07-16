@@ -56,14 +56,14 @@
 </template>
 
 <script lang="ts">
-import { TAlertConfig, TAlertConfigKeys } from '@variantjs/core';
+import { TAlertConfig, TAlertClassesKeys, TAlertClassesValidKeys } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
 import { IconProp, TAlertOptions } from '../types';
 import CustomIcon from '../icons/CustomIcon.vue';
 import CloseIcon from '../icons/CloseIcon.vue';
-import Transitionable from './Transitionable.vue';
+import Transitionable from './misc/Transitionable.vue';
 
 // @vue/component
 export default defineComponent({
@@ -74,7 +74,7 @@ export default defineComponent({
     Transitionable,
   },
   props: {
-    ...getVariantPropsWithClassesList<TAlertOptions, TAlertConfigKeys>(),
+    ...getVariantPropsWithClassesList<TAlertOptions, TAlertClassesValidKeys>(),
     text: {
       type: String,
       default: undefined,
@@ -112,7 +112,7 @@ export default defineComponent({
     'update:show': (show: boolean) => typeof show === 'boolean',
   },
   setup() {
-    const configuration = useConfigurationWithClassesList<TAlertOptions>(TAlertConfig, ['wrapper', 'body', 'close', 'closeIcon', 'enterFromClass', 'enterActiveClass', 'enterToClass', 'leaveFromClass', 'leaveActiveClass', 'leaveToClass']);
+    const configuration = useConfigurationWithClassesList<TAlertOptions>(TAlertConfig, TAlertClassesKeys);
     const attributes = useAttributes<TAlertOptions>(configuration);
 
     return { configuration, attributes };

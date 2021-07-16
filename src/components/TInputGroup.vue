@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { TInputGroupConfig, TInputGroupConfigKeys } from '@variantjs/core';
+import { TInputGroupConfig, TInputGroupClassesKeys, TInputGroupClassesValidKeys } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
@@ -34,7 +34,7 @@ import { TInputGroupOptions, TInputGroupValidChilElementsKeys } from '../types';
 export default defineComponent({
   name: 'TInputGroup',
   props: {
-    ...getVariantPropsWithClassesList<TInputGroupOptions, TInputGroupConfigKeys>(),
+    ...getVariantPropsWithClassesList<TInputGroupOptions, TInputGroupClassesValidKeys>(),
     label: {
       type: String,
       default: undefined,
@@ -81,7 +81,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const configuration = useConfigurationWithClassesList<TInputGroupOptions>(TInputGroupConfig, ['wrapper', 'label', 'body', 'feedback', 'description']);
+    const configuration = useConfigurationWithClassesList<TInputGroupOptions>(TInputGroupConfig, TInputGroupClassesKeys);
     const attributes = useAttributes<TInputGroupOptions>(configuration);
 
     return { configuration, attributes };
