@@ -60,7 +60,8 @@ import {
 } from '@popperjs/core';
 import {
   TDropdownConfig,
-  TDropdownConfigKeys,
+  TDropdownClassesKeys,
+  TDropdownClassesValidKeys,
   debounce,
   elementIsTargetOrTargetChild,
   getFocusableElements,
@@ -73,14 +74,14 @@ import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
 import { Data, TDropdownOptions } from '../types';
-import Transitionable from './Transitionable.vue';
+import Transitionable from './misc/Transitionable.vue';
 // @vue/component
 export default defineComponent({
   name: 'TDropdown',
   components: { Transitionable },
   inheritAttrs: false,
   props: {
-    ...getVariantPropsWithClassesList<TDropdownOptions, TDropdownConfigKeys>(),
+    ...getVariantPropsWithClassesList<TDropdownOptions, TDropdownClassesValidKeys>(),
     text: {
       type: String,
       default: undefined,
@@ -168,7 +169,7 @@ export default defineComponent({
     touchstart: (e: TouchEvent) => e instanceof TouchEvent,
   },
   setup() {
-    const configuration = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, ['trigger', 'dropdown', 'enterFromClass', 'enterActiveClass', 'enterToClass', 'leaveFromClass', 'leaveActiveClass', 'leaveToClass']);
+    const configuration = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, TDropdownClassesKeys);
     const attributes = useAttributes<TDropdownOptions>(configuration);
 
     return { configuration, attributes };
