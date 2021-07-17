@@ -1,3 +1,5 @@
+import { VueWrapper } from '@vue/test-utils';
+import { ComponentPublicInstance } from 'vue';
 import { Data } from '../types';
 
 export const scopedParamsAsString = (params: Data) : string => {
@@ -10,3 +12,8 @@ export const scopedParamsAsString = (params: Data) : string => {
 };
 
 export const parseScopedParams = (paramsAsString: string) : Data => JSON.parse(paramsAsString);
+
+export const getChildComponentNameByRef = (wrapper: VueWrapper<ComponentPublicInstance>, refName: string): string | undefined => {
+  const component = wrapper.vm.$refs[refName] as ComponentPublicInstance | undefined;
+  return component?.$.type.name;
+};

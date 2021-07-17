@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import RichSelectTrigger from '../../../components/TRichSelect/RichSelectTrigger.vue';
+import { getChildComponentNameByRef } from '../../testUtils';
 
 describe('RichSelectTrigger', () => {
   it('renders a button with type `button``', () => {
@@ -12,7 +13,7 @@ describe('RichSelectTrigger', () => {
   it('has a text-placeholder component', () => {
     const wrapper = shallowMount(RichSelectTrigger);
 
-    expect(wrapper.vm.$refs.placeholder.$.type.name).toBe('TextPlaceholder');
+    expect(getChildComponentNameByRef(wrapper, 'placeholder')).toBe('TextPlaceholder');
   });
 
   it('uses the `selectButton` classes from the `classesList`', () => {
