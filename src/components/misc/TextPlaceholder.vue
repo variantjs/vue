@@ -8,8 +8,9 @@
 </template>
 
 <script lang="ts">
-import { CSSClass, CSSRawClassesList } from '@variantjs/core';
-import { defineComponent, inject } from 'vue';
+import { CSSClass } from '@variantjs/core';
+import { computed, defineComponent, inject } from 'vue';
+import useProvidesClassesList from '../../use/useProvidesClassesList';
 
 export default defineComponent({
   name: 'TextPlaceholder',
@@ -19,17 +20,14 @@ export default defineComponent({
       default: 'placeholder',
     },
   },
-  setup() {
-    const classesList = inject<CSSRawClassesList>('classesList', {});
+  setup(props) {
+    const classesList = useProvidesClassesList();
+
     const placeholder = inject('placeholder', undefined);
 
-    return { classesList, placeholder };
-  },
+    const className = computed<CSSClass>(() => classesList.value[props.classProperty]);
 
-  computed: {
-    className(): CSSClass {
-      return this.classesList[this.classProperty];
-    },
+    return { className, placeholder };
   },
 });
 </script>
