@@ -1,13 +1,13 @@
 <template>
-  <button
+  <!-- <button
     :class="classesList.selectButton"
     type="button"
-  >
-    <text-placeholder
-      ref="placeholder"
-      class-property="selectButtonPlaceholder"
-    />
-  </button>
+  > -->
+  <text-placeholder
+    ref="placeholder"
+    class-property="selectButtonPlaceholder"
+  />
+  <!-- </button> -->
 </template>
 
 <script lang="ts">

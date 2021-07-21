@@ -1016,6 +1016,7 @@ describe('TDropdown.vue', () => {
 
     expect(wrapper.vm.popper.state.placement).toBe(TDropdownPopperDefaultOptions.placement);
   });
+
   it('overrides the popper placement if placement is set', async () => {
     const wrapper = mount(TDropdown, {
       props: {

@@ -8,6 +8,14 @@
         :options="options"
       />
 
+      <t-rich-select
+        v-model="selected"
+        placeholder="select an option"
+        :classes="classes"
+        :options="options"
+        multiple
+      />
+
       <div>
         <label
           v-for="option in options"
@@ -31,12 +39,14 @@
 import { defineComponent } from 'vue';
 import TSelect from '../components/TSelect.vue';
 import TCheckbox from '../components/TCheckbox.vue';
+import TRichSelect from '../components/TRichSelect.vue';
 
 export default defineComponent({
   name: 'Multioptions',
   components: {
     TSelect,
     TCheckbox,
+    TRichSelect,
   },
   data() {
     return {
@@ -45,6 +55,9 @@ export default defineComponent({
         'A',
         'B',
         'C',
+        'D',
+        'E',
+        'F',
       ],
     };
   },

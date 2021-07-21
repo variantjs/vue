@@ -1,5 +1,6 @@
-import { InputOptions, TRichSelectConfigKeys, WithVariantPropsAndClassesList } from '@variantjs/core';
+import { InputOptions, TRichSelectClassesValidKeys, WithVariantPropsAndClassesList } from '@variantjs/core';
 import { HTMLAttributes } from 'vue';
+import { Placement, Options } from '@popperjs/core';
 import { Data } from '../misc';
 import { TSelectValue } from './t-select';
 
@@ -10,8 +11,8 @@ export type AjaxResults = Promise<{
 
 export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   modelValue?: TSelectValue,
-  options?: InputOptions,
-  multiple?: boolean,
+  options?: InputOptions
+  multiple?: boolean
   valueAttribute?: boolean,
   textAttribute?: boolean,
   delay?: number,
@@ -30,4 +31,6 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   searchingText?: string,
   loadingMoreResultsText?: string,
   maxHeight?: number,
-}, TRichSelectConfigKeys> & HTMLAttributes & Data;
+  dropdownPlacement?: Placement,
+  dropdownPopperOptions?: Options,
+}, TRichSelectClassesValidKeys> & HTMLAttributes & Data;

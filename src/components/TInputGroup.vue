@@ -74,7 +74,7 @@ export default defineComponent({
     sortedElements: {
       type: Array as PropType<TInputGroupValidChilElementsKeys>,
       default: (): TInputGroupValidChilElementsKeys => (['label', 'default', 'feedback', 'description']),
-      validator(value: Array<string>) {
+      validator: (value: Array<string>): boolean => {
         const expectedValues: TInputGroupValidChilElementsKeys = ['default', 'description', 'feedback', 'label'];
         return value.every((key) => expectedValues.find((k) => k === key) !== null);
       },

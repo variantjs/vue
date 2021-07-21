@@ -1,4 +1,4 @@
-import { WithVariantPropsAndClassesList, TAlertConfigKeys } from '@variantjs/core';
+import { WithVariantPropsAndClassesList, TAlertClassesValidKeys } from '@variantjs/core';
 import { HTMLAttributes } from 'vue';
 import { Data, IconProp } from '../misc';
 
@@ -11,4 +11,4 @@ export type TAlertOptions = WithVariantPropsAndClassesList<{
   timeout?: number,
   animate?: boolean,
   closeIcon?: IconProp,
-}, TAlertConfigKeys> & HTMLAttributes & Data;
+}, TAlertClassesValidKeys> & HTMLAttributes & Data;

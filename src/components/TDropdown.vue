@@ -133,26 +133,23 @@ export default defineComponent({
     placement: {
       type: String as PropType<Placement>,
       default: undefined,
-      validator(value: string) {
-        // The value must match one of these strings
-        return [
-          'auto',
-          'auto-start',
-          'auto-end',
-          'top',
-          'top-start',
-          'top-end',
-          'bottom',
-          'bottom-start',
-          'bottom-end',
-          'right',
-          'right-start',
-          'right-end',
-          'left',
-          'left-start',
-          'left-end',
-        ].includes(value);
-      },
+      validator: (value: string):boolean => [
+        'auto',
+        'auto-start',
+        'auto-end',
+        'top',
+        'top-start',
+        'top-end',
+        'bottom',
+        'bottom-start',
+        'bottom-end',
+        'right',
+        'right-start',
+        'right-end',
+        'left',
+        'left-start',
+        'left-end',
+      ].includes(value),
     },
     popperOptions: {
       type: Object as PropType<Options>,

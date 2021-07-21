@@ -15,5 +15,6 @@ export const parseScopedParams = (paramsAsString: string) : Data => JSON.parse(p
 
 export const getChildComponentNameByRef = (wrapper: VueWrapper<ComponentPublicInstance>, refName: string): string | undefined => {
   const component = wrapper.vm.$refs[refName] as ComponentPublicInstance | undefined;
-  return component?.$.type.name;
+
+  return component?.$?.type.name;
 };

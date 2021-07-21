@@ -36,9 +36,7 @@ export default defineComponent({
     tagName: {
       type: String,
       default: 'button',
-      validator(value: string) {
-        return ['button', 'a'].indexOf(value) !== -1;
-      },
+      validator: (value: string): boolean => ['button', 'a'].indexOf(value) !== -1,
     },
     // Handled attributes
     href: {

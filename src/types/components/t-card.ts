@@ -1,4 +1,4 @@
-import { WithVariantPropsAndClassesList, TCardConfigKeys } from '@variantjs/core';
+import { WithVariantPropsAndClassesList, TCardClassesValidKeys } from '@variantjs/core';
 import { HTMLAttributes } from 'vue';
 import { Data } from '../misc';
 
@@ -7,4 +7,4 @@ export type TCardOptions = WithVariantPropsAndClassesList<{
   body?: string
   header?: string
   footer?: string
-}, TCardConfigKeys> & HTMLAttributes & Data;
+}, TCardClassesValidKeys> & HTMLAttributes & Data;

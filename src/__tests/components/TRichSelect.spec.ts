@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { TRichSelectConfig } from '@variantjs/core';
 import TRichSelect from '../../components/TRichSelect.vue';
 import { getChildComponentNameByRef } from '../testUtils';
 
@@ -18,7 +17,6 @@ describe('TRichSelect.vue', () => {
   it('has a dropdown', () => {
     const wrapper = shallowMount(TRichSelect);
 
-    expect(wrapper.vm.$refs.dropdown).toBeTruthy();
-    expect(wrapper.vm.$refs.dropdown.tagName).toBe('DIV');
+    expect(getChildComponentNameByRef(wrapper, 'dropdown')).toBe('RichSelecTRichSelect');
   });
 });
