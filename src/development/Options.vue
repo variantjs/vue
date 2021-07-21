@@ -7,6 +7,12 @@
         :options="options"
       />
 
+      <t-rich-select
+        v-model="selected"
+        placeholder="select an option"
+        :options="options"
+      />
+
       <div>
         <label
           v-for="option in options"
@@ -23,6 +29,10 @@
         </label>
       </div>
     </div>
+
+    <t-button @click="selected = null">
+      Clear value
+    </t-button>
   </div>
 </template>
 
@@ -30,12 +40,16 @@
 import { defineComponent } from 'vue';
 import TSelect from '../components/TSelect.vue';
 import TRadio from '../components/TRadio.vue';
+import TRichSelect from '../components/TRichSelect.vue';
+import TButton from '../components/TButton.vue';
 
 export default defineComponent({
   name: 'Options',
   components: {
     TSelect,
     TRadio,
+    TButton,
+    TRichSelect,
   },
   data() {
     return {
