@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import {
-  InputOptions, TRichSelectConfig, TRichSelectClassesKeys, TRichSelectClassesValidKeys, CSSRawClassesList,
+  InputOptions, TRichSelectConfig, TRichSelectClassesKeys, TRichSelectClassesValidKeys, CSSRawClassesList, isEqual, toggle, toggleFromArray,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   NormalizedOption,
 } from '@variantjs/core';
@@ -106,6 +106,13 @@ export default defineComponent({
         ],
       } as Options),
     },
+    closeOnSelect: {
+      type: Boolean,
+      default: undefined,
+    },
+
+    // closeOnSelect?: boolean,
+    // selectOnClose?: boolean,
 
     // valueAttribute?: boolean,
     // textAttribute?: boolean,
@@ -116,8 +123,7 @@ export default defineComponent({
     // minimumResultsForSearch?: number,
     // hideSearchBox?: boolean,
     // openOnFocus?: boolean,
-    // closeOnSelect?: boolean,
-    // selectOnClose?: boolean,
+
     // clearable?: boolean,
     // placeholder?: string,
     // searchBoxPlaceholder?: string,
@@ -139,8 +145,7 @@ export default defineComponent({
       return option;
     }).flat());
 
-    // @TODo use isEqual ocmparison
-    const selectedOption = computed((): NormalizedOption | undefined => flattenedOptions.value.find((option) => option.value === localValue.value));
+    const selectedOption = computed((): NormalizedOption | undefined => flattenedOptions.value.find((option) => isEqual(option.value, localValue.value)));
 
     const activeOption = ref<NormalizedOption | null>(null);
 
@@ -149,40 +154,25 @@ export default defineComponent({
     const attributes = useAttributes<TRichSelectOptions>(configuration);
 
     // @TODO move logic for checking the option in the value to the core library
-    const optionIsActive = (option: NormalizedOption): boolean => activeOption.value?.value === option.value;
+    const optionIsActive = (option: NormalizedOption): boolean => isEqual(activeOption.value?.value, option.value);
 
     // @TODO move logic for checking the option in the value to the core library
     const optionIsSelected = (option: NormalizedOption): boolean => {
       if (configuration.value.multiple && Array.isArray(localValue.value)) {
-        // @TODO use an isEqual comparison
-        return localValue.value.some((value) => value === option.value);
+        return localValue.value.some((value) => isEqual(value, option.value));
       }
 
-      // @TODO use an isEqual comparison
-      return localValue.value === option.value;
+      return isEqual(localValue.value, option.value);
     };
 
-    // @TODO move logic for toggling the value to the core library
     const toggleOption = (option: NormalizedOption): void => {
-      const isSelected: boolean = optionIsSelected(option);
-
       if (configuration.value.multiple) {
-        if (!Array.isArray(localValue.value)) {
-          localValue.value = [option.value];
-        } else if (isSelected) {
-          // @TODO use an isEqual comparison
-          localValue.value = localValue.value.filter((value) => value !== option.value);
-        } else {
-          localValue.value = [...localValue.value, option.value];
-        }
-      } else if (isSelected) {
-        localValue.value = null;
+        localValue.value = toggleFromArray<TSelectValue[]>(localValue.value, option.value);
       } else {
-        localValue.value = option.value;
+        localValue.value = toggle<TSelectValue, TSelectValue>(localValue.value as TSelectValue, option.value);
       }
     };
 
-    // @TODO move logic to core library?
     const setActiveOption = (option: NormalizedOption): void => {
       activeOption.value = option;
     };
