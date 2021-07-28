@@ -22,6 +22,8 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   minimumResultsForSearch?: number,
   hideSearchBox?: boolean,
   openOnFocus?: boolean,
+  toggleOnFocus?: boolean,
+  toggleOnClick?: boolean,
   closeOnSelect?: boolean,
   selectOnClose?: boolean,
   clearable?: boolean,

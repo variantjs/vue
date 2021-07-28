@@ -6,15 +6,15 @@ export default function useMulipleableVModel<P extends Data & {
 }, K extends keyof P>(
   props: P,
   key: K,
-): WritableComputedRef<P[K] | Array<unknown> > {
+): WritableComputedRef<P[K]> {
   const vm = getCurrentInstance();
 
-  return computed<P[K] | Array<unknown>>({
+  return computed<P[K]>({
     get() {
       const isMultiple = props.multiple !== null && props.multiple !== undefined && props.multiple !== false;
       const value = props[key];
       if (value === undefined && isMultiple) {
-        return [];
+        return [] as P[K];
       }
       return value;
     },

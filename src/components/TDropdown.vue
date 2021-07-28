@@ -164,6 +164,10 @@ export default defineComponent({
     mouseover: (e: MouseEvent) => e instanceof MouseEvent,
     mouseleave: (e: MouseEvent) => e instanceof MouseEvent,
     touchstart: (e: TouchEvent) => e instanceof TouchEvent,
+    shown: () => true,
+    hidden: () => true,
+    'before-show': () => true,
+    'before-hide': () => true,
   },
   setup() {
     const configuration = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, TDropdownClassesKeys);
@@ -214,29 +218,17 @@ export default defineComponent({
     },
   },
   watch: {
-    shown(shown: boolean): void {
+    async shown(shown: boolean): Promise<void> {
       this.$emit('update:show', shown);
       if (shown) {
+        this.onBeforeShown();
+        await this.$nextTick();
         this.onShown();
       } else {
+        this.onBeforeHide();
+        await this.$nextTick();
         this.onHidden();
       }
-    },
-    'configuration.toggleOnFocus': {
-      handler(toggleOnFocus: boolean): void {
-        if (this.isTouchOnlyDevice) {
-          return;
-        }
-
-        this.$nextTick().then(() => {
-          if (toggleOnFocus) {
-            this.addBlurListenersToChildElements();
-          } else {
-            this.removeBlurListenersFromChildElements();
-          }
-        });
-      },
-      immediate: true,
     },
     'configuration.show': function configurationShowWatch(show: boolean): void {
       if (show) {
@@ -289,11 +281,30 @@ export default defineComponent({
       this.destroyPopper();
     },
     onShown(): void {
+      this.$emit('shown');
+
+      if (this.isTouchOnlyDevice) {
+        window.addEventListener('touchstart', this.touchstartHandler);
+      } else {
+        this.addBlurListenersToChildElements();
+      }
+    },
+    onHidden(): void {
+      this.$emit('hidden');
+      if (this.isTouchOnlyDevice) {
+        window.removeEventListener('touchstart', this.touchstartHandler);
+      } else {
+        this.removeBlurListenersFromChildElements();
+      }
+    },
+    onBeforeShown(): void {
+      this.$emit('before-show');
       if (this.isTouchOnlyDevice) {
         window.addEventListener('touchstart', this.touchstartHandler);
       }
     },
-    onHidden(): void {
+    onBeforeHide(): void {
+      this.$emit('before-hide');
       if (this.isTouchOnlyDevice) {
         window.removeEventListener('touchstart', this.touchstartHandler);
       }
@@ -390,13 +401,17 @@ export default defineComponent({
       }
     },
     blurHandler(e: FocusEvent): void {
-      this.$emit('blur', e);
+      const isChild = this.targetIsChild(e.relatedTarget);
+
+      if (!isChild) {
+        this.$emit('blur', e);
+      }
 
       if (this.isTouchOnlyDevice) {
         return;
       }
 
-      if (this.configuration.toggleOnFocus && !this.targetIsChild(e.relatedTarget)) {
+      if (this.configuration.toggleOnFocus && !isChild) {
         this.doHide();
       }
     },
