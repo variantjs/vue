@@ -221,7 +221,7 @@ export default defineComponent({
       activeOption.value = option;
     };
 
-    const valueChanged = (): void => {
+    const optionSelected = (): void => {
       if (shown.value === false) {
         return;
       }
@@ -236,12 +236,10 @@ export default defineComponent({
     };
 
     watch(localValue, () => {
-      valueChanged();
+      optionSelected();
     });
 
-    provide('placeholder', computed(() => configuration.value.placeholder));
-
-    provide('classesList', computed(() => configuration.value.classesList));
+    provide('configuration', configuration);
 
     provide('options', computed(() => normalizedOptions.value));
 

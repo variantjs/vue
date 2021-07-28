@@ -1,7 +1,7 @@
 <template>
   <span :class="className">
     <slot>
-      <template v-if="placeholder">{{ placeholder }}</template>
+      <template v-if="placeholder !== undefined">{{ placeholder }}</template>
       <template v-else>&nbsp;</template>
     </slot>
   </span>
@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { CSSClass } from '@variantjs/core';
-import { computed, defineComponent, inject } from 'vue';
+import { computed, defineComponent } from 'vue';
 import useProvidesClassesList from '../../use/useProvidesClassesList';
 
 export default defineComponent({
@@ -19,15 +19,17 @@ export default defineComponent({
       type: String,
       default: 'placeholder',
     },
+    placeholder: {
+      type: String,
+      default: undefined,
+    },
   },
   setup(props) {
     const classesList = useProvidesClassesList();
 
-    const placeholder = inject('placeholder', undefined);
-
     const className = computed<CSSClass>(() => classesList.value[props.classProperty]);
 
-    return { className, placeholder };
+    return { className };
   },
 });
 </script>

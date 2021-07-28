@@ -3,6 +3,7 @@
     v-if="selectedOption === undefined"
     ref="placeholder"
     class-property="selectButtonPlaceholder"
+    :placeholder="configuration.placeholder"
   />
 
   <span
@@ -14,11 +15,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from 'vue';
-import { NormalizedOption, TRichSelectConfig } from '@variantjs/core';
+import { ComputedRef, defineComponent, inject } from 'vue';
+import { NormalizedOption } from '@variantjs/core';
 import TextPlaceholder from '../misc/TextPlaceholder.vue';
-import useProvidesClassesList from '../../use/useProvidesClassesList';
 import SelectorIcon from '../../icons/SelectorIcon.vue';
+import { TRichSelectOptions } from '../../types';
+import { useProvidesConfiguration } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectTrigger',
@@ -27,11 +29,11 @@ export default defineComponent({
     SelectorIcon,
   },
   setup() {
-    const classesList = useProvidesClassesList<typeof TRichSelectConfig.classes>();
+    const configuration = useProvidesConfiguration<TRichSelectOptions>();
 
-    const selectedOption = inject<NormalizedOption | undefined>('selectedOption');
+    const selectedOption = inject<ComputedRef<NormalizedOption | undefined>>('selectedOption');
 
-    return { classesList, selectedOption };
+    return { selectedOption, configuration };
   },
 });
 </script>
