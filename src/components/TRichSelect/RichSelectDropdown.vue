@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div tabindex="-1">
     <rich-select-search-input v-if="! configuration.hideSearchBox" />
 
     <ul>
