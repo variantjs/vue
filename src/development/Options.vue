@@ -53,12 +53,22 @@ export default defineComponent({
   },
   data() {
     return {
-      selected: 'A',
+      selected: 'a',
       options: [
-        'A',
-        'B',
-        'C',
+        { value: 'A', text: 'Option A' },
+        {
+          value: 'B',
+          text: 'Option B',
+          children: [
+
+            { value: 1, text: 'Option B1' },
+            { value: 2, text: 'Option B2', children: ['Blue', 'Red', 'Yellow'] },
+            { value: 3, text: 'Option B3' },
+          ],
+        },
+        { value: 'C', text: 'Option C' },
       ],
+      // options: ['Blue', 'Red', 'Yellow', 'Green'],
     };
   },
 });

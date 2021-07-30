@@ -42,6 +42,7 @@ import {
   InputOptions, TRichSelectConfig, TRichSelectClassesKeys, TRichSelectClassesValidKeys, isEqual, addToArray, substractFromArray,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   NormalizedOption,
+  NormalizedOptions,
   CSSRawClassesList,
   throttle,
 } from '@variantjs/core';
@@ -58,6 +59,15 @@ import { TRichSelectOptions, TSelectValue } from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import TDropdown from './TDropdown.vue';
+
+// @TODO: Move this to the core library
+const flattenOptions = (options: NormalizedOptions): NormalizedOptions => options.map((option: NormalizedOption) => {
+  if (option.children) {
+    return flattenOptions(option.children);
+  }
+
+  return option;
+}).flat();
 
 // @vue/component
 export default defineComponent({
@@ -169,16 +179,11 @@ export default defineComponent({
 
     // Computed properties
     const normalizedOptions = useMultioptions(props, 'options');
+
     /**
      * List of all possible options
      */
-    const flattenedOptions = computed((): NormalizedOption[] => normalizedOptions.value.map((option: NormalizedOption) => {
-      if (option.children) {
-        return option.children;
-      }
-
-      return option;
-    }).flat());
+    const flattenedOptions = computed((): NormalizedOption[] => flattenOptions(normalizedOptions.value));
 
     const selectedOption = computed((): NormalizedOption | undefined => flattenedOptions.value.find((option) => isEqual(option.value, localValue.value)));
 
