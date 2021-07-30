@@ -22,7 +22,8 @@
       @blur="blurHandler"
       @focus="focusHandler"
       @keydown.space="keydownSpaceHandler"
-      @keydown.down="keydownDownHandler"
+      @keydown.down="keydownUpDownHandler"
+      @keydown.up="keydownUpDownHandler"
       @mousedown="mousedownHandler"
     >
       <template #trigger>
@@ -42,6 +43,7 @@ import {
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   NormalizedOption,
   CSSRawClassesList,
+  throttle,
 } from '@variantjs/core';
 import {
   computed, defineComponent, PropType, provide, ref, watch,
@@ -126,11 +128,15 @@ export default defineComponent({
     },
     toggleOnFocus: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     toggleOnClick: {
       type: Boolean,
       default: true,
+    },
+    hideSearchBox: {
+      type: Boolean,
+      default: false,
     },
 
     // selectOnClose?: boolean,
@@ -195,12 +201,18 @@ export default defineComponent({
       shown.value = false;
     };
 
-    const showDrodown = (): void => {
+    const showDropdown = (): void => {
       shown.value = true;
     };
 
+    const throttledShowDropdown = throttle(showDropdown, 200);
+
     const toggleDropdown = (): void => {
-      shown.value = !shown.value;
+      if (shown.value) {
+        hideDropdown();
+      } else {
+        throttledShowDropdown();
+      }
     };
 
     const toggleOption = (option: NormalizedOption): void => {
@@ -256,7 +268,7 @@ export default defineComponent({
     provide('shown', shown);
 
     return {
-      configuration, attributes, shown, hideDropdown, toggleDropdown, showDrodown,
+      configuration, attributes, shown, hideDropdown, toggleDropdown, throttledShowDropdown,
     };
   },
   computed: {
@@ -291,6 +303,8 @@ export default defineComponent({
       this.$emit('mousedown', e);
 
       if (this.configuration.toggleOnClick) {
+        e.preventDefault();
+
         this.toggleDropdown();
       }
     },
@@ -301,18 +315,18 @@ export default defineComponent({
         this.toggleDropdown();
       }
     },
-    keydownDownHandler(e: KeyboardEvent): void {
+    keydownUpDownHandler(e: KeyboardEvent): void {
       this.$emit('keydown', e);
 
       if (this.shown === false && this.configuration.toggleOnClick) {
-        this.showDrodown();
+        this.throttledShowDropdown();
       }
     },
     focusHandler(e: FocusEvent): void {
       this.$emit('focus', e);
 
       if (this.configuration.toggleOnFocus) {
-        this.showDrodown();
+        this.throttledShowDropdown();
       }
     },
     blurHandler(e: FocusEvent): void {
