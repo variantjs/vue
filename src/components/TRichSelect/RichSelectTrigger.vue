@@ -33,7 +33,9 @@ export default defineComponent({
 
     const selectedOption = inject<ComputedRef<NormalizedOption | undefined>>('selectedOption');
 
-    return { selectedOption, configuration };
+    return {
+      selectedOption, configuration,
+    };
   },
 });
 </script>

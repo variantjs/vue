@@ -1,6 +1,8 @@
 <template>
   <div>
-    <rich-select-search-input v-if="! configuration.hideSearchBox" />
+    <rich-select-search-input
+      v-if="! configuration.hideSearchBox"
+    />
 
     <rich-select-options-list :options="options" />
 

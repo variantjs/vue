@@ -21,9 +21,10 @@
       @before-hide="$emit('before-hide')"
       @blur="blurHandler"
       @focus="focusHandler"
+      @keydown.enter="keydownEnterHandler"
       @keydown.space="keydownSpaceHandler"
-      @keydown.down="keydownUpDownHandler"
-      @keydown.up="keydownUpDownHandler"
+      @keydown.down="keydownDownHandler"
+      @keydown.up="keydownUpHandler"
       @mousedown="mousedownHandler"
     >
       <template #trigger>
@@ -169,11 +170,9 @@ export default defineComponent({
     // loadingMoreResultsText?: string,
     // maxHeight?: number,
   },
-  setup(props) {
+  setup(props, { emit }) {
     // Data
     const shown = ref<boolean>(false);
-
-    const activeOption = ref<NormalizedOption | null>(null);
 
     const localValue = useMulipleableVModel(props, 'modelValue');
 
@@ -185,7 +184,23 @@ export default defineComponent({
      */
     const flattenedOptions = computed((): NormalizedOption[] => flattenOptions(normalizedOptions.value));
 
+    const activeOption = ref<NormalizedOption | null>(
+      flattenedOptions.value.find((option: NormalizedOption) => option.value === localValue.value)
+      || (flattenedOptions.value.length > 0 ? flattenedOptions.value[0] : null)
+      || null,
+    );
+
     const selectedOption = computed((): NormalizedOption | undefined => flattenedOptions.value.find((option) => isEqual(option.value, localValue.value)));
+
+    const activeOptionIndex = computed((): number => {
+      if (activeOption.value === null) {
+        return 0;
+      }
+
+      const index = flattenedOptions.value.findIndex((option) => isEqual(option.value, (activeOption.value as NormalizedOption).value));
+
+      return index < 0 ? 0 : index;
+    });
 
     const configuration = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
 
@@ -238,6 +253,32 @@ export default defineComponent({
       activeOption.value = option;
     };
 
+    const toggleActiveOption = (): void => {
+      if (!activeOption.value === null) {
+        return;
+      }
+
+      toggleOption((activeOption.value as NormalizedOption));
+    };
+
+    const setNextOptionActive = (): void => {
+      if (activeOptionIndex.value >= flattenedOptions.value.length - 1) {
+        return;
+      }
+
+      const newActiveOption = flattenedOptions.value[activeOptionIndex.value + 1];
+      setActiveOption(newActiveOption);
+    };
+
+    const setPrevOptionActive = (): void => {
+      if (activeOptionIndex.value === 0) {
+        return;
+      }
+
+      const newActiveOption = flattenedOptions.value[activeOptionIndex.value - 1];
+      setActiveOption(newActiveOption);
+    };
+
     const optionSelected = (): void => {
       if (shown.value === false) {
         return;
@@ -249,6 +290,46 @@ export default defineComponent({
         // multiple
         || (configuration.value.closeOnSelect === undefined && !configuration.value.multiple)) {
         hideDropdown();
+      }
+    };
+
+    const keydownDownHandler = (e: KeyboardEvent): void => {
+      emit('keydown', e);
+
+      if (shown.value === false && configuration.value.toggleOnClick) {
+        throttledShowDropdown();
+      } else {
+        setNextOptionActive();
+      }
+    };
+
+    const keydownUpHandler = (e: KeyboardEvent): void => {
+      emit('keydown', e);
+
+      if (shown.value === false && configuration.value.toggleOnClick) {
+        throttledShowDropdown();
+      } else {
+        setPrevOptionActive();
+      }
+    };
+
+    const keydownEnterHandler = (e: KeyboardEvent): void => {
+      emit('keydown', e);
+
+      if (shown.value === true) {
+        toggleActiveOption();
+      }
+    };
+
+    const keydownSpaceHandler = (e: KeyboardEvent): void => {
+      emit('keydown', e);
+
+      e.preventDefault();
+
+      if (configuration.value.toggleOnClick && shown.value === false) {
+        throttledShowDropdown();
+      } else if (shown.value === true) {
+        toggleActiveOption();
       }
     };
 
@@ -270,10 +351,16 @@ export default defineComponent({
 
     provide('optionIsActive', optionIsActive);
 
+    provide('keydownDownHandler', keydownDownHandler);
+
+    provide('keydownUpHandler', keydownUpHandler);
+
+    provide('keydownEnterHandler', keydownEnterHandler);
+
     provide('shown', shown);
 
     return {
-      configuration, attributes, shown, hideDropdown, toggleDropdown, throttledShowDropdown,
+      configuration, attributes, shown, hideDropdown, toggleDropdown, throttledShowDropdown, activeOptionIndex, keydownDownHandler, keydownUpHandler, keydownSpaceHandler, keydownEnterHandler,
     };
   },
   computed: {
@@ -308,23 +395,12 @@ export default defineComponent({
       this.$emit('mousedown', e);
 
       if (this.configuration.toggleOnClick) {
-        e.preventDefault();
+        // If it has aa search box I need t to prevent default to ensure is focused
+        if (!this.hideSearchBox && this.shown === false) {
+          e.preventDefault();
+        }
 
         this.toggleDropdown();
-      }
-    },
-    keydownSpaceHandler(e: KeyboardEvent): void {
-      this.$emit('keydown', e);
-
-      if (this.configuration.toggleOnClick) {
-        this.toggleDropdown();
-      }
-    },
-    keydownUpDownHandler(e: KeyboardEvent): void {
-      this.$emit('keydown', e);
-
-      if (this.shown === false && this.configuration.toggleOnClick) {
-        this.throttledShowDropdown();
       }
     },
     focusHandler(e: FocusEvent): void {

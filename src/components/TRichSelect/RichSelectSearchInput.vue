@@ -4,6 +4,9 @@
       ref="search"
       placeholder="Search..."
       class="inline-block w-full px-3 py-2 text-sm border border-gray-300 rounded bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
+      @keydown.down="keydownDownHandler"
+      @keydown.up="keydownUpHandler"
+      @keydown.enter="keydownEnterHandler"
     >
   </div>
 </template>
@@ -28,8 +31,12 @@ export default defineComponent({
       }
     });
 
+    const keydownDownHandler = inject<(e: KeyboardEvent) => void>('keydownDownHandler');
+    const keydownUpHandler = inject<(e: KeyboardEvent) => void>('keydownUpHandler');
+    const keydownEnterHandler = inject<(e: KeyboardEvent) => void>('keydownEnterHandler');
+
     return {
-      shown, search,
+      shown, search, keydownUpHandler, keydownDownHandler, keydownEnterHandler,
     };
   },
 });

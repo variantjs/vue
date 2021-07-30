@@ -26,7 +26,7 @@
   >
     <div class="flex items-center justify-between px-3 py-2">
       <span class="block truncate">
-        {{ option.text }} - {{ deep }}
+        {{ option.text }}
       </span>
 
       <svg

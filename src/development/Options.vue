@@ -53,7 +53,7 @@ export default defineComponent({
   },
   data() {
     return {
-      selected: 'a',
+      selected: null,
       options: [
         { value: 'A', text: 'Option A' },
         {
