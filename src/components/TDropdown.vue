@@ -37,6 +37,7 @@
         ref="dropdown"
         :class="configuration.classesList?.dropdown"
         aria-hidden="!shown"
+        tabindex="-1"
         v-bind="dropdownAttributes"
         @blur="blurHandler"
         @mouseover="mouseoverHandler"
