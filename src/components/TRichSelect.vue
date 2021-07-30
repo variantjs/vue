@@ -52,7 +52,7 @@ import {
   throttle,
 } from '@variantjs/core';
 import {
-  computed, defineComponent, nextTick, PropType, provide, ref, watch,
+  computed, defineComponent, PropType, provide, ref, watch,
 } from 'vue';
 import { Options, Placement } from '@popperjs/core';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
@@ -466,6 +466,11 @@ export default defineComponent({
       ) {
         target.focus();
       }
+    },
+    blurHandler(e: FocusEvent): void {
+      this.$emit('blur', e);
+
+      this.hideDropdown();
     },
   },
 });
