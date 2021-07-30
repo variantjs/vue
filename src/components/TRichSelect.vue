@@ -4,6 +4,7 @@
     v-bind="attributes"
   >
     <t-dropdown
+      ref="dropdown"
       :show="shown"
       :classes="dropdownClasses"
       :fixed-classes="undefined"
@@ -12,6 +13,7 @@
       :toggle-on-hover="false"
       :popper-options="configuration.dropdownPopperOptions"
       :placement="configuration.dropdownPlacement"
+      data-rich-select-trigger="true"
       @mouseover="$emit('mouseover', $event)"
       @mouseleave="$emit('mouseleave', $event)"
       @touchstart="$emit('touchstart', $event)"
@@ -25,7 +27,9 @@
       @keydown.space="keydownSpaceHandler"
       @keydown.down="keydownDownHandler"
       @keydown.up="keydownUpHandler"
+      @keydown.esc="keydownEscHandler"
       @mousedown="mousedownHandler"
+      @blur-on-child="blurOnChildHandler"
     >
       <template #trigger>
         <rich-select-trigger
@@ -48,7 +52,7 @@ import {
   throttle,
 } from '@variantjs/core';
 import {
-  computed, defineComponent, PropType, provide, ref, watch,
+  computed, defineComponent, nextTick, PropType, provide, ref, watch,
 } from 'vue';
 import { Options, Placement } from '@popperjs/core';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
@@ -56,7 +60,7 @@ import { sameWidthModifier } from '../utils/popper';
 import {
   useAttributes, useConfigurationWithClassesList, useMulipleableVModel, useMultioptions,
 } from '../use';
-import { TRichSelectOptions, TSelectValue } from '../types';
+import { Data, TRichSelectOptions, TSelectValue } from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import TDropdown from './TDropdown.vue';
@@ -171,6 +175,9 @@ export default defineComponent({
     // maxHeight?: number,
   },
   setup(props, { emit }) {
+    // @TODO: set proper type
+    const dropdown = ref<HTMLInputElement>();
+
     // Data
     const shown = ref<boolean>(false);
 
@@ -235,6 +242,10 @@ export default defineComponent({
       }
     };
 
+    const focusTrigger = (): void => {
+      dropdown.value?.focus();
+    };
+
     const toggleOption = (option: NormalizedOption): void => {
       if (optionIsSelected(option)) {
         if (Array.isArray(localValue.value)) {
@@ -290,11 +301,15 @@ export default defineComponent({
         // multiple
         || (configuration.value.closeOnSelect === undefined && !configuration.value.multiple)) {
         hideDropdown();
+
+        focusTrigger();
       }
     };
 
     const keydownDownHandler = (e: KeyboardEvent): void => {
       emit('keydown', e);
+
+      e.preventDefault();
 
       if (shown.value === false && configuration.value.toggleOnClick) {
         throttledShowDropdown();
@@ -305,6 +320,8 @@ export default defineComponent({
 
     const keydownUpHandler = (e: KeyboardEvent): void => {
       emit('keydown', e);
+
+      e.preventDefault();
 
       if (shown.value === false && configuration.value.toggleOnClick) {
         throttledShowDropdown();
@@ -333,6 +350,18 @@ export default defineComponent({
       }
     };
 
+    const keydownEscHandler = (e: KeyboardEvent): void => {
+      emit('keydown', e);
+
+      if (shown.value === false) {
+        return;
+      }
+
+      hideDropdown();
+
+      focusTrigger();
+    };
+
     watch(localValue, () => {
       optionSelected();
     });
@@ -355,12 +384,27 @@ export default defineComponent({
 
     provide('keydownUpHandler', keydownUpHandler);
 
+    provide('keydownEscHandler', keydownEscHandler);
+
     provide('keydownEnterHandler', keydownEnterHandler);
 
     provide('shown', shown);
 
     return {
-      configuration, attributes, shown, hideDropdown, toggleDropdown, throttledShowDropdown, activeOptionIndex, keydownDownHandler, keydownUpHandler, keydownSpaceHandler, keydownEnterHandler,
+      configuration,
+      attributes,
+      shown,
+      hideDropdown,
+      toggleDropdown,
+      throttledShowDropdown,
+      activeOptionIndex,
+      keydownDownHandler,
+      keydownUpHandler,
+      keydownSpaceHandler,
+      keydownEnterHandler,
+      keydownEscHandler,
+      dropdown,
+      focusTrigger,
     };
   },
   computed: {
@@ -410,10 +454,18 @@ export default defineComponent({
         this.throttledShowDropdown();
       }
     },
-    blurHandler(e: FocusEvent): void {
-      this.$emit('blur', e);
+    blurOnChildHandler(e: FocusEvent): void {
+      const target = e.target as HTMLButtonElement | HTMLInputElement;
+      const relatedTarget = e.relatedTarget as HTMLElement | EventTarget;
+      const relatedTargetDataset: Data | undefined = relatedTarget instanceof HTMLElement ? relatedTarget.dataset : undefined;
 
-      this.hideDropdown();
+      if (
+        (target.dataset.richSelectSearch !== undefined || target.dataset.richSelectTrigger !== undefined)
+
+        && (relatedTargetDataset && relatedTargetDataset.richSelectSearch === undefined && relatedTargetDataset.richSelectTrigger === undefined)
+      ) {
+        target.focus();
+      }
     },
   },
 });

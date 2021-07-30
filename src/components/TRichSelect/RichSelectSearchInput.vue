@@ -2,11 +2,13 @@
   <div class="inline-block w-full p-2 placeholder-gray-400">
     <input
       ref="search"
+      data-rich-select-search="true"
       placeholder="Search..."
       class="inline-block w-full px-3 py-2 text-sm border border-gray-300 rounded bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
       @keydown.down="keydownDownHandler"
       @keydown.up="keydownUpHandler"
       @keydown.enter="keydownEnterHandler"
+      @keydown.esc="keydownEscHandler"
     >
   </div>
 </template>
@@ -34,9 +36,10 @@ export default defineComponent({
     const keydownDownHandler = inject<(e: KeyboardEvent) => void>('keydownDownHandler');
     const keydownUpHandler = inject<(e: KeyboardEvent) => void>('keydownUpHandler');
     const keydownEnterHandler = inject<(e: KeyboardEvent) => void>('keydownEnterHandler');
+    const keydownEscHandler = inject<(e: KeyboardEvent) => void>('keydownEscHandler');
 
     return {
-      shown, search, keydownUpHandler, keydownDownHandler, keydownEnterHandler,
+      shown, search, keydownUpHandler, keydownDownHandler, keydownEnterHandler, keydownEscHandler,
     };
   },
 });

@@ -161,6 +161,7 @@ export default defineComponent({
     'update:show': (show: boolean) => typeof show === 'boolean',
     focus: (e: FocusEvent) => e instanceof FocusEvent,
     blur: (e: FocusEvent) => e instanceof FocusEvent,
+    'blur-on-child': (e: FocusEvent) => e instanceof FocusEvent,
     click: (e: MouseEvent) => e instanceof MouseEvent,
     mouseover: (e: MouseEvent) => e instanceof MouseEvent,
     mouseleave: (e: MouseEvent) => e instanceof MouseEvent,
@@ -263,6 +264,9 @@ export default defineComponent({
     }
   },
   methods: {
+    focus(): void {
+      this.getTriggerElement().focus();
+    },
     initPopperAdjusterListener() : void {
       this.popperAdjusterListener = debounce(this.updatePopper, 200);
 
@@ -406,6 +410,8 @@ export default defineComponent({
 
       if (!isChild) {
         this.$emit('blur', e);
+      } else {
+        this.$emit('blur-on-child', e);
       }
 
       if (this.isTouchOnlyDevice) {
