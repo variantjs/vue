@@ -19,8 +19,8 @@
       @touchstart="$emit('touchstart', $event)"
       @shown="$emit('shown')"
       @hidden="$emit('hidden')"
-      @before-show="onBeforeShow"
-      @before-hide="$emit('before-hide')"
+      @before-show="beforeShowHandler"
+      @before-hide="beforeHideHandler"
       @blur="blurHandler"
       @focus="focusHandler"
       @keydown.enter="keydownEnterHandler"
@@ -47,12 +47,12 @@ import {
   InputOptions, TRichSelectConfig, TRichSelectClassesKeys, TRichSelectClassesValidKeys, isEqual, addToArray, substractFromArray,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   NormalizedOption,
-  NormalizedOptions,
   CSSRawClassesList,
   throttle,
+  flattenOptions,
 } from '@variantjs/core';
 import {
-  computed, defineComponent, PropType, provide, ref, watch,
+  computed, defineComponent, PropType, provide, ref,
 } from 'vue';
 import { Options, Placement } from '@popperjs/core';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
@@ -64,15 +64,6 @@ import { Data, TRichSelectOptions, TSelectValue } from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import TDropdown from './TDropdown.vue';
-
-// @TODO: Move this to the core library
-const flattenOptions = (options: NormalizedOptions): NormalizedOptions => options.map((option: NormalizedOption) => {
-  if (option.children) {
-    return flattenOptions(option.children);
-  }
-
-  return option;
-}).flat();
 
 // @vue/component
 export default defineComponent({
@@ -141,6 +132,10 @@ export default defineComponent({
       type: Boolean,
       default: undefined,
     },
+    selectOnClose: {
+      type: Boolean,
+      default: false,
+    },
     toggleOnFocus: {
       type: Boolean,
       default: false,
@@ -153,8 +148,6 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-
-    // selectOnClose?: boolean,
 
     // valueAttribute?: boolean,
     // textAttribute?: boolean,
@@ -176,7 +169,14 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // @TODO: set proper type
+    /**
+     * Dropdown user
+     */
     const dropdown = ref<HTMLInputElement>();
+
+    const configuration = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
+
+    const attributes = useAttributes<TRichSelectOptions>(configuration);
 
     // Data
     const shown = ref<boolean>(false);
@@ -191,7 +191,7 @@ export default defineComponent({
      */
     const flattenedOptions = computed((): NormalizedOption[] => flattenOptions(normalizedOptions.value));
 
-    const getActiveOption = (): NormalizedOption | null => flattenedOptions.value.find((option: NormalizedOption) => option.value === localValue.value)
+    const getActiveOption = (): NormalizedOption | null => flattenedOptions.value.find((option: NormalizedOption) => isEqual(option.value, localValue.value))
       || (flattenedOptions.value.length > 0 ? flattenedOptions.value[0] : null)
       || null;
 
@@ -208,10 +208,6 @@ export default defineComponent({
 
       return index < 0 ? 0 : index;
     });
-
-    const configuration = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
-
-    const attributes = useAttributes<TRichSelectOptions>(configuration);
 
     // Methods:
     const optionIsActive = (option: NormalizedOption): boolean => isEqual(activeOption.value?.value, option.value);
@@ -264,14 +260,13 @@ export default defineComponent({
       activeOption.value = option;
     };
 
-    const toggleActiveOption = (): void => {
+    const toggleOptionFromActiveOption = (): void => {
       if (!activeOption.value === null) {
         return;
       }
 
       toggleOption((activeOption.value as NormalizedOption));
     };
-
     const setNextOptionActive = (): void => {
       if (activeOptionIndex.value >= flattenedOptions.value.length - 1) {
         return;
@@ -288,22 +283,6 @@ export default defineComponent({
 
       const newActiveOption = flattenedOptions.value[activeOptionIndex.value - 1];
       setActiveOption(newActiveOption);
-    };
-
-    const optionSelected = (): void => {
-      if (shown.value === false) {
-        return;
-      }
-
-      if (
-        configuration.value.closeOnSelect === true
-        // If `closeOnSelect`  is not set hide the dropdown only when is not
-        // multiple
-        || (configuration.value.closeOnSelect === undefined && !configuration.value.multiple)) {
-        hideDropdown();
-
-        focusTrigger();
-      }
     };
 
     const keydownDownHandler = (e: KeyboardEvent): void => {
@@ -334,7 +313,7 @@ export default defineComponent({
       emit('keydown', e);
 
       if (shown.value === true) {
-        toggleActiveOption();
+        toggleOptionFromActiveOption();
       }
     };
 
@@ -346,7 +325,7 @@ export default defineComponent({
       if (configuration.value.toggleOnClick && shown.value === false) {
         throttledShowDropdown();
       } else if (shown.value === true) {
-        toggleActiveOption();
+        toggleOptionFromActiveOption();
       }
     };
 
@@ -361,16 +340,6 @@ export default defineComponent({
 
       focusTrigger();
     };
-
-    const onBeforeShow = () => {
-      emit('before-show');
-
-      activeOption.value = getActiveOption();
-    };
-
-    watch(localValue, () => {
-      optionSelected();
-    });
 
     provide('configuration', configuration);
 
@@ -399,6 +368,8 @@ export default defineComponent({
     return {
       configuration,
       attributes,
+      localValue,
+      activeOption,
       shown,
       hideDropdown,
       toggleDropdown,
@@ -411,7 +382,8 @@ export default defineComponent({
       keydownEscHandler,
       dropdown,
       focusTrigger,
-      onBeforeShow,
+      optionIsSelected,
+      getActiveOption,
     };
   },
   computed: {
@@ -441,7 +413,57 @@ export default defineComponent({
       };
     },
   },
+  watch: {
+    localValue(): void {
+      this.onOptionSelected();
+    },
+  },
   methods: {
+    onOptionSelected(): void {
+      if (this.shown === false) {
+        return;
+      }
+
+      if (
+        this.configuration.closeOnSelect === true
+        // If `closeOnSelect`  is not set hide the dropdown only when is not
+        // multiple
+        || (this.configuration.closeOnSelect === undefined && !this.configuration.multiple)) {
+        this.hideDropdown();
+
+        this.focusTrigger();
+      }
+    },
+    selectOption(option: NormalizedOption): void {
+      if (this.optionIsSelected(option)) {
+        return;
+      }
+
+      if (Array.isArray(this.localValue)) {
+        this.localValue = addToArray(this.localValue, option.value);
+      } else {
+        this.localValue = option.value;
+      }
+    },
+    selectOptionFromActiveOption() :void {
+      if (!this.activeOption === null) {
+        return;
+      }
+
+      this.selectOption(this.activeOption as NormalizedOption);
+    },
+    beforeHideHandler(): void {
+      this.$emit('before-hide');
+
+      if (this.configuration.selectOnClose && !isEqual(this.localValue, this.activeOption)) {
+        this.selectOptionFromActiveOption();
+      }
+    },
+    beforeShowHandler(): void {
+      this.$emit('before-show');
+
+      this.activeOption = this.getActiveOption();
+    },
     mousedownHandler(e: MouseEvent): void {
       this.$emit('mousedown', e);
 
