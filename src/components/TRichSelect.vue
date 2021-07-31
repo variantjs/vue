@@ -19,7 +19,7 @@
       @touchstart="$emit('touchstart', $event)"
       @shown="$emit('shown')"
       @hidden="$emit('hidden')"
-      @before-show="$emit('before-show')"
+      @before-show="onBeforeShow"
       @before-hide="$emit('before-hide')"
       @blur="blurHandler"
       @focus="focusHandler"
@@ -191,11 +191,11 @@ export default defineComponent({
      */
     const flattenedOptions = computed((): NormalizedOption[] => flattenOptions(normalizedOptions.value));
 
-    const activeOption = ref<NormalizedOption | null>(
-      flattenedOptions.value.find((option: NormalizedOption) => option.value === localValue.value)
+    const getActiveOption = (): NormalizedOption | null => flattenedOptions.value.find((option: NormalizedOption) => option.value === localValue.value)
       || (flattenedOptions.value.length > 0 ? flattenedOptions.value[0] : null)
-      || null,
-    );
+      || null;
+
+    const activeOption = ref<NormalizedOption | null>(getActiveOption());
 
     const selectedOption = computed((): NormalizedOption | undefined => flattenedOptions.value.find((option) => isEqual(option.value, localValue.value)));
 
@@ -362,6 +362,12 @@ export default defineComponent({
       focusTrigger();
     };
 
+    const onBeforeShow = () => {
+      emit('before-show');
+
+      activeOption.value = getActiveOption();
+    };
+
     watch(localValue, () => {
       optionSelected();
     });
@@ -405,6 +411,7 @@ export default defineComponent({
       keydownEscHandler,
       dropdown,
       focusTrigger,
+      onBeforeShow,
     };
   },
   computed: {
