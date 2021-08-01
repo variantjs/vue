@@ -8,10 +8,14 @@
       />
 
       <t-rich-select
-        v-model="selected"
+        v-model="selectedUser"
         placeholder="select an option"
-        :options="options"
+        :options="users"
+        value-attribute="email"
+        text-attribute="name"
       />
+
+      <p>{{ selectedUser }}</p>
 
       <div>
         <label
@@ -54,6 +58,18 @@ export default defineComponent({
   data() {
     return {
       selected: null,
+      newOption: '',
+      selectedUser: null,
+      users: [
+        {
+          email: 'alfonso@vexilo.com',
+          name: 'Alfonso Bribiesca',
+        },
+        {
+          email: 'saida@gmail.com',
+          name: 'Saida Redondo',
+        },
+      ],
       options: [
         { value: 'A', text: 'Option A' },
         {

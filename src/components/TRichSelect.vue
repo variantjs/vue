@@ -156,9 +156,15 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    valueAttribute: {
+      type: String,
+      default: undefined,
+    },
+    textAttribute: {
+      type: String,
+      default: undefined,
+    },
 
-    // valueAttribute?: boolean,
-    // textAttribute?: boolean,
     // delay?: number,
     // fetchOptions?: (query: string, nextPage?: number) => AjaxResults,
     // minimumInputLength?: number,
@@ -185,7 +191,7 @@ export default defineComponent({
     const {
       normalizedOptions,
       flattenedOptions,
-    } = useMultioptions(props, 'options');
+    } = useMultioptions(props, 'options', 'textAttribute', 'valueAttribute');
 
     const {
       selectedOption,

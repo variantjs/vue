@@ -13,8 +13,8 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   modelValue?: TSelectValue,
   options?: InputOptions
   multiple?: boolean
-  valueAttribute?: boolean,
-  textAttribute?: boolean,
+  valueAttribute?: string,
+  textAttribute?: string,
   delay?: number,
   fetchOptions?: (query: string, nextPage?: number) => AjaxResults,
   minimumInputLength?: number,
