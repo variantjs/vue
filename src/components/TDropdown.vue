@@ -76,6 +76,25 @@ import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
 import { Data, TDropdownOptions } from '../types';
 import Transitionable from './misc/Transitionable.vue';
+
+export const validDropdownPlacements = [
+  'auto',
+  'auto-start',
+  'auto-end',
+  'top',
+  'top-start',
+  'top-end',
+  'bottom',
+  'bottom-start',
+  'bottom-end',
+  'right',
+  'right-start',
+  'right-end',
+  'left',
+  'left-start',
+  'left-end',
+];
+
 // @vue/component
 export default defineComponent({
   name: 'TDropdown',
@@ -134,23 +153,7 @@ export default defineComponent({
     placement: {
       type: String as PropType<Placement>,
       default: undefined,
-      validator: (value: string):boolean => [
-        'auto',
-        'auto-start',
-        'auto-end',
-        'top',
-        'top-start',
-        'top-end',
-        'bottom',
-        'bottom-start',
-        'bottom-end',
-        'right',
-        'right-start',
-        'right-end',
-        'left',
-        'left-start',
-        'left-end',
-      ].includes(value),
+      validator: (value: Placement | string):boolean => validDropdownPlacements.includes(value),
     },
     popperOptions: {
       type: Object as PropType<Options>,

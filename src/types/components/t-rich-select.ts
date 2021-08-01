@@ -21,7 +21,6 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   minimumInputLengthText?: ((minimumInputLength: number, query?: string) => string) | string,
   minimumResultsForSearch?: number,
   hideSearchBox?: boolean,
-  openOnFocus?: boolean,
   toggleOnFocus?: boolean,
   toggleOnClick?: boolean,
   closeOnSelect?: boolean,

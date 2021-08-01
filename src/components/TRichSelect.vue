@@ -44,19 +44,22 @@
 
 <script lang="ts">
 import {
+  defineComponent,
+  PropType,
+  provide,
+  ref,
+} from 'vue';
+import {
   InputOptions,
   TRichSelectConfig,
   TRichSelectClassesKeys,
   TRichSelectClassesValidKeys,
-  isEqual,
-  TDropdownPopperDefaultOptions as defaultPopperOptions,
   NormalizedOption,
   CSSRawClassesList,
+  TDropdownPopperDefaultOptions as defaultPopperOptions,
+  isEqual,
   throttle,
 } from '@variantjs/core';
-import {
-  computed, defineComponent, PropType, provide, ref,
-} from 'vue';
 import { Options, Placement } from '@popperjs/core';
 import {
   useActivableOption,
@@ -71,7 +74,7 @@ import { sameWidthModifier } from '../utils/popper';
 import { Data, TRichSelectOptions, TSelectValue } from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
-import TDropdown from './TDropdown.vue';
+import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
 
 // @vue/component
 export default defineComponent({
@@ -102,23 +105,7 @@ export default defineComponent({
     dropdownPlacement: {
       type: String as PropType<Placement>,
       default: undefined,
-      validator: (value: string):boolean => [
-        'auto',
-        'auto-start',
-        'auto-end',
-        'top',
-        'top-start',
-        'top-end',
-        'bottom',
-        'bottom-start',
-        'bottom-end',
-        'right',
-        'right-start',
-        'right-end',
-        'left',
-        'left-start',
-        'left-end',
-      ].includes(value),
+      validator: (value: string):boolean => validDropdownPlacements.includes(value),
     },
     dropdownPopperOptions: {
       type: Object as PropType<Options>,
@@ -165,21 +152,19 @@ export default defineComponent({
       default: undefined,
     },
 
+    // clearable?: boolean,
+    // maxHeight?: number,
+
     // delay?: number,
     // fetchOptions?: (query: string, nextPage?: number) => AjaxResults,
     // minimumInputLength?: number,
     // minimumInputLengthText?: ((minimumInputLength: number, query?: string) => string) | string,
     // minimumResultsForSearch?: number,
-    // hideSearchBox?: boolean,
-    // openOnFocus?: boolean,
-
-    // clearable?: boolean,
-    // placeholder?: string,
     // searchBoxPlaceholder?: string,
     // noResultsText?: string,
     // searchingText?: string,
     // loadingMoreResultsText?: string,
-    // maxHeight?: number,
+
   },
   setup(props, { emit }) {
     const configuration = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
