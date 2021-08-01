@@ -1,6 +1,6 @@
 <template>
   <text-placeholder
-    v-if="selectedOption === undefined"
+    v-if="! hasOptionSelected"
     ref="placeholder"
     class-property="selectButtonPlaceholder"
     :placeholder="configuration.placeholder"
@@ -11,7 +11,10 @@
     class="block truncate"
   >{{ selectedOption.text }}</span>
 
-  <selector-icon class="flex-shrink-0 w-4 h-4 ml-1 text-gray-600" />
+  <selector-icon
+    v-if="showSelectorIcon"
+    class="flex-shrink-0 w-4 h-4 ml-1 text-gray-600"
+  />
 </template>
 
 <script lang="ts">
@@ -36,6 +39,18 @@ export default defineComponent({
     return {
       selectedOption, configuration,
     };
+  },
+  computed: {
+    hasOptionSelected(): boolean {
+      return this.selectedOption !== undefined;
+    },
+    showSelectorIcon(): boolean {
+      if (!this.configuration.clearable) {
+        return true;
+      }
+
+      return this.hasOptionSelected === false;
+    },
   },
 });
 </script>

@@ -39,6 +39,14 @@
 
       <rich-select-dropdown ref="dropdown" />
     </t-dropdown>
+
+    <button
+      v-if="clearable && selectedOption !== undefined"
+      type="button"
+      class="absolute flex items-center justify-center w-6 h-6 text-gray-600 transition duration-100 ease-in-out rounded mt-2.5 mr-2 top-0 right-0 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
+    >
+      <close-icon class="w-4 h-4" />
+    </button>
   </div>
 </template>
 
@@ -75,7 +83,7 @@ import { Data, TRichSelectOptions, TSelectValue } from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
-
+import CloseIcon from '../icons/CloseIcon.vue';
 // @vue/component
 export default defineComponent({
   name: 'TRichSelect',
@@ -83,6 +91,7 @@ export default defineComponent({
     RichSelectTrigger,
     RichSelectDropdown,
     TDropdown,
+    CloseIcon,
   },
   props: {
     ...getVariantPropsWithClassesList<TRichSelectOptions, TRichSelectClassesValidKeys>(),
@@ -139,10 +148,7 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    hideSearchBox: {
-      type: Boolean,
-      default: false,
-    },
+
     valueAttribute: {
       type: String,
       default: undefined,
@@ -150,6 +156,15 @@ export default defineComponent({
     textAttribute: {
       type: String,
       default: undefined,
+    },
+    // @TODO: Rename to searchable
+    hideSearchBox: {
+      type: Boolean,
+      default: false,
+    },
+    clearable: {
+      type: Boolean,
+      default: true,
     },
 
     // clearable?: boolean,
@@ -164,7 +179,6 @@ export default defineComponent({
     // noResultsText?: string,
     // searchingText?: string,
     // loadingMoreResultsText?: string,
-
   },
   setup(props, { emit }) {
     const configuration = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
@@ -339,6 +353,7 @@ export default defineComponent({
       attributes,
       localValue,
       activeOption,
+      selectedOption,
       shown,
       dropdown,
       hideDropdown,
