@@ -324,7 +324,7 @@ export default defineComponent({
      */
     provide('configuration', configuration);
 
-    provide('options', computed(() => normalizedOptions.value));
+    provide('options', normalizedOptions);
 
     provide('selectedOption', selectedOption);
 
