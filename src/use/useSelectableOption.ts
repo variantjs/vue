@@ -7,14 +7,15 @@ import {
 } from 'vue';
 import { Data } from '../types';
 
-export default function useSelectedOption<C extends WithVariantPropsAndClassesList<Data, string>>(
+export default function useSelectableOption<C extends WithVariantPropsAndClassesList<Data, string>>(
   options: ComputedRef<NormalizedOption[]>,
   localValue: WritableComputedRef<any>,
   configuration: ComputedRef<C>,
 ): {
     selectedOption: ComputedRef<NormalizedOption | undefined>,
-    optionIsSelected: (option: NormalizedOption) => boolean,
+    selectOption: (option: NormalizedOption) => void,
     toggleOption: (option: NormalizedOption) => void,
+    optionIsSelected: (option: NormalizedOption) => boolean,
   } {
   const selectedOption = computed((): NormalizedOption | undefined => options.value.find((option) => isEqual(option.value, localValue.value)));
 
@@ -24,6 +25,18 @@ export default function useSelectedOption<C extends WithVariantPropsAndClassesLi
     }
 
     return isEqual(localValue.value, option.value);
+  };
+
+  const selectOption = (option: NormalizedOption): void => {
+    if (optionIsSelected(option)) {
+      return;
+    }
+
+    if (Array.isArray(localValue.value)) {
+      localValue.value = addToArray(localValue.value, option.value);
+    } else {
+      localValue.value = option.value;
+    }
   };
 
   const toggleOption = (option: NormalizedOption): void => {
@@ -42,7 +55,8 @@ export default function useSelectedOption<C extends WithVariantPropsAndClassesLi
 
   return {
     selectedOption,
-    optionIsSelected,
+    selectOption,
     toggleOption,
+    optionIsSelected,
   };
 }

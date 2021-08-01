@@ -49,8 +49,6 @@ import {
   TRichSelectClassesKeys,
   TRichSelectClassesValidKeys,
   isEqual,
-  addToArray,
-  substractFromArray,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   NormalizedOption,
   CSSRawClassesList,
@@ -60,12 +58,16 @@ import {
   computed, defineComponent, PropType, provide, ref,
 } from 'vue';
 import { Options, Placement } from '@popperjs/core';
+import {
+  useActivableOption,
+  useAttributes,
+  useConfigurationWithClassesList,
+  useMulipleableVModel,
+  useMultioptions,
+  useSelectableOption,
+} from '../use';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { sameWidthModifier } from '../utils/popper';
-import {
-  useActiveOption,
-  useAttributes, useConfigurationWithClassesList, useMulipleableVModel, useMultioptions, useSelectedOption,
-} from '../use';
 import { Data, TRichSelectOptions, TSelectValue } from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
@@ -194,9 +196,10 @@ export default defineComponent({
 
     const {
       selectedOption,
-      optionIsSelected,
+      selectOption,
       toggleOption,
-    } = useSelectedOption<TRichSelectOptions>(flattenedOptions, localValue, configuration);
+      optionIsSelected,
+    } = useSelectableOption<TRichSelectOptions>(flattenedOptions, localValue, configuration);
 
     const {
       activeOption,
@@ -205,12 +208,12 @@ export default defineComponent({
       getActiveOption,
       setNextOptionActive,
       setPrevOptionActive,
-    } = useActiveOption(flattenedOptions, localValue);
+    } = useActivableOption(flattenedOptions, localValue);
 
     const shown = ref<boolean>(false);
 
     /**
-     * Dropdown related methods
+     * Manage dropdown related methods
      */
     const hideDropdown = (): void => {
       shown.value = false;
@@ -237,6 +240,9 @@ export default defineComponent({
       dropdown.value?.focus();
     };
 
+    /**
+     * Active option handling
+     */
     const toggleOptionFromActiveOption = (): void => {
       if (!activeOption.value === null) {
         return;
@@ -245,6 +251,18 @@ export default defineComponent({
       toggleOption((activeOption.value as NormalizedOption));
     };
 
+    // Select the current active option
+    const selectOptionFromActiveOption = () :void => {
+      if (!activeOption.value === null) {
+        return;
+      }
+
+      selectOption(activeOption.value as NormalizedOption);
+    };
+
+    /**
+     * Event handlers
+     */
     const keydownDownHandler = (e: KeyboardEvent): void => {
       emit('keydown', e);
 
@@ -301,6 +319,9 @@ export default defineComponent({
       focusTrigger();
     };
 
+    /**
+     * Provided data
+     */
     provide('configuration', configuration);
 
     provide('options', computed(() => normalizedOptions.value));
@@ -343,6 +364,8 @@ export default defineComponent({
       focusTrigger,
       optionIsSelected,
       getActiveOption,
+      selectOption,
+      selectOptionFromActiveOption,
     };
   },
   computed: {
@@ -392,24 +415,6 @@ export default defineComponent({
 
         this.focusTrigger();
       }
-    },
-    selectOption(option: NormalizedOption): void {
-      if (this.optionIsSelected(option)) {
-        return;
-      }
-
-      if (Array.isArray(this.localValue)) {
-        this.localValue = addToArray(this.localValue, option.value);
-      } else {
-        this.localValue = option.value;
-      }
-    },
-    selectOptionFromActiveOption() :void {
-      if (!this.activeOption === null) {
-        return;
-      }
-
-      this.selectOption(this.activeOption as NormalizedOption);
     },
     beforeHideHandler(): void {
       this.$emit('before-hide');

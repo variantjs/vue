@@ -3,7 +3,7 @@ import {
   computed, ComputedRef, Ref, ref,
 } from 'vue';
 
-export default function useActiveOption(
+export default function useActivableOption(
   options: ComputedRef<NormalizedOption[]>,
   localValue: Ref,
 ): {
