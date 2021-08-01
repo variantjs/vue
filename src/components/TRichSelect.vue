@@ -176,13 +176,6 @@ export default defineComponent({
     // maxHeight?: number,
   },
   setup(props, { emit }) {
-    /**
-     * Dropdown component reference
-     */
-    const dropdown = ref<{
-      focus:() => void
-    }>();
-
     const configuration = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
 
     const attributes = useAttributes<TRichSelectOptions>(configuration);
@@ -213,6 +206,17 @@ export default defineComponent({
     const shown = ref<boolean>(false);
 
     /**
+     * Dropdown component reference
+     */
+    const dropdown = ref<{
+      focus:() => void
+    }>();
+
+    const focusDropdownTrigger = (): void => {
+      dropdown.value?.focus();
+    };
+
+    /**
      * Manage dropdown related methods
      */
     const hideDropdown = (): void => {
@@ -231,13 +235,6 @@ export default defineComponent({
       } else {
         throttledShowDropdown();
       }
-    };
-
-    /**
-     * Other methods
-     */
-    const focusTrigger = (): void => {
-      dropdown.value?.focus();
     };
 
     /**
@@ -316,7 +313,7 @@ export default defineComponent({
 
       hideDropdown();
 
-      focusTrigger();
+      focusDropdownTrigger();
     };
 
     /**
@@ -361,7 +358,7 @@ export default defineComponent({
       keydownSpaceHandler,
       keydownEnterHandler,
       keydownEscHandler,
-      focusTrigger,
+      focusDropdownTrigger,
       optionIsSelected,
       getActiveOption,
       selectOption,
@@ -413,7 +410,7 @@ export default defineComponent({
         || (this.configuration.closeOnSelect === undefined && !this.configuration.multiple)) {
         this.hideDropdown();
 
-        this.focusTrigger();
+        this.focusDropdownTrigger();
       }
     },
     beforeHideHandler(): void {
