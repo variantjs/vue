@@ -47,7 +47,7 @@ export default defineComponent({
     const configuration = useConfiguration<TSelectOptions>(TSelectConfig);
     const attributes = useAttributes<TSelectOptions>(configuration);
     const localValue = useMulipleableVModel(props, 'modelValue');
-    const normalizedOptions = useMultioptions(props, 'options');
+    const { normalizedOptions } = useMultioptions(props, 'options');
 
     return {
       localValue, configuration, attributes, normalizedOptions,
