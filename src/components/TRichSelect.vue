@@ -40,13 +40,10 @@
       <rich-select-dropdown ref="dropdown" />
     </t-dropdown>
 
-    <button
-      v-if="clearable && selectedOption !== undefined"
-      type="button"
-      class="absolute flex items-center justify-center w-6 h-6 text-gray-600 transition duration-100 ease-in-out rounded mt-2.5 mr-2 top-0 right-0 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
-    >
-      <close-icon class="w-4 h-4" />
-    </button>
+    <rich-select-clear-button
+      v-if="showClearButton"
+      @click="clearValue"
+    />
   </div>
 </template>
 
@@ -82,16 +79,17 @@ import { sameWidthModifier } from '../utils/popper';
 import { Data, TRichSelectOptions, TSelectValue } from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
+import RichSelectClearButton from './TRichSelect/RichSelectClearButton.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
-import CloseIcon from '../icons/CloseIcon.vue';
+
 // @vue/component
 export default defineComponent({
   name: 'TRichSelect',
   components: {
     RichSelectTrigger,
     RichSelectDropdown,
+    RichSelectClearButton,
     TDropdown,
-    CloseIcon,
   },
   props: {
     ...getVariantPropsWithClassesList<TRichSelectOptions, TRichSelectClassesValidKeys>(),
@@ -185,12 +183,15 @@ export default defineComponent({
 
     const attributes = useAttributes<TRichSelectOptions>(configuration);
 
-    const localValue = useMulipleableVModel(props, 'modelValue');
+    const { localValue, clearValue } = useMulipleableVModel(props, 'modelValue');
 
     const {
       normalizedOptions,
       flattenedOptions,
     } = useMultioptions(props, 'options', 'textAttribute', 'valueAttribute');
+
+    console.log(normalizedOptions.value);
+    console.log(flattenedOptions.value);
 
     const {
       selectedOption,
@@ -369,6 +370,7 @@ export default defineComponent({
       getActiveOption,
       selectOption,
       selectOptionFromActiveOption,
+      clearValue,
     };
   },
   computed: {
@@ -396,6 +398,11 @@ export default defineComponent({
         leaveFromClass,
         leaveToClass,
       };
+    },
+    showClearButton(): boolean {
+      return this.selectedOption !== undefined
+        && this.configuration.clearable === true
+        && this.configuration.multiple === false;
     },
   },
   watch: {
@@ -468,6 +475,7 @@ export default defineComponent({
 
       this.hideDropdown();
     },
+
   },
 });
 

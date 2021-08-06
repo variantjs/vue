@@ -6,20 +6,43 @@ export default function useMulipleableVModel<P extends Data & {
 }, K extends keyof P>(
   props: P,
   key: K,
-): WritableComputedRef<P[K]> {
+): {
+    localValue: WritableComputedRef<P[K]>
+    clearValue: () => void
+  } {
   const vm = getCurrentInstance();
 
-  return computed<P[K]>({
+  const getDefaultValue = (): P[K] => {
+    const isMultiple = props.multiple !== null && props.multiple !== undefined && props.multiple !== false;
+
+    if (isMultiple) {
+      return [] as P[K];
+    }
+
+    return undefined as P[K];
+  };
+
+  const localValue = computed<P[K]>({
     get() {
-      const isMultiple = props.multiple !== null && props.multiple !== undefined && props.multiple !== false;
       const value = props[key];
-      if (value === undefined && isMultiple) {
-        return [] as P[K];
+
+      if (value === undefined) {
+        return getDefaultValue();
       }
+
       return value;
     },
     set(value) {
       vm?.emit(`update:${key}`, value);
     },
   });
+
+  const clearValue = () : void => {
+    localValue.value = getDefaultValue();
+  };
+
+  return {
+    localValue,
+    clearValue,
+  };
 }
