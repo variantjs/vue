@@ -70,11 +70,12 @@ import {
   throttle,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   DebouncedFn,
+  Data,
 } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useAttributes, useConfigurationWithClassesList } from '../use';
-import { Data, TDropdownOptions } from '../types';
+import { TDropdownOptions } from '../types';
 import Transitionable from './misc/Transitionable.vue';
 
 export const validDropdownPlacements = [

@@ -1,7 +1,8 @@
-import { InputOptions, TRichSelectClassesValidKeys, WithVariantPropsAndClassesList } from '@variantjs/core';
+import {
+  Data, InputOptions, Measure, TRichSelectClassesValidKeys, WithVariantPropsAndClassesList,
+} from '@variantjs/core';
 import { HTMLAttributes } from 'vue';
 import { Placement, Options } from '@popperjs/core';
-import { Data, Measure } from '../misc';
 import { TSelectValue } from './t-select';
 
 export type AjaxResults = Promise<{

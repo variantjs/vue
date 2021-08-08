@@ -64,6 +64,8 @@ import {
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   isEqual,
   throttle,
+  Measure,
+  Data,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import {
@@ -76,9 +78,7 @@ import {
 } from '../use';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { sameWidthModifier } from '../utils/popper';
-import {
-  Data, TRichSelectOptions, TSelectValue, Measure,
-} from '../types';
+import { TRichSelectOptions, TSelectValue } from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import RichSelectClearButton from './TRichSelect/RichSelectClearButton.vue';

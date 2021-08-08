@@ -1,9 +1,9 @@
 import {
-  CSSClass, CSSRawClassesList, Variants, VariantsWithClassesList,
+  CSSClass, CSSRawClassesList, Data, Variants, VariantsWithClassesList,
 } from '@variantjs/core';
 
 import { PropType } from 'vue';
-import { Data, VariantJSProps, VariantJSWithClassesListProps } from '../types';
+import { VariantJSProps, VariantJSWithClassesListProps } from '../types';
 
 const getVariantProps = <ComponentOptions extends Data>() : VariantJSProps => ({
   classes: {

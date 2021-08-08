@@ -1,6 +1,6 @@
 import {
   CSSRawClassesList,
-  CSSClass, Variants, VariantsWithClassesList, WithVariantProps, WithVariantPropsAndClassesList,
+  CSSClass, Variants, VariantsWithClassesList, WithVariantProps, WithVariantPropsAndClassesList, Data,
 } from '@variantjs/core';
 
 import { ComponentPropsOptions, PropType } from 'vue';
@@ -13,7 +13,6 @@ import { TRadioOptions } from './components/t-radio';
 import { TSelectOptions } from './components/t-select';
 import { TTagOptions } from './components/t-tag';
 import { TTextareaOptions } from './components/t-textarea';
-import { Data } from './misc';
 
 type VariantJSProps<ComponentOptions extends WithVariantProps<Data> = {
   classes?: CSSClass;

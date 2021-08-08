@@ -1,5 +1,5 @@
+import { Data } from '@variantjs/core';
 import { h, VNode, VNodeProps } from 'vue';
-import { Data } from '../types';
 
 const icons: {
   [key: string]: VNode

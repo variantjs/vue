@@ -1,8 +1,7 @@
-import { isPrimitive, pick } from '@variantjs/core';
+import { Data, isPrimitive, pick } from '@variantjs/core';
 import {
   computed, getCurrentInstance, ComputedRef,
 } from 'vue';
-import { Data } from '../types';
 
 export default function useAttributes<ComponentOptions extends Data>(configuration: ComputedRef<ComponentOptions>): ComputedRef<Data> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

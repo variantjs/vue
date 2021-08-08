@@ -1,6 +1,6 @@
+import { Data } from '@variantjs/core';
 import { VueWrapper } from '@vue/test-utils';
 import { ComponentPublicInstance } from 'vue';
-import { Data } from '../types';
 
 export const scopedParamsAsString = (params: Data) : string => {
   const keys = Object.keys(params);

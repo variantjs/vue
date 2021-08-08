@@ -1,6 +1,5 @@
-import { WithVariantProps } from '@variantjs/core';
+import { Data, WithVariantProps } from '@variantjs/core';
 import { ButtonHTMLAttributes } from 'vue';
-import { Data } from '../misc';
 import { VueRouteAriaCurrentValue, VueRouteRouteLocationRaw } from '../vueRouter';
 
 type RouterLinkProps = {

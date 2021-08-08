@@ -1,7 +1,7 @@
 <template>
   <ul
     class="px-2 pb-2 "
-    :style="usesMaxHeight? `max-height: ${maxHeight}px; overflow-x: auto;` : undefined"
+    :style="usesMaxHeight? `max-height: ${maxHeight}; overflow-x: auto;` : undefined"
   >
     <rich-select-option
       v-for="(option, index) in options"
@@ -15,9 +15,9 @@
 <script lang="ts">
 import {
   computed,
-  ComputedRef, defineComponent, inject, PropType, ref, toRef, toRefs,
+  ComputedRef, defineComponent, inject, PropType,
 } from 'vue';
-import { NormalizedOptions } from '@variantjs/core';
+import { NormalizedOptions, normalizeMeasure } from '@variantjs/core';
 import RichSelectOption from './RichSelectOption.vue';
 import { TRichSelectOptions } from '../../types';
 
@@ -40,8 +40,8 @@ export default defineComponent({
   setup(props) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const configuration = inject<ComputedRef<TRichSelectOptions>>('configuration')!;
-    const maxHeight = computed(() => configuration.value.maxHeight);
-    const usesMaxHeight = computed((): boolean => props.deep === 0 && maxHeight.value !== null && maxHeight.value !== undefined);
+    const maxHeight = computed(() => normalizeMeasure(configuration.value.maxHeight));
+    const usesMaxHeight = computed((): boolean => props.deep === 0 && maxHeight.value !== undefined);
 
     return { maxHeight, usesMaxHeight };
   },

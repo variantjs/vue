@@ -1,5 +1,6 @@
+import { Data } from '@variantjs/core';
 import { computed, getCurrentInstance, WritableComputedRef } from 'vue';
-import { Data, Truthy } from '../types';
+import { Truthy } from '../types';
 
 export default function useMulipleableVModel<P extends Data & {
   multiple?: Truthy

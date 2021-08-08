@@ -1,6 +1,5 @@
-import { WithVariantPropsAndClassesList, TInputGroupClassesValidKeys } from '@variantjs/core';
+import { WithVariantPropsAndClassesList, TInputGroupClassesValidKeys, Data } from '@variantjs/core';
 import { HTMLAttributes } from 'vue';
-import { Data } from '../misc';
 
 export type TInputGroupValidChilElementsKeys = ('label' | 'default' | 'feedback' | 'description')[];
 

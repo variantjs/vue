@@ -1,8 +1,8 @@
 import {
   computed, inject, camelize, getCurrentInstance, ComputedRef,
 } from 'vue';
-import { get, parseVariantWithClassesList } from '@variantjs/core';
-import { Data, VariantJSConfiguration } from '../types';
+import { Data, get, parseVariantWithClassesList } from '@variantjs/core';
+import { VariantJSConfiguration } from '../types';
 import { extractDefinedProps } from './useConfiguration';
 
 export default function useConfigurationWithClassesList<ComponentOptions extends Data>(defaultConfiguration: ComponentOptions, classesListKeys: string[]): ComputedRef<ComponentOptions> {

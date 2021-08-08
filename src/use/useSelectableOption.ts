@@ -1,11 +1,10 @@
 /* eslint-disable no-param-reassign */
 import {
-  addToArray, isEqual, NormalizedOption, substractFromArray, WithVariantPropsAndClassesList,
+  addToArray, Data, isEqual, NormalizedOption, substractFromArray, WithVariantPropsAndClassesList,
 } from '@variantjs/core';
 import {
   computed, ComputedRef, WritableComputedRef,
 } from 'vue';
-import { Data } from '../types';
 
 export default function useSelectableOption<C extends WithVariantPropsAndClassesList<Data, string>>(
   options: ComputedRef<NormalizedOption[]>,

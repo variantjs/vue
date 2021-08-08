@@ -1,8 +1,8 @@
 import {
   computed, inject, camelize, getCurrentInstance, ComponentInternalInstance, ComputedRef,
 } from 'vue';
-import { get, parseVariant } from '@variantjs/core';
-import { Data, VariantJSConfiguration } from '../types';
+import { Data, get, parseVariant } from '@variantjs/core';
+import { VariantJSConfiguration } from '../types';
 
 export const extractDefinedProps = (vm: ComponentInternalInstance): string[] => {
   const validProps = Object.keys(vm.props);
