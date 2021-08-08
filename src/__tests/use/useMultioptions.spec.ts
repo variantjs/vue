@@ -4,11 +4,11 @@ import { useSetup } from './useSetup';
 describe('useMultioptions', () => {
   it('returns normalized options', () => {
     useSetup(() => {
-      const data = useMultioptions({
+      const { normalizedOptions } = useMultioptions({
         options: ['A', 'B'],
       }, 'options');
 
-      expect(data.value).toEqual([
+      expect(normalizedOptions.value).toEqual([
         { raw: 'A', text: 'A', value: 'A' },
         { raw: 'B', text: 'B', value: 'B' },
       ]);
@@ -17,11 +17,11 @@ describe('useMultioptions', () => {
 
   it('handles undefined values', () => {
     useSetup(() => {
-      const data = useMultioptions({
+      const { normalizedOptions } = useMultioptions({
         options: undefined,
       }, 'options');
 
-      expect(data.value).toEqual([]);
+      expect(normalizedOptions.value).toEqual([]);
     });
   });
 });

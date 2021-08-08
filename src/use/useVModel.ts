@@ -1,5 +1,5 @@
+import { Data } from '@variantjs/core';
 import { computed, getCurrentInstance, WritableComputedRef } from 'vue';
-import { Data } from '../types';
 
 export default function useVModel<P extends Data, K extends keyof P>(
   props: P,
@@ -8,10 +8,10 @@ export default function useVModel<P extends Data, K extends keyof P>(
   const vm = getCurrentInstance();
 
   return computed<P[K]>({
-    get() {
+    get(): P[K] {
       return props[key];
     },
-    set(value) {
+    set(value): void {
       vm?.emit(`update:${key}`, value);
     },
   });
