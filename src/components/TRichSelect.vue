@@ -76,7 +76,9 @@ import {
 } from '../use';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { sameWidthModifier } from '../utils/popper';
-import { Data, TRichSelectOptions, TSelectValue } from '../types';
+import {
+  Data, TRichSelectOptions, TSelectValue, Measure,
+} from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import RichSelectClearButton from './TRichSelect/RichSelectClearButton.vue';
@@ -164,11 +166,9 @@ export default defineComponent({
       default: true,
     },
     maxHeight: {
-      type: Number,
-      default: 300,
+      type: [Number, String] as PropType<Measure | null>,
+      default: 250,
     },
-
-    // maxHeight?: number,
 
     // delay?: number,
     // fetchOptions?: (query: string, nextPage?: number) => AjaxResults,
@@ -191,9 +191,6 @@ export default defineComponent({
       normalizedOptions,
       flattenedOptions,
     } = useMultioptions(props, 'options', 'textAttribute', 'valueAttribute');
-
-    console.log(normalizedOptions.value);
-    console.log(flattenedOptions.value);
 
     const {
       selectedOption,

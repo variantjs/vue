@@ -8,14 +8,10 @@
       />
 
       <t-rich-select
-        v-model="selectedUser"
+        v-model="selected"
         placeholder="select an option"
-        :options="users"
-        value-attribute="email"
-        text-attribute="name"
+        :options="options"
       />
-
-      <p>{{ selectedUser }}</p>
 
       <div>
         <label

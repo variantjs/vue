@@ -11,7 +11,9 @@ export { TAlertOptions } from './components/t-alert';
 export { TDropdownOptions } from './components/t-dropdown';
 export { TRichSelectOptions, AjaxResults } from './components/t-rich-select';
 export { TInputGroupOptions, TInputGroupValidChilElementsKeys } from './components/t-input-group';
-export { Truthy, Data, IconProp } from './misc';
+export {
+  Truthy, Data, IconProp, Measure,
+} from './misc';
 export { ObjectWithProperties, KeysOfType } from './helpers';
 export { EmitterEvents, EmitterFunction } from './utils';
 export { VueRouteAriaCurrentValue, VueRouteRouteLocationRaw } from './vueRouter';
