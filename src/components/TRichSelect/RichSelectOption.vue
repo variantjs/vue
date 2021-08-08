@@ -64,7 +64,10 @@ export default defineComponent({
     const optionIsActive = inject<(option: NormalizedOption) => boolean>('optionIsActive');
 
     return {
-      setActiveOption, toggleOption, optionIsSelected, optionIsActive,
+      setActiveOption,
+      toggleOption,
+      optionIsSelected,
+      optionIsActive,
     };
   },
   computed: {
@@ -78,8 +81,16 @@ export default defineComponent({
       return this.optionIsActive!(this.option);
     },
   },
+  watch: {
+    isActive(isActive: boolean): void {
+      if (isActive === true) {
+        const li = this.$el as HTMLLIElement;
+        li.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+      }
+    },
+  },
   beforeCreate() {
-    this.$.components = { RichSelectOptionsList };
+    (this.$ as unknown as any).components = { RichSelectOptionsList };
   },
   methods: {
     mouseoverHandler(): void {

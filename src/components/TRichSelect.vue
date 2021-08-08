@@ -155,7 +155,6 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
-    // @TODO: Rename to searchable
     hideSearchBox: {
       type: Boolean,
       default: false,
@@ -164,8 +163,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    maxHeight: {
+      type: Number,
+      default: 300,
+    },
 
-    // clearable?: boolean,
     // maxHeight?: number,
 
     // delay?: number,

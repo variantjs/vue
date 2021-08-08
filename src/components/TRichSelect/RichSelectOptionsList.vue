@@ -1,5 +1,8 @@
 <template>
-  <ul class="px-2 pb-2">
+  <ul
+    class="px-2 pb-2 "
+    :style="deep === 0 ? 'max-height: 200px; overflow-x: auto;' : undefined"
+  >
     <rich-select-option
       v-for="(option, index) in options"
       :key="`${deep > 0 ? `${deep}-` : ''}${option.value}-${index}`"
