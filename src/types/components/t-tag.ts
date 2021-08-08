@@ -1,6 +1,5 @@
-import { WithVariantProps } from '@variantjs/core';
+import { Data, WithVariantProps } from '@variantjs/core';
 import { HTMLAttributes } from 'vue';
-import { Data } from '../misc';
 
 export type TTagOptions = WithVariantProps<{
   tagName?: string

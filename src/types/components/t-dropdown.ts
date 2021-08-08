@@ -1,7 +1,6 @@
 import { Placement, Options } from '@popperjs/core';
-import { WithVariantPropsAndClassesList, TDropdownClassesValidKeys } from '@variantjs/core';
+import { WithVariantPropsAndClassesList, TDropdownClassesValidKeys, Data } from '@variantjs/core';
 import { HTMLAttributes } from 'vue';
-import { Data } from '../misc';
 
 export type TDropdownOptions = WithVariantPropsAndClassesList<{
   text?: string,
