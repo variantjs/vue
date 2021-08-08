@@ -615,7 +615,7 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(false);
   });
 
-  it('hides the dropdown on blur a child element of the dropdown', async () => {
+  it('hides the dropdown if blur on an element that is not a child', async () => {
     const wrapper = mount(TDropdown, {
       props: {
         show: true,
@@ -626,13 +626,11 @@ describe('TDropdown.vue', () => {
       },
     });
 
-    const { dropdown } = wrapper.vm.$refs;
-
     await dropdownIsReady(wrapper);
 
-    const button = dropdown.querySelector('button') as HTMLButtonElement;
+    const button = wrapper.find('button') as any;
 
-    button.dispatchEvent(new FocusEvent('blur'));
+    button.trigger('blur');
 
     expect(wrapper.vm.shown).toBe(false);
   });
@@ -1230,7 +1228,8 @@ describe('TDropdown.vue', () => {
         },
       });
 
-      const action = jest.spyOn(wrapper.vm, 'targetIsChild');
+      // doHide should not be called
+      const action = jest.spyOn(wrapper.vm, 'doHide');
 
       const trigger = wrapper.get('button');
 
