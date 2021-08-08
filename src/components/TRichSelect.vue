@@ -42,6 +42,7 @@
 
     <rich-select-clear-button
       v-if="showClearButton"
+      ref="clearButton"
       @click="clearValue"
     />
   </div>

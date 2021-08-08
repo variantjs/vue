@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
-// import { getChildComponentNameByRef } from '../testUtils';
+import { getChildComponentNameByRef } from '../testUtils';
 
 describe('TRichSelect.vue', () => {
   it('renders the component', () => {
@@ -80,11 +80,92 @@ describe('TRichSelect.vue', () => {
     });
   });
 
-  // describe('ClearButton', () => {
-  //   it('set showClearButton as `true` if `selectedOption` is clearable and is not multiple', () => {
+  describe('ClearButton', () => {
+    it('set showClearButton as `true` if `selectedOption` is clearable and is not multiple', () => {
+      const options = [1, 2, 3];
+      const modelValue = 2;
 
-  //   });
-  // });
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          clearable: true,
+          multiple: false,
+          options,
+          modelValue,
+        },
+      });
+
+      expect(wrapper.vm.showClearButton).toBe(true);
+    });
+
+    it('set showClearButton as `false` if `selectedOption`, is clearable but is multiple', () => {
+      const options = [1, 2, 3];
+      const modelValue = 2;
+
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          clearable: true,
+          multiple: true,
+          options,
+          modelValue,
+        },
+      });
+
+      expect(wrapper.vm.showClearButton).toBe(false);
+    });
+
+    it('set showClearButton as `false` if `selectedOption` is multiple but is not clearable', () => {
+      const options = [1, 2, 3];
+      const modelValue = 2;
+
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          clearable: false,
+          multiple: false,
+          options,
+          modelValue,
+        },
+      });
+
+      expect(wrapper.vm.showClearButton).toBe(false);
+    });
+
+    it('set showClearButton as `false` if no selectedOption even if is clearable and is not multiple', () => {
+      const options = [1, 2, 3];
+
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          clearable: true,
+          multiple: false,
+          options,
+        },
+      });
+
+      expect(wrapper.vm.showClearButton).toBe(false);
+    });
+
+    it('shows the clearButton if showClearButton is `true`', () => {
+      const options = [1, 2, 3];
+      const modelValue = 2;
+
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          clearable: true,
+          multiple: false,
+          options,
+          modelValue,
+        },
+      });
+
+      expect(wrapper.vm.$refs.clearButton).toBeDefined();
+      expect(getChildComponentNameByRef(wrapper, 'clearButton')).toEqual('RichSelectClearButton');
+    });
+
+    it('hides the clearButton if showClearButton is `false`', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      expect(wrapper.vm.$refs.clearButton).not.toBeDefined();
+    });
+  });
 
   describe('Dropdown stuff', () => {
     it('invalidates invalid dropdown placements', () => {
