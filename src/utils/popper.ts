@@ -1,15 +1,19 @@
-const sameWidthModifier = {
+import { Modifier, ModifierArguments } from '@popperjs/core';
+import { Data } from '@variantjs/core';
+
+const sameWidthModifier: Modifier<'sameWidth', Data> = {
   name: 'sameWidth',
   enabled: true,
   phase: 'beforeWrite',
   requires: ['computeStyles'],
-  fn: ({ state }) => {
+  fn: (options: ModifierArguments<Data>): void => {
+    const { state } = options;
     state.styles.popper.width = `${state.rects.reference.width}px`;
   },
-  effect: ({ state }) => {
-    state.elements.popper.style.width = `${
-      state.elements.reference.offsetWidth
-    }px`;
+  effect: (options: ModifierArguments<Data>): void => {
+    const { state } = options;
+    const reference = state.elements.reference as HTMLElement;
+    state.elements.popper.style.width = `${reference.offsetWidth}px`;
   },
 };
 

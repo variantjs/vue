@@ -8,6 +8,7 @@ import {
 
 export default function useSelectableOption<C extends WithVariantPropsAndClassesList<Data, string>>(
   options: ComputedRef<NormalizedOption[]>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   localValue: WritableComputedRef<any>,
   configuration: ComputedRef<C>,
 ): {

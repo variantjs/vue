@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils';
 import TAlert from '@/components/TAlert.vue';
-import { TAlertConfig } from '@variantjs/core';
 import { scopedParamsAsString, parseScopedParams } from '../testUtils';
 
 describe('TAlert.vue', () => {

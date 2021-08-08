@@ -1,4 +1,5 @@
 import { Data } from '@variantjs/core';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { VueWrapper } from '@vue/test-utils';
 import { ComponentPublicInstance } from 'vue';
 
