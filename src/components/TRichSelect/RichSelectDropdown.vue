@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { ComputedRef, defineComponent, inject } from 'vue';
-import { NormalizedOptions } from '@variantjs/core';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import RichSelectSearchInput from './RichSelectSearchInput.vue';
 import { TRichSelectOptions } from '../../types';
@@ -29,7 +28,7 @@ export default defineComponent({
   setup() {
     const configuration = useProvidesConfiguration<TRichSelectOptions>();
 
-    const options = inject<ComputedRef<NormalizedOptions>>('options');
+    const options = inject<ComputedRef<TRichSelectOptions>>('options');
 
     return {
       options, configuration,

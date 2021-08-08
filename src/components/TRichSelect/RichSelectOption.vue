@@ -41,7 +41,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, PropType } from 'vue';
+import {
+  defineComponent, inject, PropType, Ref,
+} from 'vue';
 import { NormalizedOption } from '@variantjs/core';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 
@@ -62,12 +64,14 @@ export default defineComponent({
     const setActiveOption = inject<(option: NormalizedOption) => void>('setActiveOption');
     const optionIsSelected = inject<(option: NormalizedOption) => boolean>('optionIsSelected');
     const optionIsActive = inject<(option: NormalizedOption) => boolean>('optionIsActive');
+    const shown = inject<Ref<boolean>>('shown');
 
     return {
       setActiveOption,
       toggleOption,
       optionIsSelected,
       optionIsActive,
+      shown,
     };
   },
   computed: {
@@ -82,17 +86,27 @@ export default defineComponent({
     },
   },
   watch: {
-    isActive(isActive: boolean): void {
-      if (isActive === true) {
-        const li = this.$el as HTMLLIElement;
-        li.scrollIntoView({ block: 'nearest', behavior: 'auto' });
-      }
+    shown: {
+      async handler(): Promise<void> {
+        await this.$nextTick();
+        this.scrollIntoViewIfNeccesary();
+      },
+      immediate: true,
+    },
+    isActive(): void {
+      this.scrollIntoViewIfNeccesary();
     },
   },
   beforeCreate() {
     (this.$ as unknown as any).components = { RichSelectOptionsList };
   },
   methods: {
+    scrollIntoViewIfNeccesary(): void {
+      if (this.shown && this.isActive) {
+        const li = this.$el as HTMLLIElement;
+        li.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+      }
+    },
     mouseoverHandler(): void {
       this.setActiveOption!(this.option);
     },
