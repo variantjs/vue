@@ -27,7 +27,7 @@ export default defineComponent({
   setup(props) {
     const classesList = useProvidesClassesList();
 
-    const className = computed<CSSClass>(() => classesList.value[props.classProperty]);
+    const className = computed<CSSClass>(() => (classesList.value === undefined ? undefined : classesList.value[props.classProperty]));
 
     return { className };
   },

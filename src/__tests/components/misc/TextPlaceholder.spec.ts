@@ -1,3 +1,4 @@
+import { computed } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import TextPlaceholder from '../../../components/misc/TextPlaceholder.vue';
 
@@ -19,10 +20,14 @@ describe('TextPlaceholder', () => {
   });
 
   it('uses `placeholder` as the property from the `classesList` by default', () => {
+    const configuration = computed(() => ({
+      classesList: { placeholder: 'text-red-500' },
+    }));
+
     const wrapper = shallowMount(TextPlaceholder, {
       global: {
         provide: {
-          classesList: { placeholder: 'text-red-500' },
+          configuration,
         },
       },
     });
@@ -31,10 +36,13 @@ describe('TextPlaceholder', () => {
   });
 
   it('accepts a different property for the `classesList` by object', () => {
+    const configuration = computed(() => ({
+      classesList: { buttonPlaceholder: 'text-red-500' },
+    }));
     const wrapper = shallowMount(TextPlaceholder, {
       global: {
         provide: {
-          classesList: { buttonPlaceholder: 'text-red-500' },
+          configuration,
         },
       },
       props: {
@@ -45,12 +53,10 @@ describe('TextPlaceholder', () => {
     expect(wrapper.vm.$el.className).toEqual('text-red-500');
   });
 
-  it('uses the placeholder global provide property if set', () => {
+  it('uses the prop placeholder if set', () => {
     const wrapper = shallowMount(TextPlaceholder, {
-      global: {
-        provide: {
-          placeholder: 'Select an option',
-        },
+      props: {
+        placeholder: 'Select an option',
       },
     });
 
@@ -59,10 +65,8 @@ describe('TextPlaceholder', () => {
 
   it('prioritized the slot over the placeholder attribute', () => {
     const wrapper = shallowMount(TextPlaceholder, {
-      global: {
-        provide: {
-          placeholder: 'Something else',
-        },
+      props: {
+        placeholder: 'Something else',
       },
       slots: {
         default: 'Select an option',
