@@ -8,6 +8,145 @@ describe('TRichSelect.vue', () => {
     expect(wrapper.get('div')).toBeTruthy();
   });
 
+  it('hides the dropdown and focus the trigger when the vmodel value changes and the `closeOnSelect` option is set', async () => {
+    const focusDropdownTriggerMock = jest.fn();
+    const options = [1, 2];
+    const wrapper = shallowMount(TRichSelect, {
+      props: {
+        options,
+        modelValue: 1,
+        show: true,
+        closeOnSelect: true,
+      },
+      global: {
+        stubs: {
+          TDropdown: {
+            template: '<div />',
+            methods: {
+              focus: focusDropdownTriggerMock,
+            },
+          },
+        },
+      },
+    });
+
+    wrapper.vm.shown = true;
+
+    await wrapper.vm.$nextTick();
+
+    await wrapper.setProps({
+      modelValue: 2,
+    });
+
+    expect(wrapper.vm.shown).toBe(false);
+    expect(focusDropdownTriggerMock).toHaveBeenCalled();
+  });
+
+  it('hides the dropdown and focus the trigger when the vmodel value changes and the `closeOnSelect` is undefined and is not multipe', async () => {
+    const focusDropdownTriggerMock = jest.fn();
+    const options = [1, 2];
+    const wrapper = shallowMount(TRichSelect, {
+      props: {
+        options,
+        modelValue: 1,
+        show: true,
+        closeOnSelect: undefined,
+        multiple: false,
+      },
+      global: {
+        stubs: {
+          TDropdown: {
+            template: '<div />',
+            methods: {
+              focus: focusDropdownTriggerMock,
+            },
+          },
+        },
+      },
+    });
+
+    wrapper.vm.shown = true;
+
+    await wrapper.vm.$nextTick();
+
+    await wrapper.setProps({
+      modelValue: 2,
+    });
+
+    expect(wrapper.vm.shown).toBe(false);
+    expect(focusDropdownTriggerMock).toHaveBeenCalled();
+  });
+
+  it('doesnt hide the dropdown and focus the trigger when the vmodel value changes and the `closeOnSelect` is undefined but is multipe', async () => {
+    const focusDropdownTriggerMock = jest.fn();
+    const options = [1, 2];
+    const wrapper = shallowMount(TRichSelect, {
+      props: {
+        options,
+        modelValue: 1,
+        show: true,
+        closeOnSelect: undefined,
+        multiple: true,
+      },
+      global: {
+        stubs: {
+          TDropdown: {
+            template: '<div />',
+            methods: {
+              focus: focusDropdownTriggerMock,
+            },
+          },
+        },
+      },
+    });
+
+    wrapper.vm.shown = true;
+
+    await wrapper.vm.$nextTick();
+
+    await wrapper.setProps({
+      modelValue: 2,
+    });
+
+    expect(wrapper.vm.shown).toBe(true);
+    expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
+  });
+
+  it('doesnt hide the dropdown and focus the trigger when the vmodel value changes, is not multiple but closeOnSelect is `false`', async () => {
+    const focusDropdownTriggerMock = jest.fn();
+    const options = [1, 2];
+    const wrapper = shallowMount(TRichSelect, {
+      props: {
+        options,
+        modelValue: 1,
+        show: true,
+        closeOnSelect: false,
+        multiple: false,
+      },
+      global: {
+        stubs: {
+          TDropdown: {
+            template: '<div />',
+            methods: {
+              focus: focusDropdownTriggerMock,
+            },
+          },
+        },
+      },
+    });
+
+    wrapper.vm.shown = true;
+
+    await wrapper.vm.$nextTick();
+
+    await wrapper.setProps({
+      modelValue: 2,
+    });
+
+    expect(wrapper.vm.shown).toBe(true);
+    expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
+  });
+
   describe('selectedOption', () => {
     it('sets the selectedOption from the initial v-model ', () => {
       const options = [1, 2, 3];
