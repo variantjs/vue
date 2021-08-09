@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
-import { getChildComponentNameByRef } from '../testUtils';
+import { componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
 
 describe('TRichSelect.vue', () => {
   it('renders the component', () => {
@@ -164,6 +164,24 @@ describe('TRichSelect.vue', () => {
       const wrapper = shallowMount(TRichSelect);
 
       expect(wrapper.vm.$refs.clearButton).not.toBeDefined();
+    });
+
+    it('contains a `click` handler that calls the `clearValue` method', async () => {
+      const options = [1, 2, 3];
+      const modelValue = 2;
+
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          clearable: true,
+          multiple: false,
+          options,
+          modelValue,
+        },
+      });
+
+      const component = wrapper.vm.$refs.clearButton;
+
+      expect(componentHasAttributeWithValue(component, 'onClick', wrapper.vm.clearValue)).toBe(true);
     });
   });
 

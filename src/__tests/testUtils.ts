@@ -19,3 +19,6 @@ export const getChildComponentNameByRef = (wrapper: VueWrapper<ComponentPublicIn
 
   return component?.$?.type.name;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const componentHasAttributeWithValue = (component: any, attributeName: string, attributeValue: any): boolean => component.$.attrs[attributeName] === attributeValue;
