@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
-import { componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
+import { componentHasAttributeWithInlineHandlerAndParameter, componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
 
 describe('TRichSelect.vue', () => {
   it('renders the component', () => {
@@ -349,6 +349,41 @@ describe('TRichSelect.vue', () => {
     ])('accept valid dropdown placements', (placement) => {
       const { validator } = TRichSelect.props.dropdownPlacement;
       expect(validator(placement)).toBe(true);
+    });
+
+    it.each([
+      ['onBeforeShow', 'beforeShowHandler'],
+      ['onBeforeHide', 'beforeHideHandler'],
+      ['onBlur', 'blurHandler'],
+      ['onFocus', 'focusHandler'],
+      ['onMousedown', 'mousedownHandler'],
+      ['onBlurOnChild', 'blurOnChildHandler'],
+      // @TODO
+      // ['onKeydown', [
+      //   'keydownEnterHandler',
+      //   'keydownSpaceHandler',
+      //   'keydownDownHandler',
+      //   'keydownEscHandler',
+      //   'keydownUpHandler',
+      // ]],
+    ])('has the `%s` event handler pointing to `%s`', (eventName, eventHandlerName) => {
+      const wrapper = shallowMount(TRichSelect);
+      const component = wrapper.vm.$refs.dropdown;
+
+      expect(componentHasAttributeWithValue(component, eventName, wrapper.vm[eventHandlerName])).toBe(true);
+    });
+
+    it.each([
+      ['onMouseover', 'mouseover'],
+      ['onMouseleave', 'mouseleave'],
+      ['onTouchstart', 'touchstart'],
+      ['onShown', 'shown'],
+      ['onHidden', 'hidden'],
+    ])('has the `%s` event handler with an inline handler that contains `%s`', (eventName, parameterName) => {
+      const wrapper = shallowMount(TRichSelect);
+      const component = wrapper.vm.$refs.dropdown;
+
+      expect(componentHasAttributeWithInlineHandlerAndParameter(component, eventName, parameterName)).toBe(true);
     });
   });
 });
