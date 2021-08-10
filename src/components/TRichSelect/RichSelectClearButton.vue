@@ -8,25 +8,13 @@
 </template>
 
 <script lang="ts">
-import { ComputedRef, defineComponent, inject } from 'vue';
-import { NormalizedOptions } from '@variantjs/core';
-import { TRichSelectOptions } from '../../types';
-import { useProvidesConfiguration } from '../../use';
+import { defineComponent } from 'vue';
 import CloseIcon from '../../icons/CloseIcon.vue';
 
 export default defineComponent({
   name: 'RichSelectClearButton',
   components: {
     CloseIcon,
-  },
-  setup() {
-    const configuration = useProvidesConfiguration<TRichSelectOptions>();
-
-    const options = inject<ComputedRef<NormalizedOptions>>('options');
-
-    return {
-      options, configuration,
-    };
   },
 });
 </script>
