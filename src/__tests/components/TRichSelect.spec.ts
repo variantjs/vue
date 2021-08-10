@@ -340,9 +340,75 @@ describe('TRichSelect.vue', () => {
       const wrapper = shallowMount(TRichSelect);
       wrapper.vm.shown = true;
       const event = new FocusEvent('blur');
-      wrapper.vm.blurHandler();
+      wrapper.vm.blurHandler(event);
       expect(wrapper.vm.shown).toBe(false);
       expect(wrapper.emitted().blur).toEqual([[event]]);
+    });
+
+    describe('blurOnChildHandler', () => {
+      it('will restore the original focus when blurred from the search form to a child focusable element', () => {
+        const wrapper = shallowMount(TRichSelect);
+        wrapper.vm.shown = true;
+
+        const target = document.createElement('DIV');
+        const relatedTarget = document.createElement('DIV');
+
+        target.setAttribute('data-rich-select-search', 'true');
+        const focusSpy = jest.spyOn(target, 'focus');
+
+        wrapper.vm.blurOnChildHandler({ target, relatedTarget });
+        expect(focusSpy).toHaveBeenCalled();
+        expect(wrapper.vm.shown).toBe(true);
+      });
+
+      it('will not restore the original focus when blurred from the search to the trigger', () => {
+        const wrapper = shallowMount(TRichSelect);
+        wrapper.vm.shown = true;
+
+        const target = document.createElement('DIV');
+        target.setAttribute('data-rich-select-trigger', 'true');
+
+        const relatedTarget = document.createElement('DIV');
+        relatedTarget.setAttribute('data-rich-select-search', 'true');
+
+        const focusSpy = jest.spyOn(target, 'focus');
+
+        wrapper.vm.blurOnChildHandler({ target, relatedTarget });
+        expect(focusSpy).not.toHaveBeenCalled();
+        expect(wrapper.vm.shown).toBe(true);
+      });
+
+      it('will restore the original focus when blurred from the trigger to a child focusable element', () => {
+        const wrapper = shallowMount(TRichSelect);
+        wrapper.vm.shown = true;
+
+        const target = document.createElement('DIV');
+        const relatedTarget = document.createElement('DIV');
+
+        target.setAttribute('data-rich-select-trigger', 'true');
+        const focusSpy = jest.spyOn(target, 'focus');
+
+        wrapper.vm.blurOnChildHandler({ target, relatedTarget });
+        expect(focusSpy).toHaveBeenCalled();
+        expect(wrapper.vm.shown).toBe(true);
+      });
+
+      it('will not restore the original focus when blurred from the trigger to the search', () => {
+        const wrapper = shallowMount(TRichSelect);
+        wrapper.vm.shown = true;
+
+        const target = document.createElement('DIV');
+        target.setAttribute('data-rich-select-search', 'true');
+
+        const relatedTarget = document.createElement('DIV');
+        relatedTarget.setAttribute('data-rich-select-trigger', 'true');
+
+        const focusSpy = jest.spyOn(target, 'focus');
+
+        wrapper.vm.blurOnChildHandler({ target, relatedTarget });
+        expect(focusSpy).not.toHaveBeenCalled();
+        expect(wrapper.vm.shown).toBe(true);
+      });
     });
   });
 
