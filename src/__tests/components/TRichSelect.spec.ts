@@ -321,6 +321,31 @@ describe('TRichSelect.vue', () => {
     });
   });
 
+  describe('event handlers', () => {
+    it.each([
+      ['onBeforeShow', 'beforeShowHandler'],
+      ['onBeforeHide', 'beforeHideHandler'],
+      ['onBlur', 'blurHandler'],
+      ['onFocus', 'focusHandler'],
+      ['onMousedown', 'mousedownHandler'],
+      ['onBlurOnChild', 'blurOnChildHandler'],
+    ])('has the `%s` event handler pointing to `%s`', (eventName, eventHandlerName) => {
+      const wrapper = shallowMount(TRichSelect);
+      const component = wrapper.vm.$refs.dropdown;
+
+      expect(componentHasAttributeWithValue(component, eventName, wrapper.vm[eventHandlerName])).toBe(true);
+    });
+
+    it('hides the dropdown with blurHandler', () => {
+      const wrapper = shallowMount(TRichSelect);
+      wrapper.vm.shown = true;
+      const event = new FocusEvent('blur');
+      wrapper.vm.blurHandler();
+      expect(wrapper.vm.shown).toBe(false);
+      expect(wrapper.emitted().blur).toEqual([[event]]);
+    });
+  });
+
   describe('Dropdown stuff', () => {
     it('invalidates invalid dropdown placements', () => {
       const { validator } = TRichSelect.props.dropdownPlacement;
@@ -346,20 +371,6 @@ describe('TRichSelect.vue', () => {
     ])('accept valid dropdown placements', (placement) => {
       const { validator } = TRichSelect.props.dropdownPlacement;
       expect(validator(placement)).toBe(true);
-    });
-
-    it.each([
-      ['onBeforeShow', 'beforeShowHandler'],
-      ['onBeforeHide', 'beforeHideHandler'],
-      ['onBlur', 'blurHandler'],
-      ['onFocus', 'focusHandler'],
-      ['onMousedown', 'mousedownHandler'],
-      ['onBlurOnChild', 'blurOnChildHandler'],
-    ])('has the `%s` event handler pointing to `%s`', (eventName, eventHandlerName) => {
-      const wrapper = shallowMount(TRichSelect);
-      const component = wrapper.vm.$refs.dropdown;
-
-      expect(componentHasAttributeWithValue(component, eventName, wrapper.vm[eventHandlerName])).toBe(true);
     });
 
     it.each([
