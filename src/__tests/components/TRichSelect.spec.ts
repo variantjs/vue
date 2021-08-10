@@ -1,4 +1,4 @@
-import { NormalizedOption } from '@variantjs/core';
+import { NormalizedOption, NormalizedOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
 import { componentHasAttributeWithInlineHandlerAndParameter, componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
@@ -600,6 +600,111 @@ describe('TRichSelect.vue', () => {
         dropdown.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
+        expect(wrapper.emitted()).toHaveProperty('keydown');
+        expect(wrapper.emitted().keydown[0]).toEqual([event]);
+      });
+    });
+
+    describe('key up key', () => {
+      it('shows the dropdown if hidden', async () => {
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnClick: true,
+          },
+        });
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', {
+          key: 'ArrowUp',
+        });
+
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+
+        dropdown.$el.dispatchEvent(event);
+
+        expect(wrapper.vm.shown).toBe(true);
+        expect(preventDefaultSpy).toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('keydown');
+        expect(wrapper.emitted().keydown[0]).toEqual([event]);
+      });
+
+      it('activates the the prev option if dropdown is shown', async () => {
+        const options = [1, 2, 3];
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            options,
+            toggleOnClick: true,
+          },
+        });
+        wrapper.vm.shown = true;
+        wrapper.vm.activeOption = { value: 3, text: 3, raw: 3 } as NormalizedOption;
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', {
+          key: 'ArrowUp',
+        });
+
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+
+        dropdown.$el.dispatchEvent(event);
+
+        expect(wrapper.vm.shown).toBe(true);
+        expect(wrapper.vm.activeOption).toEqual({ value: 2, text: 2, raw: 2 } as NormalizedOption);
+        expect(preventDefaultSpy).toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('keydown');
+        expect(wrapper.emitted().keydown[0]).toEqual([event]);
+      });
+    });
+
+    describe('key down key', () => {
+      it('shows the dropdown if hidden', async () => {
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnClick: true,
+          },
+        });
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', {
+          key: 'ArrowDown',
+        });
+
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+
+        dropdown.$el.dispatchEvent(event);
+
+        expect(wrapper.vm.shown).toBe(true);
+        expect(preventDefaultSpy).toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('keydown');
+        expect(wrapper.emitted().keydown[0]).toEqual([event]);
+      });
+
+      it('activates the the next option if dropdown is shown', async () => {
+        const options = [1, 2, 3];
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            options,
+            toggleOnClick: true,
+          },
+        });
+        wrapper.vm.shown = true;
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', {
+          key: 'ArrowDown',
+        });
+
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+
+        dropdown.$el.dispatchEvent(event);
+
+        expect(wrapper.vm.shown).toBe(true);
+        expect(wrapper.vm.activeOption).toEqual({ value: 2, text: 2, raw: 2 } as NormalizedOption);
+        expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
       });

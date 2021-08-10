@@ -271,7 +271,7 @@ export default defineComponent({
 
       e.preventDefault();
 
-      if (shown.value === false && configuration.value.toggleOnClick) {
+      if (shown.value === false) {
         throttledShowDropdown();
       } else {
         setNextOptionActive();
@@ -283,7 +283,7 @@ export default defineComponent({
 
       e.preventDefault();
 
-      if (shown.value === false && configuration.value.toggleOnClick) {
+      if (shown.value === false) {
         throttledShowDropdown();
       } else {
         setPrevOptionActive();
