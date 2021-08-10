@@ -293,14 +293,6 @@ export default defineComponent({
     const keydownEnterHandler = (e: KeyboardEvent): void => {
       emit('keydown', e);
 
-      if (shown.value === true) {
-        toggleOptionFromActiveOption();
-      }
-    };
-
-    const keydownSpaceHandler = (e: KeyboardEvent): void => {
-      emit('keydown', e);
-
       e.preventDefault();
 
       if (configuration.value.toggleOnClick && shown.value === false) {
@@ -308,6 +300,10 @@ export default defineComponent({
       } else if (shown.value === true) {
         toggleOptionFromActiveOption();
       }
+    };
+
+    const keydownSpaceHandler = (e: KeyboardEvent): void => {
+      keydownEnterHandler(e);
     };
 
     const keydownEscHandler = (e: KeyboardEvent): void => {
