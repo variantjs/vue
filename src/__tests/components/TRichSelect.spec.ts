@@ -15,7 +15,6 @@ describe('TRichSelect.vue', () => {
       props: {
         options,
         modelValue: 1,
-        show: true,
         closeOnSelect: true,
       },
       global: {
@@ -49,7 +48,6 @@ describe('TRichSelect.vue', () => {
       props: {
         options,
         modelValue: 1,
-        show: true,
         closeOnSelect: undefined,
         multiple: false,
       },
@@ -84,7 +82,6 @@ describe('TRichSelect.vue', () => {
       props: {
         options,
         modelValue: 1,
-        show: true,
         closeOnSelect: undefined,
         multiple: true,
       },
@@ -119,7 +116,6 @@ describe('TRichSelect.vue', () => {
       props: {
         options,
         modelValue: 1,
-        show: true,
         closeOnSelect: false,
         multiple: false,
       },
@@ -358,14 +354,6 @@ describe('TRichSelect.vue', () => {
       ['onFocus', 'focusHandler'],
       ['onMousedown', 'mousedownHandler'],
       ['onBlurOnChild', 'blurOnChildHandler'],
-      // @TODO
-      // ['onKeydown', [
-      //   'keydownEnterHandler',
-      //   'keydownSpaceHandler',
-      //   'keydownDownHandler',
-      //   'keydownEscHandler',
-      //   'keydownUpHandler',
-      // ]],
     ])('has the `%s` event handler pointing to `%s`', (eventName, eventHandlerName) => {
       const wrapper = shallowMount(TRichSelect);
       const component = wrapper.vm.$refs.dropdown;
@@ -379,11 +367,69 @@ describe('TRichSelect.vue', () => {
       ['onTouchstart', 'touchstart'],
       ['onShown', 'shown'],
       ['onHidden', 'hidden'],
-    ])('has the `%s` event handler with an inline handler that contains `%s`', (eventName, parameterName) => {
+    ])('re-emits the event `%s`', (eventName, parameterName) => {
       const wrapper = shallowMount(TRichSelect);
       const component = wrapper.vm.$refs.dropdown;
 
       expect(componentHasAttributeWithInlineHandlerAndParameter(component, eventName, parameterName)).toBe(true);
+    });
+
+    describe('esc key', () => {
+      it('hides the dropdown and focus the trigger when pressed esc', async () => {
+        const focusDropdownTriggerMock = jest.fn();
+
+        const wrapper = shallowMount(TRichSelect, {
+          global: {
+            stubs: {
+              TDropdown: {
+                template: '<div />',
+                methods: {
+                  focus: focusDropdownTriggerMock,
+                },
+              },
+            },
+          },
+        });
+
+        wrapper.vm.shown = true;
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', { key: 'Escape' });
+        dropdown.$el.dispatchEvent(event);
+
+        expect(wrapper.vm.shown).toBe(false);
+        expect(focusDropdownTriggerMock).toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('keydown');
+        expect(wrapper.emitted().keydown[0]).toEqual([event]);
+      });
+
+      it('only re-emits the keyboard event when dropdown is closed ', async () => {
+        const focusDropdownTriggerMock = jest.fn();
+
+        const wrapper = shallowMount(TRichSelect, {
+          global: {
+            stubs: {
+              TDropdown: {
+                template: '<div />',
+                methods: {
+                  focus: focusDropdownTriggerMock,
+                },
+              },
+            },
+          },
+        });
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', { key: 'Escape' });
+        dropdown.$el.dispatchEvent(event);
+
+        expect(wrapper.vm.shown).toBe(false);
+        expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('keydown');
+        expect(wrapper.emitted().keydown[0]).toEqual([event]);
+      });
     });
   });
 });
