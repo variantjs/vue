@@ -2,13 +2,15 @@
   <div>
     <rich-select-search-input
       v-if="! configuration.hideSearchBox"
+      ref="searchInput"
     />
 
-    <rich-select-options-list :options="options" />
+    <rich-select-options-list
+      ref="optionsList"
+      :options="options"
+    />
 
-    <div>
-      <!-- bottom -->
-    </div>
+    <!-- @TODO bottom -->
   </div>
 </template>
 
@@ -31,7 +33,8 @@ export default defineComponent({
     const options = inject<ComputedRef<TRichSelectOptions>>('options');
 
     return {
-      options, configuration,
+      options,
+      configuration,
     };
   },
 });
