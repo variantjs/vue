@@ -1,5 +1,7 @@
 import { Data } from '@variantjs/core';
-import { computed, getCurrentInstance, WritableComputedRef } from 'vue';
+import {
+  computed, ref, getCurrentInstance, WritableComputedRef, Ref, UnwrapRef,
+} from 'vue';
 import { Truthy } from '../types';
 
 export default function useMulipleableVModel<P extends Data & {
@@ -8,7 +10,7 @@ export default function useMulipleableVModel<P extends Data & {
   props: P,
   key: K,
 ): {
-    localValue: WritableComputedRef<P[K]>
+    localValue: WritableComputedRef<P[K]> | Ref<UnwrapRef<P[K]>>;
     clearValue: () => void
   } {
   const vm = getCurrentInstance();
@@ -23,20 +25,26 @@ export default function useMulipleableVModel<P extends Data & {
     return undefined as P[K];
   };
 
-  const localValue = computed<P[K]>({
-    get() {
-      const value = props[key];
+  const localValue = props[key] === undefined
+    ? ref(getDefaultValue())
+    : computed<P[K]>({
+      get() {
+        const value = props[key];
 
-      if (value === undefined) {
-        return getDefaultValue();
-      }
+        if (value === undefined) {
+          return getDefaultValue();
+        }
 
-      return value;
-    },
-    set(value) {
-      vm?.emit(`update:${key}`, value);
-    },
-  });
+        if (value === undefined) {
+          return getDefaultValue();
+        }
+
+        return value;
+      },
+      set(value) {
+        vm?.emit(`update:${key}`, value);
+      },
+    });
 
   const clearValue = () : void => {
     localValue.value = getDefaultValue();

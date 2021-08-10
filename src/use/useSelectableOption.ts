@@ -44,7 +44,7 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
       if (Array.isArray(localValue.value)) {
         localValue.value = substractFromArray(localValue.value, option.value);
       } else {
-        localValue.value = null;
+        localValue.value = undefined;
       }
     } else if (Array.isArray(localValue.value)) {
       localValue.value = addToArray(localValue.value, option.value);

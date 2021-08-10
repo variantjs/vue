@@ -1,3 +1,4 @@
+import { NormalizedOption } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
 import { componentHasAttributeWithInlineHandlerAndParameter, componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
@@ -427,6 +428,119 @@ describe('TRichSelect.vue', () => {
 
         expect(wrapper.vm.shown).toBe(false);
         expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('keydown');
+        expect(wrapper.emitted().keydown[0]).toEqual([event]);
+      });
+    });
+
+    describe('space key', () => {
+      it('shows the dropdown if `toggleOnClick` is set', async () => {
+        const focusDropdownTriggerMock = jest.fn();
+
+        const wrapper = shallowMount(TRichSelect, {
+          global: {
+            stubs: {
+              TDropdown: {
+                template: '<div />',
+                methods: {
+                  focus: focusDropdownTriggerMock,
+                },
+              },
+            },
+          },
+        });
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', {
+          key: 'Space',
+        });
+
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+
+        dropdown.$el.dispatchEvent(event);
+
+        expect(wrapper.vm.shown).toBe(true);
+        expect(preventDefaultSpy).toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('keydown');
+        expect(wrapper.emitted().keydown[0]).toEqual([event]);
+      });
+
+      it('toggles the active option if dropdown is shown', async () => {
+        const focusDropdownTriggerMock = jest.fn();
+        const options = [1, 2, 3];
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            options,
+          },
+          global: {
+            stubs: {
+              TDropdown: {
+                template: '<div />',
+                methods: {
+                  focus: focusDropdownTriggerMock,
+                },
+              },
+            },
+          },
+        });
+
+        wrapper.vm.shown = true;
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', {
+          key: 'Space',
+        });
+
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+
+        expect(wrapper.vm.localValue).toBe(undefined);
+
+        dropdown.$el.dispatchEvent(event);
+
+        expect(wrapper.vm.localValue).toBe(1);
+        expect(wrapper.vm.shown).toBe(true);
+        expect(preventDefaultSpy).toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('keydown');
+        expect(wrapper.emitted().keydown[0]).toEqual([event]);
+
+        dropdown.$el.dispatchEvent(event);
+
+        expect(wrapper.vm.localValue).toBe(undefined);
+        expect(wrapper.vm.shown).toBe(true);
+      });
+
+      it('toggles the active option if dropdown is shown when no active option', async () => {
+        const focusDropdownTriggerMock = jest.fn();
+
+        const wrapper = shallowMount(TRichSelect, {
+          global: {
+            stubs: {
+              TDropdown: {
+                template: '<div />',
+                methods: {
+                  focus: focusDropdownTriggerMock,
+                },
+              },
+            },
+          },
+        });
+
+        wrapper.vm.shown = true;
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', {
+          key: 'Space',
+        });
+
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+
+        dropdown.$el.dispatchEvent(event);
+
+        expect(wrapper.vm.shown).toBe(true);
+        expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
       });
