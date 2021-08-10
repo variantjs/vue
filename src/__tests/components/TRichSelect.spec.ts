@@ -435,21 +435,9 @@ describe('TRichSelect.vue', () => {
 
     describe('space key', () => {
       it('shows the dropdown if `toggleOnClick` is set', async () => {
-        const focusDropdownTriggerMock = jest.fn();
-
         const wrapper = shallowMount(TRichSelect, {
           props: {
             toggleOnClick: true,
-          },
-          global: {
-            stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
-            },
           },
         });
 
@@ -470,22 +458,11 @@ describe('TRichSelect.vue', () => {
       });
 
       it('doesnt shows the dropdown if `toggleOnClick` is not set', async () => {
-        const focusDropdownTriggerMock = jest.fn();
-
         const wrapper = shallowMount(TRichSelect, {
           props: {
             toggleOnClick: false,
           },
-          global: {
-            stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
-            },
-          },
+
         });
 
         const { dropdown } = wrapper.vm.$refs;
@@ -505,22 +482,12 @@ describe('TRichSelect.vue', () => {
       });
 
       it('toggles the active option if dropdown is shown', async () => {
-        const focusDropdownTriggerMock = jest.fn();
         const options = [1, 2, 3];
         const wrapper = shallowMount(TRichSelect, {
           props: {
             options,
           },
-          global: {
-            stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
-            },
-          },
+
         });
 
         wrapper.vm.shown = true;
@@ -550,20 +517,7 @@ describe('TRichSelect.vue', () => {
       });
 
       it('toggles the active option if dropdown is shown when no active option', async () => {
-        const focusDropdownTriggerMock = jest.fn();
-
-        const wrapper = shallowMount(TRichSelect, {
-          global: {
-            stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
-            },
-          },
-        });
+        const wrapper = shallowMount(TRichSelect);
 
         wrapper.vm.shown = true;
 
@@ -585,92 +539,27 @@ describe('TRichSelect.vue', () => {
     });
 
     describe('enter key', () => {
-      it('shows the dropdown if `toggleOnClick` is set', async () => {
-        const focusDropdownTriggerMock = jest.fn();
-
-        const wrapper = shallowMount(TRichSelect, {
-          props: {
-            toggleOnClick: true,
-          },
-          global: {
-            stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
-            },
-          },
-        });
+      it('doesnt shows the dropdown when hidden', async () => {
+        const wrapper = shallowMount(TRichSelect);
 
         const { dropdown } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Enter',
         });
-
-        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
-
-        dropdown.$el.dispatchEvent(event);
-
-        expect(wrapper.vm.shown).toBe(true);
-        expect(preventDefaultSpy).toHaveBeenCalled();
-        expect(wrapper.emitted()).toHaveProperty('keydown');
-        expect(wrapper.emitted().keydown[0]).toEqual([event]);
-      });
-
-      it('doesnt shows the dropdown if `toggleOnClick` is not set', async () => {
-        const focusDropdownTriggerMock = jest.fn();
-
-        const wrapper = shallowMount(TRichSelect, {
-          props: {
-            toggleOnClick: false,
-          },
-          global: {
-            stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
-            },
-          },
-        });
-
-        const { dropdown } = wrapper.vm.$refs;
-
-        const event = new KeyboardEvent('keydown', {
-          key: 'Enter',
-        });
-
-        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
 
         dropdown.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(false);
-        expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
       });
 
       it('toggles the active option if dropdown is shown', async () => {
-        const focusDropdownTriggerMock = jest.fn();
         const options = [1, 2, 3];
         const wrapper = shallowMount(TRichSelect, {
           props: {
             options,
-          },
-          global: {
-            stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
-            },
           },
         });
 
@@ -682,15 +571,12 @@ describe('TRichSelect.vue', () => {
           key: 'Enter',
         });
 
-        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
-
         expect(wrapper.vm.localValue).toBe(undefined);
 
         dropdown.$el.dispatchEvent(event);
 
         expect(wrapper.vm.localValue).toBe(1);
         expect(wrapper.vm.shown).toBe(true);
-        expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
 
@@ -701,20 +587,7 @@ describe('TRichSelect.vue', () => {
       });
 
       it('toggles the active option if dropdown is shown when no active option', async () => {
-        const focusDropdownTriggerMock = jest.fn();
-
-        const wrapper = shallowMount(TRichSelect, {
-          global: {
-            stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
-            },
-          },
-        });
+        const wrapper = shallowMount(TRichSelect);
 
         wrapper.vm.shown = true;
 
@@ -724,12 +597,9 @@ describe('TRichSelect.vue', () => {
           key: 'Enter',
         });
 
-        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
-
         dropdown.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
-        expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
       });
