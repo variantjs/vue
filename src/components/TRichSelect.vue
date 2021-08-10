@@ -247,7 +247,7 @@ export default defineComponent({
      * Active option handling
      */
     const toggleOptionFromActiveOption = (): void => {
-      if (!activeOption.value === null) {
+      if (activeOption.value === null) {
         return;
       }
 
@@ -256,7 +256,7 @@ export default defineComponent({
 
     // Select the current active option
     const selectOptionFromActiveOption = () :void => {
-      if (!activeOption.value === null) {
+      if (activeOption.value === null) {
         return;
       }
 
