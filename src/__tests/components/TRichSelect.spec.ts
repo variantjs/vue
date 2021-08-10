@@ -500,11 +500,11 @@ describe('TRichSelect.vue', () => {
 
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
 
-        expect(wrapper.vm.localValue).toBe(undefined);
+        expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
 
         dropdown.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.localValue).toBe(1);
+        expect(wrapper.vm.$.setupState.localValue).toBe(1);
         expect(wrapper.vm.shown).toBe(true);
         expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
@@ -512,7 +512,7 @@ describe('TRichSelect.vue', () => {
 
         dropdown.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.localValue).toBe(undefined);
+        expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
         expect(wrapper.vm.shown).toBe(true);
       });
 
@@ -571,18 +571,18 @@ describe('TRichSelect.vue', () => {
           key: 'Enter',
         });
 
-        expect(wrapper.vm.localValue).toBe(undefined);
+        expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
 
         dropdown.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.localValue).toBe(1);
+        expect(wrapper.vm.$.setupState.localValue).toBe(1);
         expect(wrapper.vm.shown).toBe(true);
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
 
         dropdown.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.localValue).toBe(undefined);
+        expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
         expect(wrapper.vm.shown).toBe(true);
       });
 

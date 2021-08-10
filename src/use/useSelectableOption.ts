@@ -3,13 +3,13 @@ import {
   addToArray, Data, isEqual, NormalizedOption, substractFromArray, WithVariantPropsAndClassesList,
 } from '@variantjs/core';
 import {
-  computed, ComputedRef, WritableComputedRef,
+  computed, ComputedRef, Ref,
 } from 'vue';
 
 export default function useSelectableOption<C extends WithVariantPropsAndClassesList<Data, string>>(
   options: ComputedRef<NormalizedOption[]>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  localValue: WritableComputedRef<any>,
+  localValue: Ref<any>,
   configuration: ComputedRef<C>,
 ): {
     selectedOption: ComputedRef<NormalizedOption | undefined>,

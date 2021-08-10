@@ -1,6 +1,6 @@
 import { Data } from '@variantjs/core';
 import {
-  computed, ref, getCurrentInstance, WritableComputedRef, Ref, UnwrapRef,
+  computed, ref, getCurrentInstance, Ref,
 } from 'vue';
 import { Truthy } from '../types';
 
@@ -10,7 +10,7 @@ export default function useMulipleableVModel<P extends Data & {
   props: P,
   key: K,
 ): {
-    localValue: WritableComputedRef<P[K]> | Ref<UnwrapRef<P[K]>>;
+    localValue: Ref<P[K]>;
     clearValue: () => void
   } {
   const vm = getCurrentInstance();
@@ -26,7 +26,7 @@ export default function useMulipleableVModel<P extends Data & {
   };
 
   const localValue = props[key] === undefined
-    ? ref(getDefaultValue())
+    ? ref(getDefaultValue()) as Ref<P[K]>
     : computed<P[K]>({
       get() {
         const value = props[key];
