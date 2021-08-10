@@ -429,7 +429,7 @@ export default defineComponent({
     beforeHideHandler(): void {
       this.$emit('before-hide');
 
-      if (this.configuration.selectOnClose && !isEqual(this.localValue, this.activeOption)) {
+      if (this.configuration.selectOnClose && !isEqual(this.localValue, this.activeOption?.value)) {
         this.selectOptionFromActiveOption();
       }
     },

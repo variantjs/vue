@@ -509,6 +509,82 @@ describe('TRichSelect.vue', () => {
         expect(wrapper.vm.shown).toBe(true);
       });
     });
+
+    describe('beforeShowHandler', () => {
+      it('sets active option when is about to show the drodown', () => {
+        const wrapper = shallowMount(TRichSelect);
+        const incomingActiveOption = {
+          value: 1,
+          text: 1,
+          raw: 1,
+        };
+        const getActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'getActiveOption').mockReturnValue(incomingActiveOption);
+        wrapper.vm.beforeShowHandler();
+        expect(getActiveOptionSpy).toHaveBeenCalled();
+        expect(wrapper.vm.activeOption).toEqual(incomingActiveOption);
+        expect(wrapper.emitted()).toHaveProperty('before-show');
+      });
+    });
+
+    describe('beforeHideHandler', () => {
+      it('selects the active option if `selectOnclose` is set and active option is different to selected option', () => {
+        const options = [1, 2];
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            modelValue: 1,
+            options,
+            selectOnClose: true,
+          },
+        });
+
+        wrapper.vm.activeOption = { value: 2, text: 2, raw: 2 } as NormalizedOption;
+
+        const selectOptionFromActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'selectOptionFromActiveOption');
+        wrapper.vm.beforeHideHandler();
+        expect(selectOptionFromActiveOptionSpy).toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('before-hide');
+      });
+
+      it('doesnt selects the active option if `selectOnclose` is set to `false`', () => {
+        const options = [1, 2];
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            modelValue: 1,
+            options,
+            selectOnClose: false,
+          },
+        });
+
+        wrapper.vm.activeOption = { value: 2, text: 2, raw: 2 } as NormalizedOption;
+
+        const selectOptionFromActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'selectOptionFromActiveOption');
+        wrapper.vm.beforeHideHandler();
+        expect(selectOptionFromActiveOptionSpy).not.toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('before-hide');
+      });
+
+      it('doesnt selects the active option when `selectOnclose` is set if active the same as the selected option', () => {
+        const options = [1, 2];
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            modelValue: 2,
+            options,
+            selectOnClose: true,
+          },
+        });
+
+        wrapper.vm.activeOption = { value: 2, text: 2, raw: 2 } as NormalizedOption;
+
+        const selectOptionFromActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'selectOptionFromActiveOption');
+        wrapper.vm.beforeHideHandler();
+        expect(selectOptionFromActiveOptionSpy).not.toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('before-hide');
+      });
+    });
+
+    describe('onOptionSelected', () => {
+      // @TODO  ? maybe doenst belogn to here
+    });
   });
 
   describe('Dropdown stuff', () => {
