@@ -345,6 +345,32 @@ describe('TRichSelect.vue', () => {
       expect(wrapper.emitted().blur).toEqual([[event]]);
     });
 
+    describe('focusHandler', () => {
+      it('shows the dropdown with focusHandler when `toggleOnFocus` is set', () => {
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnFocus: true,
+          },
+        });
+        const event = new FocusEvent('focus');
+        wrapper.vm.focusHandler(event);
+        expect(wrapper.vm.shown).toBe(true);
+        expect(wrapper.emitted().focus).toEqual([[event]]);
+      });
+
+      it('doesnt shows the dropdown with focusHandler when `toggleOnFocus` is set to `false`', () => {
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnFocus: false,
+          },
+        });
+        const event = new FocusEvent('focus');
+        wrapper.vm.focusHandler(event);
+        expect(wrapper.vm.shown).toBe(false);
+        expect(wrapper.emitted().focus).toEqual([[event]]);
+      });
+    });
+
     describe('blurOnChildHandler', () => {
       it('will restore the original focus when blurred from the search form to a child focusable element', () => {
         const wrapper = shallowMount(TRichSelect);
