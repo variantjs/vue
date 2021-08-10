@@ -345,6 +345,129 @@ describe('TRichSelect.vue', () => {
       expect(wrapper.emitted().blur).toEqual([[event]]);
     });
 
+    describe('onOptionSelected', () => {
+      it('calls the `onOptionSelected` method when the localValue changes', async () => {
+        const options = [1, 2, 3];
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            modelValue: 1,
+            options,
+          },
+        });
+
+        const onOptionSelectedSpy = jest.spyOn(wrapper.vm, 'onOptionSelected');
+
+        expect(onOptionSelectedSpy).not.toHaveBeenCalled();
+
+        await wrapper.setProps({
+          modelValue: 2,
+        });
+
+        expect(onOptionSelectedSpy).toHaveBeenCalled();
+      });
+
+      it('hides the dropdown and focus the dropdown if `closeOnSelect` is set to `true`', async () => {
+        const focusDropdownTriggerMock = jest.fn();
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            closeOnSelect: true,
+          },
+          global: {
+            stubs: {
+              TDropdown: {
+                template: '<div />',
+                methods: {
+                  focus: focusDropdownTriggerMock,
+                },
+              },
+            },
+          },
+        });
+
+        wrapper.vm.shown = true;
+
+        wrapper.vm.onOptionSelected();
+
+        expect(wrapper.vm.shown).toBe(false);
+        expect(focusDropdownTriggerMock).toHaveBeenCalled();
+      });
+
+      it('hides the dropdown if `closeOnSelect` is `undefined` and is not multiple', async () => {
+        const focusDropdownTriggerMock = jest.fn();
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            closeOnSelect: undefined,
+            multiple: false,
+          },
+          global: {
+            stubs: {
+              TDropdown: {
+                template: '<div />',
+                methods: {
+                  focus: focusDropdownTriggerMock,
+                },
+              },
+            },
+          },
+        });
+        wrapper.vm.shown = true;
+
+        wrapper.vm.onOptionSelected();
+        expect(wrapper.vm.shown).toBe(false);
+        expect(focusDropdownTriggerMock).toHaveBeenCalled();
+      });
+
+      it('doesnt hides the dropdown if `closeOnSelect` is `undefined` and is multiple', async () => {
+        const focusDropdownTriggerMock = jest.fn();
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            closeOnSelect: undefined,
+            multiple: true,
+          },
+          global: {
+            stubs: {
+              TDropdown: {
+                template: '<div />',
+                methods: {
+                  focus: focusDropdownTriggerMock,
+                },
+              },
+            },
+          },
+        });
+
+        wrapper.vm.shown = true;
+
+        wrapper.vm.onOptionSelected();
+
+        expect(wrapper.vm.shown).toBe(true);
+        expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
+      });
+
+      it('doesnt hides the dropdown if is already hidden', async () => {
+        const focusDropdownTriggerMock = jest.fn();
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            closeOnSelect: true,
+          },
+          global: {
+            stubs: {
+              TDropdown: {
+                template: '<div />',
+                methods: {
+                  focus: focusDropdownTriggerMock,
+                },
+              },
+            },
+          },
+        });
+
+        wrapper.vm.onOptionSelected();
+        expect(wrapper.vm.shown).toBe(false);
+        expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
+      });
+    });
+
     describe('focusHandler', () => {
       it('shows the dropdown with focusHandler when `toggleOnFocus` is set', () => {
         const wrapper = shallowMount(TRichSelect, {
@@ -580,10 +703,6 @@ describe('TRichSelect.vue', () => {
         expect(selectOptionFromActiveOptionSpy).not.toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-hide');
       });
-    });
-
-    describe('onOptionSelected', () => {
-      // @TODO  ? maybe doenst belogn to here
     });
   });
 
