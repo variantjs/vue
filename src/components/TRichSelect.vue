@@ -442,7 +442,8 @@ export default defineComponent({
       this.$emit('mousedown', e);
 
       if (this.configuration.toggleOnClick) {
-        // If it has aa search box I need t to prevent default to ensure is focused
+        // If it has as search box I need to prevent default to ensure the search
+        // box keep focused
         if (!this.hideSearchBox && this.shown === false) {
           e.preventDefault();
         }

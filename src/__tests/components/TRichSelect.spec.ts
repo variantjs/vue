@@ -371,6 +371,79 @@ describe('TRichSelect.vue', () => {
       });
     });
 
+    describe('mousedownHandler', () => {
+      it('shows the dropdown when `toggleOnClick` is set', () => {
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnClick: true,
+          },
+        });
+        const event = new MouseEvent('click');
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+        wrapper.vm.mousedownHandler(event);
+        expect(wrapper.vm.shown).toBe(true);
+        expect(wrapper.emitted().mousedown).toEqual([[event]]);
+        expect(preventDefaultSpy).toHaveBeenCalled();
+      });
+
+      it('doesnt shows the dropdown when `toggleOnClick` is not set', () => {
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnClick: false,
+          },
+        });
+        const event = new MouseEvent('click');
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+        wrapper.vm.mousedownHandler(event);
+        expect(wrapper.vm.shown).toBe(false);
+        expect(wrapper.emitted().mousedown).toEqual([[event]]);
+        expect(preventDefaultSpy).not.toHaveBeenCalled();
+      });
+
+      it('doesnt call the `preventDefault` method if search box is hidden', () => {
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnClick: true,
+            hideSearchBox: true,
+          },
+        });
+        const event = new MouseEvent('click');
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+        wrapper.vm.mousedownHandler(event);
+        expect(preventDefaultSpy).not.toHaveBeenCalled();
+      });
+
+      it('hides the dropdown when `toggleOnClick` is set and drodown is shown', () => {
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnClick: true,
+          },
+        });
+        wrapper.vm.shown = true;
+        const event = new MouseEvent('click');
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+        wrapper.vm.mousedownHandler(event);
+        expect(wrapper.vm.shown).toBe(false);
+        expect(wrapper.emitted().mousedown).toEqual([[event]]);
+        expect(preventDefaultSpy).not.toHaveBeenCalled();
+      });
+
+      it('doesnt hides the dropdown when `toggleOnClick` is not set', () => {
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnClick: false,
+          },
+        });
+        wrapper.vm.shown = true;
+        const event = new MouseEvent('click');
+        const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+        wrapper.vm.mousedownHandler(event);
+        expect(wrapper.vm.shown).toBe(true);
+        expect(wrapper.emitted().mousedown).toEqual([[event]]);
+        expect(preventDefaultSpy).not.toHaveBeenCalled();
+      });
+    });
+
     describe('blurOnChildHandler', () => {
       it('will restore the original focus when blurred from the search form to a child focusable element', () => {
         const wrapper = shallowMount(TRichSelect);
