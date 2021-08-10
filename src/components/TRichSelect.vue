@@ -219,7 +219,8 @@ export default defineComponent({
     }>();
 
     const focusDropdownTrigger = (): void => {
-      dropdown.value?.focus();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      dropdown.value!.focus();
     };
 
     /**

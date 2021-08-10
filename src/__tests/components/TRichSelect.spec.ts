@@ -631,6 +631,20 @@ describe('TRichSelect.vue', () => {
         expect(focusSpy).not.toHaveBeenCalled();
         expect(wrapper.vm.shown).toBe(true);
       });
+
+      it('will not restore the original focus when not related target', () => {
+        const wrapper = shallowMount(TRichSelect);
+        wrapper.vm.shown = true;
+
+        const target = document.createElement('DIV');
+        target.setAttribute('data-rich-select-search', 'true');
+
+        const focusSpy = jest.spyOn(target, 'focus');
+
+        wrapper.vm.blurOnChildHandler({ target, relatedTarget: undefined });
+        expect(focusSpy).not.toHaveBeenCalled();
+        expect(wrapper.vm.shown).toBe(true);
+      });
     });
 
     describe('beforeShowHandler', () => {
@@ -661,6 +675,24 @@ describe('TRichSelect.vue', () => {
         });
 
         wrapper.vm.activeOption = { value: 2, text: 2, raw: 2 } as NormalizedOption;
+
+        const selectOptionFromActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'selectOptionFromActiveOption');
+        wrapper.vm.beforeHideHandler();
+        expect(selectOptionFromActiveOptionSpy).toHaveBeenCalled();
+        expect(wrapper.emitted()).toHaveProperty('before-hide');
+      });
+
+      it('selects the active option if `selectOnclose` when active option is null', () => {
+        const options = [1, 2];
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            modelValue: 1,
+            options,
+            selectOnClose: true,
+          },
+        });
+
+        wrapper.vm.activeOption = null;
 
         const selectOptionFromActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'selectOptionFromActiveOption');
         wrapper.vm.beforeHideHandler();
