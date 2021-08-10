@@ -1,4 +1,4 @@
-import { NormalizedOption, NormalizedOptions } from '@variantjs/core';
+import { NormalizedOption, normalizeOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
 import { componentHasAttributeWithInlineHandlerAndParameter, componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
@@ -142,6 +142,103 @@ describe('TRichSelect.vue', () => {
 
     expect(wrapper.vm.shown).toBe(true);
     expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
+  });
+
+  describe('provides the data needed on the child elements', () => {
+    it('provides the configuration', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      expect(wrapper.vm.$.provides.configuration.value).toEqual(wrapper.vm.$.setupState.configuration);
+    });
+
+    it('provides the options', () => {
+      const options = [1, 2, 3];
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          options,
+        },
+      });
+
+      expect(wrapper.vm.$.provides.options.value).toEqual(normalizeOptions(options));
+    });
+
+    it('provides the shown state', () => {
+      const options = [1, 2, 3];
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          options,
+        },
+      });
+
+      expect(wrapper.vm.$.provides.state).toEqual(wrapper.vm.$.setupState.state);
+    });
+
+    it('provides the `selectedOption` state', () => {
+      const options = [1];
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+
+          options,
+          modelValue: 1,
+        },
+      });
+
+      expect(wrapper.vm.$.provides.selectedOption.value).toEqual({
+        value: 1,
+        text: 1,
+        raw: 1,
+      });
+    });
+
+    it('provides the `toggleOption` method`', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      // @TODO: find a way to ensure is the proper method
+      expect(typeof wrapper.vm.$.provides.toggleOption).toBe('function');
+    });
+
+    it('provides the `optionIsActive` method`', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      // @TODO: find a way to ensure is the proper method
+      expect(typeof wrapper.vm.$.provides.optionIsActive).toBe('function');
+    });
+
+    it('provides the `setActiveOption` method`', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      // @TODO: find a way to ensure is the proper method
+      expect(typeof wrapper.vm.$.provides.setActiveOption).toBe('function');
+    });
+
+    it('provides the `optionIsSelected` method`', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      expect(wrapper.vm.$.provides.optionIsSelected).toEqual(wrapper.vm.$.setupState.optionIsSelected);
+    });
+
+    it('provides the `keydownDownHandler` method`', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      expect(wrapper.vm.$.provides.keydownDownHandler).toEqual(wrapper.vm.$.setupState.keydownDownHandler);
+    });
+    it('provides the `keydownUpHandler` method`', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      expect(wrapper.vm.$.provides.keydownUpHandler).toEqual(wrapper.vm.$.setupState.keydownUpHandler);
+    });
+
+    it('provides the `keydownEnterHandler` method`', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      expect(wrapper.vm.$.provides.keydownEnterHandler).toEqual(wrapper.vm.$.setupState.keydownEnterHandler);
+    });
+
+    it('provides the `keydownEscHandler` method`', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      expect(wrapper.vm.$.provides.keydownEscHandler).toEqual(wrapper.vm.$.setupState.keydownEscHandler);
+    });
   });
 
   describe('selectedOption', () => {

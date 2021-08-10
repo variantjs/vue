@@ -60,10 +60,15 @@ export default defineComponent({
     },
   },
   setup() {
-    const toggleOption = inject<(option: NormalizedOption) => void>('toggleOption');
-    const setActiveOption = inject<(option: NormalizedOption) => void>('setActiveOption');
-    const optionIsSelected = inject<(option: NormalizedOption) => boolean>('optionIsSelected');
-    const optionIsActive = inject<(option: NormalizedOption) => boolean>('optionIsActive');
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const toggleOption = inject<(option: NormalizedOption) => void>('toggleOption')!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const setActiveOption = inject<(option: NormalizedOption) => void>('setActiveOption')!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const optionIsSelected = inject<(option: NormalizedOption) => boolean>('optionIsSelected')!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const optionIsActive = inject<(option: NormalizedOption) => boolean>('optionIsActive')!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const shown = inject<Ref<boolean>>('shown');
 
     return {
@@ -79,10 +84,10 @@ export default defineComponent({
       return this.option.children !== undefined && this.option.children.length > 0;
     },
     isSelected(): boolean {
-      return this.optionIsSelected!(this.option);
+      return this.optionIsSelected(this.option);
     },
     isActive(): boolean {
-      return this.optionIsActive!(this.option);
+      return this.optionIsActive(this.option);
     },
   },
   watch: {
@@ -108,10 +113,10 @@ export default defineComponent({
       }
     },
     mouseoverHandler(): void {
-      this.setActiveOption!(this.option);
+      this.setActiveOption(this.option);
     },
     clickHandler(): void {
-      this.toggleOption!(this.option);
+      this.toggleOption(this.option);
     },
   },
 });

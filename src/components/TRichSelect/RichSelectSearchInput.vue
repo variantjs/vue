@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import {
-  ComputedRef, defineComponent, inject, nextTick, watch, ref, computed,
+  ComputedRef, defineComponent, inject, nextTick, watch, ref,
 } from 'vue';
 
 export default defineComponent({
@@ -23,7 +23,16 @@ export default defineComponent({
   setup() {
     const search = ref<HTMLInputElement>();
 
-    const shown = inject<ComputedRef<boolean>>('shown', computed(() => false));
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const shown = inject<ComputedRef<boolean>>('shown')!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const keydownDownHandler = inject<(e: KeyboardEvent) => void>('keydownDownHandler');
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const keydownUpHandler = inject<(e: KeyboardEvent) => void>('keydownUpHandler');
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const keydownEnterHandler = inject<(e: KeyboardEvent) => void>('keydownEnterHandler');
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const keydownEscHandler = inject<(e: KeyboardEvent) => void>('keydownEscHandler');
 
     watch(shown, async (isShown: boolean) : Promise<void> => {
       if (isShown) {
@@ -32,11 +41,6 @@ export default defineComponent({
         search.value!.focus();
       }
     });
-
-    const keydownDownHandler = inject<(e: KeyboardEvent) => void>('keydownDownHandler');
-    const keydownUpHandler = inject<(e: KeyboardEvent) => void>('keydownUpHandler');
-    const keydownEnterHandler = inject<(e: KeyboardEvent) => void>('keydownEnterHandler');
-    const keydownEscHandler = inject<(e: KeyboardEvent) => void>('keydownEscHandler');
 
     return {
       shown, search, keydownUpHandler, keydownDownHandler, keydownEnterHandler, keydownEscHandler,

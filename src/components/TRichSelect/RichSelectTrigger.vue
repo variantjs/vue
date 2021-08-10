@@ -34,7 +34,8 @@ export default defineComponent({
   setup() {
     const configuration = useProvidesConfiguration<TRichSelectOptions>();
 
-    const selectedOption = inject<ComputedRef<NormalizedOption | undefined>>('selectedOption');
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const selectedOption = inject<ComputedRef<NormalizedOption | undefined>>('selectedOption')!;
 
     return {
       selectedOption, configuration,

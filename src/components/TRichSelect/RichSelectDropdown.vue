@@ -29,7 +29,6 @@ export default defineComponent({
   },
   setup() {
     const configuration = useProvidesConfiguration<TRichSelectOptions>();
-
     const options = inject<ComputedRef<TRichSelectOptions>>('options');
 
     return {
