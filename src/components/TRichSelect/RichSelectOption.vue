@@ -5,7 +5,9 @@
   >
     <div>
       <span class="block px-3 py-2 text-sm text-gray-400 truncate">{{ option.text }}</span>
+
       <rich-select-options-list
+        ref="childrenOptions"
         :options="option.children"
         :deep="deep + 1"
       />

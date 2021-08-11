@@ -412,7 +412,29 @@ describe('RichSelectOption', () => {
   });
 
   describe('option with children attributes', () => {
-    // @TODO
+    const wrapper = shallowMount(RichSelectOption, {
+      props: {
+        option: {
+          value: 'foo',
+          text: 'Foo',
+          children: [{ value: 1, text: 1 }],
+        },
+        deep: 0,
+      },
+      global,
+    });
+
+    it('has the role=optgroup attribute', () => {
+      expect(wrapper.vm.$el.getAttribute('role')).toBe('optgroup');
+    });
+
+    it('has the option  text', () => {
+      expect(wrapper.vm.$el.textContent).toBe('Foo');
+    });
+
+    it('adds the rich-select-options-list component with the children', () => {
+      expect(getChildComponentNameByRef(wrapper, 'childrenOptions')).toEqual('RichSelectOptionsList');
+    });
   });
 
   describe('option HTML', () => {
