@@ -411,7 +411,7 @@ describe('RichSelectOption', () => {
     });
   });
 
-  describe('option with children attributes', () => {
+  describe('option has children', () => {
     const wrapper = shallowMount(RichSelectOption, {
       props: {
         option: {
@@ -431,13 +431,5 @@ describe('RichSelectOption', () => {
     it('has the option  text', () => {
       expect(wrapper.vm.$el.textContent).toBe('Foo');
     });
-
-    it('adds the rich-select-options-list component with the children', () => {
-      expect(getChildComponentNameByRef(wrapper, 'childrenOptions')).toEqual('RichSelectOptionsList');
-    });
-  });
-
-  describe('option HTML', () => {
-    // @TODO
   });
 });
