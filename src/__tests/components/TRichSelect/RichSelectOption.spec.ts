@@ -302,4 +302,34 @@ describe('RichSelectOption', () => {
       expect(toggleOption).toHaveBeenCalledWith(option);
     });
   });
+
+  it.each([1, 'foo', undefined, NaN])('adds a data-value attribute for regular values with %s', (value) => {
+    const wrapper = shallowMount(RichSelectOption, {
+      props: {
+        option: {
+          value,
+          text: 'Foo',
+        },
+        deep,
+      },
+      global,
+    });
+
+    expect(wrapper.vm.$el.getAttribute('data-value')).toBe(String(value));
+  });
+
+  it.each([{ foo: 'bar' }, null, [1, 2]])('adds a data-value attribute for objects %s', (value) => {
+    const wrapper = shallowMount(RichSelectOption, {
+      props: {
+        option: {
+          value,
+          text: 'Foo',
+        },
+        deep,
+      },
+      global,
+    });
+
+    expect(wrapper.vm.$el.getAttribute('data-value')).toBe(JSON.stringify(value));
+  });
 });

@@ -10,7 +10,7 @@
   </li>
   <li
     v-else
-    :data-value="option.value"
+    :data-value="dataValueAttribute"
     data-type="option"
     :class="{
       'cursor-pointer  rounded-sm': true,
@@ -80,6 +80,13 @@ export default defineComponent({
     };
   },
   computed: {
+    dataValueAttribute(): string {
+      if (typeof this.option.value === 'object') {
+        return JSON.stringify(this.option.value);
+      }
+
+      return String(this.option.value);
+    },
     hasChildren(): boolean {
       return this.option.children !== undefined && this.option.children.length > 0;
     },
