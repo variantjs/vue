@@ -32,6 +32,8 @@ describe('RichSelectOption', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+
+    optionIsActive.mockReturnValue(false);
   });
 
   it('renders the component', () => {
@@ -168,6 +170,31 @@ describe('RichSelectOption', () => {
     expect(scrollIntoViewMock).toHaveBeenCalled();
   });
 
+  it('will scroll into the view if active changes state', async () => {
+    const scrollIntoViewMock = jest.fn();
+
+    window.HTMLLIElement.prototype.scrollIntoView = scrollIntoViewMock;
+
+    optionIsActive.mockReturnValue(true);
+
+    const wrapper = shallowMount(RichSelectOption, {
+      props: {
+        option,
+        deep,
+      },
+      global,
+    });
+
+    await wrapper.vm.$nextTick();
+    // First time when created
+    expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
+
+    wrapper.vm.$options.watch.isActive.call(wrapper.vm);
+
+    // Second time when state changed
+    expect(scrollIntoViewMock).toHaveBeenCalledTimes(2);
+  });
+
   it('will not scroll into the view if shown but is not active', async () => {
     const scrollIntoViewMock = jest.fn();
 
@@ -212,5 +239,67 @@ describe('RichSelectOption', () => {
     await wrapper.vm.$nextTick();
 
     expect(scrollIntoViewMock).not.toHaveBeenCalled();
+  });
+
+  describe('event handlers', () => {
+    it('calls the `mouseoverHandler` when option mouseover', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global,
+      });
+
+      const mouseoverHandlerSpy = jest.spyOn(wrapper.vm, 'mouseoverHandler');
+
+      wrapper.vm.$el.dispatchEvent(new MouseEvent('mouseover'));
+
+      expect(mouseoverHandlerSpy).toHaveBeenCalled();
+    });
+
+    it('the `mouseoverHandler` sets the option as active', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global,
+      });
+
+      wrapper.vm.mouseoverHandler();
+
+      expect(setActiveOption).toHaveBeenCalledWith(option);
+    });
+
+    it('calls the `clickHandler` when option clicked', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global,
+      });
+
+      const clickHandlerSpy = jest.spyOn(wrapper.vm, 'clickHandler');
+
+      wrapper.vm.$el.dispatchEvent(new MouseEvent('click'));
+
+      expect(clickHandlerSpy).toHaveBeenCalled();
+    });
+
+    it('the `clickHandler` toggles the option', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global,
+      });
+
+      wrapper.vm.clickHandler();
+
+      expect(toggleOption).toHaveBeenCalledWith(option);
+    });
   });
 });
