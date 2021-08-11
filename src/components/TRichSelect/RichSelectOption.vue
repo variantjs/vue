@@ -1,5 +1,8 @@
 <template>
-  <li v-if="hasChildren">
+  <li
+    v-if="hasChildren"
+    role="optgroup"
+  >
     <div>
       <span class="block px-3 py-2 text-sm text-gray-400 truncate">{{ option.text }}</span>
       <rich-select-options-list
@@ -11,7 +14,7 @@
   <li
     v-else
     :data-value="dataValueAttribute"
-    data-type="option"
+    role="option"
     :class="{
       'cursor-pointer  rounded-sm': true,
       'font-semibold text-white bg-blue-500': isSelected,
@@ -20,7 +23,6 @@
     }"
     :aria-selected="isSelected"
     tabindex="-1"
-    data-option
     @mouseover="mouseoverHandler"
     @click="clickHandler"
   >

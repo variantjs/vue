@@ -4,6 +4,9 @@ import { ref } from 'vue';
 import RichSelectOption from '../../../components/TRichSelect/RichSelectOption.vue';
 
 describe('RichSelectOption', () => {
+  const scrollIntoViewMock = jest.fn();
+  window.HTMLLIElement.prototype.scrollIntoView = scrollIntoViewMock;
+
   const toggleOption = jest.fn();
   const setActiveOption = jest.fn();
   const optionIsSelected = jest.fn();
@@ -34,6 +37,8 @@ describe('RichSelectOption', () => {
     jest.clearAllMocks();
 
     optionIsActive.mockReturnValue(false);
+
+    scrollIntoViewMock.mockReset();
   });
 
   it('renders the component', () => {
@@ -151,8 +156,6 @@ describe('RichSelectOption', () => {
   });
 
   it('will scroll into the view if shown and is active', async () => {
-    const scrollIntoViewMock = jest.fn();
-
     optionIsActive.mockReturnValue(true);
 
     const wrapper = shallowMount(RichSelectOption, {
@@ -171,10 +174,6 @@ describe('RichSelectOption', () => {
   });
 
   it('will scroll into the view if active changes state', async () => {
-    const scrollIntoViewMock = jest.fn();
-
-    window.HTMLLIElement.prototype.scrollIntoView = scrollIntoViewMock;
-
     optionIsActive.mockReturnValue(true);
 
     const wrapper = shallowMount(RichSelectOption, {
@@ -196,8 +195,6 @@ describe('RichSelectOption', () => {
   });
 
   it('will not scroll into the view if shown but is not active', async () => {
-    const scrollIntoViewMock = jest.fn();
-
     optionIsActive.mockReturnValue(false);
 
     const wrapper = shallowMount(RichSelectOption, {
@@ -216,8 +213,6 @@ describe('RichSelectOption', () => {
   });
 
   it('will not scroll into the view if is active but is not shown', async () => {
-    const scrollIntoViewMock = jest.fn();
-
     optionIsActive.mockReturnValue(true);
 
     const wrapper = shallowMount(RichSelectOption, {
@@ -303,33 +298,86 @@ describe('RichSelectOption', () => {
     });
   });
 
-  it.each([1, 'foo', undefined, NaN])('adds a data-value attribute for regular values with %s', (value) => {
-    const wrapper = shallowMount(RichSelectOption, {
-      props: {
-        option: {
-          value,
-          text: 'Foo',
+  describe('regular option attributes', () => {
+    it('has the correct `aria-selected` attribute when is selected', () => {
+      optionIsSelected.mockReturnValue(true);
+
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
         },
-        deep,
-      },
-      global,
+        global,
+      });
+
+      expect(wrapper.vm.$el.getAttribute('aria-selected')).toBe('true');
     });
 
-    expect(wrapper.vm.$el.getAttribute('data-value')).toBe(String(value));
-  });
+    it('has the correct `aria-selected` attribute when is not selected', () => {
+      optionIsSelected.mockReturnValue(false);
 
-  it.each([{ foo: 'bar' }, null, [1, 2]])('adds a data-value attribute for objects %s', (value) => {
-    const wrapper = shallowMount(RichSelectOption, {
-      props: {
-        option: {
-          value,
-          text: 'Foo',
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
         },
-        deep,
-      },
-      global,
+        global,
+      });
+
+      expect(wrapper.vm.$el.getAttribute('aria-selected')).toBe('false');
     });
 
-    expect(wrapper.vm.$el.getAttribute('data-value')).toBe(JSON.stringify(value));
+    it('has the role=option attribute', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global,
+      });
+
+      expect(wrapper.vm.$el.getAttribute('role')).toBe('option');
+    });
+    it('has the tabindex=-1 attribute', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global,
+      });
+
+      expect(wrapper.vm.$el.getAttribute('tabindex')).toBe('-1');
+    });
+
+    it.each([1, 'foo', undefined, NaN])('adds a data-value attribute for regular values with %s', (value) => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option: {
+            value,
+            text: 'Foo',
+          },
+          deep,
+        },
+        global,
+      });
+
+      expect(wrapper.vm.$el.getAttribute('data-value')).toBe(String(value));
+    });
+
+    it.each([{ foo: 'bar' }, null, [1, 2]])('adds a data-value attribute for objects %s', (value) => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option: {
+            value,
+            text: 'Foo',
+          },
+          deep,
+        },
+        global,
+      });
+
+      expect(wrapper.vm.$el.getAttribute('data-value')).toBe(JSON.stringify(value));
+    });
   });
 });
