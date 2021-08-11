@@ -380,4 +380,12 @@ describe('RichSelectOption', () => {
       expect(wrapper.vm.$el.getAttribute('data-value')).toBe(JSON.stringify(value));
     });
   });
+
+  describe('option with children attributes', () => {
+    // @TODO
+  });
+
+  describe('option HTML', () => {
+    // @TODO
+  });
 });
