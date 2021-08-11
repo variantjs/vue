@@ -2,6 +2,7 @@ import { NormalizedOption } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import { ref } from 'vue';
 import RichSelectOption from '../../../components/TRichSelect/RichSelectOption.vue';
+import { getChildComponentNameByRef } from '../../testUtils';
 
 describe('RichSelectOption', () => {
   const scrollIntoViewMock = jest.fn();
@@ -51,6 +52,7 @@ describe('RichSelectOption', () => {
     });
 
     expect(wrapper.vm.$el.tagName).toBe('LI');
+    expect(wrapper.vm.$el.textContent).toBe('Option A');
   });
 
   it('determines if option has children', () => {
@@ -153,6 +155,34 @@ describe('RichSelectOption', () => {
     });
 
     expect(wrapper.vm.isActive).toBe(false);
+  });
+
+  it('shows the checkmark icon if option is selected', () => {
+    optionIsSelected.mockReturnValue(true);
+
+    const wrapper = shallowMount(RichSelectOption, {
+      props: {
+        option,
+        deep,
+      },
+      global,
+    });
+
+    expect(getChildComponentNameByRef(wrapper, 'checkIcon')).toEqual('CheckmarkIcon');
+  });
+
+  it('hides the checkmark icon if option is not selected', () => {
+    optionIsSelected.mockReturnValue(false);
+
+    const wrapper = shallowMount(RichSelectOption, {
+      props: {
+        option,
+        deep,
+      },
+      global,
+    });
+
+    expect(getChildComponentNameByRef(wrapper, 'checkIcon')).toBeUndefined();
   });
 
   it('will scroll into the view if shown and is active', async () => {

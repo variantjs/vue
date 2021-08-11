@@ -31,13 +31,11 @@
         {{ option.text }}
       </span>
 
-      <svg
+      <checkmark-icon
         v-if="isSelected"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        class="w-4 h-4 fill-current "
-      ><polygon points="0 11 2 9 7 14 18 3 20 5 7 18" /></svg>
+        ref="checkIcon"
+        class="w-5 h-5"
+      />
     </div>
   </li>
 </template>
@@ -48,9 +46,13 @@ import {
 } from 'vue';
 import { NormalizedOption } from '@variantjs/core';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
+import CheckmarkIcon from '../../icons/CheckmarkIcon.vue';
 
 export default defineComponent({
   name: 'RichSelectOption',
+  components: {
+    CheckmarkIcon,
+  },
   props: {
     option: {
       type: [Object] as PropType<NormalizedOption>,
