@@ -52,9 +52,6 @@ import CheckmarkIcon from '../../icons/CheckmarkIcon.vue';
 
 export default defineComponent({
   name: 'RichSelectOption',
-  components: {
-    CheckmarkIcon,
-  },
   props: {
     option: {
       type: [Object] as PropType<NormalizedOption>,
@@ -116,7 +113,10 @@ export default defineComponent({
     },
   },
   beforeCreate() {
-    (this.$ as unknown as any).components = { RichSelectOptionsList };
+    this.$options.components = {
+      RichSelectOptionsList,
+      CheckmarkIcon,
+    };
   },
   methods: {
     scrollIntoViewIfNeccesary(): void {
