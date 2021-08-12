@@ -1,24 +1,22 @@
 import { Data } from '@variantjs/core';
 import {
-  computed, ref, getCurrentInstance, Ref,
+  computed, ref, getCurrentInstance, Ref, watch, ComputedRef,
 } from 'vue';
-import { Truthy } from '../types';
 
-export default function useMulipleableVModel<P extends Data & {
-  multiple?: Truthy
-}, K extends keyof P>(
+export default function useMulipleableVModel<P extends Data, K extends keyof P, C extends ComputedRef<Data>>(
   props: P,
   key: K,
+  configuration: C,
 ): {
     localValue: Ref<P[K]>;
     clearValue: () => void
   } {
   const vm = getCurrentInstance();
 
-  const getDefaultValue = (): P[K] => {
-    const isMultiple = props.multiple !== null && props.multiple !== undefined && props.multiple !== false;
+  const isMultiple = computed<boolean>((): boolean => (configuration === undefined ? false : configuration.value.multiple !== null && configuration.value.multiple !== undefined && configuration.value.multiple !== false));
 
-    if (isMultiple) {
+  const getDefaultValue = (): P[K] => {
+    if (isMultiple.value) {
       return [] as P[K];
     }
 
@@ -35,10 +33,6 @@ export default function useMulipleableVModel<P extends Data & {
           return getDefaultValue();
         }
 
-        if (value === undefined) {
-          return getDefaultValue();
-        }
-
         return value;
       },
       set(value) {
@@ -49,6 +43,10 @@ export default function useMulipleableVModel<P extends Data & {
   const clearValue = () : void => {
     localValue.value = getDefaultValue();
   };
+
+  watch(isMultiple, () => {
+    clearValue();
+  });
 
   return {
     localValue,

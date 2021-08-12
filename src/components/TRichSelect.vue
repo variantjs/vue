@@ -186,7 +186,7 @@ export default defineComponent({
 
     const attributes = useAttributes<TRichSelectOptions>(configuration);
 
-    const { localValue, clearValue } = useMulipleableVModel(props, 'modelValue');
+    const { localValue, clearValue } = useMulipleableVModel(props, 'modelValue', configuration);
 
     const {
       normalizedOptions,
