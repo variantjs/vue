@@ -430,5 +430,9 @@ describe('RichSelectOption', () => {
     it('has the option  text', () => {
       expect(wrapper.vm.$el.textContent).toBe('Foo');
     });
+
+    it('shows the childrenOptions component', () => {
+      expect(wrapper.vm.$refs.childrenOptions).toBeDefined();
+    });
   });
 });
