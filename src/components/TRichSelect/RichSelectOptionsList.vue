@@ -5,7 +5,7 @@
   >
     <rich-select-option
       v-for="(option, index) in options"
-      :key="`${deep > 0 ? `${deep}-` : ''}${option.value}-${index}`"
+      :key="`${deep > 0 ? `${deep}-` : ''}${JSON.stringify(option.value)}-${index}`"
       :option="option"
       :deep="deep"
     />
@@ -26,7 +26,6 @@ export default defineComponent({
   components: {
     RichSelectOption,
   },
-
   props: {
     options: {
       type: Array as PropType<NormalizedOptions>,
