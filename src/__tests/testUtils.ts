@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Data } from '@variantjs/core';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { VueWrapper } from '@vue/test-utils';
@@ -20,10 +22,8 @@ export const getChildComponentNameByRef = (wrapper: VueWrapper<ComponentPublicIn
   return component?.$?.type.name;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const componentHasAttributeWithValue = (component: any, attributeName: string, attributeValue: any): boolean => component.$.attrs[attributeName] === attributeValue;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const componentHasAttributeWithInlineHandlerAndParameter = (component: any, attributeName: string, parameterName: any): boolean => {
   const handler = component.$.attrs[attributeName];
   if (typeof handler !== 'function') {

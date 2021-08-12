@@ -43,7 +43,12 @@ export default defineComponent({
     });
 
     return {
-      shown, search, keydownUpHandler, keydownDownHandler, keydownEnterHandler, keydownEscHandler,
+      shown,
+      search,
+      keydownUpHandler,
+      keydownDownHandler,
+      keydownEnterHandler,
+      keydownEscHandler,
     };
   },
 });
