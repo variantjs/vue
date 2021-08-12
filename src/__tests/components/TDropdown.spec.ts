@@ -841,6 +841,18 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(true);
   });
 
+  it('has a focus method that focus the trigger', async () => {
+    const wrapper = mount(TDropdown);
+    const { trigger } = wrapper.vm.$refs;
+
+    const focusMock = jest.fn();
+    trigger.focus = focusMock;
+
+    wrapper.vm.focus();
+
+    expect(focusMock).toHaveBeenCalled();
+  });
+
   it('emits native button events', () => {
     const onClick = jest.fn();
     const onBlur = jest.fn();
