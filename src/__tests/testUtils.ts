@@ -25,11 +25,6 @@ export const getChildComponentNameByRef = (wrapper: VueWrapper<ComponentPublicIn
 export const componentHasAttributeWithValue = (component: any, attributeName: string, attributeValue: any): boolean => component.$.attrs[attributeName] === attributeValue;
 
 export const componentHasAttributeWithInlineHandlerAndParameter = (component: any, attributeName: string, parameterName: any): boolean => {
-  const handler = component.$.attrs[attributeName];
-  if (typeof handler !== 'function') {
-    return false;
-  }
-
   const functionAsString: string = component.$.attrs[attributeName].toString();
   return functionAsString.includes(parameterName);
 };
