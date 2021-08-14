@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { shallowMount } from '@vue/test-utils';
-import TInput from '@/components/TInput.vue';
 import { TInputConfig } from '@variantjs/core';
+import TInput from '@/components/TInput.vue';
 
 describe('TInput.vue', () => {
   it('renders the input', () => {

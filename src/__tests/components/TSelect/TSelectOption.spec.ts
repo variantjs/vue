@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { mount, shallowMount } from '@vue/test-utils';
-import TSelectOption from '@/components/TSelect/TSelectOption.vue';
 import { NormalizedOption } from '@variantjs/core';
+import TSelectOption from '@/components/TSelect/TSelectOption.vue';
 
 describe('TSelectOption.vue', () => {
   it('renders the option', () => {

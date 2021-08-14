@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { shallowMount } from '@vue/test-utils';
-import TTextarea from '@/components/TTextarea.vue';
 import { TTextareaConfig } from '@variantjs/core';
+import TTextarea from '@/components/TTextarea.vue';
 
 describe('TTextarea.vue', () => {
   it('renders the textarea', () => {

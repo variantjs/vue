@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { shallowMount } from '@vue/test-utils';
-import TCheckbox from '@/components/TCheckbox.vue';
 import { TCheckboxConfig } from '@variantjs/core';
+import TCheckbox from '@/components/TCheckbox.vue';
 
 describe('TCheckbox.vue', () => {
   it('renders the input', () => {
