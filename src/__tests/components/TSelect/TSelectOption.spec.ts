@@ -67,7 +67,7 @@ describe('TSelectOption.vue', () => {
         option,
       },
     });
-    expect(wrapper.html()).toBe('<option value="hello" disabled="">Hello World</option>');
+    expect(wrapper.html()).toBe('<option disabled="" value="hello">Hello World</option>');
   });
 
   it('disables the option with a `disabled` string', () => {
@@ -82,6 +82,6 @@ describe('TSelectOption.vue', () => {
       },
     });
 
-    expect(wrapper.html()).toBe('<option value="hello" disabled="">Hello World</option>');
+    expect(wrapper.html()).toBe('<option disabled="" value="hello">Hello World</option>');
   });
 });
