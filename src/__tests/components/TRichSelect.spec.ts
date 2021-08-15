@@ -752,9 +752,9 @@ describe('TRichSelect.vue', () => {
           text: 1,
           raw: 1,
         };
-        const getActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'getActiveOption').mockReturnValue(incomingActiveOption);
+        const initActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'initActiveOption').mockReturnValue(incomingActiveOption);
         wrapper.vm.beforeShowHandler();
-        expect(getActiveOptionSpy).toHaveBeenCalled();
+        expect(initActiveOptionSpy).toHaveBeenCalled();
         expect(wrapper.vm.activeOption).toEqual(incomingActiveOption);
         expect(wrapper.emitted()).toHaveProperty('before-show');
       });

@@ -202,7 +202,7 @@ export default defineComponent({
       activeOption,
       optionIsActive,
       setActiveOption,
-      getActiveOption,
+      initActiveOption,
       setNextOptionActive,
       setPrevOptionActive,
     } = useActivableOption(flattenedOptions, localValue);
@@ -366,7 +366,7 @@ export default defineComponent({
       keydownEscHandler,
       focusDropdownTrigger,
       optionIsSelected,
-      getActiveOption,
+      initActiveOption,
       selectOption,
       selectOptionFromActiveOption,
       clearValue,
@@ -435,7 +435,7 @@ export default defineComponent({
     beforeShowHandler(): void {
       this.$emit('before-show');
 
-      this.activeOption = this.getActiveOption();
+      this.activeOption = this.initActiveOption();
     },
     mousedownHandler(e: MouseEvent): void {
       this.$emit('mousedown', e);

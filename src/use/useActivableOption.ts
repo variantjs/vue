@@ -8,17 +8,17 @@ export default function useActivableOption(
   localValue: Ref,
 ): {
     activeOption: Ref<NormalizedOption | null>,
-    getActiveOption: () => NormalizedOption | null,
+    initActiveOption: () => NormalizedOption | null,
     optionIsActive: (option: NormalizedOption) => boolean,
     setActiveOption: (option: NormalizedOption) => void,
     setNextOptionActive: () => void,
     setPrevOptionActive: () => void,
   } {
-  const getActiveOption = (): NormalizedOption | null => options.value.find((option: NormalizedOption) => isEqual(option.value, localValue.value))
+  const initActiveOption = (): NormalizedOption | null => options.value.find((option: NormalizedOption) => isEqual(option.value, localValue.value))
       || (options.value.length > 0 ? options.value[0] : null)
       || null;
 
-  const activeOption = ref<NormalizedOption | null>(getActiveOption());
+  const activeOption = ref<NormalizedOption | null>(initActiveOption());
 
   const activeOptionIndex = computed((): number => {
     if (activeOption.value === null) {
@@ -57,7 +57,7 @@ export default function useActivableOption(
 
   return {
     activeOption,
-    getActiveOption,
+    initActiveOption,
     optionIsActive,
     setActiveOption,
     setNextOptionActive,
