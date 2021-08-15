@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { mount, VueWrapper } from '@vue/test-utils';
-import TDropdown from '@/components/TDropdown.vue';
 import { TDropdownConfig, TDropdownPopperDefaultOptions } from '@variantjs/core';
 import { h } from 'vue';
+import TDropdown from '@/components/TDropdown.vue';
 import { scopedParamsAsString, parseScopedParams } from '../testUtils';
 
 const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<void> = (wrapper: VueWrapper<any>) => new Promise((resolve) => {
