@@ -36,7 +36,7 @@
         v-show="shown || !popperIsAdjusted"
         ref="dropdown"
         :class="configuration.classesList?.dropdown"
-        aria-hidden="!shown"
+        :aria-hidden="!shown"
         tabindex="-1"
         v-bind="dropdownAttributes"
         @blur="blurHandler"
