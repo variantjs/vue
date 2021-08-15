@@ -2,86 +2,150 @@ import useConfiguration from '../../use/useConfiguration';
 import { useSetup } from './useSetup';
 
 describe('useConfiguration', () => {
-  it('should keep the default configuration', () => {
-    useSetup(() => {
-      const data = useConfiguration({
-        attrib: 'value',
-        width: '10px',
-      });
-      expect(data.value).toEqual({
-        attrib: 'value',
-        width: '10px',
-      });
-    });
-  });
-
-  it('should merge the classes from the configuration', () => {
-    useSetup(() => {
-      const data = useConfiguration({
-        classes: 'text-red-500',
-        fixedClasses: 'border-2',
-      });
-      expect(data.value).toEqual({
-        class: 'text-red-500 border-2',
+  describe('configuration', () => {
+    it('should keep the default configuration', () => {
+      useSetup(() => {
+        const { configuration } = useConfiguration({
+          attrib: 'value',
+          width: '10px',
+        });
+        expect(configuration.value).toEqual({
+          attrib: 'value',
+          width: '10px',
+        });
       });
     });
-  });
 
-  it('should merge the classes from the configuration variant', () => {
-    useSetup(() => {
-      const data = useConfiguration({
-        classes: 'text-blue-500',
-        fixedClasses: 'border',
-        variants: {
-          error: {
-            classes: 'text-red-500',
-            fixedClasses: 'border-2',
+    it('should merge the classes from the configuration', () => {
+      useSetup(() => {
+        const { configuration } = useConfiguration({
+          classes: 'text-red-500',
+          fixedClasses: 'border-2',
+        });
+        expect(configuration.value).toEqual({
+          class: 'text-red-500 border-2',
+        });
+      });
+    });
+
+    it('should merge the classes from the configuration variant', () => {
+      useSetup(() => {
+        const { configuration } = useConfiguration({
+          classes: 'text-blue-500',
+          fixedClasses: 'border',
+          variants: {
+            error: {
+              classes: 'text-red-500',
+              fixedClasses: 'border-2',
+            },
           },
+          variant: 'error',
+        });
+        expect(configuration.value).toEqual({
+          class: 'text-red-500 border-2',
+        });
+      });
+    });
+
+    it('should merge the global configuration', () => {
+      const globalConfiguration = {
+        TInput: {
+          placeholder: 'Hello world',
         },
-        variant: 'error',
-      });
-      expect(data.value).toEqual({
-        class: 'text-red-500 border-2',
-      });
+      };
+      useSetup(() => {
+        const { configuration } = useConfiguration({
+          maxlength: '2',
+        });
+
+        expect(configuration.value).toEqual({
+          maxlength: '2',
+          placeholder: 'Hello world',
+        });
+      }, globalConfiguration);
+    });
+
+    it('should use the default values from the props if not overriden', () => {
+      const globalConfiguration = {};
+      const attrs = {};
+      const props = {
+        placeholder: {
+          type: String,
+          default: 'Hello world',
+        },
+      };
+      useSetup(() => {
+        const { configuration } = useConfiguration({
+          maxlength: '2',
+        });
+
+        expect(configuration.value).toEqual({
+          maxlength: '2',
+          placeholder: 'Hello world',
+        });
+      }, globalConfiguration, attrs, props);
     });
   });
 
-  it('should merge the global configuration', () => {
-    const configuration = {
-      TInput: {
-        placeholder: 'Hello world',
-      },
-    };
-    useSetup(() => {
-      const data = useConfiguration({
-        maxlength: '2',
-      });
+  describe('attributes', () => {
+    it('contains the configuration the attributes', () => {
+      useSetup(() => {
+        const props = {
+          placeholder: 'Hello World',
+        };
 
-      expect(data.value).toEqual({
-        maxlength: '2',
-        placeholder: 'Hello world',
-      });
-    }, configuration);
-  });
+        const { attributes } = useConfiguration(props);
 
-  it('should use the default values from the props if not overriden', () => {
-    const configuration = {};
-    const attrs = {};
-    const props = {
-      placeholder: {
-        type: String,
-        default: 'Hello world',
-      },
-    };
-    useSetup(() => {
-      const data = useConfiguration({
-        maxlength: '2',
-      });
+        expect(attributes.value).toEqual({
+          placeholder: 'Hello World',
+        });
+      }, {}, {});
+    });
 
-      expect(data.value).toEqual({
-        maxlength: '2',
-        placeholder: 'Hello world',
+    it('contains the class + classes + fixedClasses', () => {
+      useSetup(() => {
+        const props = {
+          fixedClasses: 'text-red-500',
+          classes: 'border-red-500',
+          class: 'font-semibold',
+        };
+
+        const { attributes } = useConfiguration(props);
+
+        expect(attributes.value).toEqual({
+          class: 'font-semibold border-red-500 text-red-500',
+        });
+      }, {}, {}, ['fixedClasses', 'classes']);
+    });
+
+    it('adds the configurations attributes', () => {
+      useSetup(() => {
+        const props = {
+          type: 'button',
+          'data-id': 'something',
+        };
+
+        const { attributes } = useConfiguration(props);
+
+        expect(attributes.value).toEqual({
+          type: 'button',
+          'data-id': 'something',
+        });
       });
-    }, configuration, attrs, props);
+    });
+
+    it('doesnt add the configurations attributes defined as a props', () => {
+      useSetup(() => {
+        const props = {
+          type: 'button',
+          'data-id': 'something',
+        };
+        const { attributes } = useConfiguration(props);
+
+        expect(attributes.value).toEqual({
+          'data-id': 'something',
+        });
+      }, {}, {}, ['type']);
+    });
   });
 });

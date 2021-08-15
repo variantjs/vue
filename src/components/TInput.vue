@@ -23,9 +23,8 @@ export default defineComponent({
   },
   setup(props) {
     const localValue = useVModel(props, 'modelValue');
-    const configuration = useConfiguration<TInputOptions>(TInputConfig);
-    const attributes = useAttributes<TInputOptions>(configuration);
-
+    const { configuration, attributes } = useConfiguration<TInputOptions>(TInputConfig);
+    
     return { localValue, configuration, attributes };
   },
 });

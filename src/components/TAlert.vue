@@ -112,8 +112,7 @@ export default defineComponent({
     'update:show': (show: boolean) => typeof show === 'boolean',
   },
   setup() {
-    const configuration = useConfigurationWithClassesList<TAlertOptions>(TAlertConfig, TAlertClassesKeys);
-    const attributes = useAttributes<TAlertOptions>(configuration);
+    const { configuration, attributes } = useConfigurationWithClassesList<TAlertOptions>(TAlertConfig, TAlertClassesKeys);
 
     return { configuration, attributes };
   },

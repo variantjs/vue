@@ -182,9 +182,7 @@ export default defineComponent({
     // loadingMoreResultsText?: string,
   },
   setup(props, { emit }) {
-    const configuration = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
-
-    const attributes = useAttributes<TRichSelectOptions>(configuration);
+    const { configuration, attributes } = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
 
     const { localValue, clearValue } = useMulipleableVModel(props, 'modelValue', configuration);
 

@@ -1,7 +1,9 @@
 import {
   computed, inject, camelize, getCurrentInstance, ComponentInternalInstance, ComputedRef,
 } from 'vue';
-import { Data, get, parseVariant } from '@variantjs/core';
+import {
+  Data, get, isPrimitive, parseVariant, pick,
+} from '@variantjs/core';
 import { VariantJSConfiguration } from '../types';
 
 export const extractDefinedProps = (vm: ComponentInternalInstance): string[] => {
@@ -14,14 +16,17 @@ export const extractDefinedProps = (vm: ComponentInternalInstance): string[] => 
   return definedProps;
 };
 
-export default function useConfiguration<ComponentOptions extends Data>(defaultConfiguration: ComponentOptions): ComputedRef<ComponentOptions> {
+export default function useConfiguration<ComponentOptions extends Data>(defaultConfiguration: ComponentOptions): {
+  configuration: ComputedRef<ComponentOptions>,
+  attributes: ComputedRef<Data>
+} {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const vm = getCurrentInstance()!;
 
   const variantGlobalConfiguration = inject<VariantJSConfiguration>('configuration', {});
   const componentGlobalConfiguration = get<VariantJSConfiguration, ComponentOptions>(variantGlobalConfiguration, vm?.type.name as keyof VariantJSConfiguration, {});
 
-  return computed(() => {
+  const configuration: ComputedRef<ComponentOptions> = computed(() => {
     const propsValues: Data = {};
 
     extractDefinedProps(vm).forEach((attributeName) => {
@@ -36,4 +41,15 @@ export default function useConfiguration<ComponentOptions extends Data>(defaultC
       ...result,
     };
   });
+
+  const attributes: ComputedRef<Data> = computed<Data>(():Data => {
+    const availableProps = Object.keys(vm.props);
+
+    return pick(configuration.value, (value, key) => isPrimitive(value) && !availableProps.includes(String(key)));
+  });
+
+  return {
+    configuration,
+    attributes,
+  };
 }

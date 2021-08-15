@@ -176,8 +176,7 @@ export default defineComponent({
     'before-hide': () => true,
   },
   setup() {
-    const configuration = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, TDropdownClassesKeys);
-    const attributes = useAttributes<TDropdownOptions>(configuration);
+    const { configuration, attributes } = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, TDropdownClassesKeys);
 
     return { configuration, attributes };
   },

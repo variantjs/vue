@@ -81,8 +81,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const configuration = useConfigurationWithClassesList<TInputGroupOptions>(TInputGroupConfig, TInputGroupClassesKeys);
-    const attributes = useAttributes<TInputGroupOptions>(configuration);
+    const { configuration, attributes } = useConfigurationWithClassesList<TInputGroupOptions>(TInputGroupConfig, TInputGroupClassesKeys);
 
     return { configuration, attributes };
   },

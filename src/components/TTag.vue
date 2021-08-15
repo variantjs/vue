@@ -31,8 +31,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const configuration = useConfiguration<TTagOptions>(TTagConfig);
-    const attributes = useAttributes<TTagOptions>(configuration);
+    const { configuration, attributes } = useConfiguration<TTagOptions>(TTagConfig);
 
     return { configuration, attributes };
   },

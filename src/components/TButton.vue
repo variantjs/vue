@@ -70,8 +70,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const configuration = useConfiguration<TButtonOptions>(TButtonConfig);
-    const attributes = useAttributes<TButtonOptions>(configuration);
+    const { configuration, attributes } = useConfiguration<TButtonOptions>(TButtonConfig);
 
     return { configuration, attributes };
   },

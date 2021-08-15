@@ -72,8 +72,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const configuration = useConfigurationWithClassesList<TCardOptions>(TCardConfig, TCardClassesKeys);
-    const attributes = useAttributes<TCardOptions>(configuration);
+    const { configuration, attributes } = useConfigurationWithClassesList<TCardOptions>(TCardConfig, TCardClassesKeys);
 
     return { configuration, attributes };
   },
