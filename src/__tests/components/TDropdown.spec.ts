@@ -7,7 +7,7 @@ import { h } from 'vue';
 import TDropdown from '@/components/TDropdown.vue';
 import { scopedParamsAsString, parseScopedParams } from '../testUtils';
 
-const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<void> = (wrapper: VueWrapper<any>) => new Promise((resolve) => {
+const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<HTMLDivElement> = (wrapper: VueWrapper<any>) => new Promise((resolve) => {
   // 1. Until component is mounted
   wrapper.vm.$nextTick().then(() => {
     // 2. Popper is adjusted
@@ -15,7 +15,7 @@ const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<void> = (wrapper: V
       // 4. dom update for running popper
       wrapper.vm.$nextTick().then(() => {
         // 4. dom update after popperIsAdjusted is set to `true`
-        wrapper.vm.$nextTick().then(() => resolve());
+        wrapper.vm.$nextTick().then(() => resolve(wrapper.vm.$refs.dropdown));
       });
     });
   });
@@ -149,9 +149,8 @@ describe('TDropdown.vue', () => {
     });
 
     const trigger = wrapper.get('button');
-    const { dropdown } = wrapper.vm.$refs;
 
-    await dropdownIsReady(wrapper);
+    const dropdown = await dropdownIsReady(wrapper);
 
     expect(dropdown.style.display).toBe('none');
 
@@ -251,9 +250,8 @@ describe('TDropdown.vue', () => {
     });
 
     const trigger = wrapper.get('button');
-    const { dropdown } = wrapper.vm.$refs;
 
-    await dropdownIsReady(wrapper);
+    const dropdown = await dropdownIsReady(wrapper);
 
     expect(trigger.attributes().disabled).toBeDefined();
 
@@ -524,9 +522,7 @@ describe('TDropdown.vue', () => {
 
     const triggerButton = wrapper.get('button');
 
-    const { dropdown } = wrapper.vm.$refs;
-
-    await dropdownIsReady(wrapper);
+    const dropdown = await dropdownIsReady(wrapper);
 
     await triggerButton.trigger('blur', {
       relatedTarget: dropdown,
@@ -569,10 +565,9 @@ describe('TDropdown.vue', () => {
 
     const triggerButton = wrapper.get('button');
 
-    const { dropdown } = wrapper.vm.$refs;
-    const button = dropdown.querySelector('button');
+    const dropdown = await dropdownIsReady(wrapper);
 
-    await dropdownIsReady(wrapper);
+    const button = dropdown.querySelector('button');
 
     await triggerButton.trigger('blur', {
       relatedTarget: button,
@@ -650,9 +645,7 @@ describe('TDropdown.vue', () => {
       toggleOnFocus: false,
     });
 
-    const { dropdown } = wrapper.vm.$refs;
-
-    await dropdownIsReady(wrapper);
+    const dropdown = await dropdownIsReady(wrapper);
 
     const button = dropdown.querySelector('button') as HTMLButtonElement;
 
@@ -808,9 +801,7 @@ describe('TDropdown.vue', () => {
 
     const triggerButton = wrapper.get('button');
 
-    const { dropdown } = wrapper.vm.$refs;
-
-    await dropdownIsReady(wrapper);
+    const dropdown = await dropdownIsReady(wrapper);
 
     await triggerButton.trigger('mouseleave', {
       relatedTarget: dropdown,
@@ -830,9 +821,9 @@ describe('TDropdown.vue', () => {
 
     const triggerButton = wrapper.get('button');
 
-    const { trigger } = wrapper.vm.$refs;
-
     await dropdownIsReady(wrapper);
+
+    const { trigger } = wrapper.vm.$refs;
 
     await triggerButton.trigger('mouseleave', {
       relatedTarget: trigger,
