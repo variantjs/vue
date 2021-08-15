@@ -23,7 +23,7 @@ import { NormalizedOption } from '@variantjs/core';
 import TextPlaceholder from '../misc/TextPlaceholder.vue';
 import SelectorIcon from '../../icons/SelectorIcon.vue';
 import { TRichSelectOptions } from '../../types';
-import { useProvidesConfiguration } from '../../use';
+import { useInjectsConfiguration } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectTrigger',
@@ -32,7 +32,7 @@ export default defineComponent({
     SelectorIcon,
   },
   setup() {
-    const configuration = useProvidesConfiguration<TRichSelectOptions>();
+    const configuration = useInjectsConfiguration<TRichSelectOptions>();
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const selectedOption = inject<ComputedRef<NormalizedOption | undefined>>('selectedOption')!;

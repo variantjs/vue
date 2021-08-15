@@ -10,7 +10,7 @@
 <script lang="ts">
 import { CSSClass } from '@variantjs/core';
 import { computed, defineComponent } from 'vue';
-import useProvidesClassesList from '../../use/useProvidesClassesList';
+import useProvidesClassesList from '../../use/useInjectsClassesList';
 
 export default defineComponent({
   name: 'TextPlaceholder',

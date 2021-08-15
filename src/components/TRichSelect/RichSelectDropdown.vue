@@ -19,7 +19,7 @@ import { ComputedRef, defineComponent, inject } from 'vue';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import RichSelectSearchInput from './RichSelectSearchInput.vue';
 import { TRichSelectOptions } from '../../types';
-import { useProvidesConfiguration } from '../../use';
+import { useInjectsConfiguration } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectDropdown',
@@ -28,7 +28,7 @@ export default defineComponent({
     RichSelectSearchInput,
   },
   setup() {
-    const configuration = useProvidesConfiguration<TRichSelectOptions>();
+    const configuration = useInjectsConfiguration<TRichSelectOptions>();
     const options = inject<ComputedRef<TRichSelectOptions>>('options');
 
     return {

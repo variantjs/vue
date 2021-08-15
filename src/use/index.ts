@@ -5,5 +5,5 @@ export { default as useMultioptions } from './useMultioptions';
 export { default as useActivableOption } from './useActivableOption';
 export { default as useSelectableOption } from './useSelectableOption';
 export { default as useMulipleableVModel } from './useMulipleableVModel';
-export { default as useProvidesConfiguration } from './useProvidesConfiguration';
-export { default as useProvidesClassesList } from './useProvidesClassesList';
+export { default as useInjectsConfiguration } from './useInjectsConfiguration';
+export { default as useInjectsClassesList } from './useInjectsClassesList';
