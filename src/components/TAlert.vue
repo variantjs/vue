@@ -59,7 +59,7 @@
 import { TAlertConfig, TAlertClassesKeys, TAlertClassesValidKeys } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
-import { useAttributes, useConfigurationWithClassesList } from '../use';
+import { useConfigurationWithClassesList } from '../use';
 import { IconProp, TAlertOptions } from '../types';
 import CustomIcon from '../icons/CustomIcon.vue';
 import CloseIcon from '../icons/CloseIcon.vue';

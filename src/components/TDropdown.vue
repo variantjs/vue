@@ -74,7 +74,7 @@ import {
 } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
-import { useAttributes, useConfigurationWithClassesList } from '../use';
+import { useConfigurationWithClassesList } from '../use';
 import { TDropdownOptions } from '../types';
 import Transitionable from './misc/Transitionable.vue';
 

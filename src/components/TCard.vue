@@ -46,7 +46,7 @@
 import { TCardConfig, TCardClassesKeys, TCardClassesValidKeys } from '@variantjs/core';
 import { defineComponent } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
-import { useAttributes, useConfigurationWithClassesList } from '../use';
+import { useConfigurationWithClassesList } from '../use';
 import { TCardOptions } from '../types';
 
 // @vue/component

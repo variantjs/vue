@@ -71,7 +71,6 @@ import {
 import { Options, Placement } from '@popperjs/core';
 import {
   useActivableOption,
-  useAttributes,
   useConfigurationWithClassesList,
   useMulipleableVModel,
   useMultioptions,

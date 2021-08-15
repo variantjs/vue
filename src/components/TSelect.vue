@@ -18,7 +18,7 @@ import { defineComponent, PropType } from 'vue';
 import { getVariantProps } from '../utils/getVariantProps';
 import { Truthy, TSelectOptions, TSelectValue } from '../types';
 import {
-  useMulipleableVModel, useConfiguration, useAttributes, useMultioptions,
+  useMulipleableVModel, useConfiguration, useMultioptions,
 } from '../use';
 import TSelectOption from './TSelect/TSelectOption.vue';
 
