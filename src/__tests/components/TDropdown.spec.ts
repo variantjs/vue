@@ -531,6 +531,34 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.shown).toBe(true);
   });
 
+  it('adds and remove blur listener to focusable elements inside the dropdown when shown', async () => {
+    const addEventListenerMock = jest.fn();
+    const removeEventListenerMock = jest.fn();
+    window.HTMLInputElement.prototype.addEventListener = addEventListenerMock;
+    window.HTMLInputElement.prototype.removeEventListener = removeEventListenerMock;
+    const wrapper = mount(TDropdown, {
+      slots: {
+        default: h('input'),
+      },
+    });
+
+    await dropdownIsReady(wrapper);
+
+    wrapper.vm.doShow();
+
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+
+    expect(addEventListenerMock).toHaveBeenCalled();
+
+    wrapper.vm.doHide();
+
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+
+    expect(removeEventListenerMock).toHaveBeenCalled();
+  });
+
   it('doesnt hides the dropdown if blur in the the trigger', async () => {
     const wrapper = mount(TDropdown, {
       props: {
