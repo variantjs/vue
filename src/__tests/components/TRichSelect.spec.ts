@@ -144,6 +144,12 @@ describe('TRichSelect.vue', () => {
     expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
   });
 
+  it('has default dropdownPopperOptions', () => {
+    const wrapper = shallowMount(TRichSelect);
+
+    expect(Object.keys(wrapper.vm.dropdownPopperOptions)).toEqual(['placement', 'modifiers', 'strategy', 'onFirstUpdate']);
+  });
+
   describe('provides the data needed on the child elements', () => {
     it('provides the configuration', () => {
       const wrapper = shallowMount(TRichSelect);
