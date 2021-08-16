@@ -20,8 +20,9 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
   const selectedOption = computed((): NormalizedOption | undefined => options.value.find((option) => isEqual(option.value, localValue.value)));
 
   const optionIsSelected = (option: NormalizedOption): boolean => {
-    if (configuration.value.multiple === true && Array.isArray(localValue.value)) {
-      return localValue.value.some((value) => isEqual(value, option.value));
+    if (configuration.value.multiple === true) {
+      return Array.isArray(localValue.value)
+        && localValue.value.some((value) => isEqual(value, option.value));
     }
 
     return isEqual(localValue.value, option.value);
@@ -32,8 +33,12 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
       return;
     }
 
-    if (Array.isArray(localValue.value)) {
-      localValue.value = addToArray(localValue.value, option.value);
+    if (configuration.value.multiple === true) {
+      if (Array.isArray(localValue.value)) {
+        localValue.value = addToArray(localValue.value, option.value);
+      } else {
+        localValue.value = [option.value];
+      }
     } else {
       localValue.value = option.value;
     }
@@ -41,13 +46,17 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
 
   const toggleOption = (option: NormalizedOption): void => {
     if (optionIsSelected(option)) {
-      if (Array.isArray(localValue.value)) {
+      if (configuration.value.multiple === true) {
         localValue.value = substractFromArray(localValue.value, option.value);
       } else {
         localValue.value = undefined;
       }
-    } else if (Array.isArray(localValue.value)) {
-      localValue.value = addToArray(localValue.value, option.value);
+    } else if (configuration.value.multiple === true) {
+      if (Array.isArray(localValue.value)) {
+        localValue.value = addToArray(localValue.value, option.value);
+      } else {
+        localValue.value = [option.value];
+      }
     } else {
       localValue.value = option.value;
     }
