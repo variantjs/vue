@@ -1,9 +1,9 @@
-export { default as useVModel } from './useVModel';
+export { default as useActivableOption } from './useActivableOption';
 export { default as useConfiguration } from './useConfiguration';
 export { default as useConfigurationWithClassesList } from './useConfigurationWithClassesList';
-export { default as useMultioptions } from './useMultioptions';
-export { default as useActivableOption } from './useActivableOption';
-export { default as useSelectableOption } from './useSelectableOption';
-export { default as useMulipleableVModel } from './useMulipleableVModel';
-export { default as useInjectsConfiguration } from './useInjectsConfiguration';
 export { default as useInjectsClassesList } from './useInjectsClassesList';
+export { default as useInjectsConfiguration } from './useInjectsConfiguration';
+export { default as useMulipleableVModel } from './useMulipleableVModel';
+export { default as useMultioptions } from './useMultioptions';
+export { default as useSelectableOption } from './useSelectableOption';
+export { default as useVModel } from './useVModel';
