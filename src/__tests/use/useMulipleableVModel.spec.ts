@@ -43,7 +43,7 @@ describe('useMulipleableVModel.spec', () => {
     });
   });
 
-  it('should return undefined multiple is `false`', () => {
+  it('should return undefined if multiple is `false`', () => {
     const configuration = computed(() => ({ multiple: false }));
     useSetup(() => {
       const { localValue } = useMulipleableVModel({
@@ -53,7 +53,16 @@ describe('useMulipleableVModel.spec', () => {
     });
   });
 
-  it('should return the default value when no model defined', () => {
+  it('should return undefined if no configuration', () => {
+    useSetup(() => {
+      const { localValue } = useMulipleableVModel({
+        modelValue: undefined,
+      }, 'modelValue', undefined);
+      expect(localValue.value).toBeUndefined();
+    });
+  });
+
+  it('should return the default value when model changes to an undefined value', () => {
     const configuration = computed(() => ({}));
 
     useSetup(() => {

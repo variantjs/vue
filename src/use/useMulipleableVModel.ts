@@ -6,7 +6,7 @@ import {
 export default function useMulipleableVModel<P extends Data, K extends keyof P, C extends ComputedRef<Data>>(
   props: P,
   key: K,
-  configuration: C,
+  configuration?: C,
 ): {
     localValue: Ref<P[K]>;
     clearValue: () => void
