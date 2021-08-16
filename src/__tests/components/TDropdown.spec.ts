@@ -1006,6 +1006,32 @@ describe('TDropdown.vue', () => {
     jest.useRealTimers();
   });
 
+  it('invalidates invalid dropdown placements', () => {
+    const { validator } = TDropdown.props.placement;
+    expect(validator('invalid')).toBe(false);
+  });
+
+  it.each([
+    'auto',
+    'auto-start',
+    'auto-end',
+    'top',
+    'top-start',
+    'top-end',
+    'bottom',
+    'bottom-start',
+    'bottom-end',
+    'right',
+    'right-start',
+    'right-end',
+    'left',
+    'left-start',
+    'left-end',
+  ])('accept valid dropdown placements', (placement) => {
+    const { validator } = TDropdown.props.placement;
+    expect(validator(placement)).toBe(true);
+  });
+
   it('accepts undefined as the placement', async () => {
     const wrapper = mount(TDropdown, {
       props: {
