@@ -23,22 +23,17 @@ export default function useMulipleableVModel<P extends Data, K extends keyof P, 
     return undefined as P[K];
   };
 
-  const localValue = props[key] === undefined
-    ? ref(getDefaultValue()) as Ref<P[K]>
-    : computed<P[K]>({
-      get() {
-        const value = props[key];
+  const initialValue = props[key];
 
-        if (value === undefined) {
-          return getDefaultValue();
-        }
+  const localValue = ref(initialValue === undefined ? getDefaultValue() : initialValue) as Ref<P[K]>;
 
-        return value;
-      },
-      set(value) {
-        vm?.emit(`update:${key}`, value);
-      },
-    });
+  watch(localValue, (value) => {
+    vm?.emit(`update:${key}`, value);
+  });
+
+  watch(() => props[key], (value) => {
+    localValue.value = value;
+  });
 
   const clearValue = () : void => {
     localValue.value = getDefaultValue();

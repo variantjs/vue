@@ -13,6 +13,11 @@
         :options="options"
       />
 
+      <t-rich-select
+        placeholder="select an option"
+        :options="options"
+      />
+
       <div>
         <label
           v-for="option in options"

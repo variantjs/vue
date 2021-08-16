@@ -1,18 +1,23 @@
 import { Data } from '@variantjs/core';
-import { computed, getCurrentInstance, WritableComputedRef } from 'vue';
+import {
+  getCurrentInstance, Ref, watch, ref,
+} from 'vue';
 
 export default function useVModel<P extends Data, K extends keyof P>(
   props: P,
   key: K,
-): WritableComputedRef<P[K]> {
+): Ref<P[K]> {
   const vm = getCurrentInstance();
 
-  return computed<P[K]>({
-    get(): P[K] {
-      return props[key];
-    },
-    set(value): void {
-      vm?.emit(`update:${key}`, value);
-    },
+  const localValue = ref(props[key]) as Ref<P[K]>;
+
+  watch(localValue, (value) => {
+    vm?.emit(`update:${key}`, value);
   });
+
+  watch(() => props[key], (value) => {
+    localValue.value = value;
+  });
+
+  return localValue;
 }
