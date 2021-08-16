@@ -10,7 +10,7 @@
 <script lang="ts">
 import { CSSClass } from '@variantjs/core';
 import { computed, defineComponent } from 'vue';
-import useProvidesClassesList from '../../use/useInjectsClassesList';
+import { useInjectsClassesList } from '../../use';
 
 export default defineComponent({
   name: 'TextPlaceholder',
@@ -25,7 +25,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const classesList = useProvidesClassesList();
+    const classesList = useInjectsClassesList();
 
     const className = computed<CSSClass>(() => (classesList.value === undefined ? undefined : classesList.value[props.classProperty]));
 

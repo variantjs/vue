@@ -372,6 +372,9 @@ export default defineComponent({
     };
   },
   computed: {
+    /**
+     * @TODO
+     */
     dropdownClasses(): CSSRawClassesList {
       const {
         enterActiveClass,
@@ -380,9 +383,10 @@ export default defineComponent({
         leaveActiveClass,
         leaveFromClass,
         leaveToClass,
-        selectButton: trigger,
-        dropdown,
-      } = this.configuration.classesList || {};
+        // selectButton: trigger,
+        // dropdown,
+      // } = this.configuration.classesList || {};
+      } = this.configuration.classesList!;
 
       return {
         // trigger,
