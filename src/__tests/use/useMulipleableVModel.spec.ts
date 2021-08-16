@@ -53,13 +53,25 @@ describe('useMulipleableVModel.spec', () => {
     });
   });
 
-  it('should return the default value', () => {
-    const configuration = computed(() => ({ multiple: true }));
+  it('should return the default value when no model defined', () => {
+    const configuration = computed(() => ({}));
+
     useSetup(() => {
       const { localValue } = useMulipleableVModel({
-        modelValue: 'default',
+        modelValue: undefined,
       }, 'modelValue', configuration);
-      expect(localValue.value).toBe('default');
+      expect(localValue.value).toBeUndefined();
+    });
+  });
+
+  it('should return the default value when no model defined when using multiple', () => {
+    const configuration = computed(() => ({ multiple: true }));
+
+    useSetup(() => {
+      const { localValue } = useMulipleableVModel({
+        modelValue: undefined,
+      }, 'modelValue', configuration);
+      expect(localValue.value).toEqual([]);
     });
   });
 });
