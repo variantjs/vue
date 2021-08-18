@@ -1,6 +1,7 @@
 export { default as useActivableOption } from './useActivableOption';
 export { default as useConfiguration } from './useConfiguration';
 export { default as useConfigurationWithClassesList } from './useConfigurationWithClassesList';
+export { default as useFetchsOptions } from './useFetchsOptions';
 export { default as useInjectsClassesList } from './useInjectsClassesList';
 export { default as useInjectsConfiguration } from './useInjectsConfiguration';
 export { default as useMulipleableVModel } from './useMulipleableVModel';

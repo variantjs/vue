@@ -2,6 +2,7 @@
   <div class="inline-block w-full p-2 placeholder-gray-400">
     <input
       ref="search"
+      v-model="searchQuery"
       data-rich-select-search="true"
       placeholder="Search..."
       class="inline-block w-full px-3 py-2 text-sm border border-gray-300 rounded bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
@@ -15,7 +16,7 @@
 
 <script lang="ts">
 import {
-  ComputedRef, defineComponent, inject, nextTick, watch, ref,
+  ComputedRef, defineComponent, inject, nextTick, watch, ref, Ref,
 } from 'vue';
 
 export default defineComponent({
@@ -25,6 +26,8 @@ export default defineComponent({
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const shown = inject<ComputedRef<boolean>>('shown')!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const searchQuery = inject<Ref<string | undefined>>('searchQuery')!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const keydownDownHandler = inject<(e: KeyboardEvent) => void>('keydownDownHandler');
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -45,6 +48,7 @@ export default defineComponent({
     return {
       shown,
       search,
+      searchQuery,
       keydownUpHandler,
       keydownDownHandler,
       keydownEnterHandler,

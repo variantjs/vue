@@ -4,11 +4,7 @@ import {
 import { HTMLAttributes } from 'vue';
 import { Placement, Options } from '@popperjs/core';
 import { TSelectValue } from './t-select';
-
-export type AjaxResults = Promise<{
-  results: InputOptions;
-  hasMorePages?: boolean;
-}>;
+import { FetchOptionsFn } from '../misc';
 
 export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   modelValue?: TSelectValue,
@@ -17,7 +13,7 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   valueAttribute?: string,
   textAttribute?: string,
   delay?: number,
-  fetchOptions?: (query: string, nextPage?: number) => AjaxResults,
+  fetchOptions?: FetchOptionsFn,
   minimumInputLength?: number,
   minimumInputLengthText?: ((minimumInputLength: number, query?: string) => string) | string,
   minimumResultsForSearch?: number,

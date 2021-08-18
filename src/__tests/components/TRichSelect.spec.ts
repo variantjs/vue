@@ -1,4 +1,4 @@
-import { NormalizedOption, normalizeOptions } from '@variantjs/core';
+import { InputOptions, NormalizedOption, normalizeOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
 import { componentHasAttributeWithInlineHandlerAndParameter, componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
@@ -1214,6 +1214,27 @@ describe('TRichSelect.vue', () => {
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
       });
+    });
+  });
+
+  describe('fetch options', () => {
+    const options = {
+      a: 'A',
+      b: 'Option B',
+      c: 'Option C',
+    };
+    const fetchOptions = (query, nextPage): Promise<InputOptions> => new Promise((resolve) => {
+      resolve(options);
+    });
+
+    describe('when using single values', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          fetchOptions,
+        },
+      });
+
+      // wrapper
     });
   });
 });

@@ -5,6 +5,8 @@
       ref="searchInput"
     />
 
+    <rich-select-state ref="state" />
+
     <rich-select-options-list
       ref="optionsList"
       :options="options"
@@ -18,6 +20,7 @@
 import { ComputedRef, defineComponent, inject } from 'vue';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import RichSelectSearchInput from './RichSelectSearchInput.vue';
+import RichSelectState from './RichSelectState.vue';
 import { TRichSelectOptions } from '../../types';
 import { useInjectsConfiguration } from '../../use';
 
@@ -26,6 +29,7 @@ export default defineComponent({
   components: {
     RichSelectOptionsList,
     RichSelectSearchInput,
+    RichSelectState,
   },
   setup() {
     const configuration = useInjectsConfiguration<TRichSelectOptions>();

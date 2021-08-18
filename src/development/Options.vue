@@ -18,6 +18,11 @@
         :options="options"
       />
 
+      <t-rich-select
+        placeholder="select an option"
+        :fetch-options="fetchOptions"
+      />
+
       <div>
         <label
           v-for="option in options"
@@ -58,6 +63,17 @@ export default defineComponent({
   },
   data() {
     return {
+      fetchOptions: () => new Promise((resolve) => {
+        const options = {
+          a: 'A',
+          b: 'Option B',
+          c: 'Option C',
+        };
+
+        setTimeout(() => {
+          resolve(options);
+        }, 3000);
+      }),
       selected: null,
       newOption: '',
       selectedUser: null,

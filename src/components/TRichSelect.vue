@@ -54,6 +54,7 @@ import {
   PropType,
   provide,
   ref,
+  computed,
 } from 'vue';
 import {
   InputOptions,
@@ -72,13 +73,14 @@ import { Options, Placement } from '@popperjs/core';
 import {
   useActivableOption,
   useConfigurationWithClassesList,
+  useFetchsOptions,
   useMulipleableVModel,
   useMultioptions,
   useSelectableOption,
 } from '../use';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { sameWidthModifier } from '../utils/popper';
-import { TRichSelectOptions, TSelectValue } from '../types';
+import { FetchOptionsFn, TRichSelectOptions, TSelectValue } from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import RichSelectClearButton from './TRichSelect/RichSelectClearButton.vue';
@@ -148,7 +150,6 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-
     valueAttribute: {
       type: String,
       default: undefined,
@@ -169,12 +170,25 @@ export default defineComponent({
       type: [Number, String] as PropType<Measure | null>,
       default: 250,
     },
+    fetchOptions: {
+      type: Function as PropType<FetchOptionsFn>,
+      default: undefined,
+    },
+    delay: {
+      type: Number,
+      default: 250,
+    },
+    minimumInputLength: {
+      type: Number,
+      default: 3,
+    },
 
-    // delay?: number,
-    // fetchOptions?: (query: string, nextPage?: number) => AjaxResults,
-    // minimumInputLength?: number,
+    minimumResultsForSearch: {
+      type: Number,
+      default: undefined,
+    },
+
     // minimumInputLengthText?: ((minimumInputLength: number, query?: string) => string) | string,
-    // minimumResultsForSearch?: number,
     // searchBoxPlaceholder?: string,
     // noResultsText?: string,
     // searchingText?: string,
@@ -205,6 +219,23 @@ export default defineComponent({
       setNextOptionActive,
       setPrevOptionActive,
     } = useActivableOption(flattenedOptions, localValue);
+
+    const searchQuery = ref<string | undefined>(undefined);
+    const fetchOptionsFn = computed<FetchOptionsFn | undefined>(() => configuration.value.fetchOptions);
+    const fetchOptionsDelay = computed<number | undefined>(() => configuration.value.delay);
+    const fetchOptionsMinimumInputLength = computed<number | undefined>(() => configuration.value.minimumInputLength);
+
+    const {
+      fetchsOptions,
+      // fetchedOptions,
+      fetchingOptions,
+      fetchOptions: doFetchOptions,
+    } = useFetchsOptions(
+      fetchOptionsFn,
+      searchQuery,
+      fetchOptionsDelay,
+      fetchOptionsMinimumInputLength,
+    );
 
     const shown = ref<boolean>(false);
 
@@ -347,6 +378,10 @@ export default defineComponent({
 
     provide('shown', shown);
 
+    // @TODO: test this s provided
+    provide('fetchingOptions', fetchingOptions);
+    provide('searchQuery', searchQuery);
+
     return {
       configuration,
       attributes,
@@ -369,6 +404,8 @@ export default defineComponent({
       selectOption,
       selectOptionFromActiveOption,
       clearValue,
+      doFetchOptions,
+      fetchsOptions,
     };
   },
   computed: {
@@ -412,6 +449,9 @@ export default defineComponent({
       this.onOptionSelected();
     },
   },
+  beforeUnmount() {
+    // @TODO: Cancel any pending option searching
+  },
   methods: {
     onOptionSelected(): void {
       if (this.shown === false) {
@@ -439,6 +479,10 @@ export default defineComponent({
       this.$emit('before-show');
 
       this.activeOption = this.initActiveOption();
+
+      if (this.fetchsOptions) {
+        this.doFetchOptions();
+      }
     },
     mousedownHandler(e: MouseEvent): void {
       this.$emit('mousedown', e);
