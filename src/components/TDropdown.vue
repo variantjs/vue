@@ -340,7 +340,6 @@ export default defineComponent({
 
       this.popperIsAdjusted = false;
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await this.popper!.update();
 
       this.popperIsAdjusted = true;
@@ -390,7 +389,6 @@ export default defineComponent({
       this.$emit('click', e);
 
       if (this.configuration.toggleOnClick) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.throttledToggle!();
       } else if (this.shouldShowWhenClicked) {
         this.doShow();
@@ -404,7 +402,6 @@ export default defineComponent({
       }
 
       if (this.configuration.toggleOnFocus) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.throttledToggle!();
       }
     },

@@ -15,10 +15,13 @@ export default function useFetchsOptions(
   fetchFn: Ref<FetchOptionsFn | undefined>,
   fetchDelay: Ref<number | undefined>,
   fetchMinimumInputLength: Ref<number | undefined>,
+  fetchMinimumInputLengthText: ComputedRef<((minimumInputLength: number, query?: string) => string) | string>,
 ): {
     normalizedOptions: ComputedRef<NormalizedOptions>
     flattenedOptions: ComputedRef<NormalizedOption[]>
     fetchsOptions: ComputedRef<boolean>,
+    needsMoreCharsToFetch: ComputedRef<boolean>,
+    needsMoreCharsMessage: ComputedRef<string>,
     fetchingOptions: Ref<boolean>,
     fetchedOptionsHasMorePages: Ref<boolean>,
     fetchOptions: () => void,
@@ -45,19 +48,22 @@ export default function useFetchsOptions(
 
   const flattenedOptions = computed<NormalizedOption[]>(() => flattenOptions(normalizedOptions.value));
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { emit } = getCurrentInstance()!;
+
+  const needsMoreCharsToFetch = computed<boolean>(() => {
+    if (!fetchMinimumInputLength.value) {
+      return false;
+    }
+
+    return !searchQuery.value || searchQuery.value.length < fetchMinimumInputLength.value;
+  });
 
   const fetchsOptions = computed<boolean>(() => {
     if (fetchFn.value === undefined) {
       return false;
     }
 
-    if (fetchMinimumInputLength.value === undefined) {
-      return true;
-    }
-
-    return searchQuery.value !== undefined && searchQuery.value.length >= fetchMinimumInputLength.value;
+    return !needsMoreCharsToFetch.value;
   });
 
   const fetchingOptions = ref<boolean>(false);
@@ -65,7 +71,6 @@ export default function useFetchsOptions(
   const fetchedOptionsHasMorePages = ref<boolean>(false);
 
   const fetchOptionsFn = (): void => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     fetchFn.value!(searchQuery.value)
       .then((response: FetchedOptions | any) => {
         if (typeof response === 'object' && Object.prototype.hasOwnProperty.call(response, 'results')) {
@@ -111,10 +116,20 @@ export default function useFetchsOptions(
     fetchOptions();
   });
 
+  const needsMoreCharsMessage = computed<string>((): string => {
+    if (typeof fetchMinimumInputLengthText.value === 'string') {
+      return fetchMinimumInputLengthText.value;
+    }
+
+    return fetchMinimumInputLengthText.value(fetchMinimumInputLength.value!, searchQuery.value);
+  });
+
   return {
     normalizedOptions,
     flattenedOptions,
     fetchsOptions,
+    needsMoreCharsToFetch,
+    needsMoreCharsMessage,
     fetchingOptions,
     fetchedOptionsHasMorePages,
     fetchOptions,

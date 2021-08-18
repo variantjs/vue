@@ -63,15 +63,10 @@ export default defineComponent({
     },
   },
   setup() {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const toggleOption = inject<(option: NormalizedOption) => void>('toggleOption')!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const setActiveOption = inject<(option: NormalizedOption) => void>('setActiveOption')!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const optionIsSelected = inject<(option: NormalizedOption) => boolean>('optionIsSelected')!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const optionIsActive = inject<(option: NormalizedOption) => boolean>('optionIsActive')!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const shown = inject<Ref<boolean>>('shown');
 
     return {

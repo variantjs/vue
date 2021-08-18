@@ -65,7 +65,6 @@ export default defineComponent({
       computed(() => configuration.value.options),
       computed(() => configuration.value.textAttribute),
       computed(() => configuration.value.valueAttribute),
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       computed(() => configuration.value.normalizeOptions!),
     );
 

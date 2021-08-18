@@ -20,7 +20,6 @@ export default function useConfiguration<ComponentOptions extends Data>(defaultC
   configuration: ComputedRef<ComponentOptions>,
   attributes: ComputedRef<Data>
 } {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const vm = getCurrentInstance()!;
 
   const variantGlobalConfiguration = inject<VariantJSConfiguration>('configuration', {});

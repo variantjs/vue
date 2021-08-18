@@ -37,7 +37,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const configuration = inject<ComputedRef<TRichSelectOptions>>('configuration')!;
     const maxHeight = computed(() => normalizeMeasure(configuration.value.maxHeight));
     const usesMaxHeight = computed((): boolean => props.deep === 0 && maxHeight.value !== undefined);

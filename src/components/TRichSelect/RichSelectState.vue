@@ -6,26 +6,28 @@
     Searching...
   </div>
   <div
-    v-else
+    v-else-if="needsMoreCharsToFetch"
     class="px-2 text-sm text-gray-400"
-  >
-    Please enter 1 or more characters
-  </div>
+    v-text="needsMoreCharsMessage"
+  />
 </template>
 
 <script lang="ts">
 import {
-  defineComponent, inject, Ref,
+  ComputedRef, defineComponent, inject, Ref,
 } from 'vue';
 
 export default defineComponent({
   name: 'RichSelectState',
   setup() {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const fetchingOptions = inject<Ref<boolean>>('fetchingOptions')!;
+    const needsMoreCharsToFetch = inject<Ref<boolean>>('needsMoreCharsToFetch')!;
+    const needsMoreCharsMessage = inject<ComputedRef<string>>('needsMoreCharsMessage')!;
 
     return {
       fetchingOptions,
+      needsMoreCharsToFetch,
+      needsMoreCharsMessage,
     };
   },
 });

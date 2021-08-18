@@ -185,13 +185,16 @@ export default defineComponent({
       type: Number,
       default: 3,
     },
+    minimumInputLengthText: {
+      type: [Function, String] as PropType<((minimumInputLength: number, query?: string) => string) | string>,
+      default: () => (minimumInputLength: number): string => `Please enter ${minimumInputLength} or more characters`,
+    },
 
     minimumResultsForSearch: {
       type: Number,
       default: undefined,
     },
 
-    // minimumInputLengthText?: ((minimumInputLength: number, query?: string) => string) | string,
     // searchBoxPlaceholder?: string,
     // noResultsText?: string,
     // searchingText?: string,
@@ -208,18 +211,20 @@ export default defineComponent({
       normalizedOptions,
       flattenedOptions,
       fetchsOptions,
+      needsMoreCharsToFetch,
+      needsMoreCharsMessage,
       fetchingOptions,
       fetchOptions: doFetchOptions,
     } = useFetchsOptions(
       computed(() => configuration.value.options),
       computed(() => configuration.value.textAttribute),
       computed(() => configuration.value.valueAttribute),
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       computed(() => configuration.value.normalizeOptions!),
       searchQuery,
       computed(() => configuration.value.fetchOptions),
       computed(() => configuration.value.delay),
       computed(() => configuration.value.minimumInputLength),
+      computed(() => configuration.value.minimumInputLengthText!),
     );
 
     const {
@@ -248,7 +253,6 @@ export default defineComponent({
     }>();
 
     const focusDropdownTrigger = (): void => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       dropdown.value!.focus();
     };
 
@@ -379,9 +383,11 @@ export default defineComponent({
 
     provide('shown', shown);
 
-    // @TODO: test this s provided
+    // @TODO: test this is provided
+    provide('needsMoreCharsToFetch', needsMoreCharsToFetch);
     provide('fetchingOptions', fetchingOptions);
     provide('searchQuery', searchQuery);
+    provide('needsMoreCharsMessage', needsMoreCharsMessage);
 
     return {
       configuration,
@@ -523,7 +529,6 @@ export default defineComponent({
 
       this.hideDropdown();
     },
-
   },
 });
 

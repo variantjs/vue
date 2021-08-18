@@ -24,23 +24,16 @@ export default defineComponent({
   setup() {
     const search = ref<HTMLInputElement>();
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const shown = inject<ComputedRef<boolean>>('shown')!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const searchQuery = inject<Ref<string | undefined>>('searchQuery')!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const keydownDownHandler = inject<(e: KeyboardEvent) => void>('keydownDownHandler');
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const keydownUpHandler = inject<(e: KeyboardEvent) => void>('keydownUpHandler');
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const keydownEnterHandler = inject<(e: KeyboardEvent) => void>('keydownEnterHandler');
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const keydownEscHandler = inject<(e: KeyboardEvent) => void>('keydownEscHandler');
 
     watch(shown, async (isShown: boolean) : Promise<void> => {
       if (isShown) {
         await nextTick();
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         search.value!.focus();
       }
     });

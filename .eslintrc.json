@@ -23,7 +23,8 @@
   ],
   "rules": {
     "max-len": "off",
-    "import/no-cycle": "off"
+    "import/no-cycle": "off",
+    "@typescript-eslint/no-non-null-assertion": "off"
   }
 }
 
