@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { InputOptions, TSelectConfig } from '@variantjs/core';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { getVariantProps } from '../utils/getVariantProps';
 import { Truthy, TSelectOptions, TSelectValue } from '../types';
 import {
@@ -38,6 +38,14 @@ export default defineComponent({
       type: [Array, Object] as PropType<InputOptions>,
       default: undefined,
     },
+    valueAttribute: {
+      type: String,
+      default: undefined,
+    },
+    textAttribute: {
+      type: String,
+      default: undefined,
+    },
     multiple: {
       type: [String, Boolean] as PropType<Truthy>,
       default: false,
@@ -46,7 +54,14 @@ export default defineComponent({
   setup(props) {
     const { configuration, attributes } = useConfiguration<TSelectOptions>(TSelectConfig);
     const { localValue } = useMulipleableVModel(props, 'modelValue', configuration);
-    const { normalizedOptions } = useMultioptions(props, 'options');
+
+    const {
+      normalizedOptions,
+    } = useMultioptions(
+      computed(() => configuration.value.options),
+      computed(() => configuration.value.textAttribute),
+      computed(() => configuration.value.valueAttribute),
+    );
 
     return {
       localValue, configuration, attributes, normalizedOptions,

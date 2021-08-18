@@ -1,4 +1,4 @@
-import { WithVariantProps } from '@variantjs/core';
+import { Data, WithVariantProps } from '@variantjs/core';
 import { InputHTMLAttributes } from 'vue';
 import { ObjectWithProperties } from '../helpers';
 
@@ -8,6 +8,6 @@ export type TCheckboxValue = TCheckboxSimpleValue | TCheckboxSimpleValue[] | Obj
 
 export type TCheckboxOptions = WithVariantProps<{
   modelValue?: TCheckboxValue
-} & InputHTMLAttributes & {
+}> & InputHTMLAttributes & {
   type?: 'checkbox'
-} & Record<string, unknown>>;
+} & Data;

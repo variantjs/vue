@@ -202,7 +202,11 @@ export default defineComponent({
     const {
       normalizedOptions,
       flattenedOptions,
-    } = useMultioptions(props, 'options', 'textAttribute', 'valueAttribute');
+    } = useMultioptions(
+      computed(() => configuration.value.options),
+      computed(() => configuration.value.textAttribute),
+      computed(() => configuration.value.valueAttribute),
+    );
 
     const {
       selectedOption,

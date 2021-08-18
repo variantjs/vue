@@ -1,4 +1,4 @@
-import { WithVariantProps } from '@variantjs/core';
+import { Data, WithVariantProps } from '@variantjs/core';
 import { InputHTMLAttributes } from 'vue';
 import { ObjectWithProperties } from '../helpers';
 
@@ -8,6 +8,6 @@ export type TRadioValue = TRadioSimpleValue | TRadioSimpleValue[] | ObjectWithPr
 
 export type TRadioOptions = WithVariantProps<{
   modelValue?: TRadioValue
-} & InputHTMLAttributes & {
+}> & InputHTMLAttributes & {
   type?: 'radio'
-} & Record<string, unknown>>;
+} & Data;
