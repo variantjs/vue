@@ -9,6 +9,7 @@ export type TSelectOptions = WithVariantProps<{
   modelValue?: TSelectValue,
   options?: InputOptions,
   multiple?: Truthy,
+  normalizeOptions?: boolean,
   valueAttribute?: string
   textAttribute?: string
 }> & SelectHTMLAttributes & Data;

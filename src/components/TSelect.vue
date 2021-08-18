@@ -38,6 +38,10 @@ export default defineComponent({
       type: [Array, Object] as PropType<InputOptions>,
       default: undefined,
     },
+    normalizeOptions: {
+      type: Boolean,
+      default: true,
+    },
     valueAttribute: {
       type: String,
       default: undefined,
@@ -61,6 +65,8 @@ export default defineComponent({
       computed(() => configuration.value.options),
       computed(() => configuration.value.textAttribute),
       computed(() => configuration.value.valueAttribute),
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      computed(() => configuration.value.normalizeOptions!),
     );
 
     return {

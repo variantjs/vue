@@ -1,6 +1,6 @@
 import { isEqual, NormalizedOption } from '@variantjs/core';
 import {
-  computed, ComputedRef, Ref, ref,
+  computed, ComputedRef, Ref, ref, watch,
 } from 'vue';
 
 export default function useActivableOption(
@@ -8,13 +8,13 @@ export default function useActivableOption(
   localValue: Ref,
 ): {
     activeOption: Ref<NormalizedOption | null>,
-    initActiveOption: () => NormalizedOption | null,
+    initActiveOption: () => void,
     optionIsActive: (option: NormalizedOption) => boolean,
     setActiveOption: (option: NormalizedOption) => void,
     setNextOptionActive: () => void,
     setPrevOptionActive: () => void,
   } {
-  const initActiveOption = (): NormalizedOption | null => {
+  const getActiveOption = (): NormalizedOption | null => {
     const selectedOption = options.value.find((option: NormalizedOption) => isEqual(option.value, localValue.value));
 
     if (selectedOption !== undefined) {
@@ -28,7 +28,7 @@ export default function useActivableOption(
     return null;
   };
 
-  const activeOption = ref<NormalizedOption | null>(initActiveOption());
+  const activeOption = ref<NormalizedOption | null>(getActiveOption());
 
   const activeOptionIndex = computed((): number => {
     if (activeOption.value === null) {
@@ -64,6 +64,14 @@ export default function useActivableOption(
 
     setActiveOption(newActiveOption);
   };
+
+  const initActiveOption = (): void => {
+    activeOption.value = getActiveOption();
+  };
+
+  watch(options, () => {
+    initActiveOption();
+  });
 
   return {
     activeOption,

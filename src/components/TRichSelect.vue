@@ -75,7 +75,6 @@ import {
   useConfigurationWithClassesList,
   useFetchsOptions,
   useMulipleableVModel,
-  useMultioptions,
   useSelectableOption,
 } from '../use';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
@@ -104,6 +103,10 @@ export default defineComponent({
     options: {
       type: [Array, Object] as PropType<InputOptions>,
       default: undefined,
+    },
+    normalizeOptions: {
+      type: Boolean,
+      default: true,
     },
     multiple: {
       type: Boolean as PropType<boolean>,
@@ -199,13 +202,24 @@ export default defineComponent({
 
     const { localValue, clearValue } = useMulipleableVModel(props, 'modelValue', configuration);
 
+    const searchQuery = ref<string | undefined>(undefined);
+
     const {
       normalizedOptions,
       flattenedOptions,
-    } = useMultioptions(
+      fetchsOptions,
+      fetchingOptions,
+      fetchOptions: doFetchOptions,
+    } = useFetchsOptions(
       computed(() => configuration.value.options),
       computed(() => configuration.value.textAttribute),
       computed(() => configuration.value.valueAttribute),
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      computed(() => configuration.value.normalizeOptions!),
+      searchQuery,
+      computed(() => configuration.value.fetchOptions),
+      computed(() => configuration.value.delay),
+      computed(() => configuration.value.minimumInputLength),
     );
 
     const {
@@ -223,23 +237,6 @@ export default defineComponent({
       setNextOptionActive,
       setPrevOptionActive,
     } = useActivableOption(flattenedOptions, localValue);
-
-    const searchQuery = ref<string | undefined>(undefined);
-    const fetchOptionsFn = computed<FetchOptionsFn | undefined>(() => configuration.value.fetchOptions);
-    const fetchOptionsDelay = computed<number | undefined>(() => configuration.value.delay);
-    const fetchOptionsMinimumInputLength = computed<number | undefined>(() => configuration.value.minimumInputLength);
-
-    const {
-      fetchsOptions,
-      // fetchedOptions,
-      fetchingOptions,
-      fetchOptions: doFetchOptions,
-    } = useFetchsOptions(
-      fetchOptionsFn,
-      searchQuery,
-      fetchOptionsDelay,
-      fetchOptionsMinimumInputLength,
-    );
 
     const shown = ref<boolean>(false);
 
@@ -482,7 +479,7 @@ export default defineComponent({
     beforeShowHandler(): void {
       this.$emit('before-show');
 
-      this.activeOption = this.initActiveOption();
+      this.initActiveOption();
 
       if (this.fetchsOptions) {
         this.doFetchOptions();

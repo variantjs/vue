@@ -71,8 +71,10 @@ export default defineComponent({
         };
 
         setTimeout(() => {
-          resolve(options);
-        }, 3000);
+          resolve({
+            results: options,
+          });
+        }, 500);
       }),
       selected: null,
       newOption: '',
