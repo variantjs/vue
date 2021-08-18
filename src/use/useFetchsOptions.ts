@@ -4,7 +4,7 @@ import {
 import {
   computed, Ref, ref, ComputedRef, getCurrentInstance, watch,
 } from 'vue';
-import { FetchedOptions, FetchOptionsFn } from '../types';
+import { FetchedOptions, FetchOptionsFn, MinimumInputLengthTextProp } from '../types';
 
 export default function useFetchsOptions(
   options: Ref<InputOptions | undefined>,
@@ -15,7 +15,7 @@ export default function useFetchsOptions(
   fetchFn: Ref<FetchOptionsFn | undefined>,
   fetchDelay: Ref<number | undefined>,
   fetchMinimumInputLength: Ref<number | undefined>,
-  fetchMinimumInputLengthText: ComputedRef<((minimumInputLength: number, query?: string) => string) | string>,
+  fetchMinimumInputLengthText: ComputedRef<MinimumInputLengthTextProp>,
 ): {
     normalizedOptions: ComputedRef<NormalizedOptions>
     flattenedOptions: ComputedRef<NormalizedOption[]>

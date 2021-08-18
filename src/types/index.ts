@@ -9,7 +9,7 @@ export { TCardOptions } from './components/t-card';
 export { TTagOptions } from './components/t-tag';
 export { TAlertOptions } from './components/t-alert';
 export { TDropdownOptions } from './components/t-dropdown';
-export { TRichSelectOptions } from './components/t-rich-select';
+export { TRichSelectOptions, MinimumInputLengthTextProp } from './components/t-rich-select';
 export { TInputGroupOptions, TInputGroupValidChilElementsKeys } from './components/t-input-group';
 export {
   Truthy, IconProp, FetchOptionsFn, FetchedOptions,

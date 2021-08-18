@@ -79,7 +79,9 @@ import {
 } from '../use';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { sameWidthModifier } from '../utils/popper';
-import { FetchOptionsFn, TRichSelectOptions, TSelectValue } from '../types';
+import {
+  FetchOptionsFn, MinimumInputLengthTextProp, TRichSelectOptions, TSelectValue,
+} from '../types';
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import RichSelectClearButton from './TRichSelect/RichSelectClearButton.vue';
@@ -186,7 +188,7 @@ export default defineComponent({
       default: 3,
     },
     minimumInputLengthText: {
-      type: [Function, String] as PropType<((minimumInputLength: number, query?: string) => string) | string>,
+      type: [Function, String] as PropType<MinimumInputLengthTextProp>,
       default: () => (minimumInputLength: number): string => `Please enter ${minimumInputLength} or more characters`,
     },
 
@@ -194,7 +196,6 @@ export default defineComponent({
       type: Number,
       default: undefined,
     },
-
     // searchBoxPlaceholder?: string,
     // noResultsText?: string,
     // searchingText?: string,

@@ -6,6 +6,8 @@ import { Placement, Options } from '@popperjs/core';
 import { TSelectValue } from './t-select';
 import { FetchOptionsFn } from '../misc';
 
+export type MinimumInputLengthTextProp = ((minimumInputLength: number, query?: string) => string) | string;
+
 export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   modelValue?: TSelectValue,
   options?: InputOptions
@@ -16,7 +18,7 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   delay?: number,
   fetchOptions?: FetchOptionsFn,
   minimumInputLength?: number,
-  minimumInputLengthText?: ((minimumInputLength: number, query?: string) => string) | string,
+  minimumInputLengthText?: MinimumInputLengthTextProp,
   minimumResultsForSearch?: number,
   hideSearchBox?: boolean,
   toggleOnFocus?: boolean,
