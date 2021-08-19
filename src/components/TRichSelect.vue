@@ -394,9 +394,9 @@ export default defineComponent({
 
     // @TODO: test this is provided
     provide('needsMoreCharsToFetch', needsMoreCharsToFetch);
-    provide('fetchingOptions', fetchingOptions);
     provide('searchQuery', searchQuery);
     provide('needsMoreCharsMessage', needsMoreCharsMessage);
+    provide('fetchingOptions', fetchingOptions);
     provide('fetchsOptions', fetchsOptions);
 
     return {
