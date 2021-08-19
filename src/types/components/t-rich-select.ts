@@ -17,6 +17,7 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   textAttribute?: string,
   delay?: number,
   fetchOptions?: FetchOptionsFn,
+  prefetchOptions: boolean,
   minimumInputLength?: number,
   minimumInputLengthText?: MinimumInputLengthTextProp,
   minimumResultsForSearch?: number,

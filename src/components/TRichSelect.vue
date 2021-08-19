@@ -179,6 +179,10 @@ export default defineComponent({
       type: Function as PropType<FetchOptionsFn>,
       default: undefined,
     },
+    prefetchOptions: {
+      type: Boolean,
+      default: false,
+    },
     delay: {
       type: Number,
       default: 250,
@@ -227,6 +231,10 @@ export default defineComponent({
       computed(() => configuration.value.minimumInputLength),
       computed(() => configuration.value.minimumInputLengthText!),
     );
+
+    if (configuration.value.prefetchOptions) {
+      doFetchOptions();
+    }
 
     const {
       selectedOption,
