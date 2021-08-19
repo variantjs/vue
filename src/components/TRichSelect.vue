@@ -389,6 +389,7 @@ export default defineComponent({
     provide('fetchingOptions', fetchingOptions);
     provide('searchQuery', searchQuery);
     provide('needsMoreCharsMessage', needsMoreCharsMessage);
+    provide('fetchsOptions', fetchsOptions);
 
     return {
       configuration,

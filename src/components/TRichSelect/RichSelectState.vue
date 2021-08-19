@@ -6,7 +6,7 @@
     Searching...
   </div>
   <div
-    v-else-if="needsMoreCharsToFetch"
+    v-else-if="fetchsOptions && needsMoreCharsToFetch"
     class="px-2 text-sm text-gray-400"
     v-text="needsMoreCharsMessage"
   />
@@ -20,11 +20,13 @@ import {
 export default defineComponent({
   name: 'RichSelectState',
   setup() {
+    const fetchsOptions = inject<Ref<boolean>>('fetchsOptions')!;
     const fetchingOptions = inject<Ref<boolean>>('fetchingOptions')!;
     const needsMoreCharsToFetch = inject<Ref<boolean>>('needsMoreCharsToFetch')!;
     const needsMoreCharsMessage = inject<ComputedRef<string>>('needsMoreCharsMessage')!;
 
     return {
+      fetchsOptions,
       fetchingOptions,
       needsMoreCharsToFetch,
       needsMoreCharsMessage,
