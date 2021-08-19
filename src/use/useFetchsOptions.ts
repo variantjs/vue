@@ -27,7 +27,7 @@ export default function useFetchsOptions(
     optionsWereFetched: Ref<boolean>,
     fetchOptions: () => void,
   } {
-  const fetchedOptions = ref<InputOptions>([]);
+  const fetchedOptions = ref<InputOptions>(options.value || []);
 
   const optionsWereFetched = ref<boolean>(false);
 
