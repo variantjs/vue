@@ -195,10 +195,11 @@ export default defineComponent({
       type: [Function, String] as PropType<MinimumInputLengthTextProp>,
       default: () => (minimumInputLength: number): string => `Please enter ${minimumInputLength} or more characters`,
     },
-    minimumResultsForSearch: {
-      type: Number,
-      default: undefined,
-    },
+
+    // minimumResultsForSearch: {
+    //   type: Number,
+    //   default: undefined,
+    // },
     // searchBoxPlaceholder?: string,
     // noResultsText?: string,
     // searchingText?: string,
