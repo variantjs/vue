@@ -24,9 +24,12 @@ export default function useFetchsOptions(
     needsMoreCharsMessage: ComputedRef<string>,
     fetchingOptions: Ref<boolean>,
     fetchedOptionsHasMorePages: Ref<boolean>,
+    optionsWereFetched: Ref<boolean>,
     fetchOptions: () => void,
   } {
   const fetchedOptions = ref<InputOptions>([]);
+
+  const optionsWereFetched = ref<boolean>(false);
 
   const normalizedOptions = computed<NormalizedOptions>(() => {
     if (typeof fetchFn.value !== 'function') {
@@ -90,6 +93,8 @@ export default function useFetchsOptions(
           throw new Error('Options response must be an object with `results` property.');
         }
 
+        optionsWereFetched.value = true;
+
         emit('fetch-options-success', response);
       }).catch((error) => {
         emit('fetch-options-error', error);
@@ -113,6 +118,7 @@ export default function useFetchsOptions(
   };
 
   watch(searchQuery, () => {
+    optionsWereFetched.value = false;
     fetchOptions();
   });
 
@@ -132,6 +138,7 @@ export default function useFetchsOptions(
     needsMoreCharsMessage,
     fetchingOptions,
     fetchedOptionsHasMorePages,
+    optionsWereFetched,
     fetchOptions,
   };
 }

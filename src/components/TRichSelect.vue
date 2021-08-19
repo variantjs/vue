@@ -191,7 +191,6 @@ export default defineComponent({
       type: [Function, String] as PropType<MinimumInputLengthTextProp>,
       default: () => (minimumInputLength: number): string => `Please enter ${minimumInputLength} or more characters`,
     },
-
     minimumResultsForSearch: {
       type: Number,
       default: undefined,
@@ -216,6 +215,7 @@ export default defineComponent({
       needsMoreCharsMessage,
       fetchingOptions,
       fetchOptions: doFetchOptions,
+      optionsWereFetched,
     } = useFetchsOptions(
       computed(() => configuration.value.options),
       computed(() => configuration.value.textAttribute),
@@ -414,6 +414,7 @@ export default defineComponent({
       clearValue,
       doFetchOptions,
       fetchsOptions,
+      optionsWereFetched,
     };
   },
   computed: {
@@ -488,7 +489,7 @@ export default defineComponent({
 
       this.initActiveOption();
 
-      if (this.fetchsOptions) {
+      if (this.fetchsOptions && !this.optionsWereFetched) {
         this.doFetchOptions();
       }
     },
