@@ -23,11 +23,17 @@ export default function useFetchsOptions(
     needsMoreCharsToFetch: ComputedRef<boolean>,
     needsMoreCharsMessage: ComputedRef<string>,
     fetchingOptions: Ref<boolean>,
-    fetchedOptionsHasMorePages: Ref<boolean>,
+    fetchingMoreOptions: Ref<boolean>,
+    fetchedOptionsHaveMorePages: Ref<boolean>,
     optionsWereFetched: Ref<boolean>,
     fetchOptions: () => void,
+    fetchMoreOptions: () => void,
   } {
-  const fetchedOptions = ref<InputOptions>(options.value || []);
+  const getNormalizedOptions = (rawOptions: InputOptions): NormalizedOptions => (normalize.value
+    ? normalizeOptions(rawOptions, textAttribute.value, valueAttribute.value)
+    : rawOptions as NormalizedOptions);
+
+  const fetchedOptions = ref<NormalizedOptions>(getNormalizedOptions(options.value || []));
 
   const optionsWereFetched = ref<boolean>(false);
 
@@ -44,9 +50,7 @@ export default function useFetchsOptions(
       return normalized;
     }
 
-    return normalize.value
-      ? normalizeOptions(fetchedOptions.value, textAttribute.value, valueAttribute.value)
-      : fetchedOptions.value as NormalizedOptions;
+    return fetchedOptions.value;
   });
 
   const flattenedOptions = computed<NormalizedOption[]>(() => flattenOptions(normalizedOptions.value));
@@ -67,12 +71,17 @@ export default function useFetchsOptions(
     return !searchQuery.value || searchQuery.value.length < fetchMinimumInputLength.value;
   });
 
+  const fetchNextPage = ref<number | undefined>(undefined);
+
   const fetchingOptions = ref<boolean>(false);
 
-  const fetchedOptionsHasMorePages = ref<boolean>(false);
+  const fetchingMoreOptions = ref<boolean>(false);
 
-  const fetchOptionsFn = (): void => {
-    fetchFn.value!(searchQuery.value)
+  const fetchedOptionsHaveMorePages = computed<boolean>(() => fetchNextPage.value !== undefined);
+
+  const fetchOptionsFn = ([nextPage]: [number | undefined]): void => {
+    fetchFn.value!(searchQuery.value, nextPage)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .then((response: FetchedOptions | any) => {
         if (typeof response === 'object' && Object.prototype.hasOwnProperty.call(response, 'results')) {
           const {
@@ -80,13 +89,21 @@ export default function useFetchsOptions(
             hasMorePages,
           } = response;
 
-          if (Array.isArray(results) || results === undefined || typeof results === 'object') {
-            fetchedOptions.value = results;
-          } else {
+          if (!Array.isArray(results) && results !== undefined && typeof results !== 'object') {
             throw new Error(`Response.results must be an array or object, got ${typeof results}`);
           }
 
-          fetchedOptionsHasMorePages.value = !!hasMorePages;
+          if (nextPage !== undefined && nextPage >= 2) {
+            fetchedOptions.value = fetchedOptions.value.concat(getNormalizedOptions(results));
+          } else {
+            fetchedOptions.value = getNormalizedOptions(results);
+          }
+
+          if (hasMorePages) {
+            fetchNextPage.value = fetchNextPage.value === undefined ? 2 : fetchNextPage.value + 1;
+          } else {
+            fetchNextPage.value = undefined;
+          }
         } else {
           throw new Error('Options response must be an object with `results` property.');
         }
@@ -98,21 +115,30 @@ export default function useFetchsOptions(
         emit('fetch-options-error', error);
       }).then(() => {
         fetchingOptions.value = false;
+        fetchingMoreOptions.value = false;
       });
   };
 
   const debouncedFetchOptions = debounce(fetchOptionsFn, fetchDelay.value);
 
-  const fetchOptions = () => {
+  const fetchOptions = (nextPage?: number) => {
     if (!fetchsOptions.value) {
       debouncedFetchOptions.cancel();
       fetchingOptions.value = false;
       return;
     }
 
-    fetchingOptions.value = true;
+    if (nextPage !== undefined && nextPage >= 2) {
+      fetchingMoreOptions.value = true;
+    } else {
+      fetchingOptions.value = true;
+    }
 
-    debouncedFetchOptions();
+    debouncedFetchOptions(nextPage);
+  };
+
+  const fetchMoreOptions = () => {
+    fetchOptions(fetchNextPage.value);
   };
 
   watch(searchQuery, () => {
@@ -140,8 +166,10 @@ export default function useFetchsOptions(
     needsMoreCharsToFetch,
     needsMoreCharsMessage,
     fetchingOptions,
-    fetchedOptionsHasMorePages,
+    fetchingMoreOptions,
+    fetchedOptionsHaveMorePages,
     optionsWereFetched,
     fetchOptions,
+    fetchMoreOptions,
   };
 }

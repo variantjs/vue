@@ -25,7 +25,8 @@
     }"
     :aria-selected="isSelected"
     tabindex="-1"
-    @mouseover="mouseoverHandler"
+    @mousemove="mousemoveHandler"
+    @mousewheel="mousewheelHandler"
     @click="clickHandler"
   >
     <div class="flex items-center justify-between px-3 py-2">
@@ -117,10 +118,13 @@ export default defineComponent({
     scrollIntoViewIfNeccesary(): void {
       if (this.shown && this.isActive) {
         const li = this.$el as HTMLLIElement;
-        li.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+        li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }
     },
-    mouseoverHandler(): void {
+    mousemoveHandler(): void {
+      this.setActiveOption(this.option);
+    },
+    mousewheelHandler(): void {
       this.setActiveOption(this.option);
     },
     clickHandler(): void {

@@ -21,6 +21,7 @@
       <t-rich-select
         placeholder="select an option"
         :fetch-options="fetchOptions"
+        :minimum-input-length="3"
       />
 
       <div>
@@ -53,6 +54,25 @@ import TRadio from '../components/TRadio.vue';
 import TRichSelect from '../components/TRichSelect.vue';
 import TButton from '../components/TButton.vue';
 
+const fetchOptions = (q: string, nextPage: undefined | number) => {
+  const url = `https://api.github.com/search/repositories?q=${q}&type=public&page=${nextPage || 1}&per_page=10`;
+
+  const options = {
+    method: 'GET',
+    headers: {
+      Authorization: 'token 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',
+    },
+  };
+
+  const request = new Request(url, options);
+
+  return fetch(request)
+    .then((response) => response.json())
+    .then((data) => ({
+      results: data.items.map((i) => ({ value: i.id, text: i.full_name })),
+      hasMorePages: data.total_count > (data.items.length * (nextPage || 1)) * 10,
+    }));
+};
 export default defineComponent({
   name: 'Options',
   components: {
@@ -63,19 +83,7 @@ export default defineComponent({
   },
   data() {
     return {
-      fetchOptions: (query: string) => new Promise((resolve) => {
-        const options = {
-          a: 'A',
-          b: 'Option B',
-          c: 'Option C',
-        };
-
-        setTimeout(() => {
-          resolve({
-            results: query === 'noo' ? [] : options,
-          });
-        }, 500);
-      }),
+      fetchOptions,
       selected: null,
       newOption: '',
       selectedUser: null,

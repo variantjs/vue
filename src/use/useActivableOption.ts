@@ -43,7 +43,9 @@ export default function useActivableOption(
   const optionIsActive = (option: NormalizedOption): boolean => (activeOption.value === null ? false : isEqual(activeOption.value.value, option.value));
 
   const setActiveOption = (option: NormalizedOption): void => {
-    activeOption.value = option;
+    if (activeOption.value !== option) {
+      activeOption.value = option;
+    }
   };
 
   const setNextOptionActive = (): void => {
@@ -69,8 +71,12 @@ export default function useActivableOption(
     activeOption.value = getActiveOption();
   };
 
-  watch(options, () => {
-    initActiveOption();
+  watch(options, (newOptions: NormalizedOption[], oldOptions: NormalizedOption[]) => {
+    const firstNewOption = newOptions.find((o) => !oldOptions.includes(o));
+
+    if (firstNewOption) {
+      setActiveOption(firstNewOption);
+    }
   });
 
   return {

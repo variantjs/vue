@@ -17,7 +17,7 @@
       @mouseover="$emit('mouseover', $event)"
       @mouseleave="$emit('mouseleave', $event)"
       @touchstart="$emit('touchstart', $event)"
-      @shown="$emit('shown')"
+      @shown="shownHandler"
       @hidden="$emit('hidden')"
       @before-show="beforeShowHandler"
       @before-hide="beforeHideHandler"
@@ -179,10 +179,10 @@ export default defineComponent({
       type: String,
       default: 'Searching...',
     },
-    // loadingMoreResultsText: {
-    //   type: String,
-    //   default: 'Loading more options...',
-    // },
+    loadingMoreResultsText: {
+      type: String,
+      default: 'Loading more options...',
+    },
     clearable: {
       type: Boolean,
       default: true,
@@ -205,13 +205,14 @@ export default defineComponent({
     },
     minimumInputLength: {
       type: Number,
-      default: 3,
+      default: undefined,
     },
     minimumInputLengthText: {
       type: [Function, String] as PropType<MinimumInputLengthTextProp>,
       default: () => (minimumInputLength: number): string => `Please enter ${minimumInputLength} or more characters`,
     },
 
+    //
     // minimumResultsForSearch: {
     //   type: Number,
     //   default: undefined,
@@ -232,8 +233,11 @@ export default defineComponent({
       needsMoreCharsToFetch,
       needsMoreCharsMessage,
       fetchingOptions,
+      fetchingMoreOptions,
       fetchOptions: doFetchOptions,
+      fetchMoreOptions,
       optionsWereFetched,
+      fetchedOptionsHaveMorePages,
     } = useFetchsOptions(
       computed(() => configuration.value.options),
       computed(() => configuration.value.textAttribute),
@@ -332,6 +336,12 @@ export default defineComponent({
         throttledShowDropdown();
       } else {
         setNextOptionActive();
+
+        if (activeOption.value === normalizedOptions.value[normalizedOptions.value.length - 1]
+          && fetchedOptionsHaveMorePages.value
+          && !fetchingMoreOptions.value) {
+          fetchMoreOptions();
+        }
       }
     };
 
@@ -379,6 +389,12 @@ export default defineComponent({
       focusDropdownTrigger();
     };
 
+    const dropdownBottomReachedHandler = (): void => {
+      if (fetchedOptionsHaveMorePages.value && !fetchingMoreOptions.value) {
+        fetchMoreOptions();
+      }
+    };
+
     /**
      * Provided data
      */
@@ -411,6 +427,8 @@ export default defineComponent({
     provide('searchQuery', searchQuery);
     provide('needsMoreCharsMessage', needsMoreCharsMessage);
     provide('fetchingOptions', fetchingOptions);
+    provide('fetchingMoreOptions', fetchingMoreOptions);
+    provide('dropdownBottomReachedHandler', dropdownBottomReachedHandler);
 
     return {
       configuration,
@@ -545,7 +563,6 @@ export default defineComponent({
 
       if (
         (target.dataset.richSelectSearch !== undefined || target.dataset.richSelectTrigger !== undefined)
-
         && (relatedTargetDataset && relatedTargetDataset.richSelectSearch === undefined && relatedTargetDataset.richSelectTrigger === undefined)
       ) {
         target.focus();

@@ -17,7 +17,9 @@
 </template>
 
 <script lang="ts">
-import { ComputedRef, defineComponent, inject } from 'vue';
+import {
+  ComputedRef, defineComponent, inject,
+} from 'vue';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import RichSelectSearchInput from './RichSelectSearchInput.vue';
 import RichSelectState from './RichSelectState.vue';

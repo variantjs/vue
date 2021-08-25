@@ -10,7 +10,7 @@ type FetchedOptions = Promise<{
   hasMorePages?: boolean;
 }>;
 
-type FetchOptionsFn = (query?: string, nextPage?: number | string) => FetchedOptions;
+type FetchOptionsFn = (query?: string, nextPage?: number) => FetchedOptions;
 
 export {
   Truthy, IconProp, FetchOptionsFn, FetchedOptions,
