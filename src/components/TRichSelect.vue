@@ -167,6 +167,22 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    searchBoxPlaceholder: {
+      type: String,
+      default: 'Search...',
+    },
+    noResultsText: {
+      type: String,
+      default: 'No options found',
+    },
+    searchingText: {
+      type: String,
+      default: 'Searching...',
+    },
+    // loadingMoreResultsText: {
+    //   type: String,
+    //   default: 'Loading more options...',
+    // },
     clearable: {
       type: Boolean,
       default: true,
@@ -200,10 +216,7 @@ export default defineComponent({
     //   type: Number,
     //   default: undefined,
     // },
-    // searchBoxPlaceholder?: string,
-    // noResultsText?: string,
-    // searchingText?: string,
-    // loadingMoreResultsText?: string,
+
   },
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
@@ -398,7 +411,6 @@ export default defineComponent({
     provide('searchQuery', searchQuery);
     provide('needsMoreCharsMessage', needsMoreCharsMessage);
     provide('fetchingOptions', fetchingOptions);
-    provide('fetchsOptions', fetchsOptions);
 
     return {
       configuration,
@@ -425,6 +437,7 @@ export default defineComponent({
       doFetchOptions,
       fetchsOptions,
       optionsWereFetched,
+      needsMoreCharsToFetch,
     };
   },
   computed: {
@@ -499,7 +512,9 @@ export default defineComponent({
 
       this.initActiveOption();
 
-      if (this.fetchsOptions && !this.optionsWereFetched) {
+      if (this.fetchsOptions
+        && !this.optionsWereFetched
+        && !this.needsMoreCharsToFetch) {
         this.doFetchOptions();
       }
     },

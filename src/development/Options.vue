@@ -63,7 +63,7 @@ export default defineComponent({
   },
   data() {
     return {
-      fetchOptions: () => new Promise((resolve) => {
+      fetchOptions: (query: string) => new Promise((resolve) => {
         const options = {
           a: 'A',
           b: 'Option B',
@@ -72,7 +72,7 @@ export default defineComponent({
 
         setTimeout(() => {
           resolve({
-            results: options,
+            results: query === 'noo' ? [] : options,
           });
         }, 500);
       }),

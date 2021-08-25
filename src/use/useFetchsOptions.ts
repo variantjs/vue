@@ -53,20 +53,18 @@ export default function useFetchsOptions(
 
   const { emit } = getCurrentInstance()!;
 
+  const fetchsOptions = computed<boolean>(() => fetchFn.value !== undefined);
+
   const needsMoreCharsToFetch = computed<boolean>(() => {
+    if (!fetchsOptions.value) {
+      return false;
+    }
+
     if (!fetchMinimumInputLength.value) {
       return false;
     }
 
     return !searchQuery.value || searchQuery.value.length < fetchMinimumInputLength.value;
-  });
-
-  const fetchsOptions = computed<boolean>(() => {
-    if (fetchFn.value === undefined) {
-      return false;
-    }
-
-    return !needsMoreCharsToFetch.value;
   });
 
   const fetchingOptions = ref<boolean>(false);
@@ -118,7 +116,12 @@ export default function useFetchsOptions(
   };
 
   watch(searchQuery, () => {
+    if (!fetchsOptions.value || needsMoreCharsToFetch.value) {
+      return;
+    }
+
     optionsWereFetched.value = false;
+
     fetchOptions();
   });
 
