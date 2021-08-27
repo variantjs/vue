@@ -1,7 +1,7 @@
 <template>
   <div>
     <rich-select-search-input
-      v-if="! configuration.hideSearchBox"
+      v-if="showSearchInput"
       ref="searchInput"
     />
 
@@ -20,11 +20,10 @@
 import {
   ComputedRef, defineComponent, inject,
 } from 'vue';
+import { NormalizedOptions } from '@variantjs/core';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import RichSelectSearchInput from './RichSelectSearchInput.vue';
 import RichSelectState from './RichSelectState.vue';
-import { TRichSelectOptions } from '../../types';
-import { useInjectsConfiguration } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectDropdown',
@@ -34,12 +33,12 @@ export default defineComponent({
     RichSelectState,
   },
   setup() {
-    const configuration = useInjectsConfiguration<TRichSelectOptions>();
-    const options = inject<ComputedRef<TRichSelectOptions>>('options');
+    const options = inject<ComputedRef<NormalizedOptions>>('options')!;
+    const showSearchInput = inject<ComputedRef<boolean>>('showSearchInput')!;
 
     return {
       options,
-      configuration,
+      showSearchInput,
     };
   },
 });

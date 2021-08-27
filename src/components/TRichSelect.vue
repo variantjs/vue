@@ -211,13 +211,10 @@ export default defineComponent({
       type: [Function, String] as PropType<MinimumInputLengthTextProp>,
       default: () => (minimumInputLength: number): string => `Please enter ${minimumInputLength} or more characters`,
     },
-
-    //
-    // minimumResultsForSearch: {
-    //   type: Number,
-    //   default: undefined,
-    // },
-
+    minimumResultsForSearch: {
+      type: Number,
+      default: undefined,
+    },
   },
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
@@ -271,6 +268,18 @@ export default defineComponent({
     } = useActivableOption(flattenedOptions, localValue);
 
     const shown = ref<boolean>(false);
+
+    const showSearchInput = computed<boolean>(() => {
+      if (configuration.value.hideSearchBox) {
+        return false;
+      }
+
+      if (configuration.value.minimumResultsForSearch !== undefined) {
+        return normalizedOptions.value.length >= configuration.value.minimumResultsForSearch;
+      }
+
+      return true;
+    });
 
     /**
      * Dropdown component reference
@@ -423,6 +432,7 @@ export default defineComponent({
     provide('shown', shown);
 
     // @TODO: test this is provided
+    provide('showSearchInput', showSearchInput);
     provide('needsMoreCharsToFetch', needsMoreCharsToFetch);
     provide('searchQuery', searchQuery);
     provide('needsMoreCharsMessage', needsMoreCharsMessage);
@@ -456,6 +466,7 @@ export default defineComponent({
       fetchsOptions,
       optionsWereFetched,
       needsMoreCharsToFetch,
+      showSearchInput,
     };
   },
   computed: {
@@ -542,7 +553,7 @@ export default defineComponent({
       if (this.configuration.toggleOnClick) {
         // If it has as search box I need to prevent default to ensure the search
         // box keep focused
-        if (!this.hideSearchBox && this.shown === false) {
+        if (this.showSearchInput && this.shown === false) {
           e.preventDefault();
         }
 
