@@ -1239,24 +1239,57 @@ describe('TRichSelect.vue', () => {
     });
   });
 
-  // describe('fetch options', () => {
-  //   const options = {
-  //     a: 'A',
-  //     b: 'Option B',
-  //     c: 'Option C',
-  //   };
-  //   const fetchOptions = (): Promise<InputOptions> => new Promise((resolve) => {
-  //     resolve(options);
-  //   });
+  describe('fetch options', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let fetchOptionsSpy: any;
+    const originalCreatedMethod = TRichSelect.created!;
 
-  //   describe('when using single values', () => {
-  //     const wrapper = shallowMount(TRichSelect, {
-  //       props: {
-  //         fetchOptions,
-  //       },
-  //     });
+    beforeEach(() => {
+      // eslint-disable-next-line func-names
+      TRichSelect.created = function () {
+        // this.$.setupState.doFetchOptions =
+        fetchOptionsSpy = jest.spyOn(this.$.setupState, 'doFetchOptions');
 
-  //     // wrapper
-  //   });
-  // });
+        originalCreatedMethod.call(this);
+      };
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+
+      TRichSelect.created = originalCreatedMethod;
+    });
+
+    it('fetch the options when prefetchOptions option is set', () => {
+      shallowMount(TRichSelect, {
+        props: {
+          fetchOptions: () => {},
+          prefetchOptions: true,
+        },
+      });
+
+      expect(fetchOptionsSpy).toHaveBeenCalled();
+    });
+
+    it('doesnt the options when prefetchOptions option is set if no fetch function', () => {
+      shallowMount(TRichSelect, {
+        props: {
+          prefetchOptions: true,
+        },
+      });
+
+      expect(fetchOptionsSpy).not.toHaveBeenCalled();
+    });
+
+    it('doesnt fetch the options when prefetchOptions option is not set', () => {
+      shallowMount(TRichSelect, {
+        props: {
+          fetchsOptions: () => {},
+          prefetchOptions: false,
+        },
+      });
+
+      expect(fetchOptionsSpy).not.toHaveBeenCalled();
+    });
+  });
 });

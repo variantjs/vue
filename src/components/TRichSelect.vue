@@ -247,10 +247,6 @@ export default defineComponent({
       computed(() => configuration.value.minimumInputLengthText!),
     );
 
-    if (configuration.value.prefetchOptions) {
-      doFetchOptions();
-    }
-
     const {
       selectedOption,
       selectOption,
@@ -475,6 +471,11 @@ export default defineComponent({
     };
   },
   computed: {
+    canFetchOptions(): boolean {
+      return this.fetchsOptions
+        && !this.optionsWereFetched
+        && !this.needsMoreCharsToFetch;
+    },
     /**
      * @TODO
      */
@@ -515,7 +516,13 @@ export default defineComponent({
       this.onOptionSelected();
     },
   },
+  created() {
+    if (this.configuration.prefetchOptions && this.canFetchOptions) {
+      this.doFetchOptions();
+    }
+  },
   beforeUnmount() {
+
     // @TODO: Cancel any pending option searching
   },
   methods: {
@@ -546,9 +553,7 @@ export default defineComponent({
 
       this.initActiveOption();
 
-      if (this.fetchsOptions
-        && !this.optionsWereFetched
-        && !this.needsMoreCharsToFetch) {
+      if (this.canFetchOptions) {
         this.doFetchOptions();
       }
     },
