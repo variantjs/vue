@@ -1292,4 +1292,59 @@ describe('TRichSelect.vue', () => {
       expect(fetchOptionsSpy).not.toHaveBeenCalled();
     });
   });
+
+  describe('show search input condition', () => {
+    it('hides the search input if `hideSearchbox` is set', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          hideSearchBox: true,
+        },
+      });
+
+      expect(wrapper.vm.showSearchInput).toBe(false);
+    });
+
+    it('hides the search input `minimumResultsForSearch` is set and we have more options than the limit', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          options: ['1', '2', '3'],
+          minimumResultsForSearch: 4,
+        },
+      });
+
+      expect(wrapper.vm.showSearchInput).toBe(false);
+    });
+
+    it('shows the search input `minimumResultsForSearch` is set and we have the same options as the limit', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          options: ['1', '2', '3'],
+          minimumResultsForSearch: 3,
+        },
+      });
+
+      expect(wrapper.vm.showSearchInput).toBe(true);
+    });
+
+    it('shows the search input `minimumResultsForSearch` is set and we have the more options than the limit', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          options: ['1', '2', '3', '4'],
+          minimumResultsForSearch: 3,
+        },
+      });
+
+      expect(wrapper.vm.showSearchInput).toBe(true);
+    });
+
+    it('shows the search input if `minimumResultsForSearch` is not set and `hideSearchBox` is set to `false`', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          hideSearchBox: false,
+        },
+      });
+
+      expect(wrapper.vm.showSearchInput).toBe(true);
+    });
+  });
 });
