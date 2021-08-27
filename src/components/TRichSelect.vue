@@ -431,13 +431,18 @@ export default defineComponent({
 
     provide('shown', shown);
 
-    // @TODO: test this is provided
     provide('showSearchInput', showSearchInput);
-    provide('needsMoreCharsToFetch', needsMoreCharsToFetch);
+
     provide('searchQuery', searchQuery);
+
+    provide('needsMoreCharsToFetch', needsMoreCharsToFetch);
+
     provide('needsMoreCharsMessage', needsMoreCharsMessage);
+
     provide('fetchingOptions', fetchingOptions);
+
     provide('fetchingMoreOptions', fetchingMoreOptions);
+
     provide('dropdownBottomReachedHandler', dropdownBottomReachedHandler);
 
     return {

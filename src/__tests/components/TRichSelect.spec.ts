@@ -1,4 +1,4 @@
-import { InputOptions, NormalizedOption, normalizeOptions } from '@variantjs/core';
+import { NormalizedOption, normalizeOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
 import { componentHasAttributeWithInlineHandlerAndParameter, componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
@@ -199,22 +199,25 @@ describe('TRichSelect.vue', () => {
     it('provides the `toggleOption` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      // @TODO: find a way to ensure is the proper method
-      expect(typeof wrapper.vm.$.provides.toggleOption).toBe('function');
+      expect(wrapper.vm.$.provides.toggleOption[0]).toEqual(wrapper.vm.$.setupState.toggleOption);
     });
 
     it('provides the `optionIsActive` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      // @TODO: find a way to ensure is the proper method
-      expect(typeof wrapper.vm.$.provides.optionIsActive).toBe('function');
+      expect(wrapper.vm.$.provides.optionIsActive[0]).toEqual(wrapper.vm.$.setupState.optionIsActive);
     });
 
     it('provides the `setActiveOption` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      // @TODO: find a way to ensure is the proper method
-      expect(typeof wrapper.vm.$.provides.setActiveOption).toBe('function');
+      expect(wrapper.vm.$.provides.setActiveOption[0]).toEqual(wrapper.vm.$.setupState.setActiveOption);
+    });
+
+    it('provides the `dropdownBottomReachedHandler` method', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      expect(wrapper.vm.$.provides.dropdownBottomReachedHandler[0]).toEqual(wrapper.vm.$.setupState.dropdownBottomReachedHandler);
     });
 
     it('provides the `optionIsSelected` method`', () => {
@@ -244,6 +247,31 @@ describe('TRichSelect.vue', () => {
       const wrapper = shallowMount(TRichSelect);
 
       expect(wrapper.vm.$.provides.keydownEscHandler).toEqual(wrapper.vm.$.setupState.keydownEscHandler);
+    });
+
+    it('provides the `showSearchInput` computed property', () => {
+      const wrapper = shallowMount(TRichSelect);
+      expect(wrapper.vm.$.provides.showSearchInput.value).toEqual(wrapper.vm.$.setupState.showSearchInput);
+    });
+
+    it('provides the `needsMoreCharsMessage` computed property', () => {
+      const wrapper = shallowMount(TRichSelect);
+      expect(wrapper.vm.$.provides.needsMoreCharsMessage.value).toEqual('Please enter undefined or more characters');
+    });
+
+    it('provides the `searchQuery` ref', () => {
+      const wrapper = shallowMount(TRichSelect);
+      expect(wrapper.vm.$.provides.searchQuery.value).toEqual(wrapper.vm.$.setupState.searchQuery);
+    });
+
+    it('provides the `fetchingOptions` ref', () => {
+      const wrapper = shallowMount(TRichSelect);
+      expect(wrapper.vm.$.provides.fetchingOptions.value).toBe(false);
+    });
+
+    it('provides the `fetchingMoreOptions` ref', () => {
+      const wrapper = shallowMount(TRichSelect);
+      expect(wrapper.vm.$.provides.fetchingMoreOptions.value).toBe(false);
     });
   });
 
