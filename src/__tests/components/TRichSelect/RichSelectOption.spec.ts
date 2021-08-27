@@ -266,7 +266,7 @@ describe('RichSelectOption', () => {
   });
 
   describe('event handlers', () => {
-    it('calls the `mouseoverHandler` when option mouseover', () => {
+    it('calls the `mousemoveHandler` when option mousemove', () => {
       const wrapper = shallowMount(RichSelectOption, {
         props: {
           option,
@@ -275,14 +275,14 @@ describe('RichSelectOption', () => {
         global,
       });
 
-      const mouseoverHandlerSpy = jest.spyOn(wrapper.vm, 'mouseoverHandler');
+      const mousemoveHandlerSpy = jest.spyOn(wrapper.vm, 'mousemoveHandler');
 
-      wrapper.vm.$el.dispatchEvent(new MouseEvent('mouseover'));
+      wrapper.vm.$el.dispatchEvent(new MouseEvent('mousemove'));
 
-      expect(mouseoverHandlerSpy).toHaveBeenCalled();
+      expect(mousemoveHandlerSpy).toHaveBeenCalled();
     });
 
-    it('the `mouseoverHandler` sets the option as active', () => {
+    it('the `mousemoveHandler` sets the option as active', () => {
       const wrapper = shallowMount(RichSelectOption, {
         props: {
           option,
@@ -291,7 +291,37 @@ describe('RichSelectOption', () => {
         global,
       });
 
-      wrapper.vm.mouseoverHandler();
+      wrapper.vm.mousemoveHandler();
+
+      expect(setActiveOption).toHaveBeenCalledWith(option);
+    });
+
+    it('calls the `mousewheelHandler` when mousewheel event', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global,
+      });
+
+      const mousewheelHandlerSpy = jest.spyOn(wrapper.vm, 'mousewheelHandler');
+
+      wrapper.vm.$el.dispatchEvent(new MouseEvent('mousewheel'));
+
+      expect(mousewheelHandlerSpy).toHaveBeenCalled();
+    });
+
+    it('the `mousewheelHandler` sets the option as active', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global,
+      });
+
+      wrapper.vm.mousewheelHandler();
 
       expect(setActiveOption).toHaveBeenCalledWith(option);
     });

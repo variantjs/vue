@@ -101,28 +101,26 @@ describe('useActivableOption', () => {
   it('returns the first option if no one is selected', () => {
     useSetup(() => {
       const {
-        activeOption, initActiveOption,
+        activeOption,
       } = useActivableOption(
         options,
         localValue,
       );
 
       expect(activeOption.value).toEqual(options.value[0]);
-      expect(initActiveOption()).toEqual(options.value[0]);
     });
   });
 
   it('return null if the options list is empty', () => {
     useSetup(() => {
       const {
-        activeOption, initActiveOption,
+        activeOption,
       } = useActivableOption(
         computed(() => []),
         localValue,
       );
 
       expect(activeOption.value).toBeNull();
-      expect(initActiveOption()).toBeNull();
     });
   });
 
@@ -132,14 +130,13 @@ describe('useActivableOption', () => {
     useSetup(() => {
       const {
         activeOption,
-        initActiveOption,
+
       } = useActivableOption(
         options,
         localValue,
       );
 
       expect(activeOption.value).toEqual(options.value[1]);
-      expect(initActiveOption()).toEqual(options.value[1]);
     });
   });
 

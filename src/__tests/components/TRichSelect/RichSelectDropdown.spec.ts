@@ -2,7 +2,6 @@ import { NormalizedOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import { computed } from 'vue';
 import RichSelectDropdown from '../../../components/TRichSelect/RichSelectDropdown.vue';
-import { TSelectOptions } from '../../../types';
 import { getChildComponentNameByRef } from '../../testUtils';
 
 describe('RichSelectDropdown', () => {
@@ -11,17 +10,12 @@ describe('RichSelectDropdown', () => {
     text: 'a',
   }];
 
-  const configuration: TSelectOptions = {
-    hideSearchBox: false,
-  };
-
   const showSearchInput = computed(() => true);
 
   it('renders the component', () => {
     const wrapper = shallowMount(RichSelectDropdown, {
       global: {
         provide: {
-          configuration,
           options,
           showSearchInput,
         },
@@ -35,7 +29,6 @@ describe('RichSelectDropdown', () => {
     const wrapper = shallowMount(RichSelectDropdown, {
       global: {
         provide: {
-          configuration,
           showSearchInput,
           options,
         },
@@ -49,7 +42,6 @@ describe('RichSelectDropdown', () => {
     const wrapper = shallowMount(RichSelectDropdown, {
       global: {
         provide: {
-          configuration,
           showSearchInput,
           options,
         },
@@ -59,16 +51,12 @@ describe('RichSelectDropdown', () => {
     expect(getChildComponentNameByRef(wrapper, 'searchInput')).toEqual('RichSelectSearchInput');
   });
 
-  it('hides the RichSelectSearchInput component if `hideSearchBox` is set', () => {
+  it('hides the RichSelectSearchInput component if `showSearchInput` is `false`', () => {
     const wrapper = shallowMount(RichSelectDropdown, {
       global: {
         provide: {
           options,
-          showSearchInput,
-          configuration: {
-            ...options,
-            hideSearchBox: true,
-          },
+          showSearchInput: computed(() => false),
         },
       },
     });
