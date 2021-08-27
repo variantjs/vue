@@ -54,25 +54,17 @@ import TRadio from '../components/TRadio.vue';
 import TRichSelect from '../components/TRichSelect.vue';
 import TButton from '../components/TButton.vue';
 
-const fetchOptions = (q: string, nextPage: undefined | number) => {
-  const url = `https://api.github.com/search/repositories?q=${q}&type=public&page=${nextPage || 1}&per_page=10`;
+const fetchOptions = (query: string, nextPage: undefined | number) => {
+  const url = `https://www.omdbapi.com/?apikey=e1b3617e&s=${query}&page=${nextPage || 1}`;
 
-  const options = {
-    method: 'GET',
-    headers: {
-      Authorization: 'token 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',
-    },
-  };
-
-  const request = new Request(url, options);
-
-  return fetch(request)
+  return fetch(url)
     .then((response) => response.json())
     .then((data) => ({
-      results: data.items.map((i) => ({ value: i.id, text: i.full_name })),
-      hasMorePages: data.total_count > (data.items.length * (nextPage || 1)) * 10,
+      results: data.Search.map((i) => ({ value: i.imdbID, text: i.Title })),
+      hasMorePages: data.totalResults > (data.Search.length * (nextPage || 1)) * 10,
     }));
 };
+
 export default defineComponent({
   name: 'Options',
   components: {
