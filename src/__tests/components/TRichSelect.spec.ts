@@ -639,7 +639,7 @@ describe('TRichSelect.vue', () => {
         expect(preventDefaultSpy).not.toHaveBeenCalled();
       });
 
-      it('hides the dropdown when `toggleOnClick` is set and drodown is shown', () => {
+      it('hides the dropdown when `toggleOnClick` is set and dropdown is shown', () => {
         const wrapper = shallowMount(TRichSelect, {
           props: {
             toggleOnClick: true,
@@ -751,17 +751,11 @@ describe('TRichSelect.vue', () => {
     });
 
     describe('beforeShowHandler', () => {
-      it('sets active option when is about to show the drodown', () => {
+      it('sets active option when is about to show the dropdown', () => {
         const wrapper = shallowMount(TRichSelect);
-        const incomingActiveOption = {
-          value: 1,
-          text: 1,
-          raw: 1,
-        };
-        const initActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'initActiveOption').mockReturnValue(incomingActiveOption);
+        const initActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'initActiveOption');
         wrapper.vm.beforeShowHandler();
         expect(initActiveOptionSpy).toHaveBeenCalled();
-        expect(wrapper.vm.activeOption).toEqual(incomingActiveOption);
         expect(wrapper.emitted()).toHaveProperty('before-show');
       });
     });
