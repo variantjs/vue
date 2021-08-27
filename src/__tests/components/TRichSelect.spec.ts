@@ -1217,24 +1217,24 @@ describe('TRichSelect.vue', () => {
     });
   });
 
-  describe('fetch options', () => {
-    const options = {
-      a: 'A',
-      b: 'Option B',
-      c: 'Option C',
-    };
-    const fetchOptions = (query, nextPage): Promise<InputOptions> => new Promise((resolve) => {
-      resolve(options);
-    });
+  // describe('fetch options', () => {
+  //   const options = {
+  //     a: 'A',
+  //     b: 'Option B',
+  //     c: 'Option C',
+  //   };
+  //   const fetchOptions = (): Promise<InputOptions> => new Promise((resolve) => {
+  //     resolve(options);
+  //   });
 
-    describe('when using single values', () => {
-      const wrapper = shallowMount(TRichSelect, {
-        props: {
-          fetchOptions,
-        },
-      });
+  //   describe('when using single values', () => {
+  //     const wrapper = shallowMount(TRichSelect, {
+  //       props: {
+  //         fetchOptions,
+  //       },
+  //     });
 
-      // wrapper
-    });
-  });
+  //     // wrapper
+  //   });
+  // });
 });

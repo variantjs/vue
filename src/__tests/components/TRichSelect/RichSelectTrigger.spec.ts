@@ -1,6 +1,6 @@
 import { NormalizedOption } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import RichSelectTrigger from '../../../components/TRichSelect/RichSelectTrigger.vue';
 import { TSelectOptions } from '../../../types';
 
@@ -10,6 +10,8 @@ describe('RichSelectTrigger', () => {
 
   const global = {
     provide: {
+      shown: ref(false),
+      fetchingOptions: ref(false),
       selectedOption,
       configuration,
     },
@@ -26,6 +28,7 @@ describe('RichSelectTrigger', () => {
     const wrapper = shallowMount(RichSelectTrigger, {
       global: {
         provide: {
+          ...global.provide,
           selectedOption: computed<NormalizedOption | undefined>(() => ({
             value: 'foo',
             text: 'Foo Bar',
@@ -43,6 +46,7 @@ describe('RichSelectTrigger', () => {
     const wrapper = shallowMount(RichSelectTrigger, {
       global: {
         provide: {
+          ...global.provide,
           selectedOption,
           configuration: computed<TSelectOptions | undefined>(() => ({
             clearable: false,
@@ -59,6 +63,7 @@ describe('RichSelectTrigger', () => {
     const wrapper = shallowMount(RichSelectTrigger, {
       global: {
         provide: {
+          ...global.provide,
           selectedOption,
           configuration: computed<TSelectOptions | undefined>(() => ({
             clearable: true,
@@ -75,6 +80,7 @@ describe('RichSelectTrigger', () => {
     const wrapper = shallowMount(RichSelectTrigger, {
       global: {
         provide: {
+          ...global.provide,
           selectedOption: computed<NormalizedOption | undefined>(() => ({
             value: 'foo',
             text: 'foo',

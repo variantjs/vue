@@ -48,10 +48,11 @@ export default defineComponent({
   setup(props) {
     const configuration = inject<ComputedRef<TRichSelectOptions>>('configuration')!;
     const shown = inject<Ref<boolean>>('shown');
-    const maxHeight = computed(() => normalizeMeasure(configuration.value.maxHeight));
-    const usesMaxHeight = computed((): boolean => props.deep === 0 && maxHeight.value !== undefined);
     const fetchingMoreOptions = inject<Ref<boolean>>('fetchingMoreOptions')!;
     const dropdownBottomReachedHandler = inject<(() => void)>('dropdownBottomReachedHandler')!;
+
+    const maxHeight = computed(() => normalizeMeasure(configuration.value.maxHeight));
+    const usesMaxHeight = computed((): boolean => props.deep === 0 && maxHeight.value !== undefined);
 
     const bottomReachedObserver = debounce(([event]: [Event]) => {
       const element = event.target as HTMLUListElement;

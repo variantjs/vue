@@ -17,7 +17,7 @@
       @mouseover="$emit('mouseover', $event)"
       @mouseleave="$emit('mouseleave', $event)"
       @touchstart="$emit('touchstart', $event)"
-      @shown="shownHandler"
+      @shown="$emit('shown')"
       @hidden="$emit('hidden')"
       @before-show="beforeShowHandler"
       @before-hide="beforeHideHandler"

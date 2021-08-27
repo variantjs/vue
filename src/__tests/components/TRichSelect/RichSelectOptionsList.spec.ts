@@ -1,5 +1,6 @@
 import { NormalizedOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
+import { ref, computed } from 'vue';
 import RichSelectOptionsList from '../../../components/TRichSelect/RichSelectOptionsList.vue';
 import { TSelectOptions } from '../../../types';
 
@@ -22,7 +23,10 @@ describe('RichSelectOptionsList', () => {
 
   const global = {
     provide: {
-      configuration: { value: {} },
+      configuration: computed<TSelectOptions | undefined>(() => ({})),
+      fetchingMoreOptions: ref(false),
+      shown: ref(false),
+      dropdownBottomReachedHandler: jest.fn(),
     },
   };
 
@@ -46,6 +50,7 @@ describe('RichSelectOptionsList', () => {
       props,
       global: {
         provide: {
+          ...global.provide,
           configuration,
         },
       },
@@ -67,6 +72,7 @@ describe('RichSelectOptionsList', () => {
       },
       global: {
         provide: {
+          ...global.provide,
           configuration,
         },
       },

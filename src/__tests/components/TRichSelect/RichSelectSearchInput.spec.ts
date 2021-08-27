@@ -7,9 +7,11 @@ describe('RichSelectSearchInput', () => {
   const keydownUpHandler = jest.fn();
   const keydownEnterHandler = jest.fn();
   const keydownEscHandler = jest.fn();
+
   const global = {
     provide: {
       shown: ref(true),
+      searchQuery: ref(''),
       keydownDownHandler,
       keydownUpHandler,
       keydownEnterHandler,

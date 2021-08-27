@@ -1,5 +1,6 @@
 import { NormalizedOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
+import { computed } from 'vue';
 import RichSelectDropdown from '../../../components/TRichSelect/RichSelectDropdown.vue';
 import { TSelectOptions } from '../../../types';
 import { getChildComponentNameByRef } from '../../testUtils';
@@ -14,12 +15,15 @@ describe('RichSelectDropdown', () => {
     hideSearchBox: false,
   };
 
+  const showSearchInput = computed(() => true);
+
   it('renders the component', () => {
     const wrapper = shallowMount(RichSelectDropdown, {
       global: {
         provide: {
           configuration,
           options,
+          showSearchInput,
         },
       },
     });
@@ -32,6 +36,7 @@ describe('RichSelectDropdown', () => {
       global: {
         provide: {
           configuration,
+          showSearchInput,
           options,
         },
       },
@@ -45,6 +50,7 @@ describe('RichSelectDropdown', () => {
       global: {
         provide: {
           configuration,
+          showSearchInput,
           options,
         },
       },
@@ -58,6 +64,7 @@ describe('RichSelectDropdown', () => {
       global: {
         provide: {
           options,
+          showSearchInput,
           configuration: {
             ...options,
             hideSearchBox: true,
