@@ -90,6 +90,56 @@ describe('RichSelectOptionsList', () => {
     expect(wrapper.findAll('rich-select-option-stub').length).toBe(options.length);
   });
 
+  it('scroll the list to the "fetchingMoreOptions" element after loaded more options ends', async () => {
+    const fetchingMoreOptions = ref(false);
+
+    const scrollElementMock = jest.fn();
+    window.HTMLLIElement.prototype.scrollIntoView = scrollElementMock;
+
+    const wrapper = shallowMount(RichSelectOptionsList, {
+      props,
+      global: {
+        provide: {
+          ...global.provide,
+          fetchingMoreOptions,
+        },
+      },
+    });
+
+    expect(scrollElementMock).not.toHaveBeenCalled();
+
+    fetchingMoreOptions.value = true;
+
+    await wrapper.vm.$nextTick();
+
+    expect(scrollElementMock).toHaveBeenCalled();
+  });
+
+  it('doesnt scroll the list to the "fetchingMoreOptions" element when loading ends', async () => {
+    const fetchingMoreOptions = ref(true);
+
+    const scrollElementMock = jest.fn();
+    window.HTMLLIElement.prototype.scrollIntoView = scrollElementMock;
+
+    const wrapper = shallowMount(RichSelectOptionsList, {
+      props,
+      global: {
+        provide: {
+          ...global.provide,
+          fetchingMoreOptions,
+        },
+      },
+    });
+
+    expect(scrollElementMock).not.toHaveBeenCalled();
+
+    fetchingMoreOptions.value = false;
+
+    await wrapper.vm.$nextTick();
+
+    expect(scrollElementMock).not.toHaveBeenCalled();
+  });
+
   describe('dropdownBottomReachedHandler', () => {
     it('adds a scroll listener attaced to the bottomReachedObserver when component is mounted', () => {
       const addEventListenerSpy = jest.spyOn(window.HTMLUListElement.prototype, 'addEventListener');
