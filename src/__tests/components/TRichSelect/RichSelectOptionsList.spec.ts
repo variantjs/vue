@@ -89,4 +89,81 @@ describe('RichSelectOptionsList', () => {
 
     expect(wrapper.findAll('rich-select-option-stub').length).toBe(options.length);
   });
+
+  describe('dropdownBottomReachedHandler', () => {
+    it('adds a scroll listener attaced to the bottomReachedObserver when component is mounted', () => {
+      const addEventListenerSpy = jest.spyOn(window.HTMLUListElement.prototype, 'addEventListener');
+
+      const wrapper = shallowMount(RichSelectOptionsList, {
+        props,
+        global,
+      });
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.$.setupState.bottomReachedObserver);
+
+      addEventListenerSpy.mockRestore();
+    });
+
+    it('removes the scroll listener when component is unmounted', () => {
+      const removeEventListenerSpy = jest.spyOn(window.HTMLUListElement.prototype, 'removeEventListener');
+
+      const wrapper = shallowMount(RichSelectOptionsList, {
+        props,
+        global,
+      });
+
+      wrapper.unmount();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.$.setupState.bottomReachedObserver);
+
+      removeEventListenerSpy.mockRestore();
+    });
+
+    it('calls the dropdownBottomReachedHandler when bottom reached', () => {
+      const dropdownBottomReachedHandlerMock = jest.fn();
+
+      jest.useFakeTimers();
+
+      const wrapper = shallowMount(RichSelectOptionsList, {
+        props,
+        global: {
+          provide: {
+            ...global.provide,
+            dropdownBottomReachedHandler: dropdownBottomReachedHandlerMock,
+          },
+        },
+      });
+
+      const container = wrapper.vm.$el;
+
+      jest.spyOn(container, 'clientHeight', 'get').mockReturnValue(100);
+      // 150 - 49 != 100 (which is the not height of the container) meaning it
+      // not reached the bottom yet
+      jest.spyOn(container, 'scrollHeight', 'get').mockReturnValue(150);
+      jest.spyOn(container, 'scrollTop', 'get').mockReturnValue(49);
+
+      container.dispatchEvent(new Event('scroll', {
+        target: container,
+      } as any));
+
+      // (is debounced 200ms)
+      jest.advanceTimersByTime(200);
+      expect(dropdownBottomReachedHandlerMock).not.toHaveBeenCalled();
+
+      // 150 - 50 === 100 (meaning reached the bottom)
+      jest.spyOn(container, 'scrollTop', 'get').mockReturnValue(50);
+
+      container.dispatchEvent(new Event('scroll', {
+        target: container,
+      } as any));
+
+      // (is debounced 200ms)
+      jest.advanceTimersByTime(199);
+      expect(dropdownBottomReachedHandlerMock).not.toHaveBeenCalled();
+      jest.advanceTimersByTime(1);
+      expect(dropdownBottomReachedHandlerMock).toHaveBeenCalled();
+
+      jest.useRealTimers();
+    });
+  });
 });

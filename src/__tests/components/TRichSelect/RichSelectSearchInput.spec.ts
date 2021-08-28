@@ -58,18 +58,4 @@ describe('RichSelectSearchInput', () => {
 
     expect(keydownEscHandler).toHaveBeenCalled();
   });
-
-  it('focus the search box when shown state changes', async () => {
-    const focusMock = jest.fn();
-    window.HTMLInputElement.prototype.focus = focusMock;
-
-    wrapper.vm.$.setupState.shown = false;
-    await wrapper.vm.$nextTick();
-    expect(focusMock).not.toHaveBeenCalled();
-
-    wrapper.vm.$.setupState.shown = true;
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
-    expect(focusMock).toHaveBeenCalled();
-  });
 });

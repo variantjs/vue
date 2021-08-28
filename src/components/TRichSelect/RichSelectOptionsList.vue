@@ -61,7 +61,7 @@ export default defineComponent({
       if (reached) {
         dropdownBottomReachedHandler();
       }
-    });
+    }, 200);
 
     return {
       maxHeight, usesMaxHeight, shown, bottomReachedObserver, fetchingMoreOptions, configuration,
@@ -82,6 +82,5 @@ export default defineComponent({
   beforeUnmount() {
     this.$el.removeEventListener('scroll', this.bottomReachedObserver);
   },
-
 });
 </script>
