@@ -342,7 +342,9 @@ export default defineComponent({
       } else {
         setNextOptionActive();
 
-        if (activeOption.value === normalizedOptions.value[normalizedOptions.value.length - 1]
+        const lastOption: NormalizedOption = normalizedOptions.value[normalizedOptions.value.length - 1];
+
+        if (optionIsActive(lastOption)
           && fetchedOptionsHaveMorePages.value
           && !fetchingMoreOptions.value) {
           fetchMoreOptions();
