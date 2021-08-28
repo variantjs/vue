@@ -1601,6 +1601,16 @@ describe('TRichSelect.vue', () => {
       // Was not called again (still called twice) since its busy
       expect(fetchOptionsMock).toHaveBeenCalledTimes(2);
     });
+
+    it('calls the fetchOptionsCancel method when component unmonted', () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      const cancelSpy = jest.spyOn(wrapper.vm.$.setupState, 'fetchOptionsCancel');
+
+      wrapper.unmount();
+
+      expect(cancelSpy).toHaveBeenCalled();
+    });
   });
 
   describe('show search input condition', () => {

@@ -28,6 +28,7 @@ export default function useFetchsOptions(
     optionsWereFetched: Ref<boolean>,
     fetchOptions: () => void,
     fetchMoreOptions: () => void,
+    fetchOptionsCancel: () => void,
   } {
   const getNormalizedOptions = (rawOptions: InputOptions): NormalizedOptions => (normalize.value
     ? normalizeOptions(rawOptions, textAttribute.value, valueAttribute.value)
@@ -121,10 +122,15 @@ export default function useFetchsOptions(
 
   const debouncedFetchOptions = debounce(fetchOptionsFn, fetchDelay.value);
 
+  const fetchOptionsCancel = () => {
+    debouncedFetchOptions.cancel();
+    fetchingOptions.value = false;
+    fetchingMoreOptions.value = false;
+  };
+
   const fetchOptions = (nextPage?: number) => {
     if (!fetchsOptions.value) {
-      debouncedFetchOptions.cancel();
-      fetchingOptions.value = false;
+      fetchOptionsCancel();
       return;
     }
 
@@ -171,5 +177,6 @@ export default function useFetchsOptions(
     optionsWereFetched,
     fetchOptions,
     fetchMoreOptions,
+    fetchOptionsCancel,
   };
 }

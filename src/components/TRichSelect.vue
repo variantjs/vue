@@ -235,6 +235,7 @@ export default defineComponent({
       fetchMoreOptions,
       optionsWereFetched,
       fetchedOptionsHaveMorePages,
+      fetchOptionsCancel,
     } = useFetchsOptions(
       computed(() => configuration.value.options),
       computed(() => configuration.value.textAttribute),
@@ -467,6 +468,7 @@ export default defineComponent({
       clearValue,
       doFetchOptions,
       fetchsOptions,
+      fetchOptionsCancel,
       optionsWereFetched,
       needsMoreCharsToFetch,
       showSearchInput,
@@ -524,8 +526,7 @@ export default defineComponent({
     }
   },
   beforeUnmount() {
-
-    // @TODO: Cancel any pending option searching
+    this.fetchOptionsCancel();
   },
   methods: {
     onOptionSelected(): void {
