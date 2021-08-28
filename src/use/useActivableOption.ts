@@ -43,9 +43,7 @@ export default function useActivableOption(
   const optionIsActive = (option: NormalizedOption): boolean => (activeOption.value === null ? false : isEqual(activeOption.value.value, option.value));
 
   const setActiveOption = (option: NormalizedOption): void => {
-    if (activeOption.value !== option) {
-      activeOption.value = option;
-    }
+    activeOption.value = option;
   };
 
   const setNextOptionActive = (): void => {

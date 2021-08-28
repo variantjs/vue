@@ -95,4 +95,69 @@ describe('RichSelectTrigger', () => {
     expect(wrapper.vm.showSelectorIcon).toBe(false);
     expect(wrapper.find('selector-icon-stub').exists()).toBe(false);
   });
+
+  describe('isFetchingOptionsWhileClosed handle', () => {
+    it('considers that isFetchingOptionsWhileClosed if is fetchingOptions is true and is not shown', () => {
+      const wrapper = shallowMount(RichSelectTrigger, {
+        global: {
+          provide: {
+            ...global.provide,
+            fetchingOptions: ref(true),
+            shown: ref(false),
+          },
+        },
+      });
+
+      expect(wrapper.vm.isFetchingOptionsWhileClosed).toBe(true);
+    });
+
+    it('doesnt considers that isFetchingOptionsWhileClosed if is not fetchingOptions', () => {
+      const wrapper = shallowMount(RichSelectTrigger, {
+        global: {
+          provide: {
+            ...global.provide,
+            fetchingOptions: ref(false),
+            shown: ref(false),
+          },
+        },
+      });
+
+      expect(wrapper.vm.isFetchingOptionsWhileClosed).toBe(false);
+    });
+
+    it('doesnt considers that isFetchingOptionsWhileClosed if is fetchingOptions is true but is shown', () => {
+      const wrapper = shallowMount(RichSelectTrigger, {
+        global: {
+          provide: {
+            ...global.provide,
+            fetchingOptions: ref(true),
+            shown: ref(true),
+          },
+        },
+      });
+
+      expect(wrapper.vm.isFetchingOptionsWhileClosed).toBe(false);
+    });
+
+    it('will show a loading... placeholder and loading icon when fetching options while closed', () => {
+      const wrapper = shallowMount(RichSelectTrigger, {
+        global: {
+          provide: {
+            ...global.provide,
+            configuration: computed<TSelectOptions | undefined>(() => ({
+              loadingClosedPlaceholder: 'Loading...',
+            })),
+            fetchingOptions: ref(true),
+          },
+        },
+      });
+
+      expect(wrapper.vm.$refs.label).not.toBeDefined();
+      expect(wrapper.vm.$refs.placeholder).not.toBeDefined();
+      expect(wrapper.vm.$refs.fetchingPlaceholder).toBeDefined();
+      expect(wrapper.vm.$refs.loadingIcon).toBeDefined();
+      expect(wrapper.vm.$refs.fetchingPlaceholder.placeholder).toBe('Loading...');
+      expect(wrapper.vm.$refs.fetchingPlaceholder.classProperty).toBe('selectButtonSearchingPlaceholder');
+    });
+  });
 });

@@ -3,27 +3,30 @@
     v-if="isFetchingOptionsWhileClosed"
     ref="fetchingPlaceholder"
     class-property="selectButtonSearchingPlaceholder"
-    placeholder="Loading..."
+    :placeholder="configuration.loadingClosedPlaceholder"
   />
 
   <text-placeholder
     v-else-if="! hasOptionSelected"
     ref="placeholder"
     class-property="selectButtonPlaceholder"
-    :placeholder="isFetchingOptionsWhileClosed ? 'Loading...' : configuration.placeholder"
+    :placeholder="configuration.placeholder"
   />
 
   <span
     v-else
+    ref="label"
     class="block truncate"
   >{{ selectedOption.text }}</span>
 
   <loading-icon
     v-if="isFetchingOptionsWhileClosed"
+    ref="loadingIcon"
     class="flex-shrink-0 w-4 h-4 ml-1 text-gray-600"
   />
   <selector-icon
     v-else-if="showSelectorIcon"
+    ref="selectorIcon"
     class="flex-shrink-0 w-4 h-4 ml-1 text-gray-600"
   />
 </template>

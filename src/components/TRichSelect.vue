@@ -179,6 +179,10 @@ export default defineComponent({
       type: String,
       default: 'Searching...',
     },
+    loadingClosedPlaceholder: {
+      type: String,
+      default: 'Loading...',
+    },
     loadingMoreResultsText: {
       type: String,
       default: 'Loading more options...',

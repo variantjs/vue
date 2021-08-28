@@ -1,21 +1,29 @@
 import { NormalizedOption } from '@variantjs/core';
 import {
-  ComputedRef, computed, ref, Ref,
+  ComputedRef, computed, ref, Ref, nextTick,
 } from 'vue';
 import useActivableOption from '../../use/useActivableOption';
 import { useSetup } from './useSetup';
 
 describe('useActivableOption', () => {
-  const options: ComputedRef<NormalizedOption[]> = computed(() => [
+  const optionsRef = ref<NormalizedOption[]>([
     { value: 'a', text: 'Option A' },
     { value: 'b', text: 'Option B' },
     { value: 'c', text: 'Option C' },
   ]);
 
+  const options: ComputedRef<NormalizedOption[]> = computed(() => optionsRef.value);
+
   const localValue: Ref = ref(null);
 
   beforeEach(() => {
     localValue.value = null;
+
+    optionsRef.value = [
+      { value: 'a', text: 'Option A' },
+      { value: 'b', text: 'Option B' },
+      { value: 'c', text: 'Option C' },
+    ];
   });
 
   it('contains an activeOption ref and initActiveOption, optionIsActive, setActiveOption, setNextOptionActive, setPrevOptionActive methods', () => {
@@ -48,6 +56,65 @@ describe('useActivableOption', () => {
       setActiveOption({ ...options.value[1] });
 
       expect(activeOption.value).toEqual({ ...options.value[1] });
+    });
+  });
+
+  describe('options change', () => {
+    it('sets the active option to the first new option when initially set', () => {
+      optionsRef.value = [];
+
+      useSetup(async () => {
+        const {
+          activeOption,
+        } = useActivableOption(
+          options,
+          localValue,
+        );
+
+        optionsRef.value = [{ value: 'foo', text: 'Bar' }];
+
+        await nextTick();
+
+        expect(activeOption.value!.value).toEqual('d');
+      });
+    });
+
+    it('doesnt set an active option if no options', () => {
+      optionsRef.value = [];
+
+      useSetup(async () => {
+        const {
+          activeOption,
+        } = useActivableOption(
+          options,
+          localValue,
+        );
+
+        optionsRef.value = [];
+
+        await nextTick();
+
+        expect(activeOption.value).toBe(null);
+      });
+    });
+
+    it('sets the active option to the first new option ', () => {
+      useSetup(async () => {
+        const {
+          activeOption,
+        } = useActivableOption(
+          options,
+          localValue,
+        );
+
+        expect(activeOption.value!.value).toEqual('a');
+
+        optionsRef.value.push({ value: 'd', text: 'Option D' });
+
+        await nextTick();
+
+        expect(activeOption.value!.value).toEqual('d');
+      });
     });
   });
 

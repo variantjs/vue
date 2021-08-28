@@ -31,6 +31,7 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   searchBoxPlaceholder?: string,
   noResultsText?: string,
   searchingText?: string,
+  loadingClosedPlaceholder?: string,
   loadingMoreResultsText?: string,
   maxHeight?: Measure | null,
   dropdownPlacement?: Placement,
