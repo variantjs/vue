@@ -9,7 +9,7 @@ module.exports = {
     "!**/node_modules/**",
     "!**/*.d.ts"
   ],
-  coverageReporters: ["json", "html"],
+  coverageReporters: ["text", "json", "html"],
   testMatch: [ "**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ],
   coveragePathIgnorePatterns: [
     "/node_modules/",
