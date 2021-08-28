@@ -1290,6 +1290,127 @@ describe('TRichSelect.vue', () => {
         // No search query but page 2
         expect(fetchOptionsMock).toHaveBeenLastCalledWith(undefined, 2);
       });
+
+      it('doesnt calls the fetchMoreOptions method if press down if is last item if no have more options to fetch', async () => {
+        const responsePromise = new Promise((resolve) => {
+          resolve({
+            results: [1, 2],
+          });
+        });
+        const fetchOptionsMock = jest.fn().mockReturnValue(responsePromise);
+
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnClick: true,
+            fetchOptions: fetchOptionsMock,
+            delay: 0,
+          },
+        });
+
+        wrapper.vm.shown = true;
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', {
+          key: 'ArrowDown',
+        });
+
+        // So it calls the fetchOptions method
+        wrapper.vm.beforeShowHandler();
+
+        // Should be called with `undefined` search query and `undefined` next page.
+        expect(fetchOptionsMock).toHaveBeenLastCalledWith(undefined, undefined);
+        expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
+
+        // Wait until options were fetched.
+        await wrapper.vm.$nextTick();
+        // Wait until options were stored in the state
+        await wrapper.vm.$nextTick();
+
+        // Active option is first one
+        expect(wrapper.vm.activeOption.value).toEqual(1);
+        // Not called again yet
+        await wrapper.vm.$nextTick();
+        expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
+
+        // Press down one time
+        dropdown.$el.dispatchEvent(event);
+        // now the active option is last loaded one
+        expect(wrapper.vm.activeOption.value).toEqual(2);
+        await wrapper.vm.$nextTick();
+        // But it not calls the fetchOptions method
+        expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
+      });
+
+      it('doesnt calls the fetchMoreOptions method if press down if is currently loading more options', async () => {
+        const responsePromise1 = new Promise((resolve) => {
+          resolve({
+            results: [1, 2],
+            hasMorePages: true,
+          });
+        });
+        const responsePromise2 = new Promise(() => {
+          // Never resolves
+        });
+        const fetchOptionsMock = jest.fn().mockReturnValue(responsePromise1);
+
+        const wrapper = shallowMount(TRichSelect, {
+          props: {
+            toggleOnClick: true,
+            fetchOptions: fetchOptionsMock,
+            delay: 0,
+          },
+        });
+
+        wrapper.vm.shown = true;
+
+        const { dropdown } = wrapper.vm.$refs;
+
+        const event = new KeyboardEvent('keydown', {
+          key: 'ArrowDown',
+        });
+
+        // So it calls the fetchOptions method
+        wrapper.vm.beforeShowHandler();
+
+        // Should be called with `undefined` search query and `undefined` next page.
+        expect(fetchOptionsMock).toHaveBeenLastCalledWith(undefined, undefined);
+        expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
+
+        // Wait until options were fetched.
+        await wrapper.vm.$nextTick();
+        // Wait until options were stored in the state
+        await wrapper.vm.$nextTick();
+
+        // Active option is first one
+        expect(wrapper.vm.activeOption.value).toEqual(1);
+        // Not called again yet
+        await wrapper.vm.$nextTick();
+        expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
+
+        fetchOptionsMock.mockReturnValue(responsePromise2);
+
+        // Press down one time
+        dropdown.$el.dispatchEvent(event);
+        // now the active option is last loaded one
+        expect(wrapper.vm.activeOption.value).toEqual(2);
+        await wrapper.vm.$nextTick();
+        // Called again
+        expect(fetchOptionsMock).toHaveBeenCalledTimes(2);
+        // No search query but page 2
+        expect(fetchOptionsMock).toHaveBeenLastCalledWith(undefined, 2);
+
+        // Wait until options call is resolved (that will never happen in this test
+        // to emulate a busy state)
+        await wrapper.vm.$nextTick();
+
+        // Press down one time
+        dropdown.$el.dispatchEvent(event);
+
+        await wrapper.vm.$nextTick();
+        // Was not called again (still called twice) since its busy
+        expect(fetchOptionsMock).toHaveBeenCalledTimes(2);
+      });
     });
   });
 
