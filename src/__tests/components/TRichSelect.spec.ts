@@ -1468,6 +1468,141 @@ describe('TRichSelect.vue', () => {
     });
   });
 
+  describe('fetch options when dropdown bottom reached', () => {
+    it('fetchs more options when dropdownBottomReachedHandler called if has more pages', async () => {
+      const responsePromise = new Promise((resolve) => {
+        resolve({
+          results: [1, 2],
+          hasMorePages: true,
+        });
+      });
+
+      const fetchOptionsMock = jest.fn().mockReturnValue(responsePromise);
+
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          toggleOnClick: true,
+          fetchOptions: fetchOptionsMock,
+          delay: 0,
+        },
+      });
+
+      wrapper.vm.shown = true;
+
+      // So it calls the fetchOptions method the first time
+      wrapper.vm.beforeShowHandler();
+
+      // Should be called with `undefined` search query and `undefined` next page.
+      expect(fetchOptionsMock).toHaveBeenLastCalledWith(undefined, undefined);
+      expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
+
+      // Wait until options were fetched.
+      await wrapper.vm.$nextTick();
+      // Wait until options were stored in the state
+      await wrapper.vm.$nextTick();
+
+      wrapper.vm.$.provides.dropdownBottomReachedHandler();
+
+      // Called again
+      expect(fetchOptionsMock).toHaveBeenCalledTimes(2);
+      // No search query but page 2
+      expect(fetchOptionsMock).toHaveBeenLastCalledWith(undefined, 2);
+    });
+
+    it('doesnt fetch more options when dropdownBottomReachedHandler called if no more pages', async () => {
+      const responsePromise = new Promise((resolve) => {
+        resolve({
+          results: [1, 2],
+          hasMorePages: false,
+        });
+      });
+
+      const fetchOptionsMock = jest.fn().mockReturnValue(responsePromise);
+
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          toggleOnClick: true,
+          fetchOptions: fetchOptionsMock,
+          delay: 0,
+        },
+      });
+
+      wrapper.vm.shown = true;
+
+      // So it calls the fetchOptions method the first time
+      wrapper.vm.beforeShowHandler();
+
+      // Should be called with `undefined` search query and `undefined` next page.
+      expect(fetchOptionsMock).toHaveBeenLastCalledWith(undefined, undefined);
+      expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
+
+      // Wait until options were fetched.
+      await wrapper.vm.$nextTick();
+      // Wait until options were stored in the state
+      await wrapper.vm.$nextTick();
+
+      wrapper.vm.$.provides.dropdownBottomReachedHandler();
+
+      // Still called 1 time
+      expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('doesnt fetchs more options when dropdownBottomReachedHandler called if previous call is busy', async () => {
+      const responsePromise = new Promise((resolve) => {
+        resolve({
+          results: [1, 2],
+          hasMorePages: true,
+        });
+      });
+
+      const responsePromise2 = new Promise(() => {
+        // never resolve
+      });
+
+      const fetchOptionsMock = jest.fn().mockReturnValue(responsePromise);
+
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          toggleOnClick: true,
+          fetchOptions: fetchOptionsMock,
+          delay: 0,
+        },
+      });
+
+      wrapper.vm.shown = true;
+
+      // So it calls the fetchOptions method the first time
+      wrapper.vm.beforeShowHandler();
+
+      // Should be called with `undefined` search query and `undefined` next page.
+      expect(fetchOptionsMock).toHaveBeenLastCalledWith(undefined, undefined);
+      expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
+
+      // Wait until options were fetched.
+      await wrapper.vm.$nextTick();
+      // Wait until options were stored in the state
+      await wrapper.vm.$nextTick();
+
+      wrapper.vm.$.provides.dropdownBottomReachedHandler();
+
+      // Called again
+      expect(fetchOptionsMock).toHaveBeenCalledTimes(2);
+      // No search query but now uses page 2
+      expect(fetchOptionsMock).toHaveBeenLastCalledWith(undefined, 2);
+
+      fetchOptionsMock.mockReturnValue(responsePromise2);
+
+      wrapper.vm.$.provides.dropdownBottomReachedHandler();
+
+      // Bottom reached again but previous call is still busy
+      wrapper.vm.$.provides.dropdownBottomReachedHandler();
+
+      await wrapper.vm.$nextTick();
+      // Was not called again (still called twice) since its busy
+      expect(fetchOptionsMock).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('show search input condition', () => {
     it('hides the search input if `hideSearchbox` is set', () => {
       const wrapper = shallowMount(TRichSelect, {
