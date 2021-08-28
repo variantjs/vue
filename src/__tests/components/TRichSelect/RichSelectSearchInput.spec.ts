@@ -19,9 +19,14 @@ describe('RichSelectSearchInput', () => {
     },
   };
 
-  const wrapper = shallowMount(RichSelectSearchInput, { global });
+  let wrapper: any;
+  let search: HTMLInputElement;
 
-  const search = wrapper.vm.$refs.search as HTMLInputElement;
+  beforeEach(() => {
+    wrapper = shallowMount(RichSelectSearchInput, { global });
+
+    search = wrapper.vm.$refs.search as HTMLInputElement;
+  });
 
   it('renders the component without errors', () => {
     expect(wrapper.vm.$el.tagName).toBe('DIV');
@@ -57,5 +62,59 @@ describe('RichSelectSearchInput', () => {
     search.dispatchEvent(event);
 
     expect(keydownEscHandler).toHaveBeenCalled();
+  });
+
+  it('focus the search field after is shown', async () => {
+    const shown = ref(false);
+
+    wrapper = shallowMount(RichSelectSearchInput, {
+      global: {
+        provide: {
+          ...global.provide,
+          shown,
+        },
+      },
+    });
+
+    const searchInput = wrapper.vm.$el.querySelector('input');
+
+    const focusSpy = jest.spyOn(searchInput, 'focus');
+
+    shown.value = true;
+
+    await wrapper.vm.$nextTick();
+
+    await wrapper.vm.$nextTick();
+
+    expect(focusSpy).toHaveBeenCalled();
+
+    focusSpy.mockRestore();
+  });
+
+  it('doesnt focus the search field after is hidden', async () => {
+    const shown = ref(true);
+
+    wrapper = shallowMount(RichSelectSearchInput, {
+      global: {
+        provide: {
+          ...global.provide,
+          shown,
+        },
+      },
+    });
+
+    const searchInput = wrapper.vm.$el.querySelector('input');
+
+    const focusSpy = jest.spyOn(searchInput, 'focus');
+
+    shown.value = false;
+
+    await wrapper.vm.$nextTick();
+
+    await wrapper.vm.$nextTick();
+
+    expect(focusSpy).not.toHaveBeenCalled();
+
+    focusSpy.mockRestore();
   });
 });
