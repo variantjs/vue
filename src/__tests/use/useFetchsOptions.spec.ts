@@ -158,7 +158,7 @@ describe('useFetchsOptions', () => {
     });
   });
 
-  describe('with fetch function and no initial options', () => {
+  describe('with fetch function', () => {
     beforeEach(() => {
       options.value = [];
       fetchFn.value = () => new Promise((resolve) => resolve({
@@ -321,7 +321,7 @@ describe('useFetchsOptions', () => {
       });
     });
 
-    describe('search with a custom delay', () => {
+    describe('with a custom delay', () => {
       beforeEach(() => {
         fetchDelay.value = 200;
         jest.useFakeTimers();
@@ -405,6 +405,122 @@ describe('useFetchsOptions', () => {
           expect(fetchFunctionMock).not.toHaveBeenCalled();
 
           jest.advanceTimersByTime(1);
+
+          expect(fetchFunctionMock).toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('with a minimum input length', () => {
+      beforeEach(() => {
+        fetchMinimumInputLength.value = 3;
+      });
+
+      it('doesnt fetch if no query', () => {
+        const fetchFunctionMock = jest.fn();
+
+        fetchFn.value = fetchFunctionMock;
+
+        useSetup(async () => {
+          const { normalizedOptions, fetchOptions } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(normalizedOptions.value).toEqual([]);
+
+          fetchOptions();
+
+          expect(fetchFunctionMock).not.toHaveBeenCalled();
+        });
+      });
+
+      it('doesnt fetch if the query is shorter than the min input length', () => {
+        const fetchFunctionMock = jest.fn();
+
+        fetchFn.value = fetchFunctionMock;
+
+        searchQuery.value = 'te';
+
+        useSetup(async () => {
+          const { normalizedOptions, fetchOptions } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(normalizedOptions.value).toEqual([]);
+
+          fetchOptions();
+
+          expect(fetchFunctionMock).not.toHaveBeenCalled();
+        });
+      });
+
+      it('fetchs if the query is exactly the min input length', () => {
+        const fetchFunctionMock = jest.fn();
+
+        fetchFn.value = fetchFunctionMock;
+
+        searchQuery.value = 'tes';
+
+        useSetup(async () => {
+          const { normalizedOptions, fetchOptions } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(normalizedOptions.value).toEqual([]);
+
+          fetchOptions();
+
+          expect(fetchFunctionMock).toHaveBeenCalled();
+        });
+      });
+
+      it('fetchs if the query is larger that the min input length', () => {
+        const fetchFunctionMock = jest.fn();
+
+        fetchFn.value = fetchFunctionMock;
+
+        searchQuery.value = 'test';
+
+        useSetup(async () => {
+          const { normalizedOptions, fetchOptions } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(normalizedOptions.value).toEqual([]);
+
+          fetchOptions();
 
           expect(fetchFunctionMock).toHaveBeenCalled();
         });
