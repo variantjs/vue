@@ -226,6 +226,45 @@ describe('useFetchsOptions', () => {
       });
     });
 
+    it('determines that is fetching options is promise is busy', () => {
+      jest.useFakeTimers();
+
+      useSetup(async () => {
+        fetchFn.value = () => new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({
+              results: ['A', 'B'],
+            });
+          }, 10);
+        });
+
+        const { fetchingOptions, fetchOptions } = useFetchsOptions(
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        expect(fetchingOptions.value).toBe(false);
+
+        fetchOptions();
+
+        expect(fetchingOptions.value).toBe(true);
+
+        jest.advanceTimersByTime(9);
+        expect(fetchingOptions.value).toBe(true);
+        jest.advanceTimersByTime(1);
+        expect(fetchingOptions.value).toBe(false);
+      });
+
+      jest.useRealTimers();
+    });
+
     it('handles undefined options', () => {
       useSetup(async () => {
         fetchFn.value = () => new Promise((resolve) => resolve({
