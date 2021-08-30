@@ -321,13 +321,20 @@ describe('useFetchsOptions', () => {
       });
     });
 
-    describe('with search query', () => {
-      it('filters by the search query', () => {
-        fetchFn.value = (query?: string) => new Promise((resolve) => resolve({
-          results: [
-            { value: query, text: query },
-          ],
-        }));
+    describe('search with a custom delay', () => {
+      beforeEach(() => {
+        fetchDelay.value = 200;
+        jest.useFakeTimers();
+      });
+
+      afterEach(() => {
+        jest.useRealTimers();
+      });
+
+      it('fetchs after 200ms', () => {
+        const fetchFunctionMock = jest.fn();
+
+        fetchFn.value = fetchFunctionMock;
 
         searchQuery.value = 'test ';
 
@@ -348,11 +355,88 @@ describe('useFetchsOptions', () => {
 
           fetchOptions();
 
-          await nextTick();
+          expect(fetchFunctionMock).not.toHaveBeenCalled();
 
-          expect(normalizedOptions.value).toEqual([
-            { raw: 'test', text: 'test', value: 'test' },
-          ]);
+          jest.advanceTimersByTime(199);
+
+          expect(fetchFunctionMock).not.toHaveBeenCalled();
+
+          jest.advanceTimersByTime(1);
+
+          expect(fetchFunctionMock).toHaveBeenCalled();
+        });
+      });
+
+      it('throtles the search', () => {
+        const fetchFunctionMock = jest.fn();
+
+        fetchFn.value = fetchFunctionMock;
+
+        searchQuery.value = 'test ';
+
+        useSetup(async () => {
+          const { normalizedOptions, fetchOptions } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(normalizedOptions.value).toEqual([]);
+
+          fetchOptions();
+
+          expect(fetchFunctionMock).not.toHaveBeenCalled();
+
+          jest.advanceTimersByTime(199);
+
+          expect(fetchFunctionMock).not.toHaveBeenCalled();
+
+          // Since its throttled it will reset the counter
+          fetchOptions();
+
+          jest.advanceTimersByTime(199);
+
+          expect(fetchFunctionMock).not.toHaveBeenCalled();
+
+          jest.advanceTimersByTime(1);
+
+          expect(fetchFunctionMock).toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('with search query', () => {
+      it('filters by the search query', () => {
+        const fetchFunctionMock = jest.fn();
+
+        fetchFn.value = fetchFunctionMock;
+
+        searchQuery.value = 'test ';
+
+        useSetup(async () => {
+          const { normalizedOptions, fetchOptions } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(normalizedOptions.value).toEqual([]);
+
+          fetchOptions();
+
+          expect(fetchFunctionMock).toHaveBeenCalledWith('test ');
         });
       });
     });
