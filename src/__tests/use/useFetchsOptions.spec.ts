@@ -503,7 +503,7 @@ describe('useFetchsOptions', () => {
 
         fetchFn.value = fetchFunctionMock;
 
-        searchQuery.value = 'test';
+        searchQuery.value = 'te';
 
         useSetup(async () => {
           const { normalizedOptions, fetchOptions } = useFetchsOptions(
@@ -523,6 +523,69 @@ describe('useFetchsOptions', () => {
           fetchOptions();
 
           expect(fetchFunctionMock).toHaveBeenCalled();
+        });
+      });
+
+      it('builds the fetch minimum input length text', () => {
+        useSetup(() => {
+          const { needsMoreCharsMessage } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(needsMoreCharsMessage.value).toBe('Please enter 3 or more characters');
+        });
+      });
+
+      it('accepts a string as the minimum input length text', () => {
+        fetchMinimumInputLengthText.value = 'test';
+        useSetup(() => {
+          const { needsMoreCharsMessage } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(needsMoreCharsMessage.value).toBe('test');
+        });
+      });
+
+      it('pass the minimum input length text and the query to the fetchMinimumInputLengthText function ', () => {
+        const fetchMinimumInputLengthTextMock = jest.fn().mockImplementation(() => 'test');
+
+        fetchMinimumInputLengthText.value = fetchMinimumInputLengthTextMock;
+
+        searchQuery.value = 'te';
+
+        useSetup(() => {
+          const { needsMoreCharsMessage } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(needsMoreCharsMessage.value).toBe('test');
+
+          expect(fetchMinimumInputLengthTextMock).toHaveBeenCalledWith(3, 'te');
         });
       });
     });
