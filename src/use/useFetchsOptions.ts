@@ -15,7 +15,7 @@ export default function useFetchsOptions(
   fetchFn: Ref<FetchOptionsFn | undefined>,
   fetchDelay: Ref<number | undefined>,
   fetchMinimumInputLength: Ref<number | undefined>,
-  fetchMinimumInputLengthText: ComputedRef<MinimumInputLengthTextProp>,
+  fetchMinimumInputLengthText: Ref<MinimumInputLengthTextProp>,
 ): {
     normalizedOptions: ComputedRef<NormalizedOptions>
     flattenedOptions: ComputedRef<NormalizedOption[]>
