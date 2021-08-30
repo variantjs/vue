@@ -48,6 +48,34 @@ describe('useFetchsOptions', () => {
       });
     });
 
+    it('returns flattened options', () => {
+      useSetup(() => {
+        const { flattenedOptions } = useFetchsOptions(
+          ref([
+            { text: 'A', value: 'A' },
+            {
+              text: 'B', value: 'B', children: ['C'],
+            },
+          ]),
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        expect(flattenedOptions.value).toEqual(
+          [
+            { value: 'A', text: 'A', raw: { text: 'A', value: 'A' } },
+            { value: 'C', text: 'C', raw: 'C' },
+          ],
+        );
+      });
+    });
+
     it('handles undefined options', () => {
       useSetup(() => {
         const { normalizedOptions } = useFetchsOptions(
@@ -439,6 +467,54 @@ describe('useFetchsOptions', () => {
           fetchOptions();
 
           expect(fetchFunctionMock).not.toHaveBeenCalled();
+        });
+      });
+
+      it('determines that needsMoreCharsToFetch if query is shorter that the min input length', () => {
+        const fetchFunctionMock = jest.fn();
+
+        fetchFn.value = fetchFunctionMock;
+
+        searchQuery.value = 'te';
+
+        useSetup(async () => {
+          const { needsMoreCharsToFetch } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(needsMoreCharsToFetch.value).toBe(true);
+        });
+      });
+
+      it('determines that doesnt needsMoreCharsToFetch if query is exactly the min input length', () => {
+        const fetchFunctionMock = jest.fn();
+
+        fetchFn.value = fetchFunctionMock;
+
+        searchQuery.value = 'tes';
+
+        useSetup(async () => {
+          const { needsMoreCharsToFetch } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(needsMoreCharsToFetch.value).toBe(false);
         });
       });
 
