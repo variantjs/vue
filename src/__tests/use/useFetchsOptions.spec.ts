@@ -131,5 +131,30 @@ describe('useFetchsOptions', () => {
         expect(normalizedOptions.value).toEqual(options.value);
       });
     });
+
+    describe('with search query', () => {
+      it('filters by the search query', () => {
+        options.value = ['Option A', 'Option B', 'Option B2'];
+        searchQuery.value = 'b ';
+        useSetup(() => {
+          const { normalizedOptions } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(normalizedOptions.value).toEqual([
+            { raw: 'Option B', text: 'Option B', value: 'Option B' },
+            { raw: 'Option B2', text: 'Option B2', value: 'Option B2' },
+          ]);
+        });
+      });
+    });
   });
 });
