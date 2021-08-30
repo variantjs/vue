@@ -1,4 +1,5 @@
-import { nextTick, ref } from 'vue';
+import { InputOptions } from '@variantjs/core';
+import { h, nextTick, ref } from 'vue';
 import { FetchOptionsFn, MinimumInputLengthTextProp } from '../../types';
 import useFetchsOptions from '../../use/useFetchsOptions';
 import { useSetup } from './useSetup';
@@ -192,11 +193,41 @@ describe('useFetchsOptions', () => {
       fetchFn.value = () => new Promise((resolve) => resolve({
         results: ['A', 'B'],
       }));
+      fetchDelay.value = 0;
       jest.useFakeTimers();
     });
 
     afterEach(() => {
       jest.useRealTimers();
+    });
+
+    it('should emit an error event if the response is invalid', () => {
+      fetchFn.value = () => new Promise((resolve) => {
+        resolve({
+          wrong: 'sss',
+        } as any);
+      });
+
+      useSetup(() => {
+        const { fetchOptions } = useFetchsOptions(
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        fetchOptions();
+      }, {}, {
+        onFetchOptionsError: (error: any) => {
+          expect(error).toBeInstanceOf(Error);
+          expect(error.toString()).toBe('Error: Options response must be an object with `results` property.');
+        },
+      });
     });
 
     it('returns normalized options', () => {
@@ -227,9 +258,9 @@ describe('useFetchsOptions', () => {
     });
 
     it('determines that is fetching options is promise is busy', () => {
-      jest.useFakeTimers();
-
       useSetup(async () => {
+        jest.useFakeTimers();
+
         fetchFn.value = () => new Promise((resolve) => {
           setTimeout(() => {
             resolve({
@@ -253,16 +284,215 @@ describe('useFetchsOptions', () => {
         expect(fetchingOptions.value).toBe(false);
 
         fetchOptions();
-
+        await nextTick();
         expect(fetchingOptions.value).toBe(true);
 
         jest.advanceTimersByTime(9);
+        await nextTick();
         expect(fetchingOptions.value).toBe(true);
-        jest.advanceTimersByTime(1);
-        expect(fetchingOptions.value).toBe(false);
-      });
 
-      jest.useRealTimers();
+        jest.advanceTimersByTime(1);
+        await nextTick();
+        expect(fetchingOptions.value).toBe(false);
+
+        jest.useRealTimers();
+      });
+    });
+
+    it('determines if the fetched options have more pages', () => {
+      useSetup(async () => {
+        fetchFn.value = () => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: true,
+          });
+        });
+
+        const { fetchedOptionsHaveMorePages, fetchOptions } = useFetchsOptions(
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        fetchOptions();
+
+        await nextTick();
+
+        expect(fetchedOptionsHaveMorePages.value).toBe(true);
+      });
+    });
+
+    it('determines if the fetched options doesnt have more pages', () => {
+      useSetup(() => {
+        fetchFn.value = () => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        });
+
+        const { fetchedOptionsHaveMorePages, fetchOptions } = useFetchsOptions(
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        fetchOptions();
+
+        expect(fetchedOptionsHaveMorePages.value).toBe(false);
+      });
+    });
+
+    it('determines if the options were fetched', () => {
+      useSetup(async () => {
+        fetchFn.value = () => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        });
+
+        const { optionsWereFetched, fetchOptions } = useFetchsOptions(
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        expect(optionsWereFetched.value).toBe(false);
+
+        fetchOptions();
+
+        await nextTick();
+
+        expect(optionsWereFetched.value).toBe(true);
+      });
+    });
+
+    it('resets the optionsWereFetched flag if search query changes', () => {
+      useSetup(async () => {
+        fetchFn.value = () => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        });
+
+        const { optionsWereFetched, fetchOptions } = useFetchsOptions(
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+        expect(optionsWereFetched.value).toBe(false);
+
+        fetchOptions();
+
+        await nextTick();
+
+        expect(optionsWereFetched.value).toBe(true);
+
+        searchQuery.value = 'other';
+
+        await nextTick();
+
+        expect(optionsWereFetched.value).toBe(false);
+
+        fetchOptions();
+
+        await nextTick();
+
+        expect(optionsWereFetched.value).toBe(true);
+      });
+    });
+
+    it('doesnt resets the optionsWereFetched flag if search query doesnt have enough characters', () => {
+      useSetup(async () => {
+        fetchFn.value = () => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        });
+
+        fetchMinimumInputLength.value = 3;
+
+        const { optionsWereFetched, fetchOptions } = useFetchsOptions(
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+        expect(optionsWereFetched.value).toBe(false);
+
+        fetchOptions();
+
+        await nextTick();
+
+        expect(optionsWereFetched.value).toBe(true);
+
+        searchQuery.value = 'te';
+
+        await nextTick();
+
+        expect(optionsWereFetched.value).toBe(true);
+
+        searchQuery.value = 'tes';
+
+        await nextTick();
+
+        expect(optionsWereFetched.value).toBe(false);
+      });
+    });
+
+    it('doesnt resets the optionsWereFetched flag if no fetchFn', () => {
+      useSetup(() => {
+        fetchFn.value = undefined;
+
+        const { optionsWereFetched, fetchOptions } = useFetchsOptions(
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+        expect(optionsWereFetched.value).toBe(false);
+
+        fetchOptions();
+
+        expect(optionsWereFetched.value).toBe(false);
+      });
     });
 
     it('handles undefined options', () => {
@@ -399,7 +629,12 @@ describe('useFetchsOptions', () => {
       });
 
       it('fetchs after 200ms', () => {
-        const fetchFunctionMock = jest.fn();
+        const fetchFunctionMock = jest.fn().mockImplementation(() => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        }));
 
         fetchFn.value = fetchFunctionMock;
 
@@ -422,20 +657,31 @@ describe('useFetchsOptions', () => {
 
           fetchOptions();
 
+          await nextTick();
+
           expect(fetchFunctionMock).not.toHaveBeenCalled();
 
           jest.advanceTimersByTime(199);
 
+          await nextTick();
+
           expect(fetchFunctionMock).not.toHaveBeenCalled();
 
           jest.advanceTimersByTime(1);
+
+          await nextTick();
 
           expect(fetchFunctionMock).toHaveBeenCalled();
         });
       });
 
       it('throtles the search', () => {
-        const fetchFunctionMock = jest.fn();
+        const fetchFunctionMock = jest.fn().mockImplementation(() => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        }));
 
         fetchFn.value = fetchFunctionMock;
 
@@ -458,9 +704,13 @@ describe('useFetchsOptions', () => {
 
           fetchOptions();
 
+          await nextTick();
+
           expect(fetchFunctionMock).not.toHaveBeenCalled();
 
           jest.advanceTimersByTime(199);
+
+          await nextTick();
 
           expect(fetchFunctionMock).not.toHaveBeenCalled();
 
@@ -469,9 +719,13 @@ describe('useFetchsOptions', () => {
 
           jest.advanceTimersByTime(199);
 
+          await nextTick();
+
           expect(fetchFunctionMock).not.toHaveBeenCalled();
 
           jest.advanceTimersByTime(1);
+
+          await nextTick();
 
           expect(fetchFunctionMock).toHaveBeenCalled();
         });
@@ -484,12 +738,17 @@ describe('useFetchsOptions', () => {
       });
 
       it('doesnt fetch if no query', () => {
-        const fetchFunctionMock = jest.fn();
+        const fetchFunctionMock = jest.fn().mockImplementation(() => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        }));
 
         fetchFn.value = fetchFunctionMock;
 
         useSetup(async () => {
-          const { normalizedOptions, fetchOptions } = useFetchsOptions(
+          const { normalizedOptions } = useFetchsOptions(
             options,
             textAttribute,
             valueAttribute,
@@ -503,20 +762,27 @@ describe('useFetchsOptions', () => {
 
           expect(normalizedOptions.value).toEqual([]);
 
-          fetchOptions();
+          searchQuery.value = '';
+
+          await nextTick();
 
           expect(fetchFunctionMock).not.toHaveBeenCalled();
         });
       });
 
       it('determines that needsMoreCharsToFetch if query is shorter that the min input length', () => {
-        const fetchFunctionMock = jest.fn();
+        const fetchFunctionMock = jest.fn().mockImplementation(() => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        }));
 
         fetchFn.value = fetchFunctionMock;
 
         searchQuery.value = 'te';
 
-        useSetup(async () => {
+        useSetup(() => {
           const { needsMoreCharsToFetch } = useFetchsOptions(
             options,
             textAttribute,
@@ -533,14 +799,41 @@ describe('useFetchsOptions', () => {
         });
       });
 
+      it('determines that doesnt needsMoreCharsToFetch if not fetchFn', () => {
+        fetchFn.value = undefined;
+
+        searchQuery.value = 'test';
+
+        useSetup(() => {
+          const { needsMoreCharsToFetch } = useFetchsOptions(
+            options,
+            textAttribute,
+            valueAttribute,
+            normalize,
+            searchQuery,
+            fetchFn,
+            fetchDelay,
+            fetchMinimumInputLength,
+            fetchMinimumInputLengthText,
+          );
+
+          expect(needsMoreCharsToFetch.value).toBe(false);
+        });
+      });
+
       it('determines that doesnt needsMoreCharsToFetch if query is exactly the min input length', () => {
-        const fetchFunctionMock = jest.fn();
+        const fetchFunctionMock = jest.fn().mockImplementation(() => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        }));
 
         fetchFn.value = fetchFunctionMock;
 
         searchQuery.value = 'tes';
 
-        useSetup(async () => {
+        useSetup(() => {
           const { needsMoreCharsToFetch } = useFetchsOptions(
             options,
             textAttribute,
@@ -558,14 +851,17 @@ describe('useFetchsOptions', () => {
       });
 
       it('doesnt fetch if the query is shorter than the min input length', () => {
-        const fetchFunctionMock = jest.fn();
+        const fetchFunctionMock = jest.fn().mockImplementation(() => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        }));
 
         fetchFn.value = fetchFunctionMock;
 
-        searchQuery.value = 'te';
-
         useSetup(async () => {
-          const { normalizedOptions, fetchOptions } = useFetchsOptions(
+          const { normalizedOptions } = useFetchsOptions(
             options,
             textAttribute,
             valueAttribute,
@@ -579,21 +875,26 @@ describe('useFetchsOptions', () => {
 
           expect(normalizedOptions.value).toEqual([]);
 
-          fetchOptions();
+          searchQuery.value = 'te';
+
+          await nextTick();
 
           expect(fetchFunctionMock).not.toHaveBeenCalled();
         });
       });
 
       it('fetchs if the query is exactly the min input length', () => {
-        const fetchFunctionMock = jest.fn();
+        const fetchFunctionMock = jest.fn().mockImplementation(() => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        }));
 
         fetchFn.value = fetchFunctionMock;
 
-        searchQuery.value = 'tes';
-
         useSetup(async () => {
-          const { normalizedOptions, fetchOptions } = useFetchsOptions(
+          const { normalizedOptions } = useFetchsOptions(
             options,
             textAttribute,
             valueAttribute,
@@ -607,14 +908,21 @@ describe('useFetchsOptions', () => {
 
           expect(normalizedOptions.value).toEqual([]);
 
-          fetchOptions();
+          searchQuery.value = 'tes';
+
+          await nextTick();
 
           expect(fetchFunctionMock).toHaveBeenCalled();
         });
       });
 
       it('fetchs if the query is larger that the min input length', () => {
-        const fetchFunctionMock = jest.fn();
+        const fetchFunctionMock = jest.fn().mockImplementation(() => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        }));
 
         fetchFn.value = fetchFunctionMock;
 
@@ -636,6 +944,8 @@ describe('useFetchsOptions', () => {
           expect(normalizedOptions.value).toEqual([]);
 
           fetchOptions();
+
+          await nextTick();
 
           expect(fetchFunctionMock).toHaveBeenCalled();
         });
@@ -709,7 +1019,12 @@ describe('useFetchsOptions', () => {
       it('filters by the search query', () => {
         const fetchFunctionMock = jest.fn();
 
-        fetchFn.value = fetchFunctionMock;
+        fetchFn.value = fetchFunctionMock.mockImplementation(() => new Promise((resolve) => {
+          resolve({
+            results: ['A', 'B'],
+            hasMorePages: false,
+          });
+        }));
 
         searchQuery.value = 'test ';
 
@@ -730,9 +1045,54 @@ describe('useFetchsOptions', () => {
 
           fetchOptions();
 
+          await nextTick();
+
           expect(fetchFunctionMock).toHaveBeenCalledWith('test ');
         });
       });
     });
+
+    // describe('fetch more options', () => {
+    //   it('call the fetch options with the next page', () => {
+    //     const fetchFunctionMock = jest.fn().mockImplementation(() => new Promise((resolve) => {
+    //       resolve({
+    //         results: ['a', 'b'],
+    //         hasMorePages: true,
+    //       });
+    //     }));
+
+    //     fetchFn.value = fetchFunctionMock;
+
+    //     useSetup(async () => {
+    //       const { normalizedOptions, fetchOptions, fetchMoreOptions } = useFetchsOptions(
+    //         options,
+    //         textAttribute,
+    //         valueAttribute,
+    //         normalize,
+    //         searchQuery,
+    //         fetchFn,
+    //         fetchDelay,
+    //         fetchMinimumInputLength,
+    //         fetchMinimumInputLengthText,
+    //       );
+
+    //       expect(normalizedOptions.value).toEqual([]);
+
+    //       fetchOptions();
+
+    //       await nextTick();
+
+    //       expect(fetchFunctionMock).toHaveBeenCalledTimes(1);
+
+    //       fetchMoreOptions();
+
+    //       await nextTick();
+
+    //       expect(fetchFunctionMock).toHaveBeenCalledTimes(10);
+
+    //       expect(fetchFunctionMock).toHaveBeenLastCalledWith('gdssssg', '2sfas');
+    //     });
+    //   });
+    // });
   });
 });
