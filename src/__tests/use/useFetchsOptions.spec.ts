@@ -201,7 +201,7 @@ describe('useFetchsOptions', () => {
       jest.useRealTimers();
     });
 
-    it('should emit an error event if the response is invalid', () => {
+    it('should emit an error event if the response doesnt have results', () => {
       fetchFn.value = () => new Promise((resolve) => {
         resolve({
           wrong: 'sss',
@@ -226,6 +226,35 @@ describe('useFetchsOptions', () => {
         onFetchOptionsError: (error: any) => {
           expect(error).toBeInstanceOf(Error);
           expect(error.toString()).toBe('Error: Options response must be an object with `results` property.');
+        },
+      });
+    });
+
+    it('should emit an error event if the response results are in an invalid format', () => {
+      fetchFn.value = () => new Promise((resolve) => {
+        resolve({
+          results: 'invalid format',
+        } as any);
+      });
+
+      useSetup(() => {
+        const { fetchOptions } = useFetchsOptions(
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        fetchOptions();
+      }, {}, {
+        onFetchOptionsError: (error: any) => {
+          expect(error).toBeInstanceOf(Error);
+          expect(error.toString()).toBe('Error: Response.results must be an array or object, got string');
         },
       });
     });

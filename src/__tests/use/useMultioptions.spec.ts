@@ -23,6 +23,29 @@ describe('useMultioptions', () => {
     });
   });
 
+  it('returns flattened options', () => {
+    useSetup(() => {
+      const { flattenedOptions } = useMultioptions(
+        ref([
+          { text: 'A', value: 'A' },
+          {
+            text: 'B', value: 'B', children: ['C'],
+          },
+        ]),
+        textAttribute,
+        valueAttribute,
+        normalize,
+      );
+
+      expect(flattenedOptions.value).toEqual(
+        [
+          { value: 'A', text: 'A', raw: { text: 'A', value: 'A' } },
+          { value: 'C', text: 'C', raw: 'C' },
+        ],
+      );
+    });
+  });
+
   it('handles undefined options', () => {
     useSetup(() => {
       const { normalizedOptions } = useMultioptions(
