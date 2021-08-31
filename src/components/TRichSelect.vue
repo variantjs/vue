@@ -1,13 +1,16 @@
 <template>
-  <div :class="configuration.classesList?.wrapper">
+  <div
+    :class="configuration.classesList?.wrapper"
+    v-bind="wrapperAttributes"
+  >
     <t-select
       v-model="localValue"
+      v-bind="attributes"
       style="display: none"
       :fixed-classes="undefined"
       :classes="undefined"
       :multiple="configuration.multiple"
       :options="flattenedOptions"
-      v-bind="attributes"
     />
 
     <t-dropdown
@@ -227,6 +230,10 @@ export default defineComponent({
     },
     minimumResultsForSearch: {
       type: Number,
+      default: undefined,
+    },
+    wrapperAttributes: {
+      type: Object,
       default: undefined,
     },
   },

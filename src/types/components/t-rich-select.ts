@@ -36,4 +36,5 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   maxHeight?: Measure | null,
   dropdownPlacement?: Placement,
   dropdownPopperOptions?: Options,
+  wrapperAttributes?: Data,
 }, TRichSelectClassesValidKeys> & HTMLAttributes & Data;
