@@ -23,6 +23,8 @@
       :toggle-on-hover="false"
       :popper-options="configuration.dropdownPopperOptions"
       :placement="configuration.dropdownPlacement"
+      :tag-name="configuration.tags ? 'div' : 'button'"
+      :tabindex="configuration.tags && !hasSelectedOption ? 0 : undefined"
       data-rich-select-trigger="true"
       @mouseover="$emit('mouseover', $event)"
       @mouseleave="$emit('mouseleave', $event)"
@@ -126,6 +128,10 @@ export default defineComponent({
     multiple: {
       type: Boolean as PropType<boolean>,
       default: false,
+    },
+    tags: {
+      type: Boolean as PropType<boolean>,
+      default: true,
     },
     placeholder: {
       type: String,

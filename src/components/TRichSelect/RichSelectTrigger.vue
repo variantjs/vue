@@ -13,6 +13,8 @@
     :placeholder="configuration.placeholder"
   />
 
+  <rich-select-trigger-tags v-else-if="configuration.tags && configuration.multiple" />
+
   <span
     v-else
     ref="label"
@@ -38,6 +40,7 @@ import {
 } from 'vue';
 import { NormalizedOption } from '@variantjs/core';
 import TextPlaceholder from '../misc/TextPlaceholder.vue';
+import RichSelectTriggerTags from './RichSelectTriggerTags.vue';
 import SelectorIcon from '../../icons/SelectorIcon.vue';
 import LoadingIcon from '../../icons/LoadingIcon.vue';
 import { TRichSelectOptions } from '../../types';
@@ -46,6 +49,7 @@ import { useInjectsConfiguration } from '../../use';
 export default defineComponent({
   name: 'RichSelectTrigger',
   components: {
+    RichSelectTriggerTags,
     TextPlaceholder,
     SelectorIcon,
     LoadingIcon,

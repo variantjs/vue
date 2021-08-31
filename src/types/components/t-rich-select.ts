@@ -12,6 +12,7 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   modelValue?: TSelectValue,
   options?: InputOptions
   multiple?: boolean
+  tags?: boolean
   normalizeOptions?: boolean,
   valueAttribute?: string,
   textAttribute?: string,
