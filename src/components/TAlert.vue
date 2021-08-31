@@ -6,9 +6,9 @@
     <component
       :is="tagName"
       v-if="shown"
-      v-bind="attributes"
       ref="wrapper"
       :class="configuration.classesList?.wrapper"
+      v-bind="attributes"
     >
       <component
         :is="bodyTagName"
@@ -56,7 +56,9 @@
 </template>
 
 <script lang="ts">
-import { TAlertConfig, TAlertClassesKeys, TAlertClassesValidKeys } from '@variantjs/core';
+import {
+  TAlertConfig, TAlertClassesKeys, TAlertClassesValidKeys, Data,
+} from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { useConfigurationWithClassesList } from '../use';
@@ -73,6 +75,7 @@ export default defineComponent({
     CloseIcon,
     Transitionable,
   },
+  inheritAttrs: false,
   props: {
     ...getVariantPropsWithClassesList<TAlertOptions, TAlertClassesValidKeys>(),
     text: {

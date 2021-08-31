@@ -1,8 +1,5 @@
 <template>
-  <div
-    :class="configuration.classesList?.wrapper"
-    v-bind="attributes"
-  >
+  <div :class="configuration.classesList?.wrapper">
     <t-select
       v-model="localValue"
       style="display: none"
@@ -10,7 +7,7 @@
       :classes="undefined"
       :multiple="configuration.multiple"
       :options="flattenedOptions"
-      v-bind="$attrs"
+      v-bind="attributes"
     />
 
     <t-dropdown

@@ -35,7 +35,10 @@ export default function useConfigurationWithClassesList<ComponentOptions extends
   const attributes: ComputedRef<Data> = computed<Data>(():Data => {
     const availableProps = Object.keys(vm.props);
 
-    return pick(configuration.value, (value, key) => isPrimitive(value) && !availableProps.includes(String(key)));
+    return {
+      ...pick(configuration.value, (value, key) => isPrimitive(value) && !availableProps.includes(String(key))),
+      ...vm.attrs,
+    };
   });
 
   return { configuration, attributes };

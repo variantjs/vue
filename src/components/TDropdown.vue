@@ -6,7 +6,7 @@
     :aria-expanded="shown"
     :class="configuration.classesList?.trigger"
     :disabled="configuration.disabled"
-    v-bind="allAttributes"
+    v-bind="attributes"
     @click="clickHandler"
     @focus="focusHandler"
     @blur="blurHandler"
@@ -193,12 +193,6 @@ export default defineComponent({
     };
   },
   computed: {
-    allAttributes(): Data {
-      return {
-        ...this.attributes,
-        ...this.$attrs,
-      };
-    },
     fullPopperOptions(): Options {
       const popperOptions = this.configuration.popperOptions as Options;
 
