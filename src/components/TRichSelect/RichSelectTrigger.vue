@@ -7,7 +7,7 @@
   />
 
   <text-placeholder
-    v-else-if="! hasOptionSelected"
+    v-else-if="! hasSelectedOption"
     ref="placeholder"
     class-property="selectButtonPlaceholder"
     :placeholder="configuration.placeholder"
@@ -16,14 +16,15 @@
   <span
     v-else
     ref="label"
-    class="block truncate"
-  >{{ selectedOption.text }}</span>
+    class="block truncate pr-4"
+  >{{ label }}</span>
 
   <loading-icon
     v-if="isFetchingOptionsWhileClosed"
     ref="loadingIcon"
     class="flex-shrink-0 w-4 h-4 ml-1 text-gray-600"
   />
+
   <selector-icon
     v-else-if="showSelectorIcon"
     ref="selectorIcon"
@@ -52,7 +53,9 @@ export default defineComponent({
   setup() {
     const configuration = useInjectsConfiguration<TRichSelectOptions>();
 
-    const selectedOption = inject<ComputedRef<NormalizedOption | undefined>>('selectedOption')!;
+    const selectedOption = inject<ComputedRef<NormalizedOption | undefined | NormalizedOption[]>>('selectedOption')!;
+
+    const hasSelectedOption = inject<ComputedRef<boolean>>('hasSelectedOption')!;
 
     const fetchingOptions = inject<Ref<boolean>>('fetchingOptions')!;
 
@@ -60,24 +63,37 @@ export default defineComponent({
 
     return {
       selectedOption,
+      hasSelectedOption,
       configuration,
       fetchingOptions,
       shown,
     };
   },
   computed: {
+    label(): string | undefined {
+      if (!this.hasSelectedOption) {
+        return undefined;
+      }
+
+      if (this.multiple) {
+        return (this.selectedOption as NormalizedOption[])
+          .map((o) => o.text).join(', ');
+      }
+
+      return String((this.selectedOption as NormalizedOption).text);
+    },
     isFetchingOptionsWhileClosed(): boolean {
       return this.fetchingOptions && !this.shown;
     },
-    hasOptionSelected(): boolean {
-      return this.selectedOption !== undefined;
+    multiple(): boolean {
+      return Array.isArray(this.selectedOption);
     },
     showSelectorIcon(): boolean {
       if (!this.configuration.clearable) {
         return true;
       }
 
-      return this.hasOptionSelected === false;
+      return !this.hasSelectedOption;
     },
   },
 });

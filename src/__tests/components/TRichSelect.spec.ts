@@ -196,6 +196,18 @@ describe('TRichSelect.vue', () => {
       });
     });
 
+    it('provides the `hasSelectedOption` computed property', () => {
+      const options = [1];
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          options,
+          modelValue: 1,
+        },
+      });
+
+      expect(wrapper.vm.$.provides.hasSelectedOption).toBeDefined();
+    });
+
     it('provides the `toggleOption` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
@@ -287,7 +299,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(wrapper.vm.selectedOption).toEqual({
+      expect(wrapper.vm.$.provides.selectedOption.value).toEqual({
         value: 2,
         text: 2,
         raw: 2,
@@ -303,7 +315,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(wrapper.vm.selectedOption).toBeUndefined();
+      expect(wrapper.vm.$.provides.selectedOption.value).toBeUndefined();
     });
 
     it('updates the selectedOption within the v-model ', async () => {
@@ -321,7 +333,7 @@ describe('TRichSelect.vue', () => {
         modelValue: 3,
       });
 
-      expect(wrapper.vm.selectedOption).toEqual({
+      expect(wrapper.vm.$.provides.selectedOption.value).toEqual({
         value: 3,
         text: 3,
         raw: 3,
@@ -343,7 +355,7 @@ describe('TRichSelect.vue', () => {
         modelValue: null,
       });
 
-      expect(wrapper.vm.selectedOption).toBeUndefined();
+      expect(wrapper.vm.$.provides.selectedOption.value).toBeUndefined();
     });
   });
 

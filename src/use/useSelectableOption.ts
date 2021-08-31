@@ -7,26 +7,37 @@ import {
 } from 'vue';
 
 export default function useSelectableOption<C extends WithVariantPropsAndClassesList<Data, string>>(
-  options: ComputedRef<NormalizedOption[]>,
+  options: Ref<NormalizedOption[]>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   localValue: Ref<any>,
-  configuration: ComputedRef<C>,
+  configuration: Ref<C>,
 ): {
-    selectedOption: ComputedRef<NormalizedOption | undefined>,
+    selectedOption: ComputedRef<NormalizedOption | NormalizedOption[] | undefined>,
+    hasSelectedOption: ComputedRef<boolean>,
     selectOption: (option: NormalizedOption) => void,
     toggleOption: (option: NormalizedOption) => void,
     optionIsSelected: (option: NormalizedOption) => boolean,
   } {
-  const selectedOption = computed((): NormalizedOption | undefined => options.value.find((option) => isEqual(option.value, localValue.value)));
-
   const optionIsSelected = (option: NormalizedOption): boolean => {
     if (configuration.value.multiple === true) {
       return Array.isArray(localValue.value)
-        && localValue.value.some((value) => isEqual(value, option.value));
+          && localValue.value.some((value) => isEqual(value, option.value));
     }
 
     return isEqual(localValue.value, option.value);
   };
+
+  const selectedOption = computed((): NormalizedOption | NormalizedOption[] | undefined => {
+    if (configuration.value.multiple === true) {
+      if (!Array.isArray(localValue.value)) {
+        return [];
+      }
+
+      return options.value.filter((option) => optionIsSelected(option));
+    }
+
+    return options.value.find((option) => optionIsSelected(option));
+  });
 
   const selectOption = (option: NormalizedOption): void => {
     if (optionIsSelected(option)) {
@@ -62,8 +73,17 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
     }
   };
 
+  const hasSelectedOption = computed((): boolean => {
+    if (configuration.value.multiple === true) {
+      return (selectedOption.value as NormalizedOption[]).length > 0;
+    }
+
+    return selectedOption.value !== undefined;
+  });
+
   return {
     selectedOption,
+    hasSelectedOption,
     selectOption,
     toggleOption,
     optionIsSelected,

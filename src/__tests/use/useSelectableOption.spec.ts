@@ -39,6 +39,73 @@ describe('useSelectableOption', () => {
     expect(typeof optionIsSelected).toBe('function');
   });
 
+  describe('selectedOption', () => {
+    it('returns undefined as the selected option if no local value', () => {
+      const {
+        selectedOption,
+      } = useSelectableOption(
+        options,
+        ref(null),
+        configuration,
+      );
+
+      expect(selectedOption.value).toBeUndefined();
+    });
+
+    it('returns undefined as the selected option if local value is not part of the options', () => {
+      const {
+        selectedOption,
+      } = useSelectableOption(
+        options,
+        ref('d'),
+        configuration,
+      );
+
+      expect(selectedOption.value).toBeUndefined();
+    });
+
+    it('returns the option that matchs the localValue', () => {
+      const {
+        selectedOption,
+      } = useSelectableOption(
+        options,
+        ref('b'),
+        configuration,
+      );
+
+      expect(selectedOption.value).toEqual({ value: 'b', text: 'Option B' });
+    });
+
+    it('returns all the options that match the localValue when multiple', () => {
+      const {
+        selectedOption,
+      } = useSelectableOption(
+        options,
+        ref(['b', 'c']),
+        ref({ multiple: true }),
+      );
+
+      expect(selectedOption.value).toEqual(
+        [
+          { value: 'b', text: 'Option B' },
+          { value: 'c', text: 'Option C' },
+        ],
+      );
+    });
+
+    it('returns an empty array if no localValue when multiple', () => {
+      const {
+        selectedOption,
+      } = useSelectableOption(
+        options,
+        ref(null),
+        ref({ multiple: true }),
+      );
+
+      expect(selectedOption.value).toEqual([]);
+    });
+  });
+
   describe('selectOption method', () => {
     describe('when working with regular configuration (not multiple)', () => {
       it('selects the option', () => {

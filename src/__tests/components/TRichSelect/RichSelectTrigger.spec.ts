@@ -7,12 +7,14 @@ import { TSelectOptions } from '../../../types';
 describe('RichSelectTrigger', () => {
   const selectedOption = computed<NormalizedOption | undefined>(() => undefined);
   const configuration = computed<TSelectOptions | undefined>(() => ({}));
+  const hasSelectedOption = ref(false);
 
   const global = {
     provide: {
       shown: ref(false),
       fetchingOptions: ref(false),
       selectedOption,
+      hasSelectedOption,
       configuration,
     },
   };
@@ -33,6 +35,7 @@ describe('RichSelectTrigger', () => {
             value: 'foo',
             text: 'Foo Bar',
           })),
+          hasSelectedOption: ref(true),
           configuration,
         },
       },
@@ -47,7 +50,6 @@ describe('RichSelectTrigger', () => {
       global: {
         provide: {
           ...global.provide,
-          selectedOption,
           configuration: computed<TSelectOptions | undefined>(() => ({
             clearable: false,
           })),
@@ -64,7 +66,6 @@ describe('RichSelectTrigger', () => {
       global: {
         provide: {
           ...global.provide,
-          selectedOption,
           configuration: computed<TSelectOptions | undefined>(() => ({
             clearable: true,
           })),
@@ -85,6 +86,7 @@ describe('RichSelectTrigger', () => {
             value: 'foo',
             text: 'foo',
           })),
+          hasSelectedOption: ref(true),
           configuration: computed<TSelectOptions | undefined>(() => ({
             clearable: true,
           })),
@@ -94,6 +96,62 @@ describe('RichSelectTrigger', () => {
 
     expect(wrapper.vm.showSelectorIcon).toBe(false);
     expect(wrapper.find('selector-icon-stub').exists()).toBe(false);
+  });
+
+  describe('label', () => {
+    it('will use the selectedoption text for single values', () => {
+      const wrapper = shallowMount(RichSelectTrigger, {
+        global: {
+          provide: {
+            ...global.provide,
+            selectedOption: computed<NormalizedOption | undefined>(() => ({
+              value: 'foo',
+              text: 'foo bar',
+            })),
+            hasSelectedOption: ref(true),
+          },
+        },
+      });
+
+      expect(wrapper.vm.label).toBe('foo bar');
+    });
+
+    it('will join all the the selectedoption text with a comma for multiple values', () => {
+      const wrapper = shallowMount(RichSelectTrigger, {
+        global: {
+          provide: {
+            ...global.provide,
+            selectedOption: computed<NormalizedOption[]>(() => ([
+              {
+                value: 'foo',
+                text: 'foo bar',
+              },
+              {
+                value: 'bar',
+                text: 'option 2',
+              },
+            ])),
+            hasSelectedOption: ref(true),
+          },
+        },
+      });
+
+      expect(wrapper.vm.label).toBe('foo bar, option 2');
+    });
+
+    it('will return undefined if empty selected option', () => {
+      const wrapper = shallowMount(RichSelectTrigger, {
+        global: {
+          provide: {
+            ...global.provide,
+            selectedOption: computed<undefined>(() => undefined),
+            hasSelectedOption: ref(false),
+          },
+        },
+      });
+
+      expect(wrapper.vm.label).toBeUndefined();
+    });
   });
 
   describe('isFetchingOptionsWhileClosed handle', () => {

@@ -254,6 +254,7 @@ export default defineComponent({
 
     const {
       selectedOption,
+      hasSelectedOption,
       selectOption,
       toggleOption,
       optionIsSelected,
@@ -416,6 +417,8 @@ export default defineComponent({
 
     provide('selectedOption', selectedOption);
 
+    provide('hasSelectedOption', hasSelectedOption);
+
     provide('toggleOption', toggleOption);
 
     provide('setActiveOption', setActiveOption);
@@ -453,7 +456,7 @@ export default defineComponent({
       attributes,
       localValue,
       activeOption,
-      selectedOption,
+      hasSelectedOption,
       shown,
       dropdown,
       hideDropdown,
@@ -514,9 +517,8 @@ export default defineComponent({
       };
     },
     showClearButton(): boolean {
-      return this.selectedOption !== undefined
-        && this.configuration.clearable === true
-        && this.configuration.multiple === false;
+      return this.hasSelectedOption
+        && this.configuration.clearable === true;
     },
   },
   watch: {
