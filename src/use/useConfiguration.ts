@@ -44,10 +44,7 @@ export default function useConfiguration<ComponentOptions extends Data>(defaultC
   const attributes: ComputedRef<Data> = computed<Data>(():Data => {
     const availableProps = Object.keys(vm.props);
 
-    return {
-      ...pick(configuration.value, (value, key) => isPrimitive(value) && !availableProps.includes(String(key))),
-      ...vm.attrs,
-    };
+    return pick(configuration.value, (value, key) => isPrimitive(value) && !availableProps.includes(String(key)));
   });
 
   return {
