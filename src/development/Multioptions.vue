@@ -15,19 +15,6 @@
         multiple
       />
 
-      <div class="flex items-center justify-center py-20 my-20 border">
-        <input
-          v-model="selected2"
-          class="p-3 border"
-        >
-      </div>
-
-      <t-rich-select
-        v-model="selected2"
-        placeholder="select an option"
-        :options="options"
-      />
-
       <div>
         <label
           v-for="option in options"
@@ -63,14 +50,14 @@ export default defineComponent({
   data() {
     return {
       selected2: null,
-      selected: ['B'],
+      selected: [],
       options: [
-        'A',
-        'B',
-        'C',
-        'D',
-        'E',
-        'F',
+        'Option A',
+        'Option B',
+        'Option C',
+        'Option D',
+        'Option E',
+        'Option F',
       ],
     };
   },

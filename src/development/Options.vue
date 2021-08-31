@@ -76,7 +76,7 @@ export default defineComponent({
   data() {
     return {
       fetchOptions,
-      selected: null,
+      selected: 'A',
       newOption: '',
       selectedUser: null,
       users: [
