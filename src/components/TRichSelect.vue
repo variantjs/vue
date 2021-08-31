@@ -3,6 +3,16 @@
     :class="configuration.classesList?.wrapper"
     v-bind="attributes"
   >
+    <t-select
+      v-model="localValue"
+      style="display: none"
+      :fixed-classes="undefined"
+      :classes="undefined"
+      :multiple="configuration.multiple"
+      :options="flattenedOptions"
+      v-bind="$attrs"
+    />
+
     <t-dropdown
       ref="dropdown"
       :show="shown"
@@ -86,6 +96,7 @@ import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import RichSelectClearButton from './TRichSelect/RichSelectClearButton.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
+import TSelect from './TSelect.vue';
 
 // @vue/component
 export default defineComponent({
@@ -95,7 +106,9 @@ export default defineComponent({
     RichSelectDropdown,
     RichSelectClearButton,
     TDropdown,
+    TSelect,
   },
+  inheritAttrs: false,
   props: {
     ...getVariantPropsWithClassesList<TRichSelectOptions, TRichSelectClassesValidKeys>(),
     modelValue: {
@@ -479,6 +492,7 @@ export default defineComponent({
       optionsWereFetched,
       needsMoreCharsToFetch,
       showSearchInput,
+      flattenedOptions,
     };
   },
   computed: {
