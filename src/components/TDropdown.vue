@@ -70,7 +70,6 @@ import {
   throttle,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   DebouncedFn,
-  Data,
 } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';

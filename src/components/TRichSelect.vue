@@ -49,7 +49,7 @@
         />
       </template>
 
-      <rich-select-dropdown :ref="dropdown" />
+      <rich-select-dropdown ref="dropdown" />
     </t-dropdown>
 
     <rich-select-clear-button
