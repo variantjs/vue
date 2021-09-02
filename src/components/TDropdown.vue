@@ -28,12 +28,13 @@
     :disabled="! configuration.teleport"
   >
     <transitionable
+      :enabled="transitionEnabled"
       :classes-list="configuration.classesList"
       @after-leave="dropdownAfterLeave"
     >
       <component
         :is="dropdownTagName"
-        v-show="shown || !popperIsAdjusted"
+        v-show="shown || adjustingPopper"
         ref="dropdown"
         :class="configuration.classesList?.dropdown"
         :aria-hidden="!shown"
@@ -57,7 +58,7 @@
 
 <script lang="ts">
 import {
-  createPopper, Instance, Options, Placement,
+  createPopper, Instance as PopperInstance, Options, Placement,
 } from '@popperjs/core';
 import {
   TDropdownConfig,
@@ -181,14 +182,14 @@ export default defineComponent({
   },
   data({ configuration }) {
     return {
+      transitionEnabled: false,
       isTouchOnlyDevice: isTouchOnlyDevice(),
-      popperIsAdjusted: false,
       shown: (configuration as unknown as TDropdownOptions).show,
-      popper: null as Instance | null,
-      popperAdjusterListener: null as null | DebouncedFn,
       hideTimeout: null as ReturnType<typeof setTimeout> | null,
       focusableElements: [] as Array<HTMLElement>,
       throttledToggle: null as null | (() => void),
+      adjustingPopper: false,
+      popper: null as PopperInstance | null,
     };
   },
   computed: {
@@ -198,15 +199,6 @@ export default defineComponent({
       if (this.configuration.placement !== undefined) {
         popperOptions.placement = this.configuration.placement;
       }
-
-      const originalOnFirstUpdate = popperOptions.onFirstUpdate;
-      popperOptions.onFirstUpdate = async (arg) => {
-        if (originalOnFirstUpdate) {
-          originalOnFirstUpdate(arg);
-        }
-
-        this.popperIsAdjusted = true;
-      };
 
       return popperOptions;
     },
@@ -237,10 +229,6 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.createPopper();
-
-    this.initPopperAdjusterListener();
-
     if (this.isTouchOnlyDevice && this.shown) {
       window.addEventListener('touchstart', this.touchstartHandler);
     }
@@ -249,8 +237,6 @@ export default defineComponent({
     this.throttledToggle = throttle(this.doToggle, 200);
   },
   beforeUnmount() {
-    this.disablePopperAdjusterListener();
-
     if (this.hideTimeout) {
       clearTimeout(this.hideTimeout);
     }
@@ -262,24 +248,6 @@ export default defineComponent({
   methods: {
     focus(): void {
       this.getTriggerElement().focus();
-    },
-    initPopperAdjusterListener() : void {
-      this.popperAdjusterListener = debounce(this.updatePopper, 200);
-
-      window.addEventListener('resize', this.popperAdjusterListener);
-
-      window.addEventListener('scroll', this.popperAdjusterListener);
-    },
-    disablePopperAdjusterListener() : void {
-      const popperAdjusterListener = this.popperAdjusterListener as DebouncedFn;
-
-      window.removeEventListener('resize', popperAdjusterListener);
-
-      window.removeEventListener('scroll', popperAdjusterListener);
-
-      popperAdjusterListener.cancel();
-
-      this.destroyPopper();
     },
     onShown(): void {
       this.$emit('shown');
@@ -323,35 +291,49 @@ export default defineComponent({
     dropdownAfterLeave(): void {
       this.getDropdownElement().style.removeProperty('visibility');
     },
+    updatePopper(): Promise<void> {
+      // eslint-disable-next-line no-async-promise-executor
+      return new Promise(async (resolve) => {
+        if (!this.popper) {
+          this.popper = await this.createPopper();
+        }
 
-    async updatePopper(): Promise<void> {
-      if (this.shown) {
-        return;
-      }
+        this.transitionEnabled = false;
+        this.adjustingPopper = true;
 
-      this.getDropdownElement().style.visibility = 'hidden';
+        await this.$nextTick();
 
-      this.popperIsAdjusted = false;
+        await this.popper.update();
 
-      await this.popper!.update();
+        this.adjustingPopper = false;
 
-      this.popperIsAdjusted = true;
+        await this.$nextTick();
+
+        this.transitionEnabled = true;
+
+        await this.$nextTick();
+
+        resolve();
+      });
     },
-    destroyPopper() : void {
-      if (!this.popper) {
-        return;
-      }
+    createPopper(): Promise<PopperInstance> {
+      let popper: PopperInstance;
 
-      this.popper.destroy();
-    },
-    createPopper(): void {
-      if (!this.shown) {
-        // Used to `hide` the dropdown while the position is adjusted
-        // for the popper plugin
-        this.getDropdownElement().style.visibility = 'hidden';
-      }
+      return new Promise((resolve) => {
+        const popperOptions = this.fullPopperOptions;
 
-      this.popper = createPopper(this.getTriggerElement(), this.getDropdownElement(), this.fullPopperOptions);
+        const originalOnFirstUpdate = popperOptions.onFirstUpdate;
+
+        popperOptions.onFirstUpdate = async (arg) => {
+          if (originalOnFirstUpdate) {
+            originalOnFirstUpdate(arg);
+          }
+
+          resolve(popper);
+        };
+
+        popper = createPopper(this.getTriggerElement(), this.getDropdownElement(), this.fullPopperOptions);
+      });
     },
     getDropdownElement(): HTMLDivElement {
       const { dropdown } = this.$refs;
@@ -368,10 +350,12 @@ export default defineComponent({
         this.doHide();
       }
     },
-    doShow(): void {
+    async doShow(): Promise<void> {
       if (this.hideTimeout) {
         clearTimeout(this.hideTimeout);
       }
+
+      await this.updatePopper();
 
       this.shown = true;
     },
