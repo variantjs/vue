@@ -7,28 +7,24 @@ import { h } from 'vue';
 import TDropdown from '@/components/TDropdown.vue';
 import { scopedParamsAsString, parseScopedParams } from '../testUtils';
 
-const dropdownIsReady: (wrapper: VueWrapper<any>) => Promise<HTMLDivElement> = (wrapper: VueWrapper<any>) => new Promise((resolve) => {
-  // 1. Until component is mounted
-  wrapper.vm.$nextTick().then(() => {
-    // 2. Popper is adjusted
-    wrapper.vm.$nextTick().then(() => {
-      // 4. dom update for running popper
-      wrapper.vm.$nextTick().then(() => {
-        // 4. dom update after popperIsAdjusted is set to `true`
-        wrapper.vm.$nextTick().then(() => resolve(wrapper.vm.$refs.dropdown));
-      });
-    });
-  });
-});
-
 describe('TDropdown.vue', () => {
+  let updatePopperMock: jest.Mock<any, any>;
+  beforeEach(() => {
+    updatePopperMock = jest.fn().mockReturnValue(Promise.resolve());
+
+    TDropdown.methods!.updatePopper = updatePopperMock;
+  });
+
+  afterEach(() => {
+    updatePopperMock.mockRestore();
+  });
+
   it('renders the component', () => {
     const wrapper = mount(TDropdown);
 
     expect(wrapper.find('button').exists()).toBe(true);
     expect(wrapper.find('button').isVisible()).toBe(true);
     expect(wrapper.find('div').exists()).toBe(true);
-    expect(wrapper.find('div').element.style.visibility).toBe('hidden');
     expect(wrapper.vm.$refs.trigger).toBeTruthy();
     expect(wrapper.vm.$refs.dropdown).toBeTruthy();
   });
@@ -42,19 +38,12 @@ describe('TDropdown.vue', () => {
     expect(wrapper.vm.configuration.classesList).toEqual(TDropdownConfig.classes);
   });
 
-  it('initializes the  dropdown', async () => {
+  it('initializes the dropdown', async () => {
     const wrapper = mount(TDropdown);
-
-    const { dropdown } = wrapper.vm.$refs;
 
     expect(wrapper.vm.shown).toBe(false);
     expect(wrapper.vm.popperIsAdjusted).toBe(false);
-    expect(dropdown.style.visibility).toBe('hidden');
-
-    await dropdownIsReady(wrapper);
-
-    expect(wrapper.vm.popperIsAdjusted).toBe(true);
-    expect(wrapper.vm.shown).toBe(false);
+    expect(wrapper.vm.popper).toBe(null);
   });
 
   it('uses the content of the trigger slot inside the trigger button', () => {
@@ -150,10 +139,6 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    const dropdown = await dropdownIsReady(wrapper);
-
-    expect(dropdown.style.display).toBe('none');
-
     await trigger.trigger('click');
 
     expect(wrapper.vm.shown).toBe(true);
@@ -168,8 +153,6 @@ describe('TDropdown.vue', () => {
     });
 
     const trigger = wrapper.get('button');
-
-    await dropdownIsReady(wrapper);
 
     await trigger.trigger('click');
 
@@ -251,7 +234,7 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    const dropdown = await dropdownIsReady(wrapper);
+    const { dropdown } = wrapper.vm.$refs;
 
     expect(trigger.attributes().disabled).toBeDefined();
 
@@ -366,8 +349,6 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    await dropdownIsReady(wrapper);
-
     await trigger.trigger('click');
 
     expect(wrapper.vm.shown).toBe(false);
@@ -387,8 +368,6 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    await dropdownIsReady(wrapper);
-
     await trigger.trigger('click');
 
     expect(wrapper.vm.shown).toBe(true);
@@ -405,8 +384,6 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    await dropdownIsReady(wrapper);
-
     await trigger.trigger('click');
 
     expect(wrapper.vm.shown).toBe(false);
@@ -422,8 +399,6 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    await dropdownIsReady(wrapper);
-
     await trigger.trigger('focus');
 
     expect(wrapper.vm.shown).toBe(true);
@@ -438,8 +413,6 @@ describe('TDropdown.vue', () => {
     });
 
     const trigger = wrapper.get('button');
-
-    await dropdownIsReady(wrapper);
 
     await trigger.trigger('focus');
 
@@ -457,8 +430,6 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    await dropdownIsReady(wrapper);
-
     await trigger.trigger('blur');
 
     expect(wrapper.vm.shown).toBe(false);
@@ -468,8 +439,6 @@ describe('TDropdown.vue', () => {
     const wrapper = mount(TDropdown);
 
     const trigger = wrapper.get('button');
-
-    await dropdownIsReady(wrapper);
 
     await trigger.trigger('hover');
 
@@ -485,8 +454,6 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    await dropdownIsReady(wrapper);
-
     await trigger.trigger('hover');
 
     expect(wrapper.vm.shown).toBe(true);
@@ -500,8 +467,6 @@ describe('TDropdown.vue', () => {
     });
 
     const trigger = wrapper.get('button');
-
-    await dropdownIsReady(wrapper);
 
     await trigger.trigger('focus');
 
@@ -522,7 +487,7 @@ describe('TDropdown.vue', () => {
 
     const triggerButton = wrapper.get('button');
 
-    const dropdown = await dropdownIsReady(wrapper);
+    const { dropdown } = wrapper.vm.$refs;
 
     await triggerButton.trigger('blur', {
       relatedTarget: dropdown,
@@ -541,8 +506,6 @@ describe('TDropdown.vue', () => {
         default: h('input'),
       },
     });
-
-    await dropdownIsReady(wrapper);
 
     wrapper.vm.doShow();
 
@@ -571,8 +534,6 @@ describe('TDropdown.vue', () => {
 
     const { trigger } = wrapper.vm.$refs;
 
-    await dropdownIsReady(wrapper);
-
     await triggerButton.trigger('blur', {
       relatedTarget: trigger,
     });
@@ -593,7 +554,7 @@ describe('TDropdown.vue', () => {
 
     const triggerButton = wrapper.get('button');
 
-    const dropdown = await dropdownIsReady(wrapper);
+    const { dropdown } = wrapper.vm.$refs;
 
     const button = dropdown.querySelector('button');
 
@@ -614,8 +575,6 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    await dropdownIsReady(wrapper);
-
     await trigger.trigger('blur');
 
     expect(wrapper.vm.shown).toBe(false);
@@ -630,8 +589,6 @@ describe('TDropdown.vue', () => {
     });
 
     const dropdown = wrapper.get('div');
-
-    await dropdownIsReady(wrapper);
 
     await dropdown.trigger('blur');
 
@@ -648,8 +605,6 @@ describe('TDropdown.vue', () => {
         default: h('button', {}, 'blur me'),
       },
     });
-
-    await dropdownIsReady(wrapper);
 
     const button = wrapper.find('button') as any;
 
@@ -673,7 +628,7 @@ describe('TDropdown.vue', () => {
       toggleOnFocus: false,
     });
 
-    const dropdown = await dropdownIsReady(wrapper);
+    const { dropdown } = wrapper.vm.$refs;
 
     const button = dropdown.querySelector('button') as HTMLButtonElement;
 
@@ -687,8 +642,6 @@ describe('TDropdown.vue', () => {
     const wrapper = mount(TDropdown);
 
     const trigger = wrapper.get('button');
-
-    await dropdownIsReady(wrapper);
 
     await trigger.trigger('hover');
 
@@ -709,8 +662,6 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    await dropdownIsReady(wrapper);
-
     await trigger.trigger('mouseover');
 
     expect(wrapper.vm.shown).toBe(true);
@@ -730,8 +681,6 @@ describe('TDropdown.vue', () => {
 
     const trigger = wrapper.get('button');
 
-    await dropdownIsReady(wrapper);
-
     await trigger.trigger('mouseover');
 
     expect(wrapper.vm.shown).toBe(false);
@@ -747,8 +696,6 @@ describe('TDropdown.vue', () => {
     });
 
     const dropdown = wrapper.get('div');
-
-    await dropdownIsReady(wrapper);
 
     await dropdown.trigger('mouseleave');
 
@@ -767,8 +714,6 @@ describe('TDropdown.vue', () => {
     });
 
     const dropdown = wrapper.get('div');
-
-    await dropdownIsReady(wrapper);
 
     await dropdown.trigger('mouseleave');
 
@@ -799,8 +744,6 @@ describe('TDropdown.vue', () => {
     const button = wrapper.get('button');
     const dropdown = wrapper.get('div');
 
-    await dropdownIsReady(wrapper);
-
     await dropdown.trigger('mouseleave');
 
     expect(wrapper.vm.shown).toBe(true);
@@ -829,7 +772,7 @@ describe('TDropdown.vue', () => {
 
     const triggerButton = wrapper.get('button');
 
-    const dropdown = await dropdownIsReady(wrapper);
+    const { dropdown } = wrapper.vm.$refs;
 
     await triggerButton.trigger('mouseleave', {
       relatedTarget: dropdown,
@@ -848,8 +791,6 @@ describe('TDropdown.vue', () => {
     });
 
     const triggerButton = wrapper.get('button');
-
-    await dropdownIsReady(wrapper);
 
     const { trigger } = wrapper.vm.$refs;
 
@@ -922,11 +863,7 @@ describe('TDropdown.vue', () => {
 
     const { dropdown } = wrapper.vm.$refs;
 
-    await dropdownIsReady(wrapper);
-
     expect(wrapper.vm.shown).toBe(true);
-    expect(wrapper.vm.popperIsAdjusted).toBe(true);
-
     expect(dropdown.style.display).toBe('');
   });
 
@@ -934,6 +871,8 @@ describe('TDropdown.vue', () => {
     const wrapper = mount(TDropdown);
 
     wrapper.vm.doShow();
+
+    await wrapper.vm.$nextTick();
 
     await wrapper.vm.$nextTick();
 
@@ -957,8 +896,6 @@ describe('TDropdown.vue', () => {
   it('shows the modal if the `show` props changes', async () => {
     const wrapper = mount(TDropdown);
 
-    await dropdownIsReady(wrapper);
-
     await wrapper.setProps({
       show: true,
     });
@@ -973,47 +910,11 @@ describe('TDropdown.vue', () => {
       },
     });
 
-    await dropdownIsReady(wrapper);
-
     await wrapper.setProps({
       show: false,
     });
 
     expect(wrapper.vm.shown).toBe(false);
-  });
-
-  it('creates a popper instance', async () => {
-    const wrapper = mount(TDropdown);
-
-    await dropdownIsReady(wrapper);
-
-    expect(wrapper.vm.popper).toBeTruthy();
-  });
-
-  it('destroys the popper instance after unmounted', async () => {
-    const wrapper = mount(TDropdown);
-
-    await dropdownIsReady(wrapper);
-
-    const mockMethod = jest.spyOn(wrapper.vm.popper, 'destroy');
-
-    expect(wrapper.vm.popper).toBeTruthy();
-
-    wrapper.unmount();
-
-    expect(mockMethod).toHaveBeenCalled();
-  });
-
-  it('doesnt destroys the popper instance if doesnt exists yet', async () => {
-    const wrapper = mount(TDropdown);
-
-    const mockMethod = jest.spyOn(wrapper.vm.popper, 'destroy');
-
-    wrapper.vm.popper = null;
-
-    wrapper.unmount();
-
-    expect(mockMethod).not.toHaveBeenCalled();
   });
 
   it('clears the hidetimeout when unmounted', async () => {
@@ -1060,34 +961,8 @@ describe('TDropdown.vue', () => {
     expect(validator(placement)).toBe(true);
   });
 
-  it('accepts undefined as the placement', async () => {
-    const wrapper = mount(TDropdown, {
-      props: {
-        placement: undefined,
-      },
-    });
-
-    await dropdownIsReady(wrapper);
-
-    expect(wrapper.vm.popper.state.placement).toBe(TDropdownPopperDefaultOptions.placement);
-  });
-
-  it('overrides the popper placement if placement is set', async () => {
-    const wrapper = mount(TDropdown, {
-      props: {
-        placement: 'top',
-      },
-    });
-
-    await dropdownIsReady(wrapper);
-
-    expect(wrapper.vm.popper.state.placement).toBe('top');
-  });
-
   it('has a default the popper configuration', async () => {
     const wrapper = mount(TDropdown);
-
-    await dropdownIsReady(wrapper);
 
     expect(wrapper.vm.popperOptions).toEqual(TDropdownPopperDefaultOptions);
   });
@@ -1099,91 +974,7 @@ describe('TDropdown.vue', () => {
       },
     });
 
-    await dropdownIsReady(wrapper);
-
     expect(wrapper.vm.popperOptions).toEqual(TDropdownPopperDefaultOptions);
-  });
-
-  it('adds a listener to resize popper when windows resize ', async () => {
-    const wrapper = mount(TDropdown);
-
-    jest.useFakeTimers();
-
-    const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
-
-    expect(mockMethod).not.toHaveBeenCalled();
-
-    window.dispatchEvent(new Event('resize'));
-
-    expect(mockMethod).not.toHaveBeenCalled();
-
-    jest.advanceTimersByTime(200);
-
-    expect(mockMethod).toHaveBeenCalled();
-
-    jest.useRealTimers();
-  });
-
-  it('adds a listener to resize popper when windows scroll ', async () => {
-    const wrapper = mount(TDropdown);
-
-    jest.useFakeTimers();
-
-    const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
-
-    expect(mockMethod).not.toHaveBeenCalled();
-
-    window.dispatchEvent(new Event('scroll'));
-
-    expect(mockMethod).not.toHaveBeenCalled();
-
-    jest.advanceTimersByTime(200);
-
-    expect(mockMethod).toHaveBeenCalled();
-
-    jest.useRealTimers();
-  });
-
-  it('adds a listener to resize popper when windows resize ', async () => {
-    const wrapper = mount(TDropdown);
-
-    jest.useFakeTimers();
-
-    const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
-
-    expect(mockMethod).not.toHaveBeenCalled();
-
-    window.dispatchEvent(new Event('resize'));
-
-    expect(mockMethod).not.toHaveBeenCalled();
-
-    jest.advanceTimersByTime(200);
-
-    expect(mockMethod).toHaveBeenCalled();
-
-    jest.useRealTimers();
-  });
-
-  it('removes the listener to resize and scroll after component is unmounted', async () => {
-    jest.useFakeTimers();
-
-    const wrapper = mount(TDropdown);
-
-    const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
-
-    wrapper.unmount();
-
-    expect(mockMethod).not.toHaveBeenCalled();
-
-    window.dispatchEvent(new Event('scroll'));
-
-    expect(mockMethod).not.toHaveBeenCalled();
-
-    jest.advanceTimersByTime(200);
-
-    expect(mockMethod).not.toHaveBeenCalled();
-
-    jest.useRealTimers();
   });
 
   it('the dropdownAfterLeave method removes the `visibility` property', async () => {
@@ -1380,8 +1171,6 @@ describe('TDropdown.vue', () => {
         },
       });
 
-      await dropdownIsReady(wrapper);
-
       window.dispatchEvent(new TouchEvent('touchstart'));
 
       await wrapper.vm.$nextTick();
@@ -1397,8 +1186,6 @@ describe('TDropdown.vue', () => {
           show: true,
         },
       });
-
-      await dropdownIsReady(wrapper);
 
       window.dispatchEvent(new TouchEvent('touchstart', {
         targetTouches: [
@@ -1424,8 +1211,6 @@ describe('TDropdown.vue', () => {
         },
       });
 
-      await dropdownIsReady(wrapper);
-
       window.dispatchEvent(new TouchEvent('touchstart'));
 
       await wrapper.vm.$nextTick();
@@ -1443,8 +1228,6 @@ describe('TDropdown.vue', () => {
         },
       });
 
-      await dropdownIsReady(wrapper);
-
       window.dispatchEvent(new TouchEvent('touchstart'));
 
       await wrapper.vm.$nextTick();
@@ -1452,4 +1235,153 @@ describe('TDropdown.vue', () => {
       expect(wrapper.vm.shown).toBe(true);
     });
   });
+});
+
+describe('TDropdown popper instance', () => {
+  const popperWasCreated = async (wrapper: VueWrapper<any>) => {
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+
+    return Promise.resolve();
+  };
+
+  it('creates a popper instance when shown', async () => {
+    const wrapper = mount(TDropdown);
+
+    expect(wrapper.vm.popper).toBeNull();
+
+    wrapper.vm.doShow();
+
+    await popperWasCreated(wrapper);
+
+    expect(wrapper.vm.popper).toBeTruthy();
+
+    expect(wrapper.vm.adjustingPopper).toBe(true);
+
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.adjustingPopper).toBe(false);
+    expect(wrapper.vm.popperIsAdjusted).toBe(false);
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.popperIsAdjusted).toBe(true);
+  });
+
+  it('accepts undefined as the placement', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        placement: undefined,
+      },
+    });
+
+    wrapper.vm.doShow();
+
+    await popperWasCreated(wrapper);
+
+    expect(wrapper.vm.popper).toBeTruthy();
+    expect(wrapper.vm.popper.state.placement).toBe(TDropdownPopperDefaultOptions.placement);
+  });
+
+  it('overrides the popper placement if placement is set', async () => {
+    const wrapper = mount(TDropdown, {
+      props: {
+        placement: 'top',
+      },
+    });
+
+    wrapper.vm.doShow();
+
+    await popperWasCreated(wrapper);
+
+    expect(wrapper.vm.popper).toBeTruthy();
+    expect(wrapper.vm.popper.state.placement).toBe('top');
+  });
+
+  // it('adds a listener to resize popper when windows resize ', async () => {
+  //   const wrapper = mount(TDropdown);
+
+  //   jest.useFakeTimers();
+
+  //   const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
+
+  //   expect(mockMethod).not.toHaveBeenCalled();
+
+  //   window.dispatchEvent(new Event('resize'));
+
+  //   expect(mockMethod).not.toHaveBeenCalled();
+
+  //   jest.advanceTimersByTime(200);
+
+  //   expect(mockMethod).toHaveBeenCalled();
+
+  //   jest.useRealTimers();
+  // });
+
+  // it('adds a listener to resize popper when windows scroll ', async () => {
+  //   const wrapper = mount(TDropdown);
+
+  //   jest.useFakeTimers();
+
+  //   const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
+
+  //   expect(mockMethod).not.toHaveBeenCalled();
+
+  //   window.dispatchEvent(new Event('scroll'));
+
+  //   expect(mockMethod).not.toHaveBeenCalled();
+
+  //   jest.advanceTimersByTime(200);
+
+  //   expect(mockMethod).toHaveBeenCalled();
+
+  //   jest.useRealTimers();
+  // });
+
+  // it('adds a listener to resize popper when windows resize ', async () => {
+  //   const wrapper = mount(TDropdown);
+
+  //   jest.useFakeTimers();
+
+  //   const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
+
+  //   expect(mockMethod).not.toHaveBeenCalled();
+
+  //   window.dispatchEvent(new Event('resize'));
+
+  //   expect(mockMethod).not.toHaveBeenCalled();
+
+  //   jest.advanceTimersByTime(200);
+
+  //   expect(mockMethod).toHaveBeenCalled();
+
+  //   jest.useRealTimers();
+  // });
+
+  // it('removes the listener to resize and scroll after component is unmounted', async () => {
+  //   jest.useFakeTimers();
+
+  //   const wrapper = mount(TDropdown);
+
+  //   const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
+
+  //   wrapper.unmount();
+
+  //   expect(mockMethod).not.toHaveBeenCalled();
+
+  //   window.dispatchEvent(new Event('scroll'));
+
+  //   expect(mockMethod).not.toHaveBeenCalled();
+
+  //   jest.advanceTimersByTime(200);
+
+  //   expect(mockMethod).not.toHaveBeenCalled();
+
+  //   jest.useRealTimers();
+  // });
 });
