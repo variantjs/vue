@@ -210,24 +210,15 @@ export default defineComponent({
     },
   },
   watch: {
-    popperIsAdjusted(popperIsAdjusted: boolean) {
+    popperIsAdjusted(popperIsAdjusted: boolean): void {
       if (popperIsAdjusted) {
         this.enablePopperNeedsAdjustmentListener();
       } else {
         this.disablePopperNeedsAdjustmentListener();
       }
     },
-    async shown(shown: boolean): Promise<void> {
+    shown(shown: boolean): void {
       this.$emit('update:show', shown);
-      if (shown) {
-        this.onBeforeShown();
-        await this.$nextTick();
-        this.onShown();
-      } else {
-        this.onBeforeHide();
-        await this.$nextTick();
-        this.onHidden();
-      }
     },
     'configuration.show': function configurationShowWatch(show: boolean): void {
       if (show) {
@@ -387,12 +378,24 @@ export default defineComponent({
         clearTimeout(this.hideTimeout);
       }
 
+      this.onBeforeShown();
+
       await this.updatePopper();
 
       this.shown = true;
+
+      await this.$nextTick();
+
+      this.onShown();
     },
-    doHide(): void {
+    async doHide(): Promise<void> {
+      this.onBeforeHide();
+
       this.shown = false;
+
+      await this.$nextTick();
+
+      this.onHidden();
     },
     clickHandler(e: MouseEvent): void {
       this.$emit('click', e);
