@@ -28,13 +28,13 @@
     :disabled="! configuration.teleport"
   >
     <transitionable
-      :enabled="popperIsAdjusted"
+      :enabled="popperIsAdjusted && !initAsShow"
       :classes-list="configuration.classesList"
       @after-leave="dropdownAfterLeave"
     >
       <component
         :is="dropdownTagName"
-        v-show="shown || adjustingPopper"
+        v-show="shown || adjustingPopper || initAsShow"
         ref="dropdown"
         :style="adjustingPopper ? 'opacity:0' : undefined"
         :class="configuration.classesList?.dropdown"
@@ -185,6 +185,8 @@ export default defineComponent({
     return {
       isTouchOnlyDevice: isTouchOnlyDevice(),
       shown: (configuration as unknown as TDropdownOptions).show,
+      // Disables the animation while the dropdown is being shown
+      initAsShow: (configuration as unknown as TDropdownOptions).show,
       hideTimeout: null as ReturnType<typeof setTimeout> | null,
       focusableElements: [] as Array<HTMLElement>,
       throttledToggle: null as null | (() => void),
@@ -231,6 +233,12 @@ export default defineComponent({
   mounted() {
     if (this.isTouchOnlyDevice && this.shown) {
       window.addEventListener('touchstart', this.touchstartHandler);
+    }
+
+    if (this.configuration.show) {
+      this.updatePopper().then(() => {
+        this.initAsShow = false;
+      });
     }
   },
   created() {
