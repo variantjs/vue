@@ -14,7 +14,7 @@
     />
 
     <t-dropdown
-      ref="dropdown"
+      ref="dropdownComponent"
       :show="shown"
       :classes="dropdownClasses"
       :fixed-classes="undefined"
@@ -23,8 +23,8 @@
       :toggle-on-hover="false"
       :popper-options="configuration.dropdownPopperOptions"
       :placement="configuration.dropdownPlacement"
-      :tag-name="configuration.tags ? 'div' : 'button'"
-      :tabindex="configuration.tags && !hasSelectedOption ? 0 : undefined"
+      :tag-name="configuration.tags && configuration.multiple ? 'div' : 'button'"
+      :tabindex="configuration.tags && configuration.multiple && !hasSelectedOption ? 0 : undefined"
       data-rich-select-trigger="true"
       @mouseover="$emit('mouseover', $event)"
       @mouseleave="$emit('mouseleave', $event)"
@@ -309,12 +309,12 @@ export default defineComponent({
     /**
      * Dropdown component reference
      */
-    const dropdown = ref<{
+    const dropdownComponent = ref<{
       focus:() => void
     }>();
 
     const focusDropdownTrigger = (): void => {
-      dropdown.value!.focus();
+      dropdownComponent.value!.focus();
     };
 
     /**
@@ -481,7 +481,7 @@ export default defineComponent({
       activeOption,
       hasSelectedOption,
       shown,
-      dropdown,
+      dropdownComponent,
       hideDropdown,
       toggleDropdown,
       throttledShowDropdown,
