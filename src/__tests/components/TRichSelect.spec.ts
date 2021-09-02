@@ -474,7 +474,7 @@ describe('TRichSelect.vue', () => {
       ['onBlurOnChild', 'blurOnChildHandler'],
     ])('has the `%s` event handler pointing to `%s`', (eventName, eventHandlerName) => {
       const wrapper = shallowMount(TRichSelect);
-      const component = wrapper.vm.$refs.dropdown;
+      const component = wrapper.vm.$refs.dropdownComponent;
 
       expect(componentHasAttributeWithValue(component, eventName, wrapper.vm[eventHandlerName])).toBe(true);
     });
@@ -910,7 +910,7 @@ describe('TRichSelect.vue', () => {
       ['onHidden', 'hidden'],
     ])('re-emits the event `%s`', (eventName, parameterName) => {
       const wrapper = shallowMount(TRichSelect);
-      const component = wrapper.vm.$refs.dropdown;
+      const component = wrapper.vm.$refs.dropdownComponent;
 
       expect(componentHasAttributeWithInlineHandlerAndParameter(component, eventName, parameterName)).toBe(true);
     });
@@ -934,10 +934,10 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', { key: 'Escape' });
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(false);
         expect(focusDropdownTriggerMock).toHaveBeenCalled();
@@ -961,10 +961,10 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', { key: 'Escape' });
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(false);
         expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
@@ -981,7 +981,7 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Space',
@@ -989,7 +989,7 @@ describe('TRichSelect.vue', () => {
 
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
         expect(preventDefaultSpy).toHaveBeenCalled();
@@ -1005,7 +1005,7 @@ describe('TRichSelect.vue', () => {
 
         });
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Space',
@@ -1013,7 +1013,7 @@ describe('TRichSelect.vue', () => {
 
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(false);
         expect(preventDefaultSpy).toHaveBeenCalled();
@@ -1032,7 +1032,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Space',
@@ -1042,7 +1042,7 @@ describe('TRichSelect.vue', () => {
 
         expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.$.setupState.localValue).toBe(1);
         expect(wrapper.vm.shown).toBe(true);
@@ -1050,7 +1050,7 @@ describe('TRichSelect.vue', () => {
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
         expect(wrapper.vm.shown).toBe(true);
@@ -1061,7 +1061,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Space',
@@ -1069,7 +1069,7 @@ describe('TRichSelect.vue', () => {
 
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
         expect(preventDefaultSpy).toHaveBeenCalled();
@@ -1082,13 +1082,13 @@ describe('TRichSelect.vue', () => {
       it('doesnt shows the dropdown when hidden', async () => {
         const wrapper = shallowMount(TRichSelect);
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Enter',
         });
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(false);
         expect(wrapper.emitted()).toHaveProperty('keydown');
@@ -1105,7 +1105,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Enter',
@@ -1113,14 +1113,14 @@ describe('TRichSelect.vue', () => {
 
         expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.$.setupState.localValue).toBe(1);
         expect(wrapper.vm.shown).toBe(true);
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
         expect(wrapper.vm.shown).toBe(true);
@@ -1131,13 +1131,13 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Enter',
         });
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
         expect(wrapper.emitted()).toHaveProperty('keydown');
@@ -1153,7 +1153,7 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowUp',
@@ -1161,7 +1161,7 @@ describe('TRichSelect.vue', () => {
 
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
         expect(preventDefaultSpy).toHaveBeenCalled();
@@ -1180,7 +1180,7 @@ describe('TRichSelect.vue', () => {
         wrapper.vm.shown = true;
         wrapper.vm.activeOption = { value: 3, text: 3, raw: 3 } as NormalizedOption;
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowUp',
@@ -1188,7 +1188,7 @@ describe('TRichSelect.vue', () => {
 
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
         expect(wrapper.vm.activeOption).toEqual({ value: 2, text: 2, raw: 2 } as NormalizedOption);
@@ -1206,7 +1206,7 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowDown',
@@ -1214,7 +1214,7 @@ describe('TRichSelect.vue', () => {
 
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
         expect(preventDefaultSpy).toHaveBeenCalled();
@@ -1232,7 +1232,7 @@ describe('TRichSelect.vue', () => {
         });
         wrapper.vm.shown = true;
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowDown',
@@ -1240,7 +1240,7 @@ describe('TRichSelect.vue', () => {
 
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
 
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
         expect(wrapper.vm.activeOption).toEqual({ value: 2, text: 2, raw: 2 } as NormalizedOption);
@@ -1268,7 +1268,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowDown',
@@ -1293,7 +1293,7 @@ describe('TRichSelect.vue', () => {
         expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
 
         // Press down one time
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
         // now the active option is last loaded one
         expect(wrapper.vm.activeOption.value).toEqual(2);
         await wrapper.vm.$nextTick();
@@ -1321,7 +1321,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowDown',
@@ -1346,7 +1346,7 @@ describe('TRichSelect.vue', () => {
         expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
 
         // Press down one time
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
         // now the active option is last loaded one
         expect(wrapper.vm.activeOption.value).toEqual(2);
         await wrapper.vm.$nextTick();
@@ -1376,7 +1376,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdown } = wrapper.vm.$refs;
+        const { dropdownComponent } = wrapper.vm.$refs;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowDown',
@@ -1403,7 +1403,7 @@ describe('TRichSelect.vue', () => {
         fetchOptionsMock.mockReturnValue(responsePromise2);
 
         // Press down one time
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
         // now the active option is last loaded one
         expect(wrapper.vm.activeOption.value).toEqual(2);
         await wrapper.vm.$nextTick();
@@ -1417,7 +1417,7 @@ describe('TRichSelect.vue', () => {
         await wrapper.vm.$nextTick();
 
         // Press down one time
-        dropdown.$el.dispatchEvent(event);
+        dropdownComponent.$el.dispatchEvent(event);
 
         await wrapper.vm.$nextTick();
         // Was not called again (still called twice) since its busy
