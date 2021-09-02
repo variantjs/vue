@@ -184,22 +184,6 @@ describe('TAlert.vue', () => {
     expect(clearTimeoutSpy).toHaveBeenCalled();
   });
 
-  it('animates the alert as default', async () => {
-    const wrapper = mount(TAlert);
-
-    expect(wrapper.vm.$el.tagName).toBe('TRANSITION-STUB');
-  });
-
-  it('doesnt animates the alert if `animate` is set to `false`', async () => {
-    const wrapper = mount(TAlert, {
-      props: {
-        animate: false,
-      },
-    });
-
-    expect(wrapper.vm.$el.tagName).not.toBe('TRANSITION-STUB');
-  });
-
   it('accepts a custom `closeIcon``', async () => {
     const closeIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
     <path fill-rule="evenodd" d="M12.707" clip-rule="evenodd"></path>

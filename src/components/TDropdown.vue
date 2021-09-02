@@ -253,6 +253,8 @@ export default defineComponent({
       clearTimeout(this.hideTimeout);
     }
 
+    this.disablePopperNeedsAdjustmentListener();
+
     if (this.isTouchOnlyDevice && this.shown) {
       window.removeEventListener('touchstart', this.touchstartHandler);
     }

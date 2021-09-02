@@ -9,6 +9,8 @@ import { scopedParamsAsString, parseScopedParams } from '../testUtils';
 
 describe('TDropdown.vue', () => {
   let updatePopperMock: jest.Mock<any, any>;
+  const originalUpdatePopperMethod = TDropdown.methods!.updatePopper;
+
   beforeEach(() => {
     updatePopperMock = jest.fn().mockReturnValue(Promise.resolve());
 
@@ -17,6 +19,7 @@ describe('TDropdown.vue', () => {
 
   afterEach(() => {
     updatePopperMock.mockRestore();
+    TDropdown.methods!.updatePopper = originalUpdatePopperMethod;
   });
 
   it('renders the component', () => {
@@ -1234,16 +1237,105 @@ describe('TDropdown.vue', () => {
 
       expect(wrapper.vm.shown).toBe(true);
     });
+
+    it('calls the `enablePopperNeedsAdjustmentListener` when popperIsAdjusted is set', async () => {
+      const wrapper = mount(TDropdown);
+
+      const enablePopperNeedsAdjustmentListenerSpy = jest.spyOn(wrapper.vm, 'enablePopperNeedsAdjustmentListener');
+
+      wrapper.vm.popperIsAdjusted = true;
+
+      await wrapper.vm.$nextTick();
+
+      expect(enablePopperNeedsAdjustmentListenerSpy).toHaveBeenCalled();
+    });
+
+    it('calls the `disablePopperNeedsAdjustmentListener` when popperIsAdjusted is set to false', async () => {
+      const wrapper = mount(TDropdown);
+
+      const disablePopperNeedsAdjustmentListenerSpy = jest.spyOn(wrapper.vm, 'disablePopperNeedsAdjustmentListener');
+
+      wrapper.vm.popperIsAdjusted = true;
+
+      await wrapper.vm.$nextTick();
+
+      wrapper.vm.popperIsAdjusted = false;
+
+      await wrapper.vm.$nextTick();
+
+      expect(disablePopperNeedsAdjustmentListenerSpy).toHaveBeenCalled();
+    });
+
+    it('set popperIsAdjusted to false when scroll event after is adjusted', async () => {
+      jest.useFakeTimers();
+
+      const wrapper = mount(TDropdown);
+
+      wrapper.vm.popperIsAdjusted = true;
+
+      await wrapper.vm.$nextTick();
+
+      window.dispatchEvent(new Event('scroll'));
+
+      expect(wrapper.vm.popperIsAdjusted).toBe(true);
+
+      // need to wait because is throttled
+      jest.advanceTimersByTime(200);
+
+      expect(wrapper.vm.popperIsAdjusted).toBe(false);
+
+      jest.useRealTimers();
+    });
+
+    it('set popperIsAdjusted to false when resize event after is adjusted', async () => {
+      jest.useFakeTimers();
+
+      const wrapper = mount(TDropdown);
+
+      wrapper.vm.popperIsAdjusted = true;
+
+      await wrapper.vm.$nextTick();
+
+      window.dispatchEvent(new Event('resize'));
+
+      expect(wrapper.vm.popperIsAdjusted).toBe(true);
+
+      // need to wait because is throttled
+      jest.advanceTimersByTime(200);
+
+      expect(wrapper.vm.popperIsAdjusted).toBe(false);
+
+      jest.useRealTimers();
+    });
+
+    it('removes the listener to resize and scroll after component is unmounted', async () => {
+      const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
+
+      const wrapper = mount(TDropdown);
+
+      wrapper.unmount();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', wrapper.vm.popperAdjusterListener);
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.popperAdjusterListener);
+    });
   });
 });
 
 describe('TDropdown popper instance', () => {
   const popperWasCreated = async (wrapper: VueWrapper<any>) => {
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
+    do {
+      // eslint-disable-next-line no-await-in-loop
+      await wrapper.vm.$nextTick();
+    } while (wrapper.vm.popper === null);
+
+    return Promise.resolve();
+  };
+
+  const popperIsAdjusted = async (wrapper: VueWrapper<any>) => {
+    do {
+      // eslint-disable-next-line no-await-in-loop
+      await wrapper.vm.$nextTick();
+    } while (wrapper.vm.popperIsAdjusted === false);
 
     return Promise.resolve();
   };
@@ -1259,16 +1351,7 @@ describe('TDropdown popper instance', () => {
 
     expect(wrapper.vm.popper).toBeTruthy();
 
-    expect(wrapper.vm.adjustingPopper).toBe(true);
-
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
-
-    expect(wrapper.vm.adjustingPopper).toBe(false);
-    expect(wrapper.vm.popperIsAdjusted).toBe(false);
-
-    await wrapper.vm.$nextTick();
+    await popperIsAdjusted(wrapper);
 
     expect(wrapper.vm.popperIsAdjusted).toBe(true);
   });
@@ -1302,86 +1385,4 @@ describe('TDropdown popper instance', () => {
     expect(wrapper.vm.popper).toBeTruthy();
     expect(wrapper.vm.popper.state.placement).toBe('top');
   });
-
-  // it('adds a listener to resize popper when windows resize ', async () => {
-  //   const wrapper = mount(TDropdown);
-
-  //   jest.useFakeTimers();
-
-  //   const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
-
-  //   expect(mockMethod).not.toHaveBeenCalled();
-
-  //   window.dispatchEvent(new Event('resize'));
-
-  //   expect(mockMethod).not.toHaveBeenCalled();
-
-  //   jest.advanceTimersByTime(200);
-
-  //   expect(mockMethod).toHaveBeenCalled();
-
-  //   jest.useRealTimers();
-  // });
-
-  // it('adds a listener to resize popper when windows scroll ', async () => {
-  //   const wrapper = mount(TDropdown);
-
-  //   jest.useFakeTimers();
-
-  //   const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
-
-  //   expect(mockMethod).not.toHaveBeenCalled();
-
-  //   window.dispatchEvent(new Event('scroll'));
-
-  //   expect(mockMethod).not.toHaveBeenCalled();
-
-  //   jest.advanceTimersByTime(200);
-
-  //   expect(mockMethod).toHaveBeenCalled();
-
-  //   jest.useRealTimers();
-  // });
-
-  // it('adds a listener to resize popper when windows resize ', async () => {
-  //   const wrapper = mount(TDropdown);
-
-  //   jest.useFakeTimers();
-
-  //   const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
-
-  //   expect(mockMethod).not.toHaveBeenCalled();
-
-  //   window.dispatchEvent(new Event('resize'));
-
-  //   expect(mockMethod).not.toHaveBeenCalled();
-
-  //   jest.advanceTimersByTime(200);
-
-  //   expect(mockMethod).toHaveBeenCalled();
-
-  //   jest.useRealTimers();
-  // });
-
-  // it('removes the listener to resize and scroll after component is unmounted', async () => {
-  //   jest.useFakeTimers();
-
-  //   const wrapper = mount(TDropdown);
-
-  //   const mockMethod = jest.spyOn(wrapper.vm.popper, 'update');
-
-  //   wrapper.unmount();
-
-  //   expect(mockMethod).not.toHaveBeenCalled();
-
-  //   window.dispatchEvent(new Event('scroll'));
-
-  //   expect(mockMethod).not.toHaveBeenCalled();
-
-  //   jest.advanceTimersByTime(200);
-
-  //   expect(mockMethod).not.toHaveBeenCalled();
-
-  //   jest.useRealTimers();
-  // });
 });
