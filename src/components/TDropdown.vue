@@ -244,6 +244,10 @@ export default defineComponent({
   },
   created() {
     this.throttledToggle = throttle(this.doToggle, 200);
+
+    this.popperAdjusterListener = debounce(() => {
+      this.popperIsAdjusted = false;
+    }, 200);
   },
   beforeUnmount() {
     if (this.hideTimeout) {
@@ -352,22 +356,16 @@ export default defineComponent({
       });
     },
     enablePopperNeedsAdjustmentListener() : void {
-      this.popperAdjusterListener = debounce(() => {
-        this.popperIsAdjusted = false;
-      }, 200);
+      window.addEventListener('resize', this.popperAdjusterListener!);
 
-      window.addEventListener('resize', this.popperAdjusterListener);
-
-      window.addEventListener('scroll', this.popperAdjusterListener);
+      window.addEventListener('scroll', this.popperAdjusterListener!);
     },
     disablePopperNeedsAdjustmentListener() : void {
-      const popperAdjusterListener = this.popperAdjusterListener as DebouncedFn;
+      window.removeEventListener('resize', this.popperAdjusterListener!);
 
-      window.removeEventListener('resize', popperAdjusterListener);
+      window.removeEventListener('scroll', this.popperAdjusterListener!);
 
-      window.removeEventListener('scroll', popperAdjusterListener);
-
-      popperAdjusterListener.cancel();
+      this.popperAdjusterListener!.cancel();
     },
     getDropdownElement(): HTMLDivElement {
       const { dropdown } = this.$refs;
