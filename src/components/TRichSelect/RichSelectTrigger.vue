@@ -13,12 +13,12 @@
     :placeholder="configuration.placeholder"
   />
 
-  <rich-select-trigger-tags v-else-if="configuration.tags && configuration.multiple" />
+  <rich-select-trigger-tags v-else-if="usesTags" />
 
   <span
     v-else
     ref="label"
-    class="block truncate pr-4"
+    class="block pr-4 truncate"
   >{{ label }}</span>
 
   <loading-icon
@@ -65,12 +65,15 @@ export default defineComponent({
 
     const shown = inject<ComputedRef<boolean>>('shown')!;
 
+    const usesTags = inject<ComputedRef<boolean>>('usesTags')!;
+
     return {
       selectedOption,
       hasSelectedOption,
       configuration,
       fetchingOptions,
       shown,
+      usesTags,
     };
   },
   computed: {

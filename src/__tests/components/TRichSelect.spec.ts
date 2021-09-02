@@ -285,6 +285,67 @@ describe('TRichSelect.vue', () => {
       const wrapper = shallowMount(TRichSelect);
       expect(wrapper.vm.$.provides.fetchingMoreOptions.value).toBe(false);
     });
+
+    it('provides the `usesTags` ref', () => {
+      const wrapper = shallowMount(TRichSelect);
+      expect(wrapper.vm.$.provides.usesTags.value).toBe(false);
+    });
+  });
+
+  describe('usesTags', () => {
+    it('determines it uses tags if tags is set and is multiple', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          tags: true,
+          multiple: true,
+        },
+      });
+
+      expect(wrapper.vm.usesTags).toBe(true);
+    });
+
+    it('determines it doesnt uses tags if tags is set but is no multiple', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          tags: true,
+          multiple: false,
+        },
+      });
+
+      expect(wrapper.vm.usesTags).toBe(false);
+    });
+
+    it('determines it doesnt uses tags if tags is not set even if is multiple', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          tags: false,
+          multiple: true,
+        },
+      });
+
+      expect(wrapper.vm.usesTags).toBe(false);
+    });
+
+    it('uses a button for the dropdown trigger if not uses tags', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          tags: false,
+        },
+      });
+
+      expect(wrapper.vm.$refs.dropdownComponent.tagName).toBe('button');
+    });
+
+    it('uses a div for the dropdown trigger if uses tags', () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          tags: true,
+          multiple: true,
+        },
+      });
+
+      expect(wrapper.vm.$refs.dropdownComponent.tagName).toBe('div');
+    });
   });
 
   describe('selectedOption', () => {

@@ -12,6 +12,7 @@ describe('RichSelectTrigger', () => {
   const global = {
     provide: {
       shown: ref(false),
+      usesTags: ref(false),
       fetchingOptions: ref(false),
       selectedOption,
       hasSelectedOption,

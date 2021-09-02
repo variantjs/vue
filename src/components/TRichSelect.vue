@@ -23,8 +23,8 @@
       :toggle-on-hover="false"
       :popper-options="configuration.dropdownPopperOptions"
       :placement="configuration.dropdownPlacement"
-      :tag-name="configuration.tags && configuration.multiple ? 'div' : 'button'"
-      :tabindex="configuration.tags && configuration.multiple && !hasSelectedOption ? 0 : undefined"
+      :tag-name="usesTags ? 'div' : 'button'"
+      :tabindex="usesTags && !hasSelectedOption ? 0 : undefined"
       data-rich-select-trigger="true"
       @mouseover="$emit('mouseover', $event)"
       @mouseleave="$emit('mouseleave', $event)"
@@ -317,6 +317,8 @@ export default defineComponent({
       dropdownComponent.value!.focus();
     };
 
+    const usesTags = computed<boolean>(() => configuration.value.tags === true && configuration.value.multiple === true);
+
     /**
      * Manage dropdown related methods
      */
@@ -474,6 +476,8 @@ export default defineComponent({
 
     provide('dropdownBottomReachedHandler', dropdownBottomReachedHandler);
 
+    provide('usesTags', usesTags);
+
     return {
       configuration,
       attributes,
@@ -503,6 +507,7 @@ export default defineComponent({
       needsMoreCharsToFetch,
       showSearchInput,
       flattenedOptions,
+      usesTags,
     };
   },
   computed: {
