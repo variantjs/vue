@@ -1411,6 +1411,10 @@ describe('TDropdown popper instance', () => {
 
     wrapper.vm.popperIsAdjusted = true;
 
+    await wrapper.vm.$nextTick();
+
+    expect(popperUpdateSpy).not.toHaveBeenCalled();
+
     wrapper.vm.doShow();
 
     await wrapper.vm.$nextTick();

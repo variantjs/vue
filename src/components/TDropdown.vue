@@ -28,7 +28,7 @@
     :disabled="! configuration.teleport"
   >
     <transitionable
-      :enabled="popperIsAdjusted && !initAsShow"
+      :enabled="popperIsAdjusted || !initAsShow"
       :classes-list="configuration.classesList"
       @after-leave="dropdownAfterLeave"
     >
@@ -310,6 +310,7 @@ export default defineComponent({
       return new Promise(async (resolve) => {
         if (this.popperIsAdjusted) {
           resolve();
+          return;
         }
 
         if (!this.popper) {
