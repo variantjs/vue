@@ -28,7 +28,7 @@
     :disabled="! configuration.teleport"
   >
     <transitionable
-      :enabled="transitionEnabled"
+      :enabled="popperIsAdjusted"
       :classes-list="configuration.classesList"
       @after-leave="dropdownAfterLeave"
     >
@@ -36,6 +36,7 @@
         :is="dropdownTagName"
         v-show="shown || adjustingPopper"
         ref="dropdown"
+        :style="adjustingPopper ? 'opacity:0' : undefined"
         :class="configuration.classesList?.dropdown"
         :aria-hidden="!shown"
         tabindex="-1"
@@ -182,13 +183,14 @@ export default defineComponent({
   },
   data({ configuration }) {
     return {
-      transitionEnabled: false,
       isTouchOnlyDevice: isTouchOnlyDevice(),
       shown: (configuration as unknown as TDropdownOptions).show,
       hideTimeout: null as ReturnType<typeof setTimeout> | null,
       focusableElements: [] as Array<HTMLElement>,
       throttledToggle: null as null | (() => void),
       adjustingPopper: false,
+      popperIsAdjusted: false,
+      popperAdjusterListener: null as null | DebouncedFn,
       popper: null as PopperInstance | null,
     };
   },
@@ -208,6 +210,13 @@ export default defineComponent({
     },
   },
   watch: {
+    popperIsAdjusted(popperIsAdjusted: boolean) {
+      if (popperIsAdjusted) {
+        this.enablePopperNeedsAdjustmentListener();
+      } else {
+        this.disablePopperNeedsAdjustmentListener();
+      }
+    },
     async shown(shown: boolean): Promise<void> {
       this.$emit('update:show', shown);
       if (shown) {
@@ -294,22 +303,29 @@ export default defineComponent({
     updatePopper(): Promise<void> {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
+        if (this.popperIsAdjusted) {
+          resolve();
+        }
+
         if (!this.popper) {
           this.popper = await this.createPopper();
         }
 
-        this.transitionEnabled = false;
+        // So it appears in the DOM so it can be adjusted
         this.adjustingPopper = true;
 
         await this.$nextTick();
 
         await this.popper.update();
 
+        // after adjusted it removes the dropdown from the DOM
         this.adjustingPopper = false;
 
         await this.$nextTick();
 
-        this.transitionEnabled = true;
+        // Once removed it can be marked as adjusted so we can enable the
+        // CSS transitions
+        this.popperIsAdjusted = true;
 
         await this.$nextTick();
 
@@ -334,6 +350,24 @@ export default defineComponent({
 
         popper = createPopper(this.getTriggerElement(), this.getDropdownElement(), this.fullPopperOptions);
       });
+    },
+    enablePopperNeedsAdjustmentListener() : void {
+      this.popperAdjusterListener = debounce(() => {
+        this.popperIsAdjusted = false;
+      }, 200);
+
+      window.addEventListener('resize', this.popperAdjusterListener);
+
+      window.addEventListener('scroll', this.popperAdjusterListener);
+    },
+    disablePopperNeedsAdjustmentListener() : void {
+      const popperAdjusterListener = this.popperAdjusterListener as DebouncedFn;
+
+      window.removeEventListener('resize', popperAdjusterListener);
+
+      window.removeEventListener('scroll', popperAdjusterListener);
+
+      popperAdjusterListener.cancel();
     },
     getDropdownElement(): HTMLDivElement {
       const { dropdown } = this.$refs;
