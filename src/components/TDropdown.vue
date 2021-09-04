@@ -219,9 +219,6 @@ export default defineComponent({
         this.disablePopperNeedsAdjustmentListener();
       }
     },
-    shown(shown: boolean): void {
-      this.$emit('update:show', shown);
-    },
     'configuration.show': function configurationShowWatch(show: boolean): void {
       if (show) {
         this.doShow();
@@ -266,6 +263,8 @@ export default defineComponent({
     onShown(): void {
       this.$emit('shown');
 
+      this.$emit('update:show', true);
+
       if (this.isTouchOnlyDevice) {
         window.addEventListener('touchstart', this.touchstartHandler);
       } else {
@@ -274,6 +273,9 @@ export default defineComponent({
     },
     onHidden(): void {
       this.$emit('hidden');
+
+      this.$emit('update:show', false);
+
       if (this.isTouchOnlyDevice) {
         window.removeEventListener('touchstart', this.touchstartHandler);
       } else {

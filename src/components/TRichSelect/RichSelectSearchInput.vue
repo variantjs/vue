@@ -3,7 +3,7 @@
     <input
       ref="search"
       v-model="searchQuery"
-      data-rich-select-search="true"
+      data-rich-select-focusable
       :placeholder="configuration.searchBoxPlaceholder"
       class="inline-block w-full px-3 py-2 text-sm border border-gray-300 rounded bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
       @keydown.down="keydownDownHandler"
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import {
-  ComputedRef, defineComponent, inject, nextTick, watch, ref, Ref,
+  ComputedRef, defineComponent, inject, watch, ref, Ref,
 } from 'vue';
 import { TRichSelectOptions } from '../../types';
 import { useInjectsConfiguration } from '../../use';
@@ -36,7 +36,6 @@ export default defineComponent({
 
     watch(shown, async (isShown: boolean) : Promise<void> => {
       if (isShown) {
-        await nextTick();
         search.value!.focus();
       }
     });

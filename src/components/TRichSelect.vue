@@ -15,7 +15,6 @@
 
     <t-dropdown
       ref="dropdownComponent"
-      :show="shown"
       :classes="dropdownClasses"
       :fixed-classes="undefined"
       :toggle-on-focus="false"
@@ -25,12 +24,12 @@
       :placement="configuration.dropdownPlacement"
       :tag-name="usesTags ? 'div' : 'button'"
       :tabindex="usesTags && !hasSelectedOption ? 0 : undefined"
-      data-rich-select-trigger="true"
+      data-rich-select-focusable
       @mouseover="$emit('mouseover', $event)"
       @mouseleave="$emit('mouseleave', $event)"
       @touchstart="$emit('touchstart', $event)"
-      @shown="$emit('shown')"
-      @hidden="$emit('hidden')"
+      @shown="shownHandler"
+      @hidden="hiddenHandler"
       @before-show="beforeShowHandler"
       @before-hide="beforeHideHandler"
       @blur="blurHandler"
@@ -310,7 +309,9 @@ export default defineComponent({
      * Dropdown component reference
      */
     const dropdownComponent = ref<{
-      focus:() => void
+      focus:() => void,
+      doShow:() => void,
+      doHide:() => void,
     }>();
 
     const focusDropdownTrigger = (): void => {
@@ -323,11 +324,11 @@ export default defineComponent({
      * Manage dropdown related methods
      */
     const hideDropdown = (): void => {
-      shown.value = false;
+      dropdownComponent.value!.doHide();
     };
 
     const showDropdown = (): void => {
-      shown.value = true;
+      dropdownComponent.value!.doShow();
     };
 
     const throttledShowDropdown = throttle(showDropdown, 200);
@@ -586,6 +587,12 @@ export default defineComponent({
         this.selectOptionFromActiveOption();
       }
     },
+    shownHandler(): void {
+      this.shown = true;
+    },
+    hiddenHandler(): void {
+      this.shown = false;
+    },
     beforeShowHandler(): void {
       this.$emit('before-show');
 
@@ -621,8 +628,11 @@ export default defineComponent({
       const relatedTargetDataset: Data | undefined = relatedTarget instanceof HTMLElement ? relatedTarget.dataset : undefined;
 
       if (
-        (target.dataset.richSelectSearch !== undefined || target.dataset.richSelectTrigger !== undefined)
-        && (relatedTargetDataset && relatedTargetDataset.richSelectSearch === undefined && relatedTargetDataset.richSelectTrigger === undefined)
+        (target.dataset.richSelectFocusable !== undefined)
+        && (
+          relatedTargetDataset
+          && relatedTargetDataset.richSelectFocusable === undefined
+        )
       ) {
         target.focus();
       }
