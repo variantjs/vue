@@ -312,6 +312,7 @@ export default defineComponent({
       focus:() => void,
       doShow:() => void,
       doHide:() => void,
+      adjustPopper:() => Promise<void>,
     }>();
 
     const focusDropdownTrigger = (): void => {
@@ -329,6 +330,10 @@ export default defineComponent({
 
     const showDropdown = (): void => {
       dropdownComponent.value!.doShow();
+    };
+
+    const adjustDropdown = async (): Promise<void> => {
+      await dropdownComponent.value!.adjustPopper();
     };
 
     const throttledShowDropdown = throttle(showDropdown, 200);
@@ -509,6 +514,7 @@ export default defineComponent({
       showSearchInput,
       flattenedOptions,
       usesTags,
+      adjustDropdown,
     };
   },
   computed: {
@@ -569,6 +575,8 @@ export default defineComponent({
       if (this.shown === false) {
         return;
       }
+
+      this.adjustDropdown();
 
       if (
         this.configuration.closeOnSelect === true

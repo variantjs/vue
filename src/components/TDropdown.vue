@@ -307,6 +307,23 @@ export default defineComponent({
     dropdownAfterLeave(): void {
       this.getDropdownElement().style.removeProperty('visibility');
     },
+    async adjustPopper(): Promise<void> {
+      // eslint-disable-next-line no-async-promise-executor
+      return new Promise(async (resolve) => {
+        if (this.shown === false && this.adjustingPopper === false) {
+          this.popperIsAdjusted = false;
+          resolve();
+        }
+
+        if (!this.popper) {
+          this.popper = await this.createPopper();
+        }
+
+        await this.popper.update();
+
+        resolve();
+      });
+    },
     updatePopper(): Promise<void> {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
@@ -315,16 +332,12 @@ export default defineComponent({
           return;
         }
 
-        if (!this.popper) {
-          this.popper = await this.createPopper();
-        }
-
         // So it appears in the DOM so it can be adjusted
         this.adjustingPopper = true;
 
         await this.$nextTick();
 
-        await this.popper.update();
+        await this.adjustPopper();
 
         // after adjusted it removes the dropdown from the DOM
         this.adjustingPopper = false;
