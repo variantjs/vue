@@ -1,11 +1,11 @@
 <template>
   <div
     :class="configuration.classesList?.wrapper"
-    v-bind="wrapperAttributes"
+    v-bind="attributes"
   >
     <t-select
       v-model="localValue"
-      v-bind="attributes"
+      :name="configuration.name"
       style="display: none"
       :fixed-classes="undefined"
       :classes="undefined"
@@ -24,7 +24,6 @@
       :placement="configuration.dropdownPlacement"
       :tag-name="usesTags ? 'div' : 'button'"
       :tabindex="usesTags && !hasSelectedOption ? 0 : undefined"
-      data-rich-select-focusable
       @mouseover="$emit('mouseover', $event)"
       @mouseleave="$emit('mouseleave', $event)"
       @touchstart="$emit('touchstart', $event)"
@@ -66,7 +65,6 @@ import {
   provide,
   ref,
   computed,
-  watch,
 } from 'vue';
 import {
   InputOptions,
@@ -110,11 +108,14 @@ export default defineComponent({
     TDropdown,
     TSelect,
   },
-  inheritAttrs: false,
   props: {
     ...getVariantPropsWithClassesList<TRichSelectOptions, TRichSelectClassesValidKeys>(),
     modelValue: {
       type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TSelectValue>,
+      default: undefined,
+    },
+    name: {
+      type: String,
       default: undefined,
     },
     options: {
@@ -236,10 +237,6 @@ export default defineComponent({
     },
     minimumResultsForSearch: {
       type: Number,
-      default: undefined,
-    },
-    wrapperAttributes: {
-      type: Object,
       default: undefined,
     },
   },

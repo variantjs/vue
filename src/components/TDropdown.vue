@@ -6,7 +6,7 @@
     :aria-expanded="shown"
     :class="configuration.classesList?.trigger"
     :disabled="configuration.disabled"
-    v-bind="attributes"
+    v-bind="{...attributes, ...$attrs}"
     @click="clickHandler"
     @focus="focusHandler"
     @blur="blurHandler"

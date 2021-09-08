@@ -12,6 +12,7 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   modelValue?: TSelectValue,
   options?: InputOptions
   multiple?: boolean
+  name?: string,
   tags?: boolean
   normalizeOptions?: boolean,
   valueAttribute?: string,
@@ -37,5 +38,4 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   maxHeight?: Measure | null,
   dropdownPlacement?: Placement,
   dropdownPopperOptions?: Options,
-  wrapperAttributes?: Data,
 }, TRichSelectClassesValidKeys> & HTMLAttributes & Data;
