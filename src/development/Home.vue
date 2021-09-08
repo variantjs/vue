@@ -26,16 +26,22 @@
       <div>
         <label class="flex items-center">
           <t-radio
+            v-model="radioValue"
             name="radio"
+            value="1"
             checked
           />
 
-          <span class="ml-2">Select this</span>
+          <span class="ml-2">Select this ({{ radioValue }}) </span>
         </label>
         <label class="flex items-center">
-          <t-radio name="radio" />
+          <t-radio
+            v-model="radioValue"
+            name="radio"
+            value="2"
+          />
 
-          <span class="ml-2">Or select this</span>
+          <span class="ml-2">Or select this ({{ radioValue }})</span>
         </label>
       </div>
 
@@ -74,6 +80,7 @@ export default defineComponent({
   },
   data() {
     return {
+      radioValue: '1',
       model: '',
       options: [
         'Option A',
