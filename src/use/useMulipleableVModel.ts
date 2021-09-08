@@ -1,9 +1,9 @@
 import { Data } from '@variantjs/core';
 import {
-  computed, ref, getCurrentInstance, Ref, watch, ComputedRef,
+  computed, ref, getCurrentInstance, Ref, watch,
 } from 'vue';
 
-export default function useMulipleableVModel<P extends Data, K extends keyof P, C extends ComputedRef<Data>>(
+export default function useMulipleableVModel<P extends Data, K extends keyof P, C extends Data>(
   props: P,
   key: K,
   configuration?: C,
@@ -13,7 +13,7 @@ export default function useMulipleableVModel<P extends Data, K extends keyof P, 
   } {
   const vm = getCurrentInstance();
 
-  const isMultiple = computed<boolean>((): boolean => (configuration === undefined ? false : configuration.value.multiple !== null && configuration.value.multiple !== undefined && configuration.value.multiple !== false));
+  const isMultiple = computed<boolean>((): boolean => (configuration === undefined ? false : configuration.multiple !== null && configuration.multiple !== undefined && configuration.multiple !== false));
 
   const getDefaultValue = (): P[K] => {
     if (isMultiple.value) {

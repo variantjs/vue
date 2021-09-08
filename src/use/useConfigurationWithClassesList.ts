@@ -1,45 +1,43 @@
 import {
-  computed, inject, camelize, getCurrentInstance, ComputedRef,
+  computed, getCurrentInstance, reactive, watch,
 } from 'vue';
-import {
-  Data, get, isPrimitive, parseVariantWithClassesList, pick,
-} from '@variantjs/core';
-import { VariantJSConfiguration } from '../types';
-import { extractDefinedProps } from './useConfiguration';
+import { Data, parseVariantWithClassesList, isEqual } from '@variantjs/core';
+import { useAttributes, useConfigurationParts } from './useConfiguration';
 
 export default function useConfigurationWithClassesList<ComponentOptions extends Data>(defaultConfiguration: ComponentOptions, classesListKeys: string[]): {
-  configuration: ComputedRef<ComponentOptions>,
-  attributes: ComputedRef<Data>
+  configuration: ComponentOptions,
+  attributes: Data,
 } {
   const vm = getCurrentInstance()!;
 
-  const variantGlobalConfiguration = inject<VariantJSConfiguration>('configuration', {});
-  const componentGlobalConfiguration = get<VariantJSConfiguration, ComponentOptions>(variantGlobalConfiguration, vm?.type.name as keyof VariantJSConfiguration, {});
+  const { propsValues, componentGlobalConfiguration } = useConfigurationParts<ComponentOptions>();
 
-  const configuration: ComputedRef<ComponentOptions> = computed(() => {
-    const propsValues: Data = {};
+  const computedConfiguration = computed(() => ({
+    ...vm.props,
+    ...parseVariantWithClassesList(
+      propsValues.value,
+      classesListKeys,
+      componentGlobalConfiguration,
+      defaultConfiguration,
+    ),
+  }));
 
-    extractDefinedProps(vm).forEach((attributeName) => {
-      const normalizedAttribute = camelize(attributeName);
-      propsValues[normalizedAttribute] = vm.props[normalizedAttribute];
+  const configuration = reactive(computedConfiguration.value);
+
+  watch(computedConfiguration, (newValue) => {
+    Object.keys(newValue).forEach((key) => {
+      if (configuration[key] === undefined) {
+        configuration[key] = newValue[key];
+      } else if (!isEqual(configuration[key], newValue[key])) {
+        configuration[key] = newValue[key];
+      }
     });
-
-    const result = parseVariantWithClassesList(propsValues as ComponentOptions, classesListKeys, componentGlobalConfiguration, defaultConfiguration);
-
-    return {
-      ...vm.props,
-      ...result,
-    };
   });
 
-  const attributes: ComputedRef<Data> = computed<Data>(():Data => {
-    const availableProps = Object.keys(vm.props);
+  const attributes = useAttributes(configuration);
 
-    return {
-      ...pick(configuration.value, (value, key) => isPrimitive(value) && !availableProps.includes(String(key))),
-      ...vm.attrs,
-    };
-  });
-
-  return { configuration, attributes };
+  return {
+    configuration: configuration as ComponentOptions,
+    attributes,
+  };
 }

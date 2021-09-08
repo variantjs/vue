@@ -10,7 +10,7 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
   options: Ref<NormalizedOption[]>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   localValue: Ref<any>,
-  configuration: Ref<C>,
+  multiple: Ref<boolean>,
 ): {
     selectedOption: ComputedRef<NormalizedOption | NormalizedOption[] | undefined>,
     hasSelectedOption: ComputedRef<boolean>,
@@ -19,7 +19,7 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
     optionIsSelected: (option: NormalizedOption) => boolean,
   } {
   const optionIsSelected = (option: NormalizedOption): boolean => {
-    if (configuration.value.multiple === true) {
+    if (multiple.value === true) {
       return Array.isArray(localValue.value)
           && localValue.value.some((value) => isEqual(value, option.value));
     }
@@ -28,7 +28,7 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
   };
 
   const selectedOption = computed((): NormalizedOption | NormalizedOption[] | undefined => {
-    if (configuration.value.multiple === true) {
+    if (multiple.value === true) {
       if (!Array.isArray(localValue.value)) {
         return [];
       }
@@ -44,7 +44,7 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
       return;
     }
 
-    if (configuration.value.multiple === true) {
+    if (multiple.value === true) {
       if (Array.isArray(localValue.value)) {
         localValue.value = addToArray(localValue.value, option.value);
       } else {
@@ -57,12 +57,12 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
 
   const toggleOption = (option: NormalizedOption): void => {
     if (optionIsSelected(option)) {
-      if (configuration.value.multiple === true) {
+      if (multiple.value === true) {
         localValue.value = substractFromArray(localValue.value, option.value);
       } else {
         localValue.value = undefined;
       }
-    } else if (configuration.value.multiple === true) {
+    } else if (multiple.value === true) {
       if (Array.isArray(localValue.value)) {
         localValue.value = addToArray(localValue.value, option.value);
       } else {
@@ -74,7 +74,7 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
   };
 
   const hasSelectedOption = computed((): boolean => {
-    if (configuration.value.multiple === true) {
+    if (multiple.value === true) {
       return (selectedOption.value as NormalizedOption[]).length > 0;
     }
 

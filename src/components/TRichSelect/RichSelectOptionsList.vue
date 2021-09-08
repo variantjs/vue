@@ -24,7 +24,7 @@
 import {
   computed,
   Ref,
-  ComputedRef, defineComponent, inject, PropType,
+  defineComponent, inject, PropType,
 } from 'vue';
 import { debounce, NormalizedOptions, normalizeMeasure } from '@variantjs/core';
 import RichSelectOption from './RichSelectOption.vue';
@@ -46,12 +46,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const configuration = inject<ComputedRef<TRichSelectOptions>>('configuration')!;
+    const configuration = inject<TRichSelectOptions>('configuration')!;
     const shown = inject<Ref<boolean>>('shown');
     const fetchingMoreOptions = inject<Ref<boolean>>('fetchingMoreOptions')!;
     const dropdownBottomReachedHandler = inject<(() => void)>('dropdownBottomReachedHandler')!;
 
-    const maxHeight = computed(() => normalizeMeasure(configuration.value.maxHeight));
+    const maxHeight = computed(() => normalizeMeasure(configuration.maxHeight));
     const usesMaxHeight = computed((): boolean => props.deep === 0 && maxHeight.value !== undefined);
 
     const bottomReachedObserver = debounce(([event]: [Event]) => {

@@ -66,6 +66,7 @@ import {
   provide,
   ref,
   computed,
+  watch,
 } from 'vue';
 import {
   InputOptions,
@@ -263,15 +264,15 @@ export default defineComponent({
       fetchedOptionsHaveMorePages,
       fetchOptionsCancel,
     } = useFetchsOptions(
-      computed(() => configuration.value.options),
-      computed(() => configuration.value.textAttribute),
-      computed(() => configuration.value.valueAttribute),
-      computed(() => configuration.value.normalizeOptions!),
+      computed(() => configuration.options),
+      computed(() => configuration.textAttribute),
+      computed(() => configuration.valueAttribute),
+      computed(() => configuration.normalizeOptions!),
       searchQuery,
-      computed(() => configuration.value.fetchOptions),
-      computed(() => configuration.value.delay),
-      computed(() => configuration.value.minimumInputLength),
-      computed(() => configuration.value.minimumInputLengthText!),
+      computed(() => configuration.fetchOptions),
+      computed(() => configuration.delay),
+      computed(() => configuration.minimumInputLength),
+      computed(() => configuration.minimumInputLengthText!),
     );
 
     const {
@@ -280,7 +281,7 @@ export default defineComponent({
       selectOption,
       toggleOption,
       optionIsSelected,
-    } = useSelectableOption<TRichSelectOptions>(flattenedOptions, localValue, configuration);
+    } = useSelectableOption<TRichSelectOptions>(flattenedOptions, localValue, computed(() => configuration.multiple!));
 
     const {
       activeOption,
@@ -294,12 +295,12 @@ export default defineComponent({
     const shown = ref<boolean>(false);
 
     const showSearchInput = computed<boolean>(() => {
-      if (configuration.value.hideSearchBox) {
+      if (configuration.hideSearchBox) {
         return false;
       }
 
-      if (configuration.value.minimumResultsForSearch !== undefined) {
-        return normalizedOptions.value.length >= configuration.value.minimumResultsForSearch;
+      if (configuration.minimumResultsForSearch !== undefined) {
+        return normalizedOptions.value.length >= configuration.minimumResultsForSearch;
       }
 
       return true;
@@ -319,7 +320,7 @@ export default defineComponent({
       dropdownComponent.value!.focus();
     };
 
-    const usesTags = computed<boolean>(() => configuration.value.tags === true && configuration.value.multiple === true);
+    const usesTags = computed<boolean>(() => configuration.tags === true && configuration.multiple === true);
 
     /**
      * Manage dropdown related methods
@@ -414,7 +415,7 @@ export default defineComponent({
 
       e.preventDefault();
 
-      if (configuration.value.toggleOnClick && shown.value === false) {
+      if (configuration.toggleOnClick && shown.value === false) {
         throttledShowDropdown();
       } else if (shown.value === true) {
         toggleOptionFromActiveOption();

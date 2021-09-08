@@ -62,10 +62,10 @@ export default defineComponent({
     const {
       normalizedOptions,
     } = useMultioptions(
-      computed(() => configuration.value.options),
-      computed(() => configuration.value.textAttribute),
-      computed(() => configuration.value.valueAttribute),
-      computed(() => configuration.value.normalizeOptions!),
+      computed(() => configuration.options),
+      computed(() => configuration.textAttribute),
+      computed(() => configuration.valueAttribute),
+      computed(() => configuration.normalizeOptions!),
     );
 
     return {
