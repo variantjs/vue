@@ -1,5 +1,5 @@
 import {
-  computed, inject, camelize, getCurrentInstance, ComponentInternalInstance, ComputedRef, watch, reactive,
+  computed, inject, camelize, getCurrentInstance, ComponentInternalInstance, ComputedRef, watch, reactive, toRaw,
 } from 'vue';
 import {
   Data, get, isEqual, isPrimitive, parseVariant, pick,
@@ -11,7 +11,7 @@ export const extractDefinedProps = (vm: ComponentInternalInstance): string[] => 
 
   const definedProps = Object.keys(vm.vnode.props || {})
     .map((propName) => camelize(propName))
-    .filter((propName) => validProps.includes(propName));
+    .filter((propName) => validProps.includes(propName) && propName !== 'modelValue');
 
   return definedProps;
 };
@@ -19,7 +19,7 @@ export const extractDefinedProps = (vm: ComponentInternalInstance): string[] => 
 export function useAttributes<ComponentOptions extends Data>(configuration: ComponentOptions): Data {
   const vm = getCurrentInstance()!;
 
-  const computedAttributes: ComputedRef<Data> = computed<Data>(():Data => {
+  const attributes: ComputedRef<Data> = computed<Data>(():Data => {
     const availableProps = Object.keys(vm.props);
 
     return {
@@ -28,17 +28,7 @@ export function useAttributes<ComponentOptions extends Data>(configuration: Comp
     };
   });
 
-  const attributes = reactive<Data>(computedAttributes.value);
-
-  watch(computedAttributes, (newValue) => {
-    Object.keys(newValue).forEach((key) => {
-      if (!isEqual(attributes[key], newValue[key])) {
-        attributes[key] = newValue[key];
-      }
-    });
-  });
-
-  return attributes;
+  return attributes.value;
 }
 
 export function useConfigurationParts<ComponentOptions extends Data>(): {
@@ -76,31 +66,23 @@ export default function useConfiguration<ComponentOptions extends Data>(defaultC
 
   const { propsValues, componentGlobalConfiguration } = useConfigurationParts<ComponentOptions>();
 
-  const computedConfiguration = computed(() => ({
-    ...vm.props,
-    ...parseVariant(
-      propsValues.value,
-      componentGlobalConfiguration,
-      defaultConfiguration,
-    ),
-  }));
-
-  const configuration = reactive(computedConfiguration.value);
-
-  watch(computedConfiguration, (newValue) => {
-    Object.keys(newValue).forEach((key) => {
-      if (configuration[key] === undefined) {
-        configuration[key] = newValue[key];
-      } else if (!isEqual(configuration[key], newValue[key])) {
-        configuration[key] = newValue[key];
-      }
-    });
+  const configuration = computed(() => {
+    const props = { ...vm.props };
+    delete props.modelValue;
+    return {
+      ...props,
+      ...parseVariant(
+        propsValues.value,
+        componentGlobalConfiguration,
+        defaultConfiguration,
+      ),
+    };
   });
 
-  const attributes = useAttributes(configuration);
+  const attributes = useAttributes(configuration.value);
 
   return {
-    configuration: configuration as ComponentOptions,
+    configuration: configuration.value as ComponentOptions,
     attributes,
   };
 }
