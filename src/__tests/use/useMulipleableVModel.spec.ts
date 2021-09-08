@@ -4,7 +4,7 @@ import { useSetup } from './useSetup';
 
 describe('useMulipleableVModel.spec', () => {
   it('should return an empty array if multiple and no value', () => {
-    const configuration = computed(() => ({ multiple: true }));
+    const configuration = { multiple: true };
     useSetup(() => {
       const { localValue } = useMulipleableVModel({
         modelValue: undefined,
@@ -14,7 +14,7 @@ describe('useMulipleableVModel.spec', () => {
   });
 
   it('should return an array if multiple is an empty string', () => {
-    const configuration = computed(() => ({ multiple: '' }));
+    const configuration = { multiple: '' };
 
     useSetup(() => {
       const { localValue } = useMulipleableVModel({
@@ -24,7 +24,7 @@ describe('useMulipleableVModel.spec', () => {
     });
   });
   it('should return an array if multiple is `true` string', () => {
-    const configuration = computed(() => ({ multiple: 'true' }));
+    const configuration = { multiple: 'true' };
     useSetup(() => {
       const { localValue } = useMulipleableVModel({
         modelValue: undefined,
@@ -34,7 +34,7 @@ describe('useMulipleableVModel.spec', () => {
   });
 
   it('should return an array if multiple is `false` string', () => {
-    const configuration = computed(() => ({ multiple: 'false' }));
+    const configuration = { multiple: 'false' };
     useSetup(() => {
       const { localValue } = useMulipleableVModel({
         modelValue: undefined,
@@ -44,7 +44,7 @@ describe('useMulipleableVModel.spec', () => {
   });
 
   it('should return undefined if multiple is `false`', () => {
-    const configuration = computed(() => ({ multiple: false }));
+    const configuration = { multiple: false };
     useSetup(() => {
       const { localValue } = useMulipleableVModel({
         modelValue: undefined,
@@ -63,7 +63,7 @@ describe('useMulipleableVModel.spec', () => {
   });
 
   it('should return the default value when model changes to an undefined value', () => {
-    const configuration = computed(() => ({}));
+    const configuration = {};
 
     useSetup(() => {
       const { localValue } = useMulipleableVModel({
@@ -74,7 +74,7 @@ describe('useMulipleableVModel.spec', () => {
   });
 
   it('should return the default value when no model defined when using multiple', () => {
-    const configuration = computed(() => ({ multiple: true }));
+    const configuration = { multiple: true };
 
     useSetup(() => {
       const { localValue } = useMulipleableVModel({

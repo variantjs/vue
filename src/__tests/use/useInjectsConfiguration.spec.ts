@@ -24,7 +24,7 @@ describe('useInjectsConfiguration', () => {
     const wrapper = shallowMount(component, {
       global: {
         provide: {
-          configuration: computed(() => configurationToProvide),
+          configuration: configurationToProvide,
         },
       },
     });

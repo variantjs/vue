@@ -9,7 +9,7 @@ describe('useConfiguration', () => {
           attrib: 'value',
           width: '10px',
         });
-        expect(configuration.value).toEqual({
+        expect(configuration).toEqual({
           attrib: 'value',
           width: '10px',
         });
@@ -22,7 +22,7 @@ describe('useConfiguration', () => {
           classes: 'text-red-500',
           fixedClasses: 'border-2',
         });
-        expect(configuration.value).toEqual({
+        expect(configuration).toEqual({
           class: 'text-red-500 border-2',
         });
       });
@@ -41,7 +41,7 @@ describe('useConfiguration', () => {
           },
           variant: 'error',
         });
-        expect(configuration.value).toEqual({
+        expect(configuration).toEqual({
           class: 'text-red-500 border-2',
         });
       });
@@ -58,7 +58,7 @@ describe('useConfiguration', () => {
           maxlength: '2',
         });
 
-        expect(configuration.value).toEqual({
+        expect(configuration).toEqual({
           maxlength: '2',
           placeholder: 'Hello world',
         });
@@ -79,7 +79,7 @@ describe('useConfiguration', () => {
           maxlength: '2',
         });
 
-        expect(configuration.value).toEqual({
+        expect(configuration).toEqual({
           maxlength: '2',
           placeholder: 'Hello world',
         });

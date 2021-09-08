@@ -14,7 +14,7 @@ describe('useConfigurationWithClassesList', () => {
           },
         }, ['wrapper', 'body']);
 
-        expect(configuration.value).toEqual({
+        expect(configuration).toEqual({
           attrib: 'value',
           width: '10px',
           classesList: {
@@ -37,7 +37,7 @@ describe('useConfigurationWithClassesList', () => {
             body: 'p-3',
           },
         }, ['wrapper', 'body']);
-        expect(configuration.value).toEqual({
+        expect(configuration).toEqual({
           classesList: {
             wrapper: 'border border-gray-200',
             body: 'text-base p-3',
@@ -66,7 +66,7 @@ describe('useConfigurationWithClassesList', () => {
           },
           variant: 'error',
         }, ['wrapper', 'body']);
-        expect(configuration.value).toEqual({
+        expect(configuration).toEqual({
           classesList: {
             wrapper: 'border-2 border-gray-200',
             body: 'text-base p-3',
@@ -90,7 +90,7 @@ describe('useConfigurationWithClassesList', () => {
           maxlength: '2',
         }, ['wrapper', 'body']);
 
-        expect(configuration.value).toEqual({
+        expect(configuration).toEqual({
           maxlength: '2',
           placeholder: 'Hello world',
           classesList: {
@@ -115,7 +115,7 @@ describe('useConfigurationWithClassesList', () => {
           maxlength: '2',
         }, ['wrapper', 'body']);
 
-        expect(configuration.value).toEqual({
+        expect(configuration).toEqual({
           maxlength: '2',
           body: 'Hello world',
         });

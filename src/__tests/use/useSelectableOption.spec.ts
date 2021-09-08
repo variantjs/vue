@@ -82,7 +82,7 @@ describe('useSelectableOption', () => {
       } = useSelectableOption(
         options,
         ref(['b', 'c']),
-        ref({ multiple: true }),
+        ref(true),
       );
 
       expect(selectedOption.value).toEqual(
@@ -99,7 +99,7 @@ describe('useSelectableOption', () => {
       } = useSelectableOption(
         options,
         ref(null),
-        ref({ multiple: true }),
+        ref(true),
       );
 
       expect(selectedOption.value).toEqual([]);
