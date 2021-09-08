@@ -1,6 +1,6 @@
 import { NormalizedOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import RichSelectOptionsList from '../../../components/TRichSelect/RichSelectOptionsList.vue';
 import { TSelectOptions } from '../../../types';
 
@@ -23,7 +23,7 @@ describe('RichSelectOptionsList', () => {
 
   const global = {
     provide: {
-      configuration: computed<TSelectOptions | undefined>(() => ({})),
+      configuration: {} as TSelectOptions,
       fetchingMoreOptions: ref(false),
       shown: ref(false),
       dropdownBottomReachedHandler: jest.fn(),
@@ -41,10 +41,8 @@ describe('RichSelectOptionsList', () => {
   });
 
   it('adds the max-height style if defined on the settings', () => {
-    const configuration: { value: TSelectOptions } = {
-      value: {
-        maxHeight: 100,
-      },
+    const configuration: TSelectOptions = {
+      maxHeight: 100,
     };
     const wrapper = shallowMount(RichSelectOptionsList, {
       props,
@@ -60,10 +58,8 @@ describe('RichSelectOptionsList', () => {
   });
 
   it('doesnt add the max-height style if deep > 0', () => {
-    const configuration: { value: TSelectOptions } = {
-      value: {
-        maxHeight: 100,
-      },
+    const configuration: TSelectOptions = {
+      maxHeight: 100,
     };
     const wrapper = shallowMount(RichSelectOptionsList, {
       props: {

@@ -51,9 +51,9 @@ describe('RichSelectTrigger', () => {
       global: {
         provide: {
           ...global.provide,
-          configuration: computed<TSelectOptions | undefined>(() => ({
+          configuration: {
             clearable: false,
-          })),
+          },
         },
       },
     });
@@ -67,9 +67,9 @@ describe('RichSelectTrigger', () => {
       global: {
         provide: {
           ...global.provide,
-          configuration: computed<TSelectOptions | undefined>(() => ({
+          configuration: {
             clearable: true,
-          })),
+          },
         },
       },
     });
@@ -88,9 +88,9 @@ describe('RichSelectTrigger', () => {
             text: 'foo',
           })),
           hasSelectedOption: ref(true),
-          configuration: computed<TSelectOptions | undefined>(() => ({
+          configuration: {
             clearable: true,
-          })),
+          },
         },
       },
     });
@@ -203,9 +203,9 @@ describe('RichSelectTrigger', () => {
         global: {
           provide: {
             ...global.provide,
-            configuration: computed<TSelectOptions | undefined>(() => ({
+            configuration: {
               loadingClosedPlaceholder: 'Loading...',
-            })),
+            },
             fetchingOptions: ref(true),
           },
         },

@@ -13,12 +13,8 @@ describe('useSelectableOption', () => {
 
   const localValue: Ref = ref(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const configuration: ComputedRef<any> = computed(() => ({}));
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const configurationMultiple: ComputedRef<any> = computed(() => ({
-    multiple: true,
-  }));
+  const multiple: Ref<boolean> = ref(true);
+  const noMultiple: Ref<boolean> = ref(false);
 
   beforeEach(() => {
     localValue.value = null;
@@ -30,7 +26,7 @@ describe('useSelectableOption', () => {
     } = useSelectableOption(
       options,
       localValue,
-      configuration,
+      noMultiple,
     );
 
     expect(typeof selectedOption).toBe('object');
@@ -46,7 +42,7 @@ describe('useSelectableOption', () => {
       } = useSelectableOption(
         options,
         ref(null),
-        configuration,
+        noMultiple,
       );
 
       expect(selectedOption.value).toBeUndefined();
@@ -58,7 +54,7 @@ describe('useSelectableOption', () => {
       } = useSelectableOption(
         options,
         ref('d'),
-        configuration,
+        noMultiple,
       );
 
       expect(selectedOption.value).toBeUndefined();
@@ -70,7 +66,7 @@ describe('useSelectableOption', () => {
       } = useSelectableOption(
         options,
         ref('b'),
-        configuration,
+        noMultiple,
       );
 
       expect(selectedOption.value).toEqual({ value: 'b', text: 'Option B' });
@@ -114,7 +110,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configuration,
+          noMultiple,
         );
 
         selectOption({ ...options.value[1] });
@@ -129,7 +125,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configuration,
+          noMultiple,
         );
 
         selectOption({ ...options.value[1] });
@@ -142,7 +138,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configuration,
+          noMultiple,
         );
 
         selectOption({ ...options.value[1] });
@@ -158,7 +154,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configurationMultiple,
+          multiple,
         );
 
         selectOption({ ...options.value[1] });
@@ -173,7 +169,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configurationMultiple,
+          multiple,
         );
 
         selectOption({ ...options.value[1] });
@@ -188,7 +184,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configurationMultiple,
+          multiple,
         );
 
         selectOption({ ...options.value[1] });
@@ -202,7 +198,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configurationMultiple,
+          multiple,
         );
 
         selectOption({ ...options.value[1] });
@@ -219,7 +215,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configuration,
+          noMultiple,
         );
 
         toggleOption({ ...options.value[1] });
@@ -234,7 +230,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configuration,
+          noMultiple,
         );
 
         toggleOption({ ...options.value[1] });
@@ -249,7 +245,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configuration,
+          noMultiple,
         );
 
         toggleOption({ ...options.value[1] });
@@ -265,7 +261,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configurationMultiple,
+          multiple,
         );
 
         toggleOption({ ...options.value[1] });
@@ -280,7 +276,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configurationMultiple,
+          multiple,
         );
 
         toggleOption({ ...options.value[1] });
@@ -295,7 +291,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configurationMultiple,
+          multiple,
         );
 
         toggleOption({ ...options.value[1] });
@@ -309,7 +305,7 @@ describe('useSelectableOption', () => {
         } = useSelectableOption(
           options,
           localValue,
-          configurationMultiple,
+          multiple,
         );
 
         toggleOption({ ...options.value[1] });
@@ -325,7 +321,7 @@ describe('useSelectableOption', () => {
       } = useSelectableOption(
         options,
         localValue,
-        configuration,
+        noMultiple,
       );
 
       localValue.value = 'a';
@@ -340,7 +336,7 @@ describe('useSelectableOption', () => {
       } = useSelectableOption(
         options,
         localValue,
-        configurationMultiple,
+        multiple,
       );
 
       localValue.value = ['b'];
@@ -355,7 +351,7 @@ describe('useSelectableOption', () => {
       } = useSelectableOption(
         options,
         localValue,
-        configurationMultiple,
+        multiple,
       );
 
       localValue.value = 'b';

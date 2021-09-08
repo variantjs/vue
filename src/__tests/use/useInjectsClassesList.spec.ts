@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { computed, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import useInjectsClassesList from '../../use/useInjectsClassesList';
 
 describe('useInjectsClassesList', () => {
@@ -23,7 +23,7 @@ describe('useInjectsClassesList', () => {
     const wrapper = shallowMount(component, {
       global: {
         provide: {
-          configuration: computed(() => configurationToProvide),
+          configuration: configurationToProvide,
         },
       },
     });
