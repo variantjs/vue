@@ -1,11 +1,15 @@
 <template>
   <span
-    type="button"
     class="bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50 duration-100 ease-in-out focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded shadow-sm text-sm text-white transition white-space-no m-0.5 max-w-full h-8 flex items-center cursor-pointer "
     tabindex="0"
     data-rich-select-focusable
+    data-rich-select-tag
+    :data-value="dataValueAttribute"
     @mousedown.prevent.stop="focus"
     @keydown.backspace.prevent.stop="unselect"
+    @keydown.right.prevent.stop="focusNextElement"
+    @keydown.left.prevent.stop="focusPrevElement"
+    @keydown.enter.prevent.stop
   >
     <span
       class="px-3"
@@ -17,6 +21,9 @@
       tabindex="0"
       class="-ml-1.5 h-full hover:bg-blue-600 hover:shadow-sm inline-flex items-center px-2 transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 rounded-r"
       data-rich-select-focusable
+      @mousedown.prevent.stop="unselect"
+      @keydown.backspace.prevent.stop="unselect"
+      @keydown.enter.prevent.stop="unselect"
     >
       <close-icon
         ref="closeIcon"
@@ -48,15 +55,57 @@ export default defineComponent({
 
     return { toggleOption };
   },
-  methods: {
-    blurHandler() {
-      console.log('blurHandler');
+  computed: {
+    dataValueAttribute(): string {
+      if (typeof this.option.value === 'object') {
+        return JSON.stringify(this.option.value);
+      }
+
+      return String(this.option.value);
     },
-    focus() {
+  },
+  methods: {
+    focus(): void {
       this.$el.focus();
     },
-    unselect() {
+    getElementIndex(): number {
+      const elements: HTMLElement[] = Array.from(this.$el.parentElement.children);
+
+      return Array.from(elements).findIndex((el) => el.isSameNode(this.$el));
+    },
+    focusNextElement(): void {
+      const { parentElement } = this.$el;
+      const currentElementIndex = this.getElementIndex();
+      const elements: HTMLElement[] = Array.from(parentElement.children);
+
+      if (currentElementIndex < elements.length - 1) {
+        elements[currentElementIndex + 1].focus();
+      }
+    },
+    focusPrevElement(): void {
+      const { parentElement } = this.$el;
+      const currentElementIndex = this.getElementIndex();
+      const elements: HTMLElement[] = Array.from(parentElement.children);
+
+      if (currentElementIndex > 0) {
+        elements[currentElementIndex - 1].focus();
+      }
+    },
+    async unselect(): Promise<void> {
+      const { parentElement } = this.$el;
+      const elementIndex = this.getElementIndex();
+
       this.toggleOption(this.option);
+
+      await this.$nextTick();
+
+      const nextElement: HTMLElement | undefined = parentElement.children[elementIndex];
+
+      if (nextElement) {
+        nextElement.focus();
+      } else if (elementIndex > 0) {
+        parentElement.children[elementIndex - 1].focus();
+      }
     },
   },
 });

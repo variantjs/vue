@@ -131,7 +131,7 @@ export default defineComponent({
     },
     tags: {
       type: Boolean as PropType<boolean>,
-      default: true,
+      default: false,
     },
     placeholder: {
       type: String,
