@@ -96,7 +96,7 @@ describe('useConfiguration', () => {
 
         const { attributes } = useConfiguration(props);
 
-        expect(attributes.value).toEqual({
+        expect(attributes).toEqual({
           placeholder: 'Hello World',
         });
       }, {}, {});
@@ -112,7 +112,7 @@ describe('useConfiguration', () => {
 
         const { attributes } = useConfiguration(props);
 
-        expect(attributes.value).toEqual({
+        expect(attributes).toEqual({
           class: 'font-semibold border-red-500 text-red-500',
         });
       }, {}, {}, ['fixedClasses', 'classes']);
@@ -127,7 +127,7 @@ describe('useConfiguration', () => {
 
         const { attributes } = useConfiguration(props);
 
-        expect(attributes.value).toEqual({
+        expect(attributes).toEqual({
           type: 'button',
           'data-id': 'something',
         });
@@ -142,7 +142,7 @@ describe('useConfiguration', () => {
         };
         const { attributes } = useConfiguration(props);
 
-        expect(attributes.value).toEqual({
+        expect(attributes).toEqual({
           'data-id': 'something',
         });
       }, {}, {}, ['type']);

@@ -132,7 +132,7 @@ describe('useConfigurationWithClassesList', () => {
 
         const { attributes } = useConfigurationWithClassesList(props, []);
 
-        expect(attributes.value).toEqual({
+        expect(attributes).toEqual({
           placeholder: 'Hello World',
         });
       }, {}, {});
@@ -147,7 +147,7 @@ describe('useConfigurationWithClassesList', () => {
 
         const { attributes } = useConfigurationWithClassesList(props, []);
 
-        expect(attributes.value).toEqual({
+        expect(attributes).toEqual({
           type: 'button',
           'data-id': 'something',
         });
@@ -162,7 +162,7 @@ describe('useConfigurationWithClassesList', () => {
         };
         const { attributes } = useConfigurationWithClassesList(props, []);
 
-        expect(attributes.value).toEqual({
+        expect(attributes).toEqual({
           'data-id': 'something',
         });
       }, {}, {}, ['type']);

@@ -22,10 +22,7 @@ export function useAttributes<ComponentOptions extends Data>(configuration: Comp
   const computedAttributes: ComputedRef<Data> = computed<Data>(():Data => {
     const availableProps = Object.keys(vm.props);
 
-    return {
-      ...pick(configuration, (value, key) => isPrimitive(value) && !availableProps.includes(String(key))),
-      ...vm.attrs,
-    };
+    return pick(configuration, (value, key) => isPrimitive(value) && !availableProps.includes(String(key)));
   });
 
   const attributes = reactive<Data>(computedAttributes.value);
