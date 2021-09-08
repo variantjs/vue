@@ -1,5 +1,5 @@
 import {
-  computed, inject, camelize, getCurrentInstance, ComponentInternalInstance, ComputedRef, watch, reactive, toRaw,
+  computed, inject, camelize, getCurrentInstance, ComponentInternalInstance, ComputedRef, watch, reactive,
 } from 'vue';
 import {
   Data, get, isEqual, isPrimitive, parseVariant, pick,
@@ -19,7 +19,7 @@ export const extractDefinedProps = (vm: ComponentInternalInstance): string[] => 
 export function useAttributes<ComponentOptions extends Data>(configuration: ComponentOptions): Data {
   const vm = getCurrentInstance()!;
 
-  const attributes: ComputedRef<Data> = computed<Data>(():Data => {
+  const computedAttributes: ComputedRef<Data> = computed<Data>(():Data => {
     const availableProps = Object.keys(vm.props);
 
     return {
@@ -28,7 +28,17 @@ export function useAttributes<ComponentOptions extends Data>(configuration: Comp
     };
   });
 
-  return attributes.value;
+  const attributes = reactive<Data>(computedAttributes.value);
+
+  watch(computedAttributes, (newValue) => {
+    Object.keys(newValue).forEach((key) => {
+      if (!isEqual(attributes[key], newValue[key])) {
+        attributes[key] = newValue[key];
+      }
+    });
+  });
+
+  return attributes;
 }
 
 export function useConfigurationParts<ComponentOptions extends Data>(): {
@@ -66,7 +76,7 @@ export default function useConfiguration<ComponentOptions extends Data>(defaultC
 
   const { propsValues, componentGlobalConfiguration } = useConfigurationParts<ComponentOptions>();
 
-  const configuration = computed(() => {
+  const computedConfiguration = computed(() => {
     const props = { ...vm.props };
     delete props.modelValue;
     return {
@@ -79,10 +89,18 @@ export default function useConfiguration<ComponentOptions extends Data>(defaultC
     };
   });
 
-  const attributes = useAttributes(configuration.value);
+  const configuration = reactive(computedConfiguration.value);
+
+  watch(computedConfiguration, (newValue) => {
+    Object.keys(newValue).forEach((key) => {
+      configuration[key] = newValue[key];
+    });
+  });
+
+  const attributes = useAttributes(configuration);
 
   return {
-    configuration: configuration.value as ComponentOptions,
+    configuration: configuration as ComponentOptions,
     attributes,
   };
 }

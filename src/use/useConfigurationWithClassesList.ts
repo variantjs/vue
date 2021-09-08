@@ -1,5 +1,5 @@
 import {
-  computed, getCurrentInstance,
+  computed, getCurrentInstance, reactive, watch,
 } from 'vue';
 import { Data, parseVariantWithClassesList } from '@variantjs/core';
 import { useAttributes, useConfigurationParts } from './useConfiguration';
@@ -12,7 +12,7 @@ export default function useConfigurationWithClassesList<ComponentOptions extends
 
   const { propsValues, componentGlobalConfiguration } = useConfigurationParts<ComponentOptions>();
 
-  const configuration = computed(() => ({
+  const computedConfiguration = computed(() => ({
     ...vm.props,
     ...parseVariantWithClassesList(
       propsValues.value,
@@ -22,10 +22,18 @@ export default function useConfigurationWithClassesList<ComponentOptions extends
     ),
   }));
 
-  const attributes = useAttributes(configuration.value);
+  const configuration = reactive(computedConfiguration.value);
+
+  watch(computedConfiguration, (newValue) => {
+    Object.keys(newValue).forEach((key) => {
+      configuration[key] = newValue[key];
+    });
+  });
+
+  const attributes = useAttributes(configuration);
 
   return {
-    configuration: configuration.value as ComponentOptions,
+    configuration: configuration as ComponentOptions,
     attributes,
   };
 }
