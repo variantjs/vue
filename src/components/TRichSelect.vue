@@ -594,9 +594,13 @@ export default defineComponent({
       }
     },
     shownHandler(): void {
+      this.$emit('shown');
+
       this.shown = true;
     },
     hiddenHandler(): void {
+      this.$emit('hidden');
+
       this.shown = false;
     },
     beforeShowHandler(): void {

@@ -819,6 +819,26 @@ describe('TRichSelect.vue', () => {
       });
     });
 
+    describe('shownHandler', () => {
+      it('sets shown as true when called', () => {
+        const wrapper = shallowMount(TRichSelect);
+        expect(wrapper.vm.shown).toBe(false);
+        wrapper.vm.shownHandler();
+        expect(wrapper.vm.shown).toBe(true);
+        expect(wrapper.emitted()).toHaveProperty('shown');
+      });
+    });
+
+    describe('hiddenHandler', () => {
+      it('sets shown as false when called', () => {
+        const wrapper = shallowMount(TRichSelect);
+        wrapper.vm.shown = true;
+        wrapper.vm.hiddenHandler();
+        expect(wrapper.vm.shown).toBe(false);
+        expect(wrapper.emitted()).toHaveProperty('hidden');
+      });
+    });
+
     describe('beforeShowHandler', () => {
       it('sets active option when is about to show the dropdown', () => {
         const wrapper = shallowMount(TRichSelect);
