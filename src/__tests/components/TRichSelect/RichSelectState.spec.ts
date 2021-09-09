@@ -2,13 +2,12 @@ import { NormalizedOption } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import { computed, ref } from 'vue';
 import RichSelectState from '../../../components/TRichSelect/RichSelectState.vue';
-import { TRichSelectOptions } from '../../../types';
 
 describe('RichSelectState', () => {
-  const configuration = computed<TRichSelectOptions | undefined>(() => ({
+  const configuration = {
     noResultsText: 'No results',
     searchingText: 'Searching...',
-  }));
+  };
   const options = computed<NormalizedOption[]>(() => ([{ value: 'a', text: 'A' }]));
   const fetchingOptions = ref<boolean>(false);
   const needsMoreCharsToFetch = ref<boolean>(false);

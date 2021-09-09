@@ -4,13 +4,31 @@ import TRichSelect from '../../components/TRichSelect.vue';
 import { componentHasAttributeWithInlineHandlerAndParameter, componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
 
 describe('TRichSelect.vue', () => {
+  const focusDropdownTriggerMock = jest.fn();
+  const adjustPopperMock = jest.fn();
+  const dropdownDoHideMock = jest.fn();
+
+  const TDropdownComponentMock = {
+    template: '<div />',
+    methods: {
+      focus: focusDropdownTriggerMock,
+      adjustPopper: adjustPopperMock,
+      doHide: dropdownDoHideMock,
+    },
+  };
+
+  afterEach(() => {
+    focusDropdownTriggerMock.mockReset();
+    adjustPopperMock.mockReset();
+    dropdownDoHideMock.mockReset();
+  });
+
   it('renders the component', () => {
     const wrapper = shallowMount(TRichSelect);
     expect(wrapper.get('div')).toBeTruthy();
   });
 
   it('hides the dropdown and focus the trigger when the vmodel value changes and the `closeOnSelect` option is set', async () => {
-    const focusDropdownTriggerMock = jest.fn();
     const options = [1, 2];
     const wrapper = shallowMount(TRichSelect, {
       props: {
@@ -20,12 +38,7 @@ describe('TRichSelect.vue', () => {
       },
       global: {
         stubs: {
-          TDropdown: {
-            template: '<div />',
-            methods: {
-              focus: focusDropdownTriggerMock,
-            },
-          },
+          TDropdown: TDropdownComponentMock,
         },
       },
     });
@@ -38,12 +51,11 @@ describe('TRichSelect.vue', () => {
       modelValue: 2,
     });
 
-    expect(wrapper.vm.shown).toBe(false);
+    expect(dropdownDoHideMock).toHaveBeenCalled();
     expect(focusDropdownTriggerMock).toHaveBeenCalled();
   });
 
-  it('hides the dropdown and focus the trigger when the vmodel value changes and the `closeOnSelect` is undefined and is not multipe', async () => {
-    const focusDropdownTriggerMock = jest.fn();
+  it('hides the dropdown and focus the trigger when the vmodel value changes and the `closeOnSelect` is undefined and is not multiple', async () => {
     const options = [1, 2];
     const wrapper = shallowMount(TRichSelect, {
       props: {
@@ -54,12 +66,7 @@ describe('TRichSelect.vue', () => {
       },
       global: {
         stubs: {
-          TDropdown: {
-            template: '<div />',
-            methods: {
-              focus: focusDropdownTriggerMock,
-            },
-          },
+          TDropdown: TDropdownComponentMock,
         },
       },
     });
@@ -72,12 +79,11 @@ describe('TRichSelect.vue', () => {
       modelValue: 2,
     });
 
-    expect(wrapper.vm.shown).toBe(false);
+    expect(dropdownDoHideMock).toHaveBeenCalled();
     expect(focusDropdownTriggerMock).toHaveBeenCalled();
   });
 
-  it('doesnt hide the dropdown and focus the trigger when the vmodel value changes and the `closeOnSelect` is undefined but is multipe', async () => {
-    const focusDropdownTriggerMock = jest.fn();
+  it('doesnt hide the dropdown and focus the trigger when the vmodel value changes and the `closeOnSelect` is undefined but is multiple', async () => {
     const options = [1, 2];
     const wrapper = shallowMount(TRichSelect, {
       props: {
@@ -88,12 +94,7 @@ describe('TRichSelect.vue', () => {
       },
       global: {
         stubs: {
-          TDropdown: {
-            template: '<div />',
-            methods: {
-              focus: focusDropdownTriggerMock,
-            },
-          },
+          TDropdown: TDropdownComponentMock,
         },
       },
     });
@@ -106,12 +107,11 @@ describe('TRichSelect.vue', () => {
       modelValue: 2,
     });
 
-    expect(wrapper.vm.shown).toBe(true);
+    expect(dropdownDoHideMock).not.toHaveBeenCalled();
     expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
   });
 
   it('doesnt hide the dropdown and focus the trigger when the vmodel value changes, is not multiple but closeOnSelect is `false`', async () => {
-    const focusDropdownTriggerMock = jest.fn();
     const options = [1, 2];
     const wrapper = shallowMount(TRichSelect, {
       props: {
@@ -122,12 +122,7 @@ describe('TRichSelect.vue', () => {
       },
       global: {
         stubs: {
-          TDropdown: {
-            template: '<div />',
-            methods: {
-              focus: focusDropdownTriggerMock,
-            },
-          },
+          TDropdown: TDropdownComponentMock,
         },
       },
     });
@@ -140,7 +135,7 @@ describe('TRichSelect.vue', () => {
       modelValue: 2,
     });
 
-    expect(wrapper.vm.shown).toBe(true);
+    expect(dropdownDoHideMock).toHaveBeenCalled();
     expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
   });
 
@@ -541,11 +536,17 @@ describe('TRichSelect.vue', () => {
     });
 
     it('hides the dropdown with blurHandler', () => {
-      const wrapper = shallowMount(TRichSelect);
+      const wrapper = shallowMount(TRichSelect, {
+        global: {
+          stubs: {
+            TDropdown: TDropdownComponentMock,
+          },
+        },
+      });
       wrapper.vm.shown = true;
       const event = new FocusEvent('blur');
       wrapper.vm.blurHandler(event);
-      expect(wrapper.vm.shown).toBe(false);
+      expect(dropdownDoHideMock).toHaveBeenCalled();
       expect(wrapper.emitted().blur).toEqual([[event]]);
     });
 
@@ -571,19 +572,13 @@ describe('TRichSelect.vue', () => {
       });
 
       it('hides the dropdown and focus the dropdown if `closeOnSelect` is set to `true`', async () => {
-        const focusDropdownTriggerMock = jest.fn();
         const wrapper = shallowMount(TRichSelect, {
           props: {
             closeOnSelect: true,
           },
           global: {
             stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
+              TDropdown: TDropdownComponentMock,
             },
           },
         });
@@ -592,12 +587,11 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.onOptionSelected();
 
-        expect(wrapper.vm.shown).toBe(false);
+        expect(dropdownDoHideMock).toHaveBeenCalled();
         expect(focusDropdownTriggerMock).toHaveBeenCalled();
       });
 
       it('hides the dropdown if `closeOnSelect` is `undefined` and is not multiple', async () => {
-        const focusDropdownTriggerMock = jest.fn();
         const wrapper = shallowMount(TRichSelect, {
           props: {
             closeOnSelect: undefined,
@@ -605,24 +599,18 @@ describe('TRichSelect.vue', () => {
           },
           global: {
             stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
+              TDropdown: TDropdownComponentMock,
             },
           },
         });
         wrapper.vm.shown = true;
 
         wrapper.vm.onOptionSelected();
-        expect(wrapper.vm.shown).toBe(false);
+        expect(dropdownDoHideMock).toHaveBeenCalled();
         expect(focusDropdownTriggerMock).toHaveBeenCalled();
       });
 
       it('doesnt hides the dropdown if `closeOnSelect` is `undefined` and is multiple', async () => {
-        const focusDropdownTriggerMock = jest.fn();
         const wrapper = shallowMount(TRichSelect, {
           props: {
             closeOnSelect: undefined,
@@ -630,12 +618,7 @@ describe('TRichSelect.vue', () => {
           },
           global: {
             stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
+              TDropdown: TDropdownComponentMock,
             },
           },
         });
@@ -644,30 +627,24 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.onOptionSelected();
 
-        expect(wrapper.vm.shown).toBe(true);
+        expect(dropdownDoHideMock).not.toHaveBeenCalled();
         expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
       });
 
       it('doesnt hides the dropdown if is already hidden', async () => {
-        const focusDropdownTriggerMock = jest.fn();
         const wrapper = shallowMount(TRichSelect, {
           props: {
             closeOnSelect: true,
           },
           global: {
             stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
+              TDropdown: TDropdownComponentMock,
             },
           },
         });
 
         wrapper.vm.onOptionSelected();
-        expect(wrapper.vm.shown).toBe(false);
+        expect(dropdownDoHideMock).not.toHaveBeenCalled();
         expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
       });
     });
@@ -718,11 +695,16 @@ describe('TRichSelect.vue', () => {
           props: {
             toggleOnClick: false,
           },
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
         });
         const event = new MouseEvent('click');
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
         wrapper.vm.mousedownHandler(event);
-        expect(wrapper.vm.shown).toBe(false);
+        expect(dropdownDoHideMock).toHaveBeenCalled();
         expect(wrapper.emitted().mousedown).toEqual([[event]]);
         expect(preventDefaultSpy).not.toHaveBeenCalled();
       });
@@ -745,12 +727,17 @@ describe('TRichSelect.vue', () => {
           props: {
             toggleOnClick: true,
           },
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
         });
         wrapper.vm.shown = true;
         const event = new MouseEvent('click');
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
         wrapper.vm.mousedownHandler(event);
-        expect(wrapper.vm.shown).toBe(false);
+        expect(dropdownDoHideMock).toHaveBeenCalled();
         expect(wrapper.emitted().mousedown).toEqual([[event]]);
         expect(preventDefaultSpy).not.toHaveBeenCalled();
       });
@@ -978,17 +965,10 @@ describe('TRichSelect.vue', () => {
 
     describe('esc key', () => {
       it('hides the dropdown and focus the trigger when pressed esc', async () => {
-        const focusDropdownTriggerMock = jest.fn();
-
         const wrapper = shallowMount(TRichSelect, {
           global: {
             stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
+              TDropdown: TDropdownComponentMock,
             },
           },
         });
@@ -1000,24 +980,17 @@ describe('TRichSelect.vue', () => {
         const event = new KeyboardEvent('keydown', { key: 'Escape' });
         dropdownComponent.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.shown).toBe(false);
+        expect(dropdownDoHideMock).toHaveBeenCalled();
         expect(focusDropdownTriggerMock).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
       });
 
       it('only re-emits the keyboard event when dropdown is closed ', async () => {
-        const focusDropdownTriggerMock = jest.fn();
-
         const wrapper = shallowMount(TRichSelect, {
           global: {
             stubs: {
-              TDropdown: {
-                template: '<div />',
-                methods: {
-                  focus: focusDropdownTriggerMock,
-                },
-              },
+              TDropdown: TDropdownComponentMock,
             },
           },
         });

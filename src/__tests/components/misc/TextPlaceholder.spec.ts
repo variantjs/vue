@@ -20,9 +20,9 @@ describe('TextPlaceholder', () => {
   });
 
   it('uses `placeholder` as the property from the `classesList` by default', () => {
-    const configuration = computed(() => ({
+    const configuration = {
       classesList: { placeholder: 'text-red-500' },
-    }));
+    };
 
     const wrapper = shallowMount(TextPlaceholder, {
       global: {
@@ -36,9 +36,9 @@ describe('TextPlaceholder', () => {
   });
 
   it('accepts a different property for the `classesList` by object', () => {
-    const configuration = computed(() => ({
+    const configuration = {
       classesList: { buttonPlaceholder: 'text-red-500' },
-    }));
+    };
     const wrapper = shallowMount(TextPlaceholder, {
       global: {
         provide: {

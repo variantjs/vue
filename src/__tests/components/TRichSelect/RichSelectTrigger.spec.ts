@@ -2,11 +2,10 @@ import { NormalizedOption } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import { computed, ref } from 'vue';
 import RichSelectTrigger from '../../../components/TRichSelect/RichSelectTrigger.vue';
-import { TSelectOptions } from '../../../types';
 
 describe('RichSelectTrigger', () => {
   const selectedOption = computed<NormalizedOption | undefined>(() => undefined);
-  const configuration = computed<TSelectOptions | undefined>(() => ({}));
+  const configuration = {};
   const hasSelectedOption = ref(false);
 
   const global = {
