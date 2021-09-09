@@ -7,6 +7,7 @@ describe('TRichSelect.vue', () => {
   const focusDropdownTriggerMock = jest.fn();
   const adjustPopperMock = jest.fn();
   const dropdownDoHideMock = jest.fn();
+  const dropdownDoShowMock = jest.fn();
 
   const TDropdownComponentMock = {
     template: '<div />',
@@ -14,6 +15,7 @@ describe('TRichSelect.vue', () => {
       focus: focusDropdownTriggerMock,
       adjustPopper: adjustPopperMock,
       doHide: dropdownDoHideMock,
+      doShow: dropdownDoShowMock,
     },
   };
 
@@ -21,6 +23,7 @@ describe('TRichSelect.vue', () => {
     focusDropdownTriggerMock.mockReset();
     adjustPopperMock.mockReset();
     dropdownDoHideMock.mockReset();
+    dropdownDoShowMock.mockReset();
   });
 
   it('renders the component', () => {
@@ -655,10 +658,15 @@ describe('TRichSelect.vue', () => {
           props: {
             toggleOnFocus: true,
           },
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
         });
         const event = new FocusEvent('focus');
         wrapper.vm.focusHandler(event);
-        expect(wrapper.vm.shown).toBe(true);
+        expect(dropdownDoShowMock).toHaveBeenCalled();
         expect(wrapper.emitted().focus).toEqual([[event]]);
       });
 
@@ -667,10 +675,16 @@ describe('TRichSelect.vue', () => {
           props: {
             toggleOnFocus: false,
           },
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
         });
         const event = new FocusEvent('focus');
         wrapper.vm.focusHandler(event);
         expect(wrapper.vm.shown).toBe(false);
+        expect(dropdownDoShowMock).not.toHaveBeenCalled();
         expect(wrapper.emitted().focus).toEqual([[event]]);
       });
     });
@@ -681,11 +695,16 @@ describe('TRichSelect.vue', () => {
           props: {
             toggleOnClick: true,
           },
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
         });
         const event = new MouseEvent('click');
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
         wrapper.vm.mousedownHandler(event);
-        expect(wrapper.vm.shown).toBe(true);
+        expect(dropdownDoShowMock).toHaveBeenCalled();
         expect(wrapper.emitted().mousedown).toEqual([[event]]);
         expect(preventDefaultSpy).toHaveBeenCalled();
       });
@@ -704,7 +723,7 @@ describe('TRichSelect.vue', () => {
         const event = new MouseEvent('click');
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
         wrapper.vm.mousedownHandler(event);
-        expect(dropdownDoHideMock).toHaveBeenCalled();
+        expect(dropdownDoShowMock).not.toHaveBeenCalled();
         expect(wrapper.emitted().mousedown).toEqual([[event]]);
         expect(preventDefaultSpy).not.toHaveBeenCalled();
       });
@@ -753,6 +772,7 @@ describe('TRichSelect.vue', () => {
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
         wrapper.vm.mousedownHandler(event);
         expect(wrapper.vm.shown).toBe(true);
+        expect(dropdownDoHideMock).not.toHaveBeenCalled();
         expect(wrapper.emitted().mousedown).toEqual([[event]]);
         expect(preventDefaultSpy).not.toHaveBeenCalled();
       });
@@ -1013,6 +1033,11 @@ describe('TRichSelect.vue', () => {
           props: {
             toggleOnClick: true,
           },
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
         });
 
         const { dropdownComponent } = wrapper.vm.$refs;
@@ -1025,7 +1050,7 @@ describe('TRichSelect.vue', () => {
 
         dropdownComponent.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.shown).toBe(true);
+        expect(dropdownDoShowMock).toHaveBeenCalled();
         expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
@@ -1036,7 +1061,11 @@ describe('TRichSelect.vue', () => {
           props: {
             toggleOnClick: false,
           },
-
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
         });
 
         const { dropdownComponent } = wrapper.vm.$refs;
@@ -1050,6 +1079,7 @@ describe('TRichSelect.vue', () => {
         dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(false);
+        expect(dropdownDoShowMock).not.toHaveBeenCalled();
         expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
@@ -1114,7 +1144,13 @@ describe('TRichSelect.vue', () => {
 
     describe('enter key', () => {
       it('doesnt shows the dropdown when hidden', async () => {
-        const wrapper = shallowMount(TRichSelect);
+        const wrapper = shallowMount(TRichSelect, {
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
+        });
 
         const { dropdownComponent } = wrapper.vm.$refs;
 
@@ -1125,6 +1161,7 @@ describe('TRichSelect.vue', () => {
         dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(false);
+        expect(dropdownDoShowMock).not.toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
       });
@@ -1185,6 +1222,11 @@ describe('TRichSelect.vue', () => {
           props: {
             toggleOnClick: true,
           },
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
         });
 
         const { dropdownComponent } = wrapper.vm.$refs;
@@ -1197,7 +1239,7 @@ describe('TRichSelect.vue', () => {
 
         dropdownComponent.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.shown).toBe(true);
+        expect(dropdownDoShowMock).toHaveBeenCalled();
         expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
@@ -1238,6 +1280,11 @@ describe('TRichSelect.vue', () => {
           props: {
             toggleOnClick: true,
           },
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
         });
 
         const { dropdownComponent } = wrapper.vm.$refs;
@@ -1250,7 +1297,7 @@ describe('TRichSelect.vue', () => {
 
         dropdownComponent.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.shown).toBe(true);
+        expect(dropdownDoShowMock).toHaveBeenCalled();
         expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
