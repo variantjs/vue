@@ -1422,6 +1422,92 @@ describe('TDropdown popper instance', () => {
     expect(popperUpdateSpy).not.toHaveBeenCalled();
   });
 
+  it('doesnt adjust popper if marked as adjusted (method check)', async () => {
+    const wrapper = mount(TDropdown);
+
+    wrapper.vm.doShow();
+
+    await popperWasCreated(wrapper);
+
+    const popperUpdateSpy = jest.spyOn(wrapper.vm, 'adjustPopper');
+
+    wrapper.vm.doHide();
+
+    wrapper.vm.popperIsAdjusted = true;
+
+    await wrapper.vm.$nextTick();
+
+    expect(popperUpdateSpy).not.toHaveBeenCalled();
+
+    wrapper.vm.doShow();
+
+    await wrapper.vm.$nextTick();
+
+    expect(popperUpdateSpy).not.toHaveBeenCalled();
+  });
+
+  it('doesnt adjust popper if is hidden and adjustingPopper is false', async () => {
+    const wrapper = mount(TDropdown);
+
+    // Show the dropdown to initialize popper
+    wrapper.vm.doShow();
+    await popperWasCreated(wrapper);
+    wrapper.vm.doHide();
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+
+    wrapper.vm.adjustingPopper = false;
+
+    const popperUpdateSpy = jest.spyOn(wrapper.vm.popper, 'update');
+
+    await wrapper.vm.adjustPopper();
+
+    await wrapper.vm.$nextTick();
+
+    expect(popperUpdateSpy).not.toHaveBeenCalled();
+  });
+
+  it('adjust popper if is hidden but adjustingPopper is true', async () => {
+    const wrapper = mount(TDropdown);
+
+    // Show the dropdown to initialize popper
+    wrapper.vm.doShow();
+    await popperWasCreated(wrapper);
+    wrapper.vm.doHide();
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+
+    wrapper.vm.adjustingPopper = true;
+
+    const popperUpdateSpy = jest.spyOn(wrapper.vm.popper, 'update');
+
+    await wrapper.vm.adjustPopper();
+
+    await wrapper.vm.$nextTick();
+
+    expect(popperUpdateSpy).toHaveBeenCalled();
+  });
+
+  it('adjust popper if not is hidden and adjustingPopper is false', async () => {
+    const wrapper = mount(TDropdown);
+
+    // Show the dropdown to initialize popper
+    wrapper.vm.doShow();
+    await popperWasCreated(wrapper);
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+
+    wrapper.vm.adjustingPopper = true;
+
+    const popperUpdateSpy = jest.spyOn(wrapper.vm.popper, 'update');
+
+    await wrapper.vm.adjustPopper();
+
+    await wrapper.vm.$nextTick();
+
+    expect(popperUpdateSpy).toHaveBeenCalled();
+  });
+
   it('accepts undefined as the placement', async () => {
     const wrapper = mount(TDropdown, {
       props: {

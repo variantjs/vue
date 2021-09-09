@@ -313,6 +313,7 @@ export default defineComponent({
         if (this.shown === false && this.adjustingPopper === false) {
           this.popperIsAdjusted = false;
           resolve();
+          return;
         }
 
         if (!this.popper) {
