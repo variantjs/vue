@@ -786,7 +786,7 @@ describe('TRichSelect.vue', () => {
     });
 
     describe('blurOnChildHandler', () => {
-      it('will restore the original focus when blurred from the search form to a child focusable element', () => {
+      it('will restore the original focus when blurred from the focusable item to a child not focusable element', () => {
         const wrapper = shallowMount(TRichSelect);
         wrapper.vm.shown = true;
 
@@ -814,6 +814,20 @@ describe('TRichSelect.vue', () => {
         const focusSpy = jest.spyOn(target, 'focus');
 
         wrapper.vm.blurOnChildHandler({ target, relatedTarget });
+        expect(focusSpy).not.toHaveBeenCalled();
+        expect(wrapper.vm.shown).toBe(true);
+      });
+
+      it('will not restore the original focus when blurred to an undefined item', () => {
+        const wrapper = shallowMount(TRichSelect);
+        wrapper.vm.shown = true;
+
+        const target = document.createElement('DIV');
+        target.setAttribute('data-rich-select-focusable', 'true');
+
+        const focusSpy = jest.spyOn(target, 'focus');
+
+        wrapper.vm.blurOnChildHandler({ target, relatedTarget: undefined });
         expect(focusSpy).not.toHaveBeenCalled();
         expect(wrapper.vm.shown).toBe(true);
       });
