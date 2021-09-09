@@ -138,7 +138,7 @@ describe('TRichSelect.vue', () => {
       modelValue: 2,
     });
 
-    expect(dropdownDoHideMock).toHaveBeenCalled();
+    expect(dropdownDoHideMock).not.toHaveBeenCalled();
     expect(focusDropdownTriggerMock).not.toHaveBeenCalled();
   });
 
@@ -152,7 +152,7 @@ describe('TRichSelect.vue', () => {
     it('provides the configuration', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.configuration.value).toEqual(wrapper.vm.$.setupState.configuration);
+      expect(wrapper.vm.$.provides.configuration).toEqual(wrapper.vm.$.setupState.configuration);
     });
 
     it('provides the options', () => {
@@ -525,6 +525,8 @@ describe('TRichSelect.vue', () => {
 
   describe('event handlers', () => {
     it.each([
+      ['onShown', 'shownHandler'],
+      ['onHidden', 'hiddenHandler'],
       ['onBeforeShow', 'beforeShowHandler'],
       ['onBeforeHide', 'beforeHideHandler'],
       ['onBlur', 'blurHandler'],
@@ -734,6 +736,11 @@ describe('TRichSelect.vue', () => {
             toggleOnClick: true,
             hideSearchBox: true,
           },
+          global: {
+            stubs: {
+              TDropdown: TDropdownComponentMock,
+            },
+          },
         });
         const event = new MouseEvent('click');
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
@@ -786,7 +793,7 @@ describe('TRichSelect.vue', () => {
         const target = document.createElement('DIV');
         const relatedTarget = document.createElement('DIV');
 
-        target.setAttribute('data-rich-select-search', 'true');
+        target.setAttribute('data-rich-select-focusable', 'true');
         const focusSpy = jest.spyOn(target, 'focus');
 
         wrapper.vm.blurOnChildHandler({ target, relatedTarget });
@@ -794,65 +801,19 @@ describe('TRichSelect.vue', () => {
         expect(wrapper.vm.shown).toBe(true);
       });
 
-      it('will not restore the original focus when blurred from the search to the trigger', () => {
+      it('will not restore the original focus when blurred between two focusable childs', () => {
         const wrapper = shallowMount(TRichSelect);
         wrapper.vm.shown = true;
 
         const target = document.createElement('DIV');
-        target.setAttribute('data-rich-select-trigger', 'true');
+        target.setAttribute('data-rich-select-focusable', 'true');
 
         const relatedTarget = document.createElement('DIV');
-        relatedTarget.setAttribute('data-rich-select-search', 'true');
+        relatedTarget.setAttribute('data-rich-select-focusable', 'true');
 
         const focusSpy = jest.spyOn(target, 'focus');
 
         wrapper.vm.blurOnChildHandler({ target, relatedTarget });
-        expect(focusSpy).not.toHaveBeenCalled();
-        expect(wrapper.vm.shown).toBe(true);
-      });
-
-      it('will restore the original focus when blurred from the trigger to a child focusable element', () => {
-        const wrapper = shallowMount(TRichSelect);
-        wrapper.vm.shown = true;
-
-        const target = document.createElement('DIV');
-        const relatedTarget = document.createElement('DIV');
-
-        target.setAttribute('data-rich-select-trigger', 'true');
-        const focusSpy = jest.spyOn(target, 'focus');
-
-        wrapper.vm.blurOnChildHandler({ target, relatedTarget });
-        expect(focusSpy).toHaveBeenCalled();
-        expect(wrapper.vm.shown).toBe(true);
-      });
-
-      it('will not restore the original focus when blurred from the trigger to the search', () => {
-        const wrapper = shallowMount(TRichSelect);
-        wrapper.vm.shown = true;
-
-        const target = document.createElement('DIV');
-        target.setAttribute('data-rich-select-search', 'true');
-
-        const relatedTarget = document.createElement('DIV');
-        relatedTarget.setAttribute('data-rich-select-trigger', 'true');
-
-        const focusSpy = jest.spyOn(target, 'focus');
-
-        wrapper.vm.blurOnChildHandler({ target, relatedTarget });
-        expect(focusSpy).not.toHaveBeenCalled();
-        expect(wrapper.vm.shown).toBe(true);
-      });
-
-      it('will not restore the original focus when not related target', () => {
-        const wrapper = shallowMount(TRichSelect);
-        wrapper.vm.shown = true;
-
-        const target = document.createElement('DIV');
-        target.setAttribute('data-rich-select-search', 'true');
-
-        const focusSpy = jest.spyOn(target, 'focus');
-
-        wrapper.vm.blurOnChildHandler({ target, relatedTarget: undefined });
         expect(focusSpy).not.toHaveBeenCalled();
         expect(wrapper.vm.shown).toBe(true);
       });
@@ -974,8 +935,6 @@ describe('TRichSelect.vue', () => {
       ['onMouseover', 'mouseover'],
       ['onMouseleave', 'mouseleave'],
       ['onTouchstart', 'touchstart'],
-      ['onShown', 'shown'],
-      ['onHidden', 'hidden'],
     ])('re-emits the event `%s`', (eventName, parameterName) => {
       const wrapper = shallowMount(TRichSelect);
       const component = wrapper.vm.$refs.dropdownComponent;
