@@ -23,6 +23,15 @@ describe('RichSelectTriggerTagsTag', () => {
     toggleOptionMock.mockReset();
   });
 
+  it('contains the option text', () => {
+    const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+      props,
+      global,
+    });
+
+    expect(wrapper.text()).toEqual('Letter A');
+  });
+
   describe('event handlers', () => {
     it('has the focus method attached to the mousedown handler', () => {
       const wrapper = shallowMount(RichSelectTriggerTagsTag, {
@@ -78,6 +87,44 @@ describe('RichSelectTriggerTagsTag', () => {
       const stopPropagationSpy = jest.spyOn(event, 'stopPropagation');
       wrapper.vm.$el.dispatchEvent(event);
       expect(stopPropagationSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('delete button event handlers', () => {
+    it('calls the unselect method when mousedown', () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const deleteButton = wrapper.vm.$el.querySelector('[tabindex="0"]');
+      const unselectSpy = jest.spyOn(wrapper.vm, 'unselect');
+      deleteButton.dispatchEvent(new Event('mousedown'));
+      expect(unselectSpy).toHaveBeenCalled();
+    });
+
+    it('calls the unselect method when backspace pressed', () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const deleteButton = wrapper.vm.$el.querySelector('[tabindex="0"]');
+      const unselectSpy = jest.spyOn(wrapper.vm, 'unselect');
+      deleteButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Backspace' }));
+      expect(unselectSpy).toHaveBeenCalled();
+    });
+
+    it('calls the unselect method when enter pressed', () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const deleteButton = wrapper.vm.$el.querySelector('[tabindex="0"]');
+      const unselectSpy = jest.spyOn(wrapper.vm, 'unselect');
+      deleteButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'enter' }));
+      expect(unselectSpy).toHaveBeenCalled();
     });
   });
 
