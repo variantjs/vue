@@ -1,7 +1,7 @@
 <template>
-  <span
+  <button
+    type="button"
     class="bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50 duration-100 ease-in-out focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded shadow-sm text-sm text-white transition white-space-no m-0.5 max-w-full h-8 flex items-center cursor-pointer "
-    tabindex="0"
     data-rich-select-focusable
     data-rich-select-tag
     :data-value="dataValueAttribute"
@@ -16,8 +16,7 @@
       v-text="option.text"
     />
 
-    <button
-      type="button"
+    <span
       tabindex="0"
       class="-ml-1.5 h-full hover:bg-blue-600 hover:shadow-sm inline-flex items-center px-2 transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 rounded-r"
       data-rich-select-focusable
@@ -29,8 +28,8 @@
         ref="closeIcon"
         class="w-3 h-3"
       />
-    </button>
-  </span>
+    </span>
+  </button>
 </template>
 
 <script lang="ts">
