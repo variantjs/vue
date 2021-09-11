@@ -1,5 +1,7 @@
+import { shallowMount } from '@vue/test-utils';
 import useConfiguration from '../../use/useConfiguration';
 import { useSetup } from './useSetup';
+import TTag from '@/components/TTag.vue';
 
 describe('useConfiguration', () => {
   describe('configuration', () => {
@@ -146,6 +148,33 @@ describe('useConfiguration', () => {
           'data-id': 'something',
         });
       }, {}, {}, ['type']);
+    });
+
+    it('updates the attributes when the configuration changes', async () => {
+      const configuration = {
+        TInput: {
+          'data-id': 'something',
+        },
+      };
+
+      const wrapper = shallowMount(TTag, {
+        props: {
+          tagName: 'div',
+        },
+        global: {
+          provide: {
+            configuration,
+          },
+        },
+      });
+
+      wrapper.vm.$.setupState.configuration['data-id'] = 'something-else';
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.$.setupState.attributes).toEqual({
+        'data-id': 'something-else',
+      });
     });
   });
 });
