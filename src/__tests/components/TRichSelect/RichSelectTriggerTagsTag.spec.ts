@@ -128,6 +128,118 @@ describe('RichSelectTriggerTagsTag', () => {
     });
   });
 
+  describe('unselect method', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('calls the toggleOption method', () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      wrapper.vm.unselect();
+
+      expect(toggleOptionMock).toHaveBeenCalled();
+    });
+
+    it('gets the element index', () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const parentElement = document.createElement('div');
+
+      [
+        document.createElement('button'),
+        document.createElement('button'),
+        wrapper.vm.$el,
+        document.createElement('button'),
+      ].forEach((el) => parentElement.appendChild(el));
+
+      jest.spyOn(window.HTMLButtonElement.prototype, 'parentElement', 'get').mockReturnValue(parentElement);
+
+      expect(wrapper.vm.getElementIndex()).toBe(2);
+    });
+
+    it('focus the equivalent element if the index still exists after unselected', async () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const parentElement = document.createElement('div');
+
+      const elToFocus = document.createElement('button');
+
+      [
+        document.createElement('button'),
+        document.createElement('button'),
+        elToFocus,
+      ].forEach((el) => parentElement.appendChild(el));
+
+      jest.spyOn(window.HTMLButtonElement.prototype, 'parentElement', 'get').mockReturnValue(parentElement);
+      jest.spyOn(wrapper.vm, 'getElementIndex').mockReturnValue(2);
+
+      const focusSpy = jest.spyOn(elToFocus, 'focus');
+
+      wrapper.vm.unselect();
+
+      await wrapper.vm.$nextTick();
+
+      expect(focusSpy).toHaveBeenCalled();
+    });
+    it('focus the prev element element if the index doesnt exist anymore after unselected', async () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const parentElement = document.createElement('div');
+
+      const elToFocus = document.createElement('button');
+
+      [
+        document.createElement('button'),
+        elToFocus,
+      ].forEach((el) => parentElement.appendChild(el));
+
+      jest.spyOn(window.HTMLButtonElement.prototype, 'parentElement', 'get').mockReturnValue(parentElement);
+      jest.spyOn(wrapper.vm, 'getElementIndex').mockReturnValue(2);
+
+      const focusSpy = jest.spyOn(elToFocus, 'focus');
+
+      wrapper.vm.unselect();
+
+      await wrapper.vm.$nextTick();
+
+      expect(focusSpy).toHaveBeenCalled();
+    });
+
+    it('doesnt focus anything if no option left to focus', async () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const parentElement = document.createElement('div');
+
+      jest.spyOn(window.HTMLButtonElement.prototype, 'parentElement', 'get').mockReturnValue(parentElement);
+
+      jest.spyOn(wrapper.vm, 'getElementIndex').mockReturnValue(0);
+
+      const focusSpy = jest.spyOn(window.HTMLButtonElement.prototype, 'focus');
+
+      wrapper.vm.unselect();
+
+      await wrapper.vm.$nextTick();
+
+      expect(focusSpy).not.toHaveBeenCalled();
+    });
+  });
+
   describe('data-value attribute', () => {
     it('adds the data-value attribute', () => {
       const wrapper = shallowMount(RichSelectTriggerTagsTag, {
