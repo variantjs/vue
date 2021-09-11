@@ -1,8 +1,5 @@
-import { NormalizedOption } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
-import { computed } from 'vue';
 import RichSelectTriggerTagsTag from '../../../components/TRichSelect/RichSelectTriggerTagsTag.vue';
-import { componentHasAttributeWithValue } from '../../testUtils';
 
 describe('RichSelectTriggerTagsTag', () => {
   const toggleOptionMock = jest.fn();
@@ -21,6 +18,8 @@ describe('RichSelectTriggerTagsTag', () => {
 
   afterEach(() => {
     toggleOptionMock.mockReset();
+
+    jest.clearAllMocks();
   });
 
   it('contains the option text', () => {
@@ -125,6 +124,105 @@ describe('RichSelectTriggerTagsTag', () => {
       const unselectSpy = jest.spyOn(wrapper.vm, 'unselect');
       deleteButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'enter' }));
       expect(unselectSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('focusNextElement', () => {
+    it('focus the next element', () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const parentElement = document.createElement('div');
+      const nextElement = document.createElement('button');
+
+      [
+        document.createElement('button'),
+        document.createElement('button'),
+        wrapper.vm.$el,
+        nextElement,
+      ].forEach((el) => parentElement.appendChild(el));
+
+      jest.spyOn(window.HTMLButtonElement.prototype, 'parentElement', 'get').mockReturnValue(parentElement);
+
+      const focusSpy = jest.spyOn(nextElement, 'focus');
+
+      wrapper.vm.focusNextElement();
+
+      expect(focusSpy).toHaveBeenCalled();
+    });
+
+    it('doesnt focus the next element if is last index', () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const parentElement = document.createElement('div');
+
+      [
+        document.createElement('button'),
+        document.createElement('button'),
+        wrapper.vm.$el,
+      ].forEach((el) => parentElement.appendChild(el));
+
+      jest.spyOn(window.HTMLButtonElement.prototype, 'parentElement', 'get').mockReturnValue(parentElement);
+
+      const focusSpy = jest.spyOn(window.HTMLButtonElement.prototype, 'focus');
+
+      wrapper.vm.focusNextElement();
+
+      expect(focusSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('focus previous element', () => {
+    it('focus previous element', () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const parentElement = document.createElement('div');
+      const prevElement = document.createElement('button');
+
+      [
+        document.createElement('button'),
+        document.createElement('button'),
+        prevElement,
+        wrapper.vm.$el,
+      ].forEach((el) => parentElement.appendChild(el));
+
+      jest.spyOn(window.HTMLButtonElement.prototype, 'parentElement', 'get').mockReturnValue(parentElement);
+
+      const focusSpy = jest.spyOn(prevElement, 'focus');
+
+      wrapper.vm.focusPrevElement();
+
+      expect(focusSpy).toHaveBeenCalled();
+    });
+
+    it('doesnt focus previous element if is the first one', () => {
+      const wrapper = shallowMount(RichSelectTriggerTagsTag, {
+        global,
+        props,
+      });
+
+      const parentElement = document.createElement('div');
+      [
+        wrapper.vm.$el,
+        document.createElement('button'),
+        document.createElement('button'),
+      ].forEach((el) => parentElement.appendChild(el));
+
+      jest.spyOn(window.HTMLButtonElement.prototype, 'parentElement', 'get').mockReturnValue(parentElement);
+
+      const focusSpy = jest.spyOn(window.HTMLButtonElement.prototype, 'focus');
+
+      wrapper.vm.focusPrevElement();
+
+      expect(focusSpy).not.toHaveBeenCalled();
     });
   });
 
