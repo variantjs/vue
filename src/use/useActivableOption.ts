@@ -47,22 +47,39 @@ export default function useActivableOption(
   };
 
   const setNextOptionActive = (): void => {
-    if (activeOptionIndex.value >= options.value.length - 1) {
-      return;
+    let newActiveOption: NormalizedOption | undefined;
+    let nextIndex = activeOptionIndex.value + 1;
+
+    while (nextIndex < options.value.length && newActiveOption === undefined) {
+      const option = options.value[nextIndex];
+      const optionIsDisabled = option.disabled === true || option.disabled === 'disabled';
+      if (!optionIsDisabled) {
+        newActiveOption = option;
+      }
+      nextIndex += 1;
     }
 
-    const newActiveOption = options.value[activeOptionIndex.value + 1];
-    setActiveOption(newActiveOption);
+    if (newActiveOption) {
+      setActiveOption(newActiveOption);
+    }
   };
 
   const setPrevOptionActive = (): void => {
-    if (activeOptionIndex.value === 0) {
-      return;
+    let newActiveOption: NormalizedOption | undefined;
+    let nextIndex = activeOptionIndex.value - 1;
+
+    while (nextIndex >= 0 && newActiveOption === undefined) {
+      const option = options.value[nextIndex];
+      const optionIsDisabled = option.disabled === true || option.disabled === 'disabled';
+      if (!optionIsDisabled) {
+        newActiveOption = option;
+      }
+      nextIndex -= 1;
     }
 
-    const newActiveOption = options.value[activeOptionIndex.value - 1];
-
-    setActiveOption(newActiveOption);
+    if (newActiveOption) {
+      setActiveOption(newActiveOption);
+    }
   };
 
   const initActiveOption = (): void => {
