@@ -3,6 +3,7 @@ export { default as useConfiguration } from './useConfiguration';
 export { default as useConfigurationWithClassesList } from './useConfigurationWithClassesList';
 export { default as useFetchsOptions } from './useFetchsOptions';
 export { default as useInjectsClassesList } from './useInjectsClassesList';
+export { default as useInjectsClassesListClass } from './useInjectsClassesListClass';
 export { default as useInjectsConfiguration } from './useInjectsConfiguration';
 export { default as useMulipleableVModel } from './useMulipleableVModel';
 export { default as useMultioptions } from './useMultioptions';

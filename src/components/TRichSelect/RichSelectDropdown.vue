@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="className">
     <rich-select-search-input
       v-if="showSearchInput"
       ref="searchInput"
@@ -24,6 +24,7 @@ import { NormalizedOptions } from '@variantjs/core';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import RichSelectSearchInput from './RichSelectSearchInput.vue';
 import RichSelectState from './RichSelectState.vue';
+import { useInjectsClassesListClass } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectDropdown',
@@ -35,10 +36,12 @@ export default defineComponent({
   setup() {
     const options = inject<ComputedRef<NormalizedOptions>>('options')!;
     const showSearchInput = inject<ComputedRef<boolean>>('showSearchInput')!;
+    const className = useInjectsClassesListClass('dropdownContent');
 
     return {
       options,
       showSearchInput,
+      className,
     };
   },
 });

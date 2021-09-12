@@ -2,8 +2,8 @@ import { CSSClassesList } from '@variantjs/core';
 import { ComputedRef, computed } from 'vue';
 import useInjectsConfiguration from './useInjectsConfiguration';
 
-export default function useInjectsClassesList<P extends CSSClassesList<string> | undefined>(): ComputedRef<P> {
+export default function useInjectsClassesList(): ComputedRef<CSSClassesList> {
   const configuration = useInjectsConfiguration();
 
-  return computed<P>(() => configuration.classesList as P);
+  return computed<CSSClassesList>((): CSSClassesList => configuration.classesList!);
 }

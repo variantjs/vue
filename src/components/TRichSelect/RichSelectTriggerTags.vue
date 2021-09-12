@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-wrap overflow-hidden -mx-2 -my-2.5 py-1 pr-8"
+    :class="className"
   >
     <rich-select-trigger-tags-tag
       v-for="(option, index) in selectedOptions"
@@ -13,6 +13,7 @@
 <script lang="ts">
 import { NormalizedOption } from '@variantjs/core';
 import { ComputedRef, defineComponent, inject } from 'vue';
+import { useInjectsClassesListClass } from '../../use';
 import RichSelectTriggerTagsTag from './RichSelectTriggerTagsTag.vue';
 
 export default defineComponent({
@@ -22,9 +23,11 @@ export default defineComponent({
   },
   setup() {
     const selectedOptions = inject<ComputedRef<NormalizedOption[]>>('selectedOption')!;
+    const className = useInjectsClassesListClass('tagsWrapper')!;
 
     return {
       selectedOptions,
+      className,
     };
   },
 });

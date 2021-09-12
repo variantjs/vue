@@ -2,12 +2,14 @@
   <li
     v-if="hasChildren"
     role="optgroup"
+    :class="classesList.optgroup"
   >
-    <div>
-      <span class="block px-3 py-2 text-sm text-gray-400 truncate">{{ option.text }}</span>
+    <div :class="classesList.optgroupContent">
+      <span :class="classesList.optgroupLabel">{{ option.text }}</span>
 
       <rich-select-options-list
         ref="childrenOptions"
+        :class="classesList.optgroupOptionsList"
         :options="option.children"
         :deep="deep + 1"
       />
@@ -15,31 +17,32 @@
   </li>
   <li
     v-else
-    :data-value="dataValueAttribute"
-    role="option"
-    :class="{
-      'cursor-pointer  rounded-sm': true,
-      'font-semibold text-white bg-blue-500': isSelected,
-      'font-semibold text-white bg-blue-600': isActive && isSelected,
-      'bg-blue-100': isActive && !isSelected,
-    }"
-    :aria-selected="isSelected"
-    tabindex="-1"
-    @mousemove="mousemoveHandler"
-    @mousewheel="mousewheelHandler"
-    @click="clickHandler"
+    :class="classesList.optionWrapper"
   >
-    <div class="flex items-center justify-between px-3 py-2">
-      <span class="block truncate">
-        {{ option.text }}
-      </span>
+    <button
+      role="option"
+      :class="optionClasses"
+      :aria-selected="isSelected"
+      tabindex="-1"
+      type="button"
+      :disabled="isDisabled"
+      :value="valueAttribute"
+      @mousemove="mousemoveHandler"
+      @mousewheel="mousewheelHandler"
+      @click="clickHandler"
+    >
+      <div :class="classesList.optionContent">
+        <span :class="classesList.optionLabel">
+          {{ option.text }}
+        </span>
 
-      <checkmark-icon
-        v-if="isSelected"
-        ref="checkIcon"
-        class="w-5 h-5"
-      />
-    </div>
+        <checkmark-icon
+          v-if="isSelected"
+          ref="checkIcon"
+          :class="classesList.optionSelectedIcon"
+        />
+      </div>
+    </button>
   </li>
 </template>
 
@@ -47,9 +50,10 @@
 import {
   defineComponent, inject, PropType, Ref,
 } from 'vue';
-import { NormalizedOption } from '@variantjs/core';
+import { CSSClass, NormalizedOption } from '@variantjs/core';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import CheckmarkIcon from '../../icons/CheckmarkIcon.vue';
+import { useInjectsClassesList } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectOption',
@@ -69,6 +73,7 @@ export default defineComponent({
     const optionIsSelected = inject<(option: NormalizedOption) => boolean>('optionIsSelected')!;
     const optionIsActive = inject<(option: NormalizedOption) => boolean>('optionIsActive')!;
     const shown = inject<Ref<boolean>>('shown');
+    const classesList = useInjectsClassesList()!;
 
     return {
       setActiveOption,
@@ -76,10 +81,28 @@ export default defineComponent({
       optionIsSelected,
       optionIsActive,
       shown,
+      classesList,
     };
   },
   computed: {
-    dataValueAttribute(): string {
+    optionClasses(): CSSClass[] {
+      const classes: CSSClass[] = [this.classesList!.option];
+
+      // Selected
+      if (this.isSelected) {
+        if (this.isActive) {
+          classes.push(this.classesList!.selectedHighlightedOption);
+        } else {
+          classes.push(this.classesList!.selectedOption);
+        }
+      // Not selected
+      } else if (this.isActive) {
+        classes.push(this.classesList!.highlightedOption);
+      }
+
+      return classes;
+    },
+    valueAttribute(): string {
       if (typeof this.option.value === 'object') {
         return JSON.stringify(this.option.value);
       }
@@ -94,6 +117,9 @@ export default defineComponent({
     },
     isActive(): boolean {
       return this.optionIsActive(this.option);
+    },
+    isDisabled(): boolean {
+      return this.option.disabled === true || this.option.disabled === 'disabled';
     },
   },
   watch: {
@@ -122,12 +148,21 @@ export default defineComponent({
       }
     },
     mousemoveHandler(): void {
+      if (this.isDisabled) {
+        return;
+      }
       this.setActiveOption(this.option);
     },
     mousewheelHandler(): void {
+      if (this.isDisabled) {
+        return;
+      }
       this.setActiveOption(this.option);
     },
     clickHandler(): void {
+      if (this.isDisabled) {
+        return;
+      }
       this.toggleOption(this.option);
     },
   },

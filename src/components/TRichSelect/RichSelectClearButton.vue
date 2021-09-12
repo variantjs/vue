@@ -2,7 +2,7 @@
   <button
     type="button"
     data-rich-select-focusable
-    class="absolute flex items-center justify-center w-6 h-6 text-gray-600 transition duration-100 ease-in-out rounded mt-2.5 mr-2 top-0 right-0 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
+    :class="className"
   >
     <close-icon class="w-4 h-4" />
   </button>
@@ -11,11 +11,17 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import CloseIcon from '../../icons/CloseIcon.vue';
+import { useInjectsClassesListClass } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectClearButton',
   components: {
     CloseIcon,
+  },
+  setup() {
+    const className = useInjectsClassesListClass('clearButton');
+
+    return { className };
   },
 });
 </script>

@@ -1,11 +1,11 @@
 <template>
-  <div class="inline-block w-full p-2 placeholder-gray-400">
+  <div :class="classesList.searchWrapper">
     <input
       ref="search"
       v-model="searchQuery"
       data-rich-select-focusable
       :placeholder="configuration.searchBoxPlaceholder"
-      class="inline-block w-full px-3 py-2 text-sm border border-gray-300 rounded bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
+      :class="classesList.searchInput"
       @keydown.down="keydownDownHandler"
       @keydown.up="keydownUpHandler"
       @keydown.enter="keydownEnterHandler"
@@ -19,7 +19,7 @@ import {
   ComputedRef, defineComponent, inject, watch, ref, Ref,
 } from 'vue';
 import { TRichSelectOptions } from '../../types';
-import { useInjectsConfiguration } from '../../use';
+import { useInjectsClassesList, useInjectsConfiguration } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectSearchInput',
@@ -33,6 +33,7 @@ export default defineComponent({
     const keydownUpHandler = inject<(e: KeyboardEvent) => void>('keydownUpHandler');
     const keydownEnterHandler = inject<(e: KeyboardEvent) => void>('keydownEnterHandler');
     const keydownEscHandler = inject<(e: KeyboardEvent) => void>('keydownEscHandler');
+    const classesList = useInjectsClassesList()!;
 
     watch(shown, async (isShown: boolean) : Promise<void> => {
       if (isShown) {
@@ -45,6 +46,7 @@ export default defineComponent({
       shown,
       search,
       searchQuery,
+      classesList,
       keydownUpHandler,
       keydownDownHandler,
       keydownEnterHandler,

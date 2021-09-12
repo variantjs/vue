@@ -1,17 +1,17 @@
 <template>
   <div
     v-if="fetchingOptions"
-    class="px-2 text-sm text-gray-400"
+    :class="classesList.searchingText"
     v-text="configuration.searchingText"
   />
   <div
     v-else-if="needsMoreCharsToFetch"
-    class="px-2 text-sm text-gray-400"
+    :class="classesList.needsMoreCharsText"
     v-text="needsMoreCharsMessage"
   />
   <div
     v-else-if="noResults"
-    class="px-2 text-sm text-gray-400"
+    :class="classesList.noResultsText"
     v-text="configuration.noResultsText"
   />
 </template>
@@ -22,7 +22,7 @@ import {
   ComputedRef, defineComponent, inject, Ref,
 } from 'vue';
 import { TRichSelectOptions } from '../../types';
-import { useInjectsConfiguration } from '../../use';
+import { useInjectsClassesList, useInjectsConfiguration } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectState',
@@ -33,6 +33,7 @@ export default defineComponent({
     const needsMoreCharsMessage = inject<ComputedRef<string>>('needsMoreCharsMessage')!;
     const configuration = useInjectsConfiguration<TRichSelectOptions>();
     const noResults = computed<boolean>((): boolean => options.value.length === 0);
+    const classesList = useInjectsClassesList()!;
 
     return {
       noResults,
@@ -40,6 +41,7 @@ export default defineComponent({
       fetchingOptions,
       needsMoreCharsToFetch,
       needsMoreCharsMessage,
+      classesList,
     };
   },
 });

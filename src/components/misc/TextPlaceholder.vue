@@ -8,9 +8,8 @@
 </template>
 
 <script lang="ts">
-import { CSSClass } from '@variantjs/core';
-import { computed, defineComponent } from 'vue';
-import { useInjectsClassesList } from '../../use';
+import { defineComponent } from 'vue';
+import { useInjectsClassesListClass } from '../../use';
 
 export default defineComponent({
   name: 'TextPlaceholder',
@@ -25,9 +24,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const classesList = useInjectsClassesList();
-
-    const className = computed<CSSClass>(() => (classesList.value === undefined ? undefined : classesList.value[props.classProperty]));
+    const className = useInjectsClassesListClass(props.classProperty);
 
     return { className };
   },

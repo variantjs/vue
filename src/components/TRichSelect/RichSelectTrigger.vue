@@ -18,19 +18,19 @@
   <span
     v-else
     ref="label"
-    class="block pr-4 truncate"
+    :class="classesList.selectButtonLabel"
   >{{ label }}</span>
 
   <loading-icon
     v-if="isFetchingOptionsWhileClosed"
     ref="loadingIcon"
-    class="flex-shrink-0 w-4 h-4 ml-1 text-gray-600"
+    :class="classesList.selectButtonLoadingIcon"
   />
 
   <selector-icon
     v-else-if="showSelectorIcon"
     ref="selectorIcon"
-    class="flex-shrink-0 w-4 h-4 ml-1 text-gray-600"
+    :class="classesList.selectButtonSelectorIcon"
   />
 </template>
 
@@ -44,7 +44,7 @@ import RichSelectTriggerTags from './RichSelectTriggerTags.vue';
 import SelectorIcon from '../../icons/SelectorIcon.vue';
 import LoadingIcon from '../../icons/LoadingIcon.vue';
 import { TRichSelectOptions } from '../../types';
-import { useInjectsConfiguration } from '../../use';
+import { useInjectsClassesList, useInjectsConfiguration } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectTrigger',
@@ -67,6 +67,8 @@ export default defineComponent({
 
     const usesTags = inject<ComputedRef<boolean>>('usesTags')!;
 
+    const classesList = useInjectsClassesList()!;
+
     return {
       selectedOption,
       hasSelectedOption,
@@ -74,6 +76,7 @@ export default defineComponent({
       fetchingOptions,
       shown,
       usesTags,
+      classesList,
     };
   },
   computed: {

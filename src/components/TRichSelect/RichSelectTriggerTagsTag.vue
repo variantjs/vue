@@ -1,7 +1,8 @@
 <template>
   <button
     type="button"
-    class="bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50 duration-100 ease-in-out focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded shadow-sm text-sm text-white transition white-space-no m-0.5 max-w-full h-8 flex items-center cursor-pointer "
+    :class="classesList.tag"
+    :disabled="isDisabled"
     data-rich-select-focusable
     data-rich-select-tag
     :data-value="dataValueAttribute"
@@ -12,13 +13,14 @@
     @keydown.enter.prevent.stop
   >
     <span
-      class="px-3"
+      :class="classesList.tagLabel"
       v-text="option.text"
     />
 
     <span
+      v-if="!isDisabled"
       tabindex="0"
-      class="-ml-1.5 h-full hover:bg-blue-600 hover:shadow-sm inline-flex items-center px-2 transition focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 rounded-r"
+      :class="classesList.tagDeleteButton"
       data-rich-select-focusable
       @mousedown.prevent.stop="unselect"
       @keydown.backspace.prevent.stop="unselect"
@@ -26,7 +28,7 @@
     >
       <close-icon
         ref="closeIcon"
-        class="w-3 h-3"
+        :class="classesList.tagDeleteButtonIcon"
       />
     </span>
   </button>
@@ -37,6 +39,7 @@
 import { NormalizedOption } from '@variantjs/core';
 import { defineComponent, inject, PropType } from 'vue';
 import CloseIcon from '../../icons/CloseIcon.vue';
+import { useInjectsClassesList } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectTriggerTagsTag',
@@ -52,7 +55,9 @@ export default defineComponent({
   setup() {
     const toggleOption = inject<(option: NormalizedOption) => void>('toggleOption')!;
 
-    return { toggleOption };
+    const classesList = useInjectsClassesList()!;
+
+    return { toggleOption, classesList };
   },
   computed: {
     dataValueAttribute(): string {
@@ -61,6 +66,9 @@ export default defineComponent({
       }
 
       return String(this.option.value);
+    },
+    isDisabled(): boolean {
+      return this.option.disabled === true || this.option.disabled === 'disabled';
     },
   },
   methods: {

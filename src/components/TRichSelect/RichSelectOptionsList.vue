@@ -1,6 +1,7 @@
 <template>
   <ul
-    class="px-2 pb-2 "
+    v-if="options.length"
+    :class="classesList.optionsList"
     :style="usesMaxHeight? `max-height: ${maxHeight}; overflow-x: auto;` : undefined"
   >
     <rich-select-option
@@ -14,7 +15,7 @@
       v-if="fetchingMoreOptions"
       ref="fetchingMoreOptions"
       key="loading_more"
-      class="flex items-center justify-between px-3 py-2 text-gray-400"
+      :class="classesList.optionsListLoadingMore"
       v-text="configuration.loadingMoreResultsText"
     />
   </ul>
@@ -29,6 +30,7 @@ import {
 import { debounce, NormalizedOptions, normalizeMeasure } from '@variantjs/core';
 import RichSelectOption from './RichSelectOption.vue';
 import { TRichSelectOptions } from '../../types';
+import { useInjectsClassesList } from '../../use';
 
 export default defineComponent({
   name: 'RichSelectOptionsList',
@@ -54,6 +56,8 @@ export default defineComponent({
     const maxHeight = computed(() => normalizeMeasure(configuration.maxHeight));
     const usesMaxHeight = computed((): boolean => props.deep === 0 && maxHeight.value !== undefined);
 
+    const classesList = useInjectsClassesList();
+
     const bottomReachedObserver = debounce(([event]: [Event]) => {
       const element = event.target as HTMLUListElement;
       const reached: boolean = Math.ceil(element.scrollHeight - element.scrollTop) === element.clientHeight;
@@ -64,7 +68,7 @@ export default defineComponent({
     }, 200);
 
     return {
-      maxHeight, usesMaxHeight, shown, bottomReachedObserver, fetchingMoreOptions, configuration,
+      maxHeight, usesMaxHeight, shown, bottomReachedObserver, fetchingMoreOptions, configuration, classesList,
     };
   },
   watch: {
