@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.9.3",
-    "@variantjs/core": "^0.0.34",
+    "@variantjs/core": "^0.0.35",
     "smoothscroll-polyfill": "^0.4.4"
   }
 }
