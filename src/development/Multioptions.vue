@@ -15,6 +15,14 @@
         multiple
       />
 
+      <t-rich-select
+        v-model="selected"
+        placeholder="select an option"
+        :options="options"
+        multiple
+        tags
+      />
+
       <div>
         <label
           v-for="option in options"
@@ -50,14 +58,34 @@ export default defineComponent({
   data() {
     return {
       selected2: null,
-      selected: [],
+      selected: ['b', 'c', 'd'],
       options: [
-        'Option A',
-        'Option B',
-        'Option C',
-        'Option D',
-        'Option E',
-        'Option F',
+        {
+          value: 'a',
+          text: 'Option A',
+        },
+        {
+          value: 'b',
+          text: 'Option B',
+        },
+        {
+          value: 'c',
+          text: 'Option C',
+        },
+        {
+          value: 'd',
+          text: 'Option D',
+          disabled: true,
+        },
+        {
+          value: 'e',
+          text: 'Option E',
+        },
+        {
+          value: 'f',
+          text: 'Option F',
+          disabled: true,
+        },
       ],
     };
   },
