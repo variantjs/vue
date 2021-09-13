@@ -24,6 +24,7 @@
       :placement="configuration.dropdownPlacement"
       :tag-name="usesTags ? 'div' : 'button'"
       :tabindex="usesTags && !hasSelectedOption ? 0 : undefined"
+      data-rich-select-focusable
       @mouseover="$emit('mouseover', $event)"
       @mouseleave="$emit('mouseleave', $event)"
       @touchstart="$emit('touchstart', $event)"

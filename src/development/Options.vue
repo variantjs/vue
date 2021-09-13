@@ -23,6 +23,11 @@
         :fetch-options="fetchOptions"
         :minimum-input-length="3"
       />
+      <t-rich-select
+        placeholder="select an option"
+        :options="[1,2,3,4]"
+        hide-search-box
+      />
 
       <div>
         <label
