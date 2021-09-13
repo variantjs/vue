@@ -22,7 +22,44 @@
         placeholder="select an option"
         :fetch-options="fetchOptions"
         :minimum-input-length="3"
-      />
+        value-attribute="imdbID"
+        text-attribute="Title"
+      >
+        <template #option="{ option: { raw: movie }, className, isSelected }">
+          <div
+            class="flex flex-col items-center px-3 py-2 space-x-4 overflow-auto bg-white sm:flex-row"
+            :class="className"
+          >
+            <div
+              class="flex-shrink-0 w-10 h-10 bg-gray-500 bg-center bg-cover rounded"
+              :style="{ backgroundImage: `url(${movie.Poster})` }"
+            />
+            <div class="flex flex-col w-full overflow-auto">
+              <div class="flex-grow overflow-auto">
+                <h3
+                  class="font-semibold truncate "
+                  :class="{
+                    'text-white': isSelected,
+                    'text-gray-800': !isSelected,
+                  }"
+                >
+                  {{ movie.Title }}
+                </h3>
+                <p
+                  class="text-sm "
+                  :class="{
+                    'text-white': isSelected,
+                    'text-gray-400': !isSelected,
+                  }"
+                >
+                  {{ movie.Year }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </template>
+      </t-rich-select>
+
       <t-rich-select
         placeholder="select an option"
         :options="[1,2,3,4]"
@@ -65,7 +102,7 @@ const fetchOptions = (query: string, nextPage: undefined | number) => {
   return fetch(url)
     .then((response) => response.json())
     .then((data) => ({
-      results: data.Search.map((i) => ({ value: i.imdbID, text: i.Title })),
+      results: data.Search,
       hasMorePages: data.totalResults > (data.Search.length * (nextPage || 1)) * 10,
     }));
 };
