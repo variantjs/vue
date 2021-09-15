@@ -1,37 +1,64 @@
 <template>
-  <text-placeholder
-    v-if="isFetchingOptionsWhileClosed"
-    ref="fetchingPlaceholder"
-    class-property="selectButtonSearchingPlaceholder"
-    :placeholder="configuration.loadingClosedPlaceholder"
-  />
+  <slot
+    v-if="isFetchingOptionsWhileClosed || !hasSelectedOption"
+    name="placeholder"
+    :is-fetching-options-while-closed="isFetchingOptionsWhileClosed"
+  >
+    <template v-if="isFetchingOptionsWhileClosed">
+      <text-placeholder
+        ref="fetchingPlaceholder"
+        class-property="selectButtonSearchingPlaceholder"
+        :placeholder="configuration.loadingClosedPlaceholder"
+      />
+      <loading-icon
+        ref="loadingIcon"
+        :class="classesList.selectButtonLoadingIcon"
+      />
+    </template>
 
-  <text-placeholder
-    v-else-if="! hasSelectedOption"
-    ref="placeholder"
-    class-property="selectButtonPlaceholder"
-    :placeholder="configuration.placeholder"
-  />
+    <text-placeholder
+      v-else
+      ref="placeholder"
+      class-property="selectButtonPlaceholder"
+      :placeholder="configuration.placeholder"
+    />
+  </slot>
 
-  <rich-select-trigger-tags v-else-if="usesTags" />
+  <rich-select-trigger-tags v-else-if="usesTags">
+    <template
+      v-for="slotName in ['tagCloseIcon', 'tagLabel']"
+      #[slotName]="props"
+    >
+      <slot
+        :name="slotName"
+        v-bind="props"
+      />
+    </template>
+  </rich-select-trigger-tags>
 
   <span
     v-else
     ref="label"
     :class="classesList.selectButtonLabel"
-  >{{ label }}</span>
+  >
+    <slot
+      name="label"
+      :label="label"
+      :selected-option="selectedOption"
+    >
+      {{ label }}
+    </slot>
+  </span>
 
-  <loading-icon
-    v-if="isFetchingOptionsWhileClosed"
-    ref="loadingIcon"
-    :class="classesList.selectButtonLoadingIcon"
-  />
-
-  <selector-icon
-    v-else-if="showSelectorIcon"
-    ref="selectorIcon"
-    :class="classesList.selectButtonSelectorIcon"
-  />
+  <slot
+    v-if="showSelectorIcon"
+    name="selectorIcon"
+  >
+    <selector-icon
+      ref="selectorIcon"
+      :class="classesList.selectButtonSelectorIcon"
+    />
+  </slot>
 </template>
 
 <script lang="ts">
@@ -99,6 +126,10 @@ export default defineComponent({
       return Array.isArray(this.selectedOption);
     },
     showSelectorIcon(): boolean {
+      if (this.isFetchingOptionsWhileClosed) {
+        return false;
+      }
+
       if (!this.configuration.clearable) {
         return true;
       }

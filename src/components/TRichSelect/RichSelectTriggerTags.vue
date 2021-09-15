@@ -6,7 +6,17 @@
       v-for="(option, index) in selectedOptions"
       :key="`${option.value}-${index}`"
       :option="option"
-    />
+    >
+      <template
+        v-for="slotName in ['tagCloseIcon', 'tagLabel']"
+        #[slotName]="props"
+      >
+        <slot
+          :name="slotName"
+          v-bind="props"
+        />
+      </template>
+    </rich-select-trigger-tags-tag>
   </div>
 </template>
 

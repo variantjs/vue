@@ -4,7 +4,9 @@
     data-rich-select-focusable
     :class="className"
   >
-    <close-icon class="w-4 h-4" />
+    <slot name="clearButton">
+      <close-icon class="w-4 h-4" />
+    </slot>
   </button>
 </template>
 

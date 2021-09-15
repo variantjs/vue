@@ -43,19 +43,49 @@
       @blur-on-child="blurOnChildHandler"
     >
       <template #trigger>
-        <rich-select-trigger
-          ref="trigger"
-        />
+        <rich-select-trigger ref="trigger">
+          <template
+            v-for="slotName in ['selectorIcon', 'placeholder', 'label', 'tagCloseIcon', 'tagLabel']"
+            #[slotName]="props"
+          >
+            <slot
+              :name="slotName"
+              v-bind="props"
+              :classes-list="configuration.classesList"
+            />
+          </template>
+        </rich-select-trigger>
       </template>
 
-      <rich-select-dropdown ref="dropdown" />
+      <rich-select-dropdown
+        ref="dropdown"
+      >
+        <template
+          v-for="slotName in ['option', 'optionLabel', 'optionIcon', 'dropdownTop', 'dropdownButton', 'stateFeedback']"
+          #[slotName]="props"
+        >
+          <slot
+            :name="slotName"
+            v-bind="props"
+            :classes-list="configuration.classesList"
+          />
+        </template>
+      </rich-select-dropdown>
     </t-dropdown>
 
     <rich-select-clear-button
       v-if="showClearButton"
       ref="clearButton"
       @click="clearValue"
-    />
+    >
+      <template #clearButton="props">
+        <slot
+          name="clearButton"
+          v-bind="props"
+          :classes-list="configuration.classesList"
+        />
+      </template>
+    </rich-select-clear-button>
   </div>
 </template>
 

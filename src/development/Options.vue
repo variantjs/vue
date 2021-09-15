@@ -16,7 +16,11 @@
       <t-rich-select
         placeholder="select an option"
         :options="options"
-      />
+      >
+        <template #label="props">
+          {{ props.selectedOption.text }}
+        </template>
+      </t-rich-select>
 
       <t-rich-select
         placeholder="select an option"

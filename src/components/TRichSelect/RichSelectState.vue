@@ -1,19 +1,26 @@
 <template>
-  <div
-    v-if="fetchingOptions"
-    :class="classesList.searchingText"
-    v-text="configuration.searchingText"
-  />
-  <div
-    v-else-if="needsMoreCharsToFetch"
-    :class="classesList.needsMoreCharsText"
-    v-text="needsMoreCharsMessage"
-  />
-  <div
-    v-else-if="noResults"
-    :class="classesList.noResultsText"
-    v-text="configuration.noResultsText"
-  />
+  <slot
+    name="stateFeedback"
+    :fetching-options="fetchingOptions"
+    :needs-more-chars-to-fetch="needsMoreCharsToFetch"
+    :no-results="noResults"
+  >
+    <div
+      v-if="fetchingOptions"
+      :class="classesList.searchingText"
+      v-text="configuration.searchingText"
+    />
+    <div
+      v-else-if="needsMoreCharsToFetch"
+      :class="classesList.needsMoreCharsText"
+      v-text="needsMoreCharsMessage"
+    />
+    <div
+      v-else-if="noResults"
+      :class="classesList.noResultsText"
+      v-text="configuration.noResultsText"
+    />
+  </slot>
 </template>
 
 <script lang="ts">

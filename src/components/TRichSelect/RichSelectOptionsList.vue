@@ -9,7 +9,18 @@
       :key="`${deep > 0 ? `${deep}-` : ''}${JSON.stringify(option.value)}-${index}`"
       :option="option"
       :deep="deep"
-    />
+    >
+      <template
+        v-for="slotName in ['option', 'optionLabel', 'optionIcon']"
+        #[slotName]="props"
+      >
+        <slot
+          :name="slotName"
+          v-bind="props"
+          :index="index"
+        />
+      </template>
+    </rich-select-option>
 
     <li
       v-if="fetchingMoreOptions"

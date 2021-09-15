@@ -5,14 +5,33 @@
       ref="searchInput"
     />
 
-    <rich-select-state ref="state" />
+    <slot name="dropdownTop" />
+
+    <rich-select-state ref="state">
+      <template #stateFeedback="props">
+        <slot
+          name="stateFeedback"
+          v-bind="props"
+        />
+      </template>
+    </rich-select-state>
 
     <rich-select-options-list
       ref="optionsList"
       :options="options"
-    />
+    >
+      <template
+        v-for="slotName in ['option', 'optionLabel', 'optionIcon']"
+        #[slotName]="props"
+      >
+        <slot
+          :name="slotName"
+          v-bind="props"
+        />
+      </template>
+    </rich-select-options-list>
 
-    <!-- @TODO bottom -->
+    <slot name="dropdownButton" />
   </div>
 </template>
 

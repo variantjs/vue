@@ -12,10 +12,13 @@
     @keydown.left.prevent.stop="focusPrevElement"
     @keydown.enter.prevent.stop
   >
-    <span
-      :class="classesList.tagLabel"
-      v-text="option.text"
-    />
+    <span :class="classesList.tagLabel">
+      <slot
+        name="tagLabel"
+        :option="option"
+        :is-disabled="isDisabled"
+      >{{ option.text }}</slot>
+    </span>
 
     <span
       v-if="!isDisabled"
@@ -26,10 +29,15 @@
       @keydown.backspace.prevent.stop="unselect"
       @keydown.enter.prevent.stop="unselect"
     >
-      <close-icon
-        ref="closeIcon"
-        :class="classesList.tagDeleteButtonIcon"
-      />
+      <slot
+        name="tagCloseIcon"
+        :option="option"
+      >
+        <close-icon
+          ref="closeIcon"
+          :class="classesList.tagDeleteButtonIcon"
+        />
+      </slot>
     </span>
   </button>
 </template>

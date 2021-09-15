@@ -18,31 +18,60 @@
   <li
     v-else
     :class="classesList.optionWrapper"
+    @mousemove="mousemoveHandler"
+    @mousewheel="mousewheelHandler"
+    @click="clickHandler"
   >
-    <button
-      role="option"
-      :class="optionClasses"
-      :aria-selected="isSelected"
-      tabindex="-1"
-      type="button"
-      :disabled="isDisabled"
-      :value="valueAttribute"
-      @mousemove="mousemoveHandler"
-      @mousewheel="mousewheelHandler"
-      @click="clickHandler"
+    <slot
+      name="option"
+      :class-name="optionClasses"
+      :option="option"
+      :is-disabled="isDisabled"
+      :is-active="isActive"
+      :is-selected="isSelected"
+      :deep="deep"
     >
-      <div :class="classesList.optionContent">
-        <span :class="classesList.optionLabel">
-          {{ option.text }}
-        </span>
+      <button
+        role="option"
+        :class="optionClasses"
+        :aria-selected="isSelected"
+        tabindex="-1"
+        type="button"
+        :disabled="isDisabled"
+        :value="valueAttribute"
+      >
+        <div :class="classesList.optionContent">
+          <slot
+            name="optionLabel"
+            :option="option"
+            :is-disabled="isDisabled"
+            :is-active="isActive"
+            :is-selected="isSelected"
+            :deep="deep"
+          >
+            <span :class="classesList.optionLabel">
+              {{ option.text }}
+            </span>
+          </slot>
 
-        <checkmark-icon
-          v-if="isSelected"
-          ref="checkIcon"
-          :class="classesList.optionSelectedIcon"
-        />
-      </div>
-    </button>
+          <slot
+            name="optionIcon"
+            :class-name="optionClasses.optionLabel"
+            :option="option"
+            :is-disabled="isDisabled"
+            :is-active="isActive"
+            :is-selected="isSelected"
+            :deep="deep"
+          >
+            <checkmark-icon
+              v-if="isSelected"
+              ref="checkIcon"
+              :class="classesList.optionSelectedIcon"
+            />
+          </slot>
+        </div>
+      </button>
+    </slot>
   </li>
 </template>
 
