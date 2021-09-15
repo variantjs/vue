@@ -281,7 +281,6 @@ export default defineComponent({
     const {
       normalizedOptions,
       flattenedOptions,
-      filteredOptions,
       fetchsOptions,
       needsMoreCharsToFetch,
       needsMoreCharsMessage,
@@ -319,7 +318,7 @@ export default defineComponent({
       initActiveOption,
       setNextOptionActive,
       setPrevOptionActive,
-    } = useActivableOption(filteredOptions, localValue);
+    } = useActivableOption(flattenedOptions, localValue);
 
     const shown = ref<boolean>(false);
 
@@ -475,8 +474,6 @@ export default defineComponent({
     provide('configuration', configuration);
 
     provide('options', normalizedOptions);
-
-    provide('filteredOptions', filteredOptions);
 
     provide('selectedOption', selectedOption);
 

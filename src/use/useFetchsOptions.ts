@@ -19,7 +19,6 @@ export default function useFetchsOptions(
 ): {
     normalizedOptions: ComputedRef<NormalizedOptions>
     flattenedOptions: ComputedRef<NormalizedOption[]>
-    filteredOptions: ComputedRef<NormalizedOption[]>
     fetchsOptions: ComputedRef<boolean>,
     needsMoreCharsToFetch: ComputedRef<boolean>,
     needsMoreCharsMessage: ComputedRef<string>,
@@ -41,23 +40,21 @@ export default function useFetchsOptions(
 
   const normalizedOptions = computed<NormalizedOptions>(() => {
     if (typeof fetchFn.value !== 'function') {
-      return normalize.value
+      const normalized = normalize.value
         ? normalizeOptions(options.value, textAttribute.value, valueAttribute.value)
         : options.value as NormalizedOptions;
+
+      if (searchQuery.value) {
+        return filterOptions(normalized, searchQuery.value);
+      }
+
+      return normalized;
     }
 
     return fetchedOptions.value;
   });
 
   const flattenedOptions = computed<NormalizedOption[]>(() => flattenOptions(normalizedOptions.value));
-
-  const filteredOptions = computed<NormalizedOptions>(() => {
-    if (searchQuery.value) {
-      return filterOptions(flattenedOptions.value, searchQuery.value);
-    }
-
-    return flattenedOptions.value;
-  });
 
   const { emit } = getCurrentInstance()!;
 
@@ -171,7 +168,6 @@ export default function useFetchsOptions(
   return {
     normalizedOptions,
     flattenedOptions,
-    filteredOptions,
     fetchsOptions,
     needsMoreCharsToFetch,
     needsMoreCharsMessage,
