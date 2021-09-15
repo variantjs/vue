@@ -238,6 +238,25 @@ describe('useActivableOption', () => {
       });
     });
 
+    it('sets the next index that is not disabled as active', () => {
+      useSetup(() => {
+        const {
+          activeOption, setNextOptionActive,
+        } = useActivableOption(
+          computed(() => [
+            { value: 'a', text: 'Option A' },
+            { value: 'b', text: 'Option B', disabled: true },
+            { value: 'c', text: 'Option C' },
+          ]),
+          localValue,
+        );
+
+        setNextOptionActive();
+
+        expect(activeOption.value).toEqual(options.value[2]);
+      });
+    });
+
     it('keeps the current option if is the last one', () => {
       useSetup(() => {
         const {
@@ -301,6 +320,27 @@ describe('useActivableOption', () => {
         );
 
         setActiveOption(options.value[1]);
+
+        setPrevOptionActive();
+
+        expect(activeOption.value).toEqual(options.value[0]);
+      });
+    });
+
+    it('sets the prex index that is not disabled as active', () => {
+      useSetup(() => {
+        const {
+          activeOption, setPrevOptionActive, setActiveOption,
+        } = useActivableOption(
+          computed(() => [
+            { value: 'a', text: 'Option A' },
+            { value: 'b', text: 'Option B', disabled: true },
+            { value: 'c', text: 'Option C' },
+          ]),
+          localValue,
+        );
+
+        setActiveOption(options.value[2]);
 
         setPrevOptionActive();
 
