@@ -440,6 +440,80 @@ describe('RichSelectOption', () => {
     });
   });
 
+  describe('option classes', () => {
+    const classesList = {
+      option: 'option',
+      selectedHighlightedOption: 'selected-highlighted-option',
+      selectedOption: 'selected-option',
+      highlightedOption: 'highlighted-option',
+    };
+
+    const configuration = { classesList };
+
+    it('adds the selectedHighlightedOption if option is selected an active', () => {
+      optionIsSelected.mockReturnValue(true);
+      optionIsActive.mockReturnValue(true);
+
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global: {
+          ...global,
+          provide: {
+            ...global.provide,
+            configuration,
+          },
+        },
+      });
+
+      expect(wrapper.vm.$el.querySelector('button').getAttribute('class')).toBe('option selected-highlighted-option');
+    });
+
+    it('adds the selectedOption if option is selected but is not active', () => {
+      optionIsSelected.mockReturnValue(true);
+      optionIsActive.mockReturnValue(false);
+
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global: {
+          ...global,
+          provide: {
+            ...global.provide,
+            configuration,
+          },
+        },
+      });
+
+      expect(wrapper.vm.$el.querySelector('button').getAttribute('class')).toBe('option selected-option');
+    });
+
+    it('adds the highlightedOption if option is active but is not selected', () => {
+      optionIsSelected.mockReturnValue(false);
+      optionIsActive.mockReturnValue(true);
+
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option,
+          deep,
+        },
+        global: {
+          ...global,
+          provide: {
+            ...global.provide,
+            configuration,
+          },
+        },
+      });
+
+      expect(wrapper.vm.$el.querySelector('button').getAttribute('class')).toBe('option highlighted-option');
+    });
+  });
+
   describe('option has children', () => {
     const wrapper = shallowMount(RichSelectOption, {
       props: {
