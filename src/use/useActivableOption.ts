@@ -3,7 +3,8 @@ import {
   computed, ComputedRef, Ref, ref, watch,
 } from 'vue';
 
-export default function useActivableOption(
+export default function
+useActivableOption(
   options: ComputedRef<NormalizedOption[]>,
   localValue: Ref,
 ): {
@@ -17,12 +18,12 @@ export default function useActivableOption(
   const getActiveOption = (): NormalizedOption | null => {
     const selectedOption = options.value.find((option: NormalizedOption) => isEqual(option.value, localValue.value));
 
-    if (selectedOption !== undefined) {
+    if (selectedOption !== undefined && selectedOption.disabled !== true) {
       return selectedOption;
     }
 
     if (options.value.length > 0) {
-      return options.value[0];
+      return options.value.find((option: NormalizedOption) => option.disabled !== true) || null;
     }
 
     return null;
@@ -42,7 +43,7 @@ export default function useActivableOption(
 
   const optionIsActive = (option: NormalizedOption): boolean => (activeOption.value === null ? false : isEqual(activeOption.value.value, option.value));
 
-  const setActiveOption = (option: NormalizedOption): void => {
+  const setActiveOption = (option: NormalizedOption | null): void => {
     activeOption.value = option;
   };
 
@@ -91,6 +92,8 @@ export default function useActivableOption(
 
     if (firstNewOption) {
       setActiveOption(firstNewOption);
+    } else {
+      setActiveOption(getActiveOption());
     }
   });
 

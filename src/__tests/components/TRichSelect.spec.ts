@@ -166,6 +166,17 @@ describe('TRichSelect.vue', () => {
       expect(wrapper.vm.$.provides.options.value).toEqual(normalizeOptions(options));
     });
 
+    it('provides the filtered options', () => {
+      const options = [1, 2, 3];
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          options,
+        },
+      });
+
+      expect(wrapper.vm.$.provides.filteredOptions.value).toEqual(normalizeOptions(options));
+    });
+
     it('provides the shown state', () => {
       const options = [1, 2, 3];
       const wrapper = shallowMount(TRichSelect, {

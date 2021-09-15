@@ -53,7 +53,7 @@ export default defineComponent({
     RichSelectState,
   },
   setup() {
-    const options = inject<ComputedRef<NormalizedOptions>>('options')!;
+    const options = inject<ComputedRef<NormalizedOptions>>('filteredOptions')!;
     const showSearchInput = inject<ComputedRef<boolean>>('showSearchInput')!;
     const className = useInjectsClassesListClass('dropdownContent');
 
