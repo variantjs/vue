@@ -282,7 +282,7 @@ describe('RichSelectOption', () => {
       expect(mousemoveHandlerSpy).toHaveBeenCalled();
     });
 
-    it('the `mousemoveHandler` sets the option as active', () => {
+    it('calls setActiveOption method when `mousemoveHandler` called', () => {
       const wrapper = shallowMount(RichSelectOption, {
         props: {
           option,
@@ -294,6 +294,23 @@ describe('RichSelectOption', () => {
       wrapper.vm.mousemoveHandler();
 
       expect(setActiveOption).toHaveBeenCalledWith(option);
+    });
+
+    it('doesnt call setActiveOption method when `mousemoveHandler` called and option is disabled', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option: {
+            ...option,
+            disabled: true,
+          },
+          deep,
+        },
+        global,
+      });
+
+      wrapper.vm.mousemoveHandler();
+
+      expect(setActiveOption).not.toHaveBeenCalled();
     });
 
     it('calls the `mousewheelHandler` when mousewheel event', () => {
@@ -312,7 +329,7 @@ describe('RichSelectOption', () => {
       expect(mousewheelHandlerSpy).toHaveBeenCalled();
     });
 
-    it('the `mousewheelHandler` sets the option as active', () => {
+    it('call setActiveOption method when `mousewheelHandler` is called ', () => {
       const wrapper = shallowMount(RichSelectOption, {
         props: {
           option,
@@ -324,6 +341,23 @@ describe('RichSelectOption', () => {
       wrapper.vm.mousewheelHandler();
 
       expect(setActiveOption).toHaveBeenCalledWith(option);
+    });
+
+    it('doesnt call setActiveOption method when `mousewheelHandler` is called and option is disabled', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option: {
+            ...option,
+            disabled: true,
+          },
+          deep,
+        },
+        global,
+      });
+
+      wrapper.vm.mousewheelHandler();
+
+      expect(setActiveOption).not.toHaveBeenCalled();
     });
 
     it('calls the `clickHandler` when option clicked', () => {
@@ -354,6 +388,23 @@ describe('RichSelectOption', () => {
       wrapper.vm.clickHandler();
 
       expect(toggleOption).toHaveBeenCalledWith(option);
+    });
+
+    it('doesnt call option toggle method when `clickHandler` is called and option is disabled', () => {
+      const wrapper = shallowMount(RichSelectOption, {
+        props: {
+          option: {
+            ...option,
+            disabled: true,
+          },
+          deep,
+        },
+        global,
+      });
+
+      wrapper.vm.clickHandler();
+
+      expect(toggleOption).not.toHaveBeenCalled();
     });
   });
 
