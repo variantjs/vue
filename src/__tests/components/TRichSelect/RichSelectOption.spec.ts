@@ -369,7 +369,7 @@ describe('RichSelectOption', () => {
         global,
       });
 
-      expect(wrapper.vm.$el.getAttribute('aria-selected')).toBe('true');
+      expect(wrapper.vm.$el.querySelector('button').getAttribute('aria-selected')).toBe('true');
     });
 
     it('has the correct `aria-selected` attribute when is not selected', () => {
@@ -383,7 +383,7 @@ describe('RichSelectOption', () => {
         global,
       });
 
-      expect(wrapper.vm.$el.getAttribute('aria-selected')).toBe('false');
+      expect(wrapper.vm.$el.querySelector('button').getAttribute('aria-selected')).toBe('false');
     });
 
     it('has the role=option attribute', () => {
@@ -395,7 +395,7 @@ describe('RichSelectOption', () => {
         global,
       });
 
-      expect(wrapper.vm.$el.getAttribute('role')).toBe('option');
+      expect(wrapper.vm.$el.querySelector('button').getAttribute('role')).toBe('option');
     });
     it('has the tabindex=-1 attribute', () => {
       const wrapper = shallowMount(RichSelectOption, {
@@ -406,10 +406,10 @@ describe('RichSelectOption', () => {
         global,
       });
 
-      expect(wrapper.vm.$el.getAttribute('tabindex')).toBe('-1');
+      expect(wrapper.vm.$el.querySelector('button').getAttribute('tabindex')).toBe('-1');
     });
 
-    it.each([1, 'foo', undefined, NaN])('adds a data-value attribute for regular values with %s', (value) => {
+    it.each([1, 'foo', undefined, NaN])('adds a value attribute for regular values with %s', (value) => {
       const wrapper = shallowMount(RichSelectOption, {
         props: {
           option: {
@@ -421,10 +421,10 @@ describe('RichSelectOption', () => {
         global,
       });
 
-      expect(wrapper.vm.$el.getAttribute('data-value')).toBe(String(value));
+      expect(wrapper.vm.$el.querySelector('button').getAttribute('value')).toBe(String(value));
     });
 
-    it.each([{ foo: 'bar' }, null, [1, 2]])('adds a data-value attribute for objects %s', (value) => {
+    it.each([{ foo: 'bar' }, [1, 2], null])('adds a value attribute for objects %s', (value) => {
       const wrapper = shallowMount(RichSelectOption, {
         props: {
           option: {
@@ -436,7 +436,7 @@ describe('RichSelectOption', () => {
         global,
       });
 
-      expect(wrapper.vm.$el.getAttribute('data-value')).toBe(JSON.stringify(value));
+      expect(wrapper.vm.$el.querySelector('button').getAttribute('value')).toBe(JSON.stringify(value));
     });
   });
 

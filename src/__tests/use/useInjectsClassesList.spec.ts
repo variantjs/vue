@@ -31,9 +31,9 @@ describe('useInjectsClassesList', () => {
     expect(wrapper.vm.classesList).toEqual(configurationToProvide.classesList);
   });
 
-  it('returns undefined classeslist if no provided', () => {
+  it('returns empty object if classeslist are not provided', () => {
     const wrapper = shallowMount(component);
 
-    expect(wrapper.vm.classesList).toBeUndefined();
+    expect(wrapper.vm.classesList).toEqual({});
   });
 });
