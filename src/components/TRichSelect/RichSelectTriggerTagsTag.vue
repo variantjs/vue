@@ -44,7 +44,7 @@
 
 <script lang="ts">
 
-import { NormalizedOption } from '@variantjs/core';
+import { NormalizedOption, normalizedOptionIsDisabled } from '@variantjs/core';
 import { defineComponent, inject, PropType } from 'vue';
 import CloseIcon from '../../icons/CloseIcon.vue';
 import { useInjectsClassesList } from '../../use';
@@ -76,7 +76,7 @@ export default defineComponent({
       return String(this.option.value);
     },
     isDisabled(): boolean {
-      return this.option.disabled === true || this.option.disabled === 'disabled';
+      return normalizedOptionIsDisabled(this.option);
     },
   },
   methods: {

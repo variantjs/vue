@@ -79,7 +79,7 @@
 import {
   defineComponent, inject, PropType, Ref,
 } from 'vue';
-import { CSSClass, NormalizedOption } from '@variantjs/core';
+import { CSSClass, NormalizedOption, normalizedOptionIsDisabled } from '@variantjs/core';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import CheckmarkIcon from '../../icons/CheckmarkIcon.vue';
 import { useInjectsClassesList } from '../../use';
@@ -148,7 +148,7 @@ export default defineComponent({
       return this.optionIsActive(this.option);
     },
     isDisabled(): boolean {
-      return this.option.disabled === true || this.option.disabled === 'disabled';
+      return normalizedOptionIsDisabled(this.option);
     },
   },
   watch: {

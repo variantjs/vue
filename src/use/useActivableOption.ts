@@ -1,4 +1,4 @@
-import { isEqual, NormalizedOption } from '@variantjs/core';
+import { isEqual, NormalizedOption, normalizedOptionIsDisabled } from '@variantjs/core';
 import {
   computed, ComputedRef, Ref, ref, watch,
 } from 'vue';
@@ -17,12 +17,12 @@ export default function useActivableOption(
   const getActiveOption = (): NormalizedOption | null => {
     const selectedOption = options.value.find((option: NormalizedOption) => isEqual(option.value, localValue.value));
 
-    if (selectedOption !== undefined) {
+    if (selectedOption !== undefined && !normalizedOptionIsDisabled(selectedOption)) {
       return selectedOption;
     }
 
     if (options.value.length > 0) {
-      return options.value[0];
+      return options.value.find((option) => !normalizedOptionIsDisabled(option)) || null;
     }
 
     return null;
@@ -52,7 +52,7 @@ export default function useActivableOption(
 
     while (nextIndex < options.value.length && newActiveOption === undefined) {
       const option = options.value[nextIndex];
-      const optionIsDisabled = option.disabled === true || option.disabled === 'disabled';
+      const optionIsDisabled = normalizedOptionIsDisabled(option);
       if (!optionIsDisabled) {
         newActiveOption = option;
       }
@@ -70,7 +70,7 @@ export default function useActivableOption(
 
     while (nextIndex >= 0 && newActiveOption === undefined) {
       const option = options.value[nextIndex];
-      const optionIsDisabled = option.disabled === true || option.disabled === 'disabled';
+      const optionIsDisabled = normalizedOptionIsDisabled(option);
       if (!optionIsDisabled) {
         newActiveOption = option;
       }
@@ -87,10 +87,12 @@ export default function useActivableOption(
   };
 
   watch(options, (newOptions: NormalizedOption[], oldOptions: NormalizedOption[]) => {
-    const firstNewOption = newOptions.find((o) => !oldOptions.includes(o));
+    const firstNewOption = newOptions.find((o) => !oldOptions.includes(o) && !normalizedOptionIsDisabled(o));
 
     if (firstNewOption) {
       setActiveOption(firstNewOption);
+    } else {
+      initActiveOption();
     }
   });
 
