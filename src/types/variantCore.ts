@@ -104,7 +104,9 @@ type VariantJSConfiguration = {
   TTextarea?: TTextareaOptions
   TTag?: TTagOptions
   TCard?: TCardOptions
-  TInputGroup?: TInputGroupOptions
+  TInputGroup?: TInputGroupOptions,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
 };
 
 export { VariantJSConfiguration, VariantJSProps, VariantJSWithClassesListProps };

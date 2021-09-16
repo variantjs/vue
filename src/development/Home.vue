@@ -45,7 +45,12 @@
         </label>
       </div>
 
-      <t-button>My button</t-button>
+      <div class="flex justify-between mt-2">
+        <t-button>My button</t-button>
+        <t-submit>
+          TSubmit (Custom component)
+        </t-submit>
+      </div>
 
       <template #footer>
         <h1>Footer content</h1>
@@ -55,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, provide } from 'vue';
 
 import TInput from '../components/TInput.vue';
 import TSelect from '../components/TSelect.vue';
@@ -65,6 +70,8 @@ import TTextarea from '../components/TTextarea.vue';
 import TButton from '../components/TButton.vue';
 import TCard from '../components/TCard.vue';
 import TAlert from '../components/TAlert.vue';
+import TSubmit from './TSubmit.vue';
+import { VariantJSConfiguration } from '../types';
 
 export default defineComponent({
   name: 'App',
@@ -77,6 +84,15 @@ export default defineComponent({
     TButton,
     TCard,
     TAlert,
+    TSubmit,
+  },
+  setup() {
+    provide<VariantJSConfiguration>('configuration', {
+      TSubmit: {
+        type: 'submit',
+        classes: 'block px-4 py-2 text-white transition duration-100 ease-in-out bg-red-500 border border-transparent rounded shadow-sm hover:bg-red-600 focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed',
+      },
+    });
   },
   data() {
     return {
@@ -89,14 +105,5 @@ export default defineComponent({
       ],
     };
   },
-
 });
 </script>
-
-<style>
-  input[type=text]:after {
-    display: block;
-    content: 'x';
-
-  }
-</style>
