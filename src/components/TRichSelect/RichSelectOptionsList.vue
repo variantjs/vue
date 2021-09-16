@@ -24,7 +24,7 @@
 
     <li
       v-if="fetchingMoreOptions"
-      ref="fetchingMoreOptions"
+      ref="fetchingMoreOptionsText"
       key="loading_more"
       :class="classesList.optionsListLoadingMore"
       v-text="configuration.loadingMoreResultsText"
@@ -99,7 +99,7 @@ export default defineComponent({
     async fetchingMoreOptions(fetchingMoreOptions: boolean) {
       if (fetchingMoreOptions) {
         await this.$nextTick();
-        const el = this.$refs.fetchingMoreOptions as HTMLLIElement;
+        const el = this.$refs.fetchingMoreOptionsText as HTMLLIElement;
         el.scrollIntoView({ block: 'end', behavior: 'smooth' });
       }
     },

@@ -108,8 +108,17 @@ describe('RichSelectOptionsList', () => {
     fetchingMoreOptions.value = true;
 
     await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
 
-    expect(scrollElementMock).toHaveBeenCalled();
+    expect(scrollElementMock).toHaveBeenCalledTimes(1);
+
+    // Should not call again when `fetchingMoreOptions` is false again
+    fetchingMoreOptions.value = false;
+
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+
+    expect(scrollElementMock).toHaveBeenCalledTimes(1);
   });
 
   describe('dropdownBottomReachedHandler', () => {
