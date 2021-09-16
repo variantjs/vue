@@ -1,6 +1,6 @@
 <template>
   <ul
-    v-if="options.length"
+    v-if="showOptions"
     :class="classesList.optionsList"
     :style="usesMaxHeight? `max-height: ${maxHeight}; overflow-x: auto;` : undefined"
   >
@@ -82,7 +82,20 @@ export default defineComponent({
       maxHeight, usesMaxHeight, shown, bottomReachedObserver, fetchingMoreOptions, configuration, classesList,
     };
   },
+  computed: {
+    showOptions(): boolean {
+      return this.options.length > 0;
+    },
+  },
   watch: {
+    async showOptions(show: boolean) {
+      if (show) {
+        await this.$nextTick();
+        this.$el.addEventListener('scroll', this.bottomReachedObserver);
+      } else {
+        this.$el.removeEventListener('scroll', this.bottomReachedObserver);
+      }
+    },
     async fetchingMoreOptions(fetchingMoreOptions: boolean) {
       if (fetchingMoreOptions) {
         await this.$nextTick();
@@ -92,10 +105,14 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.$el.addEventListener('scroll', this.bottomReachedObserver);
+    if (this.showOptions) {
+      this.$el.addEventListener('scroll', this.bottomReachedObserver);
+    }
   },
   beforeUnmount() {
-    this.$el.removeEventListener('scroll', this.bottomReachedObserver);
+    if (this.showOptions) {
+      this.$el.removeEventListener('scroll', this.bottomReachedObserver);
+    }
   },
 });
 </script>
