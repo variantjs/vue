@@ -283,6 +283,9 @@ export default defineComponent({
     hidden: () => true,
     'before-show': () => true,
     'before-hide': () => true,
+    'fetch-options-success': () => true,
+    'fetch-options-error': () => true,
+    'update:modelValue': () => true,
   },
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);

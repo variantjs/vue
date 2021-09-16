@@ -14,6 +14,7 @@
       />
 
       <t-rich-select
+        v-model="selected"
         placeholder="select an option"
         :options="options"
       >

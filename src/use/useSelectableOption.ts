@@ -3,7 +3,7 @@ import {
   addToArray, isEqual, NormalizedOption, substractFromArray,
 } from '@variantjs/core';
 import {
-  computed, ComputedRef, Ref, ref,
+  computed, ComputedRef, Ref, ref, watch,
 } from 'vue';
 
 type SelectedOption = NormalizedOption | NormalizedOption[] | undefined;
@@ -66,25 +66,48 @@ export default function useSelectableOption(
     if (optionIsSelected(option)) {
       if (multiple.value === true) {
         localValue.value = substractFromArray(localValue.value, option.value);
-        selectedOption.value = substractFromArray(selectedOption.value, option);
       } else {
         localValue.value = undefined;
-        selectedOption.value = undefined;
       }
     } else if (multiple.value === true) {
       if (Array.isArray(localValue.value)) {
         localValue.value = addToArray(localValue.value, option.value);
-        selectedOption.value = addToArray(selectedOption.value, option);
       } else {
         localValue.value = [option.value];
-        selectedOption.value = [option];
-        selectedOption.value = option;
       }
     } else {
       localValue.value = option.value;
-      selectedOption.value = option;
     }
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  watch(localValue, (newValue: any) => {
+    if (multiple.value === true) {
+      if (!Array.isArray(newValue)) {
+        selectedOption.value = [];
+      } else {
+        selectedOption.value = newValue.map((value) => {
+          if (Array.isArray(selectedOption.value)) {
+            return selectedOption.value.find((option) => isEqual(option.value, value))
+              || options.value.find((option) => isEqual(value, option.value));
+          }
+
+          return options.value.find((option) => isEqual(value, option.value));
+        }).filter((option: NormalizedOption | undefined) => option !== undefined) as NormalizedOption[];
+      }
+    } else {
+      let newSelectedOption: NormalizedOption | undefined;
+
+      if (Array.isArray(selectedOption.value)) {
+        newSelectedOption = selectedOption.value.find((option) => isEqual(option.value, newValue))
+          || options.value.find((option) => isEqual(newValue, option.value));
+      } else {
+        newSelectedOption = options.value.find((option) => isEqual(newValue, option.value));
+      }
+
+      selectedOption.value = newSelectedOption;
+    }
+  });
 
   const hasSelectedOption = computed((): boolean => {
     if (multiple.value === true) {
