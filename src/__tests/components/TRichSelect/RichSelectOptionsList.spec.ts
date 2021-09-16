@@ -112,33 +112,8 @@ describe('RichSelectOptionsList', () => {
     expect(scrollElementMock).toHaveBeenCalled();
   });
 
-  it('doesnt scroll the list to the "fetchingMoreOptions" element when loading ends', async () => {
-    const fetchingMoreOptions = ref(true);
-
-    const scrollElementMock = jest.fn();
-    window.HTMLLIElement.prototype.scrollIntoView = scrollElementMock;
-
-    const wrapper = shallowMount(RichSelectOptionsList, {
-      props,
-      global: {
-        provide: {
-          ...global.provide,
-          fetchingMoreOptions,
-        },
-      },
-    });
-
-    expect(scrollElementMock).not.toHaveBeenCalled();
-
-    fetchingMoreOptions.value = false;
-
-    await wrapper.vm.$nextTick();
-
-    expect(scrollElementMock).not.toHaveBeenCalled();
-  });
-
   describe('dropdownBottomReachedHandler', () => {
-    it('adds a scroll listener attaced to the bottomReachedObserver when component is mounted', () => {
+    it('adds a scroll listener attached to the bottomReachedObserver when component is mounted', () => {
       const addEventListenerSpy = jest.spyOn(window.HTMLUListElement.prototype, 'addEventListener');
 
       const wrapper = shallowMount(RichSelectOptionsList, {
@@ -149,6 +124,66 @@ describe('RichSelectOptionsList', () => {
       expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.$.setupState.bottomReachedObserver);
 
       addEventListenerSpy.mockRestore();
+    });
+
+    it('doesnt adds a scroll listener if no options list', () => {
+      const addEventListenerSpy = jest.spyOn(window.HTMLUListElement.prototype, 'addEventListener');
+
+      shallowMount(RichSelectOptionsList, {
+        props: {
+          ...props,
+          options: [],
+        },
+        global,
+      });
+
+      expect(addEventListenerSpy).not.toHaveBeenCalled();
+
+      addEventListenerSpy.mockRestore();
+    });
+
+    it('adds a scroll listener once it have options list and is rendered', async () => {
+      const addEventListenerSpy = jest.spyOn(window.HTMLUListElement.prototype, 'addEventListener');
+
+      const wrapper = shallowMount(RichSelectOptionsList, {
+        props: {
+          ...props,
+          options: [],
+        },
+        global,
+      });
+
+      expect(addEventListenerSpy).not.toHaveBeenCalled();
+
+      await wrapper.setProps({
+        options: [{ value: 'a', text: 'A' }],
+      });
+
+      // Not called yet since the element is not in the DOM yet
+      expect(addEventListenerSpy).not.toHaveBeenCalled();
+
+      await wrapper.vm.$nextTick();
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.$.setupState.bottomReachedObserver);
+
+      addEventListenerSpy.mockRestore();
+    });
+
+    it('removes the scroll listener when no longer have options list', async () => {
+      const removeEventListenerSpy = jest.spyOn(window.HTMLUListElement.prototype, 'removeEventListener');
+
+      const wrapper = shallowMount(RichSelectOptionsList, {
+        props,
+        global,
+      });
+
+      await wrapper.setProps({
+        options: [],
+      });
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.$.setupState.bottomReachedObserver);
+
+      removeEventListenerSpy.mockRestore();
     });
 
     it('removes the scroll listener when component is unmounted', () => {
@@ -162,6 +197,24 @@ describe('RichSelectOptionsList', () => {
       wrapper.unmount();
 
       expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.$.setupState.bottomReachedObserver);
+
+      removeEventListenerSpy.mockRestore();
+    });
+
+    it('doesnt removes the scroll listener when component is unmounted if no options', () => {
+      const removeEventListenerSpy = jest.spyOn(window.HTMLUListElement.prototype, 'removeEventListener');
+
+      const wrapper = shallowMount(RichSelectOptionsList, {
+        props: {
+          ...props,
+          options: [],
+        },
+        global,
+      });
+
+      wrapper.unmount();
+
+      expect(removeEventListenerSpy).not.toHaveBeenCalled();
 
       removeEventListenerSpy.mockRestore();
     });
