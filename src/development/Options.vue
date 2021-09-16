@@ -107,7 +107,7 @@ const fetchOptions = (query: string, nextPage: undefined | number) => {
     .then((response) => response.json())
     .then((data) => ({
       results: data.Search,
-      hasMorePages: data.totalResults > (data.Search.length * (nextPage || 1)) * 10,
+      hasMorePages: data.Search && data.totalResults > (data.Search.length * (nextPage || 1)) * 10,
     }));
 };
 
