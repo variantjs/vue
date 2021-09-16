@@ -49,13 +49,54 @@ describe('useActivableOption', () => {
       const {
         activeOption, setActiveOption,
       } = useActivableOption(
-        options,
+        computed(() => [
+          { value: 'a', text: 'Option A' },
+          { value: 'b', text: 'Option B' },
+          { value: 'c', text: 'Option C' },
+        ]),
         localValue,
       );
 
       setActiveOption({ ...options.value[1] });
 
       expect(activeOption.value).toEqual({ ...options.value[1] });
+    });
+  });
+
+  it('sets the first not-disabled option when as active if the selected option is disabled', () => {
+    useSetup(() => {
+      const {
+        activeOption, initActiveOption,
+      } = useActivableOption(
+        computed(() => [
+          { value: 'a', text: 'Option A', disabled: true },
+          { value: 'b', text: 'Option B', disabled: true },
+          { value: 'c', text: 'Option C' },
+        ]),
+        ref('b'),
+      );
+
+      initActiveOption();
+
+      expect(activeOption.value?.value).toBe('c');
+    });
+  });
+
+  it('sets null if didnt find any enabled option', () => {
+    useSetup(() => {
+      const {
+        activeOption, initActiveOption,
+      } = useActivableOption(
+        computed(() => [
+          { value: 'a', text: 'Option A', disabled: true },
+          { value: 'b', text: 'Option B', disabled: true },
+        ]),
+        ref('b'),
+      );
+
+      initActiveOption();
+
+      expect(activeOption.value).toBe(null);
     });
   });
 

@@ -15,9 +15,9 @@ export default function useActivableOption(
     setPrevOptionActive: () => void,
   } {
   const getActiveOption = (): NormalizedOption | null => {
-    const selectedOption = options.value.find((option: NormalizedOption) => isEqual(option.value, localValue.value));
+    const selectedOption = options.value.find((option: NormalizedOption) => isEqual(option.value, localValue.value) && !normalizedOptionIsDisabled(option));
 
-    if (selectedOption !== undefined && !normalizedOptionIsDisabled(selectedOption)) {
+    if (selectedOption !== undefined) {
       return selectedOption;
     }
 
