@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NormalizedOption } from '@variantjs/core';
 import {
-  ComputedRef, computed, ref, Ref,
+  ComputedRef, computed, ref, Ref, nextTick,
 } from 'vue';
 import useSelectableOption from '../../use/useSelectableOption';
 
@@ -99,6 +100,76 @@ describe('useSelectableOption', () => {
       );
 
       expect(selectedOption.value).toEqual([]);
+    });
+
+    it('sets the selected options from the old selected options list ', async () => {
+      const value = ref<any>(null);
+
+      const {
+        selectedOption,
+      } = useSelectableOption(
+        options,
+        value,
+        ref(true),
+      );
+
+      selectedOption.value = [
+        { value: 'b', text: 'Option BA' },
+      ];
+
+      value.value = ['b'];
+
+      await nextTick();
+
+      expect(selectedOption.value).toEqual([
+        { value: 'b', text: 'Option BA' },
+      ]);
+    });
+
+    it('sets the selected options from the options list when it also have old selected options ', async () => {
+      const value = ref<any>(null);
+
+      const {
+        selectedOption,
+      } = useSelectableOption(
+        options,
+        value,
+        ref(true),
+      );
+
+      selectedOption.value = [
+        { value: 'f', text: 'Option F' },
+      ];
+
+      value.value = ['b'];
+
+      await nextTick();
+
+      expect(selectedOption.value).toEqual([
+        options.value[1],
+      ]);
+    });
+
+    it('sets the selected options from the options list ', async () => {
+      const value = ref<any>(null);
+
+      const {
+        selectedOption,
+      } = useSelectableOption(
+        options,
+        value,
+        ref(true),
+      );
+
+      selectedOption.value = undefined;
+
+      value.value = ['b'];
+
+      await nextTick();
+
+      expect(selectedOption.value).toEqual([
+        options.value[1],
+      ]);
     });
   });
 

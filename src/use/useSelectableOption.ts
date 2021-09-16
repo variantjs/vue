@@ -95,17 +95,8 @@ export default function useSelectableOption(
           return options.value.find((option) => isEqual(value, option.value));
         }).filter((option: NormalizedOption | undefined) => option !== undefined) as NormalizedOption[];
       }
-    } else {
-      let newSelectedOption: NormalizedOption | undefined;
-
-      if (Array.isArray(selectedOption.value)) {
-        newSelectedOption = selectedOption.value.find((option) => isEqual(option.value, newValue))
-          || options.value.find((option) => isEqual(newValue, option.value));
-      } else {
-        newSelectedOption = options.value.find((option) => isEqual(newValue, option.value));
-      }
-
-      selectedOption.value = newSelectedOption;
+    } else if (!isEqual(selectedOption.value, newValue)) {
+      selectedOption.value = options.value.find((option) => isEqual(newValue, option.value));
     }
   });
 
