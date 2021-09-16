@@ -1546,6 +1546,54 @@ describe('TRichSelect.vue', () => {
       TRichSelect.created = originalCreatedMethod;
     });
 
+    it('emits a `fetch-options-success` event with the response', async () => {
+      const response = {
+        results: [1, 2],
+      };
+
+      const fetchOptions = () => new Promise((resolve) => {
+        resolve(response);
+      });
+
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          fetchOptions,
+          delay: 0,
+        },
+      });
+
+      wrapper.vm.$.setupState.doFetchOptions();
+
+      await wrapper.vm.$nextTick();
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.emitted('fetch-options-success')).toEqual([[response]]);
+    });
+
+    it('emits a `fetch-options-error` event when an exception occurs', async () => {
+      const error = new Error('test');
+
+      const fetchOptions = () => new Promise((_resolve, reject) => {
+        reject(error);
+      });
+
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          fetchOptions,
+          delay: 0,
+        },
+      });
+
+      wrapper.vm.$.setupState.doFetchOptions();
+
+      await wrapper.vm.$nextTick();
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.emitted('fetch-options-error')).toEqual([[error]]);
+    });
+
     it('fetch the options when prefetchOptions option is set', () => {
       shallowMount(TRichSelect, {
         props: {
