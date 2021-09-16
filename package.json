@@ -1,5 +1,5 @@
 {
-  "name": "vue",
+  "name": "@variantjs/vue",
   "version": "0.0.0",
   "scripts": {
     "serve": "vite preview",
@@ -11,6 +11,7 @@
     "link": "ln -nsf ../core/dist node_modules/@variantjs/core"
   },
   "devDependencies": {
+    "@popperjs/core": "^2.9.0",
     "@tailwindcss/forms": "^0.3.3",
     "@testing-library/vue": "^6.4.2",
     "@types/jest": "^26.0.23",
@@ -41,11 +42,10 @@
     "vue-tsc": "^0.2.2"
   },
   "peerDependencies": {
-    "vue": "^3.1.1"
+    "vue": "^3.1.1",
+    "@popperjs/core": "^2.9.0"    
   },
   "dependencies": {
-    "@popperjs/core": "^2.9.3",
-    "@variantjs/core": "^0.0.36",
-    "smoothscroll-polyfill": "^0.4.4"
+    "@variantjs/core": "^0.0.36"
   }
 }
