@@ -8,7 +8,7 @@
     "test:watch": "jest --watch -t",
     "dev": "vite",
     "lint": "eslint src --fix",
-    "link": "ln -nsf ../core/dist node_modules/@variantjs/core"
+    "release": "release-it"
   },
   "devDependencies": {
     "@popperjs/core": "^2.9.0",
@@ -30,6 +30,7 @@
     "jest": "^26.5.6",
     "postcss": "^8.3.6",
     "prettier": "^2.3.2",
+    "release-it": "^14.11.5",
     "tailwindcss": "^2.2.7",
     "ts-jest": "^26.5.6",
     "ts-vue-plugin": "^0.1.3",
@@ -42,10 +43,19 @@
     "vue-tsc": "^0.2.2"
   },
   "peerDependencies": {
-    "vue": "^3.1.1",
-    "@popperjs/core": "^2.9.0"    
+    "@popperjs/core": "^2.9.0",
+    "vue": "^3.1.1"
   },
   "dependencies": {
     "@variantjs/core": "^0.0.36"
+  },
+  "release-it": {
+    "hooks": {
+      "before:init": [
+        "yarn lint",
+        "yarn test"
+      ],
+      "after:bump": "yarn build"
+    }
   }
 }
