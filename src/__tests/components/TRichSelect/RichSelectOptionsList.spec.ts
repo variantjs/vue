@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NormalizedOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import { ref } from 'vue';

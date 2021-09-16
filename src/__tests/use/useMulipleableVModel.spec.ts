@@ -1,4 +1,3 @@
-import { computed } from 'vue';
 import useMulipleableVModel from '../../use/useMulipleableVModel';
 import { useSetup } from './useSetup';
 

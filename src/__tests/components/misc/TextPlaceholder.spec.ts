@@ -1,4 +1,3 @@
-import { computed } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import TextPlaceholder from '../../../components/misc/TextPlaceholder.vue';
 

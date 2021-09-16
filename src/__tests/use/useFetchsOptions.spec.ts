@@ -1,5 +1,5 @@
-import { InputOptions } from '@variantjs/core';
-import { h, nextTick, ref } from 'vue';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { nextTick, ref } from 'vue';
 import { FetchOptionsFn, MinimumInputLengthTextProp } from '../../types';
 import useFetchsOptions from '../../use/useFetchsOptions';
 import { useSetup } from './useSetup';

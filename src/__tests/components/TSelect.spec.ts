@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { mount, shallowMount } from '@vue/test-utils';
-import TSelect from '@/components/TSelect.vue';
 import { TSelectConfig } from '@variantjs/core';
+import TSelect from '@/components/TSelect.vue';
 
 describe('TSelect.vue', () => {
   it('renders the select', () => {

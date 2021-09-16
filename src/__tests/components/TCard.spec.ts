@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import TCard from '@/components/TCard.vue';
 import { TCardConfig } from '@variantjs/core';
+import TCard from '@/components/TCard.vue';
 
 describe('TCard.vue', () => {
   it('renders the component without errors', () => {

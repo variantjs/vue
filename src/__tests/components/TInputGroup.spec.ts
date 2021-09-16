@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import TInputGroup from '@/components/TInputGroup.vue';
 import { TInputGroupConfig } from '@variantjs/core';
+import TInputGroup from '@/components/TInputGroup.vue';
 
 describe('TInputGroup.vue', () => {
   it('renders the component without errors', () => {

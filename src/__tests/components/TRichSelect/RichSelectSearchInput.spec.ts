@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { shallowMount } from '@vue/test-utils';
 import { ref } from 'vue';
 import RichSelectSearchInput from '../../../components/TRichSelect/RichSelectSearchInput.vue';

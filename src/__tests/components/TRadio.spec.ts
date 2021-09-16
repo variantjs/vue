@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { shallowMount } from '@vue/test-utils';
-import TRadio from '@/components/TRadio.vue';
 import { TRadioConfig } from '@variantjs/core';
+import TRadio from '@/components/TRadio.vue';
 
 describe('TRadio.vue', () => {
   it('renders the input', () => {

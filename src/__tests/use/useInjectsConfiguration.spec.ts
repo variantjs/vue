@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { computed, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import useInjectsConfiguration from '../../use/useInjectsConfiguration';
 
 describe('useInjectsConfiguration', () => {
