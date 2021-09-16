@@ -309,7 +309,7 @@ export default defineComponent({
       selectOption,
       toggleOption,
       optionIsSelected,
-    } = useSelectableOption<TRichSelectOptions>(flattenedOptions, localValue, computed(() => configuration.multiple!));
+    } = useSelectableOption(flattenedOptions, localValue, computed(() => configuration.multiple!));
 
     const {
       activeOption,

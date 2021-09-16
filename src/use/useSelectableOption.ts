@@ -1,18 +1,20 @@
 /* eslint-disable no-param-reassign */
 import {
-  addToArray, Data, isEqual, NormalizedOption, substractFromArray, WithVariantPropsAndClassesList,
+  addToArray, isEqual, NormalizedOption, substractFromArray,
 } from '@variantjs/core';
 import {
-  computed, ComputedRef, Ref,
+  computed, ComputedRef, Ref, ref,
 } from 'vue';
 
-export default function useSelectableOption<C extends WithVariantPropsAndClassesList<Data, string>>(
+type SelectedOption = NormalizedOption | NormalizedOption[] | undefined;
+
+export default function useSelectableOption(
   options: Ref<NormalizedOption[]>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   localValue: Ref<any>,
   multiple: Ref<boolean>,
 ): {
-    selectedOption: ComputedRef<NormalizedOption | NormalizedOption[] | undefined>,
+    selectedOption: Ref<SelectedOption>,
     hasSelectedOption: ComputedRef<boolean>,
     selectOption: (option: NormalizedOption) => void,
     toggleOption: (option: NormalizedOption) => void,
@@ -27,7 +29,7 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
     return isEqual(localValue.value, option.value);
   };
 
-  const selectedOption = computed((): NormalizedOption | NormalizedOption[] | undefined => {
+  const getSelectedOption = (): SelectedOption => {
     if (multiple.value === true) {
       if (!Array.isArray(localValue.value)) {
         return [];
@@ -37,7 +39,9 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
     }
 
     return options.value.find((option) => optionIsSelected(option));
-  });
+  };
+
+  const selectedOption = ref<SelectedOption>(getSelectedOption());
 
   const selectOption = (option: NormalizedOption): void => {
     if (optionIsSelected(option)) {
@@ -47,11 +51,14 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
     if (multiple.value === true) {
       if (Array.isArray(localValue.value)) {
         localValue.value = addToArray(localValue.value, option.value);
+        selectedOption.value = addToArray(selectedOption.value, option);
       } else {
         localValue.value = [option.value];
+        selectedOption.value = [option];
       }
     } else {
       localValue.value = option.value;
+      selectedOption.value = option;
     }
   };
 
@@ -59,17 +66,23 @@ export default function useSelectableOption<C extends WithVariantPropsAndClasses
     if (optionIsSelected(option)) {
       if (multiple.value === true) {
         localValue.value = substractFromArray(localValue.value, option.value);
+        selectedOption.value = substractFromArray(selectedOption.value, option);
       } else {
         localValue.value = undefined;
+        selectedOption.value = undefined;
       }
     } else if (multiple.value === true) {
       if (Array.isArray(localValue.value)) {
         localValue.value = addToArray(localValue.value, option.value);
+        selectedOption.value = addToArray(selectedOption.value, option);
       } else {
         localValue.value = [option.value];
+        selectedOption.value = [option];
+        selectedOption.value = option;
       }
     } else {
       localValue.value = option.value;
+      selectedOption.value = option;
     }
   };
 

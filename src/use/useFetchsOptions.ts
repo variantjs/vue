@@ -30,6 +30,8 @@ export default function useFetchsOptions(
     fetchMoreOptions: () => void,
     fetchOptionsCancel: () => void,
   } {
+  const { emit } = getCurrentInstance()!;
+
   const getNormalizedOptions = (rawOptions: InputOptions): NormalizedOptions => (normalize.value
     ? normalizeOptions(rawOptions, textAttribute.value, valueAttribute.value)
     : rawOptions as NormalizedOptions);
@@ -55,8 +57,6 @@ export default function useFetchsOptions(
   });
 
   const flattenedOptions = computed<NormalizedOption[]>(() => flattenOptions(normalizedOptions.value));
-
-  const { emit } = getCurrentInstance()!;
 
   const fetchsOptions = computed<boolean>(() => fetchFn.value !== undefined);
 
