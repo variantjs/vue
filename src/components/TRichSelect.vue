@@ -271,6 +271,19 @@ export default defineComponent({
       default: undefined,
     },
   },
+  emits: {
+    keydown: (e: KeyboardEvent) => e instanceof KeyboardEvent,
+    focus: (e: FocusEvent) => e instanceof FocusEvent,
+    blur: (e: FocusEvent) => e instanceof FocusEvent,
+    mousedown: (e: MouseEvent) => e instanceof MouseEvent,
+    mouseover: (e: MouseEvent) => e instanceof MouseEvent,
+    mouseleave: (e: MouseEvent) => e instanceof MouseEvent,
+    touchstart: (e: TouchEvent) => e instanceof TouchEvent,
+    shown: () => true,
+    hidden: () => true,
+    'before-show': () => true,
+    'before-hide': () => true,
+  },
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
 
