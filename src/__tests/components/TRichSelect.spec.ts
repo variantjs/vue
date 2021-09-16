@@ -976,6 +976,31 @@ describe('TRichSelect.vue', () => {
       expect(componentHasAttributeWithInlineHandlerAndParameter(component, eventName, parameterName)).toBe(true);
     });
 
+    it.each([
+      'mouseover',
+      'mouseleave',
+    ])('re-emits dropdown events', (eventName) => {
+      const wrapper = shallowMount(TRichSelect);
+      const component = wrapper.vm.$refs.dropdownComponent;
+
+      const event = new MouseEvent(eventName);
+      component.$el.dispatchEvent(event);
+
+      expect(wrapper.emitted()).toHaveProperty(eventName);
+      expect(wrapper.emitted()[eventName][0]).toEqual([event]);
+    });
+
+    it('re-emits dropdown touchstart event', () => {
+      const wrapper = shallowMount(TRichSelect);
+      const component = wrapper.vm.$refs.dropdownComponent;
+
+      const event = new TouchEvent('touchstart');
+      component.$el.dispatchEvent(event);
+
+      expect(wrapper.emitted()).toHaveProperty('touchstart');
+      expect(wrapper.emitted().touchstart[0]).toEqual([event]);
+    });
+
     describe('esc key', () => {
       it('hides the dropdown and focus the trigger when pressed esc', async () => {
         const wrapper = shallowMount(TRichSelect, {
