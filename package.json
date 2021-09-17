@@ -1,6 +1,23 @@
 {
   "name": "@variantjs/vue",
   "version": "0.0.0",
+  "description": "Vue VariantJS: Fully configuratable Vue 3 components styled with TailwindCSS",
+  "files": ["dist"],
+  "main": "./dist/vue.umd.js",
+  "module": "./dist/vue.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vue.es.js",
+      "require": "./dist/vue.umd.js"
+    }
+  },
+  "keywords": [
+    "tailwindcss",
+    "vue",
+    "vue-tailwind",
+    "variantjs",
+    "vue3"
+  ],
   "scripts": {
     "serve": "vite preview",
     "build": "vue-tsc --noEmit && vite build",
@@ -47,7 +64,7 @@
     "vue": "^3.1.1"
   },
   "dependencies": {
-    "@variantjs/core": "^0.0.36"
+    "@variantjs/core": "^0.0.37"
   },
   "release-it": {
     "hooks": {
