@@ -28,7 +28,10 @@ export default defineComponent({
 
     const { attributes } = useConfiguration<TCheckboxOptions>(TCheckboxConfig);
 
-    return { localValue, attributes };
+    return {
+      localValue: localValue as any,
+      attributes,
+    };
   },
 });
 

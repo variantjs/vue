@@ -10,14 +10,22 @@
       :option="option"
       :deep="deep"
     >
-      <template
-        v-for="slotName in ['option', 'optionLabel', 'optionIcon']"
-        #[slotName]="props"
-      >
+      <template #option="props">
         <slot
-          :name="slotName"
+          name="option"
           v-bind="props"
-          :index="index"
+        />
+      </template>
+      <template #optionLabel="props">
+        <slot
+          name="optionLabel"
+          v-bind="props"
+        />
+      </template>
+      <template #optionIcon="props">
+        <slot
+          name="optionIcon"
+          v-bind="props"
         />
       </template>
     </rich-select-option>

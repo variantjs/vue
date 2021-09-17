@@ -20,12 +20,21 @@
       ref="optionsList"
       :options="options"
     >
-      <template
-        v-for="slotName in ['option', 'optionLabel', 'optionIcon']"
-        #[slotName]="props"
-      >
+      <template #option="props">
         <slot
-          :name="slotName"
+          name="option"
+          v-bind="props"
+        />
+      </template>
+      <template #optionLabel="props">
+        <slot
+          name="optionLabel"
+          v-bind="props"
+        />
+      </template>
+      <template #optionIcon="props">
+        <slot
+          name="optionIcon"
           v-bind="props"
         />
       </template>

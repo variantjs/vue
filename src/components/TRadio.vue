@@ -27,7 +27,7 @@ export default defineComponent({
     const localValue = useVModel(props, 'modelValue');
     const { configuration, attributes } = useConfiguration<TRadioOptions>(TRadioConfig);
 
-    return { localValue, configuration, attributes };
+    return { localValue: localValue as any, configuration, attributes };
   },
 });
 

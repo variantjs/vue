@@ -25,12 +25,15 @@
   </slot>
 
   <rich-select-trigger-tags v-else-if="usesTags">
-    <template
-      v-for="slotName in ['tagCloseIcon', 'tagLabel']"
-      #[slotName]="props"
-    >
+    <template #tagCloseIcon="props">
       <slot
-        :name="slotName"
+        name="tagCloseIcon"
+        v-bind="props"
+      />
+    </template>
+    <template #tagLabel="props">
+      <slot
+        name="tagLabel"
         v-bind="props"
       />
     </template>

@@ -44,14 +44,34 @@
     >
       <template #trigger>
         <rich-select-trigger ref="trigger">
-          <template
-            v-for="slotName in ['selectorIcon', 'placeholder', 'label', 'tagCloseIcon', 'tagLabel']"
-            #[slotName]="props"
-          >
+          <template #selectorIcon="props">
             <slot
-              :name="slotName"
+              name="selectorIcon"
               v-bind="props"
-              :classes-list="configuration.classesList"
+            />
+          </template>
+          <template #placeholder="props">
+            <slot
+              name="placeholder"
+              v-bind="props"
+            />
+          </template>
+          <template #label="props">
+            <slot
+              name="label"
+              v-bind="props"
+            />
+          </template>
+          <template #tagCloseIcon="props">
+            <slot
+              name="tagCloseIcon"
+              v-bind="props"
+            />
+          </template>
+          <template #tagLabel="props">
+            <slot
+              name="tagLabel"
+              v-bind="props"
             />
           </template>
         </rich-select-trigger>
@@ -60,14 +80,40 @@
       <rich-select-dropdown
         ref="dropdown"
       >
-        <template
-          v-for="slotName in ['option', 'optionLabel', 'optionIcon', 'dropdownTop', 'dropdownButton', 'stateFeedback']"
-          #[slotName]="props"
-        >
+        <template #option="props">
           <slot
-            :name="slotName"
+            name="option"
             v-bind="props"
-            :classes-list="configuration.classesList"
+          />
+        </template>
+        <template #optionLabel="props">
+          <slot
+            name="optionLabel"
+            v-bind="props"
+          />
+        </template>
+        <template #optionIcon="props">
+          <slot
+            name="optionIcon"
+            v-bind="props"
+          />
+        </template>
+        <template #dropdownTop="props">
+          <slot
+            name="dropdownTop"
+            v-bind="props"
+          />
+        </template>
+        <template #dropdownButton="props">
+          <slot
+            name="dropdownButton"
+            v-bind="props"
+          />
+        </template>
+        <template #stateFeedback="props">
+          <slot
+            name="stateFeedback"
+            v-bind="props"
           />
         </template>
       </rich-select-dropdown>

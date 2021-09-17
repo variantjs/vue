@@ -21,13 +21,12 @@ export default defineComponent({
   props: {
     classesList: {
       type: Object,
-      required: true,
+      default: () => ({}),
     },
     enabled: {
       type: Boolean,
       default: true,
     },
   },
-
 });
 </script>

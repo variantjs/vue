@@ -69,7 +69,10 @@ export default defineComponent({
     );
 
     return {
-      localValue, configuration, attributes, normalizedOptions,
+      localValue: localValue as any,
+      configuration,
+      attributes,
+      normalizedOptions,
     };
   },
 });
