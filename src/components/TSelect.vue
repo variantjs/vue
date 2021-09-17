@@ -13,7 +13,9 @@
 </template>
 
 <script lang="ts">
-import { InputOptions, TSelectConfig } from '@variantjs/core';
+import {
+  InputOptions, NormalizedOption, NormalizedOptions, TSelectConfig,
+} from '@variantjs/core';
 import { defineComponent, PropType, computed } from 'vue';
 import { getVariantProps } from '../utils/getVariantProps';
 import { Truthy, TSelectOptions, TSelectValue } from '../types';
@@ -35,7 +37,7 @@ export default defineComponent({
       default: undefined,
     },
     options: {
-      type: [Array, Object] as PropType<InputOptions>,
+      type: [Array, Object] as PropType<InputOptions | NormalizedOption[] | NormalizedOptions>,
       default: undefined,
     },
     normalizeOptions: {
@@ -62,7 +64,7 @@ export default defineComponent({
     const {
       normalizedOptions,
     } = useMultioptions(
-      computed(() => configuration.options),
+      computed(() => configuration.options as InputOptions | undefined),
       computed(() => configuration.textAttribute),
       computed(() => configuration.valueAttribute),
       computed(() => configuration.normalizeOptions!),

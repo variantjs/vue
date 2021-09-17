@@ -35,7 +35,8 @@ export function useSetup<V>(
     render() {
       return h('div', []);
     },
-  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
 
   const Comp = defineComponent(componentOptions);
 

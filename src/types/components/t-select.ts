@@ -1,4 +1,6 @@
-import { Data, InputOptions, WithVariantProps } from '@variantjs/core';
+import {
+  Data, InputOptions, NormalizedOption, NormalizedOptions, WithVariantProps,
+} from '@variantjs/core';
 import { SelectHTMLAttributes } from 'vue';
 import { Truthy } from '../misc';
 
@@ -7,7 +9,7 @@ export type TSelectValue = string | number | boolean | undefined | null | Date |
 
 export type TSelectOptions = WithVariantProps<{
   modelValue?: TSelectValue,
-  options?: InputOptions,
+  options?: InputOptions | NormalizedOption[] | NormalizedOptions,
   multiple?: Truthy,
   normalizeOptions?: boolean,
   valueAttribute?: string

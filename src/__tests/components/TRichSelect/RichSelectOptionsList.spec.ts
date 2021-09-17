@@ -130,7 +130,7 @@ describe('RichSelectOptionsList', () => {
         global,
       });
 
-      expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.$.setupState.bottomReachedObserver);
+      expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', (wrapper.vm.$ as any).setupState.bottomReachedObserver);
 
       addEventListenerSpy.mockRestore();
     });
@@ -173,7 +173,7 @@ describe('RichSelectOptionsList', () => {
 
       await wrapper.vm.$nextTick();
 
-      expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.$.setupState.bottomReachedObserver);
+      expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', (wrapper.vm.$ as any).setupState.bottomReachedObserver);
 
       addEventListenerSpy.mockRestore();
     });
@@ -190,7 +190,7 @@ describe('RichSelectOptionsList', () => {
         options: [],
       });
 
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.$.setupState.bottomReachedObserver);
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', (wrapper.vm.$ as any).setupState.bottomReachedObserver);
 
       removeEventListenerSpy.mockRestore();
     });
@@ -205,7 +205,7 @@ describe('RichSelectOptionsList', () => {
 
       wrapper.unmount();
 
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', wrapper.vm.$.setupState.bottomReachedObserver);
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', (wrapper.vm.$ as any).setupState.bottomReachedObserver);
 
       removeEventListenerSpy.mockRestore();
     });

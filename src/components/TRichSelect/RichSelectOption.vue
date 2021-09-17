@@ -56,7 +56,7 @@
 
           <slot
             name="optionIcon"
-            :class-name="optionClasses.optionLabel"
+            :class-name="optionClasses"
             :option="option"
             :is-disabled="isDisabled"
             :is-active="isActive"

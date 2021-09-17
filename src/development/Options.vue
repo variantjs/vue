@@ -17,17 +17,13 @@
         v-model="selected"
         placeholder="select an option"
         :options="options"
-      >
-        <template #label="props">
-          {{ props.selectedOption.text }}
-        </template>
-      </t-rich-select>
+      />
 
       <t-rich-select
         placeholder="select an option"
         :fetch-options="fetchOptions"
         :minimum-input-length="3"
-        value-attribute="imdbID"
+        value-attribute="imdb ID"
         text-attribute="Title"
       >
         <template #option="{ option: { raw: movie }, className, isSelected }">
@@ -37,7 +33,7 @@
           >
             <div
               class="flex-shrink-0 w-10 h-10 bg-gray-500 bg-center bg-cover rounded"
-              :style="{ backgroundImage: `url(${movie.Poster})` }"
+              :style="{ backgroundImage: `url(${movie?.Poster})` }"
             />
             <div class="flex flex-col w-full overflow-auto">
               <div class="flex-grow overflow-auto">
@@ -48,7 +44,7 @@
                     'text-gray-800': !isSelected,
                   }"
                 >
-                  {{ movie.Title }}
+                  {{ movie?.Title }}
                 </h3>
                 <p
                   class="text-sm "
@@ -57,7 +53,7 @@
                     'text-gray-400': !isSelected,
                   }"
                 >
-                  {{ movie.Year }}
+                  {{ movie?.Year }}
                 </p>
               </div>
             </div>
@@ -70,22 +66,6 @@
         :options="[1,2,3,4]"
         hide-search-box
       />
-
-      <div>
-        <label
-          v-for="option in options"
-          :key="option"
-          class="flex items-center"
-        >
-          <t-radio
-            v-model="selected"
-            :value="option"
-            name="option"
-          />
-
-          <span class="ml-2">{{ option }}</span>
-        </label>
-      </div>
     </div>
 
     <t-button @click="selected = null">
@@ -97,17 +77,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import TSelect from '../components/TSelect.vue';
-import TRadio from '../components/TRadio.vue';
 import TRichSelect from '../components/TRichSelect.vue';
 import TButton from '../components/TButton.vue';
 
-const fetchOptions = (query: string, nextPage: undefined | number) => {
+const fetchOptions = (query?: string, nextPage?: number) => {
   const url = `https://www.omdbapi.com/?apikey=e1b3617e&s=${query}&page=${nextPage || 1}`;
 
   return fetch(url)
     .then((response) => response.json())
     .then((data) => ({
-      results: data.Search,
+      results: data.Search as Record<string, any>[],
       hasMorePages: data.Search && data.totalResults > (data.Search.length * (nextPage || 1)) * 10,
     }));
 };
@@ -116,14 +95,13 @@ export default defineComponent({
   name: 'Options',
   components: {
     TSelect,
-    TRadio,
     TButton,
     TRichSelect,
   },
   data() {
     return {
       fetchOptions,
-      selected: 'A',
+      selected: 'A' as string | null,
       newOption: '',
       selectedUser: null,
       users: [

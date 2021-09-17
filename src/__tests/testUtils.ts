@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Data } from '@variantjs/core';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { VueWrapper } from '@vue/test-utils';
-import { ComponentPublicInstance } from 'vue';
 
 export const scopedParamsAsString = (params: Data) : string => {
   const keys = Object.keys(params);
@@ -16,8 +13,8 @@ export const scopedParamsAsString = (params: Data) : string => {
 
 export const parseScopedParams = (paramsAsString: string) : Data => JSON.parse(paramsAsString);
 
-export const getChildComponentNameByRef = (wrapper: VueWrapper<ComponentPublicInstance>, refName: string): string | undefined => {
-  const component = wrapper.vm.$refs[refName] as ComponentPublicInstance | undefined;
+export const getChildComponentNameByRef = (wrapper: any, refName: string): string | undefined => {
+  const component = wrapper.vm.$refs[refName];
 
   return component?.$?.type.name;
 };

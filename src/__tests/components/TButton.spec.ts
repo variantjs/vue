@@ -254,11 +254,11 @@ describe('TButton.vue', () => {
       type RouterProps = typeof props;
 
       const wrapper = shallowMount(TButton, {
-        props,
+        props: props as any,
       });
 
       Object.keys(props).forEach((key) => {
-        expect(wrapper.vm[key]).toBe(props[key as keyof RouterProps]);
+        expect((wrapper.vm as any)[key]).toBe(props[key as keyof RouterProps]);
       });
     });
 
@@ -298,7 +298,7 @@ describe('TButton.vue', () => {
         },
       });
 
-      wrapper.vm.$options.components.NuxtLink = {};
+      (wrapper.vm.$options.components as any).NuxtLink = {};
       expect(wrapper.vm.routerLinkComponentAvailable).toBe(true);
     });
 
@@ -364,7 +364,7 @@ describe('TButton.vue', () => {
     });
 
     it('adds the routerLink related prop', () => {
-      const props = {
+      const props: any = {
         to: '/something',
         replace: true,
         activeClass: 'activeClass',

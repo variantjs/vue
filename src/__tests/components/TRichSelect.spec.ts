@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NormalizedOption, normalizeOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
+import { FetchOptionsFn } from '../../types';
 import { componentHasAttributeWithInlineHandlerAndParameter, componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
 
 describe('TRichSelect.vue', () => {
@@ -152,7 +154,7 @@ describe('TRichSelect.vue', () => {
     it('provides the configuration', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.configuration).toEqual(wrapper.vm.$.setupState.configuration);
+      expect((wrapper.vm.$ as any).provides.configuration).toEqual((wrapper.vm.$ as any).setupState.configuration);
     });
 
     it('provides the options', () => {
@@ -163,7 +165,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(wrapper.vm.$.provides.options.value).toEqual(normalizeOptions(options));
+      expect((wrapper.vm.$ as any).provides.options.value).toEqual(normalizeOptions(options));
     });
 
     it('provides the shown state', () => {
@@ -174,7 +176,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(wrapper.vm.$.provides.state).toEqual(wrapper.vm.$.setupState.state);
+      expect((wrapper.vm.$ as any).provides.state).toEqual((wrapper.vm.$ as any).setupState.state);
     });
 
     it('provides the `selectedOption` state', () => {
@@ -187,7 +189,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(wrapper.vm.$.provides.selectedOption.value).toEqual({
+      expect((wrapper.vm.$ as any).provides.selectedOption.value).toEqual({
         value: 1,
         text: 1,
         raw: 1,
@@ -203,90 +205,90 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(wrapper.vm.$.provides.hasSelectedOption).toBeDefined();
+      expect((wrapper.vm.$ as any).provides.hasSelectedOption).toBeDefined();
     });
 
     it('provides the `toggleOption` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.toggleOption[0]).toEqual(wrapper.vm.$.setupState.toggleOption);
+      expect((wrapper.vm.$ as any).provides.toggleOption[0]).toEqual((wrapper.vm.$ as any).setupState.toggleOption);
     });
 
     it('provides the `optionIsActive` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.optionIsActive[0]).toEqual(wrapper.vm.$.setupState.optionIsActive);
+      expect((wrapper.vm.$ as any).provides.optionIsActive[0]).toEqual((wrapper.vm.$ as any).setupState.optionIsActive);
     });
 
     it('provides the `setActiveOption` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.setActiveOption[0]).toEqual(wrapper.vm.$.setupState.setActiveOption);
+      expect((wrapper.vm.$ as any).provides.setActiveOption[0]).toEqual((wrapper.vm.$ as any).setupState.setActiveOption);
     });
 
     it('provides the `dropdownBottomReachedHandler` method', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.dropdownBottomReachedHandler[0]).toEqual(wrapper.vm.$.setupState.dropdownBottomReachedHandler);
+      expect((wrapper.vm.$ as any).provides.dropdownBottomReachedHandler[0]).toEqual((wrapper.vm.$ as any).setupState.dropdownBottomReachedHandler);
     });
 
     it('provides the `optionIsSelected` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.optionIsSelected).toEqual(wrapper.vm.$.setupState.optionIsSelected);
+      expect((wrapper.vm.$ as any).provides.optionIsSelected).toEqual((wrapper.vm.$ as any).setupState.optionIsSelected);
     });
 
     it('provides the `keydownDownHandler` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.keydownDownHandler).toEqual(wrapper.vm.$.setupState.keydownDownHandler);
+      expect((wrapper.vm.$ as any).provides.keydownDownHandler).toEqual((wrapper.vm.$ as any).setupState.keydownDownHandler);
     });
     it('provides the `keydownUpHandler` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.keydownUpHandler).toEqual(wrapper.vm.$.setupState.keydownUpHandler);
+      expect((wrapper.vm.$ as any).provides.keydownUpHandler).toEqual((wrapper.vm.$ as any).setupState.keydownUpHandler);
     });
 
     it('provides the `keydownEnterHandler` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.keydownEnterHandler).toEqual(wrapper.vm.$.setupState.keydownEnterHandler);
+      expect((wrapper.vm.$ as any).provides.keydownEnterHandler).toEqual((wrapper.vm.$ as any).setupState.keydownEnterHandler);
     });
 
     it('provides the `keydownEscHandler` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect(wrapper.vm.$.provides.keydownEscHandler).toEqual(wrapper.vm.$.setupState.keydownEscHandler);
+      expect((wrapper.vm.$ as any).provides.keydownEscHandler).toEqual((wrapper.vm.$ as any).setupState.keydownEscHandler);
     });
 
     it('provides the `showSearchInput` computed property', () => {
       const wrapper = shallowMount(TRichSelect);
-      expect(wrapper.vm.$.provides.showSearchInput.value).toEqual(wrapper.vm.$.setupState.showSearchInput);
+      expect((wrapper.vm.$ as any).provides.showSearchInput.value).toEqual((wrapper.vm.$ as any).setupState.showSearchInput);
     });
 
     it('provides the `needsMoreCharsMessage` computed property', () => {
       const wrapper = shallowMount(TRichSelect);
-      expect(wrapper.vm.$.provides.needsMoreCharsMessage.value).toEqual('Please enter undefined or more characters');
+      expect((wrapper.vm.$ as any).provides.needsMoreCharsMessage.value).toEqual('Please enter undefined or more characters');
     });
 
     it('provides the `searchQuery` ref', () => {
       const wrapper = shallowMount(TRichSelect);
-      expect(wrapper.vm.$.provides.searchQuery.value).toEqual(wrapper.vm.$.setupState.searchQuery);
+      expect((wrapper.vm.$ as any).provides.searchQuery.value).toEqual((wrapper.vm.$ as any).setupState.searchQuery);
     });
 
     it('provides the `fetchingOptions` ref', () => {
       const wrapper = shallowMount(TRichSelect);
-      expect(wrapper.vm.$.provides.fetchingOptions.value).toBe(false);
+      expect((wrapper.vm.$ as any).provides.fetchingOptions.value).toBe(false);
     });
 
     it('provides the `fetchingMoreOptions` ref', () => {
       const wrapper = shallowMount(TRichSelect);
-      expect(wrapper.vm.$.provides.fetchingMoreOptions.value).toBe(false);
+      expect((wrapper.vm.$ as any).provides.fetchingMoreOptions.value).toBe(false);
     });
 
     it('provides the `usesTags` ref', () => {
       const wrapper = shallowMount(TRichSelect);
-      expect(wrapper.vm.$.provides.usesTags.value).toBe(false);
+      expect((wrapper.vm.$ as any).provides.usesTags.value).toBe(false);
     });
   });
 
@@ -331,7 +333,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(wrapper.vm.$refs.dropdownComponent.tagName).toBe('button');
+      expect((wrapper.vm.$refs.dropdownComponent as any).tagName).toBe('button');
     });
 
     it('uses a div for the dropdown trigger if uses tags', () => {
@@ -342,7 +344,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(wrapper.vm.$refs.dropdownComponent.tagName).toBe('div');
+      expect((wrapper.vm.$refs.dropdownComponent as any).tagName).toBe('div');
     });
   });
 
@@ -358,7 +360,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(wrapper.vm.$.provides.selectedOption.value).toEqual({
+      expect((wrapper.vm.$ as any).provides.selectedOption.value).toEqual({
         value: 2,
         text: 2,
         raw: 2,
@@ -374,7 +376,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(wrapper.vm.$.provides.selectedOption.value).toBeUndefined();
+      expect((wrapper.vm.$ as any).provides.selectedOption.value).toBeUndefined();
     });
 
     it('updates the selectedOption within the v-model ', async () => {
@@ -392,7 +394,7 @@ describe('TRichSelect.vue', () => {
         modelValue: 3,
       });
 
-      expect(wrapper.vm.$.provides.selectedOption.value).toEqual({
+      expect((wrapper.vm.$ as any).provides.selectedOption.value).toEqual({
         value: 3,
         text: 3,
         raw: 3,
@@ -414,7 +416,7 @@ describe('TRichSelect.vue', () => {
         modelValue: null,
       });
 
-      expect(wrapper.vm.$.provides.selectedOption.value).toBeUndefined();
+      expect((wrapper.vm.$ as any).provides.selectedOption.value).toBeUndefined();
     });
   });
 
@@ -535,9 +537,9 @@ describe('TRichSelect.vue', () => {
       ['onBlurOnChild', 'blurOnChildHandler'],
     ])('has the `%s` event handler pointing to `%s`', (eventName, eventHandlerName) => {
       const wrapper = shallowMount(TRichSelect);
-      const component = wrapper.vm.$refs.dropdownComponent;
+      const component = wrapper.vm.$refs.dropdownComponent as any;
 
-      expect(componentHasAttributeWithValue(component, eventName, wrapper.vm[eventHandlerName])).toBe(true);
+      expect(componentHasAttributeWithValue(component, eventName, (wrapper.vm as any)[eventHandlerName])).toBe(true);
     });
 
     it('hides the dropdown with blurHandler', () => {
@@ -796,7 +798,7 @@ describe('TRichSelect.vue', () => {
         target.setAttribute('data-rich-select-focusable', 'true');
         const focusSpy = jest.spyOn(target, 'focus');
 
-        wrapper.vm.blurOnChildHandler({ target, relatedTarget });
+        wrapper.vm.blurOnChildHandler({ target, relatedTarget } as unknown as FocusEvent);
         expect(focusSpy).toHaveBeenCalled();
         expect(wrapper.vm.shown).toBe(true);
       });
@@ -813,7 +815,7 @@ describe('TRichSelect.vue', () => {
 
         const focusSpy = jest.spyOn(target, 'focus');
 
-        wrapper.vm.blurOnChildHandler({ target, relatedTarget });
+        wrapper.vm.blurOnChildHandler({ target, relatedTarget } as unknown as FocusEvent);
         expect(focusSpy).not.toHaveBeenCalled();
         expect(wrapper.vm.shown).toBe(true);
       });
@@ -827,7 +829,7 @@ describe('TRichSelect.vue', () => {
 
         const focusSpy = jest.spyOn(target, 'focus');
 
-        wrapper.vm.blurOnChildHandler({ target, relatedTarget: undefined });
+        wrapper.vm.blurOnChildHandler({ target, relatedTarget: undefined } as unknown as FocusEvent);
         expect(focusSpy).not.toHaveBeenCalled();
         expect(wrapper.vm.shown).toBe(true);
       });
@@ -856,7 +858,7 @@ describe('TRichSelect.vue', () => {
     describe('beforeShowHandler', () => {
       it('sets active option when is about to show the dropdown', () => {
         const wrapper = shallowMount(TRichSelect);
-        const initActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'initActiveOption');
+        const initActiveOptionSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'initActiveOption');
         wrapper.vm.beforeShowHandler();
         expect(initActiveOptionSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-show');
@@ -876,7 +878,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.activeOption = { value: 2, text: 2, raw: 2 } as NormalizedOption;
 
-        const selectOptionFromActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'selectOptionFromActiveOption');
+        const selectOptionFromActiveOptionSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'selectOptionFromActiveOption');
         wrapper.vm.beforeHideHandler();
         expect(selectOptionFromActiveOptionSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-hide');
@@ -894,7 +896,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.activeOption = null;
 
-        const selectOptionFromActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'selectOptionFromActiveOption');
+        const selectOptionFromActiveOptionSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'selectOptionFromActiveOption');
         wrapper.vm.beforeHideHandler();
         expect(selectOptionFromActiveOptionSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-hide');
@@ -912,7 +914,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.activeOption = { value: 2, text: 2, raw: 2 } as NormalizedOption;
 
-        const selectOptionFromActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'selectOptionFromActiveOption');
+        const selectOptionFromActiveOptionSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'selectOptionFromActiveOption');
         wrapper.vm.beforeHideHandler();
         expect(selectOptionFromActiveOptionSpy).not.toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-hide');
@@ -930,7 +932,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.activeOption = { value: 2, text: 2, raw: 2 } as NormalizedOption;
 
-        const selectOptionFromActiveOptionSpy = jest.spyOn(wrapper.vm.$.setupState, 'selectOptionFromActiveOption');
+        const selectOptionFromActiveOptionSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'selectOptionFromActiveOption');
         wrapper.vm.beforeHideHandler();
         expect(selectOptionFromActiveOptionSpy).not.toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-hide');
@@ -971,7 +973,7 @@ describe('TRichSelect.vue', () => {
       ['onTouchstart', 'touchstart'],
     ])('re-emits the event `%s`', (eventName, parameterName) => {
       const wrapper = shallowMount(TRichSelect);
-      const component = wrapper.vm.$refs.dropdownComponent;
+      const component = wrapper.vm.$refs.dropdownComponent as any;
 
       expect(componentHasAttributeWithInlineHandlerAndParameter(component, eventName, parameterName)).toBe(true);
     });
@@ -981,7 +983,7 @@ describe('TRichSelect.vue', () => {
       'mouseleave',
     ])('re-emits dropdown events', (eventName) => {
       const wrapper = shallowMount(TRichSelect);
-      const component = wrapper.vm.$refs.dropdownComponent;
+      const component = wrapper.vm.$refs.dropdownComponent as any;
 
       const event = new MouseEvent(eventName);
       component.$el.dispatchEvent(event);
@@ -992,7 +994,7 @@ describe('TRichSelect.vue', () => {
 
     it('re-emits dropdown touchstart event', () => {
       const wrapper = shallowMount(TRichSelect);
-      const component = wrapper.vm.$refs.dropdownComponent;
+      const component = wrapper.vm.$refs.dropdownComponent as any;
 
       const event = new TouchEvent('touchstart');
       component.$el.dispatchEvent(event);
@@ -1013,7 +1015,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', { key: 'Escape' });
         dropdownComponent.$el.dispatchEvent(event);
@@ -1033,7 +1035,7 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', { key: 'Escape' });
         dropdownComponent.$el.dispatchEvent(event);
@@ -1058,7 +1060,7 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Space',
@@ -1086,7 +1088,7 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Space',
@@ -1114,7 +1116,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Space',
@@ -1122,11 +1124,11 @@ describe('TRichSelect.vue', () => {
 
         const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
 
-        expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
+        expect((wrapper.vm.$ as any).setupState.localValue).toBe(undefined);
 
         dropdownComponent.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.$.setupState.localValue).toBe(1);
+        expect((wrapper.vm.$ as any).setupState.localValue).toBe(1);
         expect(wrapper.vm.shown).toBe(true);
         expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
@@ -1134,7 +1136,7 @@ describe('TRichSelect.vue', () => {
 
         dropdownComponent.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
+        expect((wrapper.vm.$ as any).setupState.localValue).toBe(undefined);
         expect(wrapper.vm.shown).toBe(true);
       });
 
@@ -1143,7 +1145,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Space',
@@ -1170,7 +1172,7 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Enter',
@@ -1194,24 +1196,24 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Enter',
         });
 
-        expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
+        expect((wrapper.vm.$ as any).setupState.localValue).toBe(undefined);
 
         dropdownComponent.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.$.setupState.localValue).toBe(1);
+        expect((wrapper.vm.$ as any).setupState.localValue).toBe(1);
         expect(wrapper.vm.shown).toBe(true);
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
 
         dropdownComponent.$el.dispatchEvent(event);
 
-        expect(wrapper.vm.$.setupState.localValue).toBe(undefined);
+        expect((wrapper.vm.$ as any).setupState.localValue).toBe(undefined);
         expect(wrapper.vm.shown).toBe(true);
       });
 
@@ -1220,7 +1222,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'Enter',
@@ -1247,7 +1249,7 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowUp',
@@ -1274,7 +1276,7 @@ describe('TRichSelect.vue', () => {
         wrapper.vm.shown = true;
         wrapper.vm.activeOption = { value: 3, text: 3, raw: 3 } as NormalizedOption;
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowUp',
@@ -1305,7 +1307,7 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowDown',
@@ -1331,7 +1333,7 @@ describe('TRichSelect.vue', () => {
         });
         wrapper.vm.shown = true;
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowDown',
@@ -1367,7 +1369,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowDown',
@@ -1386,7 +1388,7 @@ describe('TRichSelect.vue', () => {
         await wrapper.vm.$nextTick();
 
         // Active option is first one
-        expect(wrapper.vm.activeOption.value).toEqual(1);
+        expect(wrapper.vm.activeOption!.value).toEqual(1);
         // Not called again yet
         await wrapper.vm.$nextTick();
         expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
@@ -1394,7 +1396,7 @@ describe('TRichSelect.vue', () => {
         // Press down one time
         dropdownComponent.$el.dispatchEvent(event);
         // now the active option is last loaded one
-        expect(wrapper.vm.activeOption.value).toEqual(2);
+        expect(wrapper.vm.activeOption!.value).toEqual(2);
         await wrapper.vm.$nextTick();
         // Called again
         expect(fetchOptionsMock).toHaveBeenCalledTimes(2);
@@ -1420,7 +1422,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowDown',
@@ -1439,7 +1441,7 @@ describe('TRichSelect.vue', () => {
         await wrapper.vm.$nextTick();
 
         // Active option is first one
-        expect(wrapper.vm.activeOption.value).toEqual(1);
+        expect(wrapper.vm.activeOption!.value).toEqual(1);
         // Not called again yet
         await wrapper.vm.$nextTick();
         expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
@@ -1447,7 +1449,7 @@ describe('TRichSelect.vue', () => {
         // Press down one time
         dropdownComponent.$el.dispatchEvent(event);
         // now the active option is last loaded one
-        expect(wrapper.vm.activeOption.value).toEqual(2);
+        expect(wrapper.vm.activeOption!.value).toEqual(2);
         await wrapper.vm.$nextTick();
         // But it not calls the fetchOptions method
         expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
@@ -1475,7 +1477,7 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.shown = true;
 
-        const { dropdownComponent } = wrapper.vm.$refs;
+        const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
         const event = new KeyboardEvent('keydown', {
           key: 'ArrowDown',
@@ -1494,7 +1496,7 @@ describe('TRichSelect.vue', () => {
         await wrapper.vm.$nextTick();
 
         // Active option is first one
-        expect(wrapper.vm.activeOption.value).toEqual(1);
+        expect(wrapper.vm.activeOption!.value).toEqual(1);
         // Not called again yet
         await wrapper.vm.$nextTick();
         expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
@@ -1504,7 +1506,7 @@ describe('TRichSelect.vue', () => {
         // Press down one time
         dropdownComponent.$el.dispatchEvent(event);
         // now the active option is last loaded one
-        expect(wrapper.vm.activeOption.value).toEqual(2);
+        expect(wrapper.vm.activeOption!.value).toEqual(2);
         await wrapper.vm.$nextTick();
         // Called again
         expect(fetchOptionsMock).toHaveBeenCalledTimes(2);
@@ -1559,10 +1561,10 @@ describe('TRichSelect.vue', () => {
         props: {
           fetchOptions,
           delay: 0,
-        },
+        } as any,
       });
 
-      wrapper.vm.$.setupState.doFetchOptions();
+      (wrapper.vm.$ as any).setupState.doFetchOptions();
 
       await wrapper.vm.$nextTick();
 
@@ -1582,10 +1584,10 @@ describe('TRichSelect.vue', () => {
         props: {
           fetchOptions,
           delay: 0,
-        },
+        } as any,
       });
 
-      wrapper.vm.$.setupState.doFetchOptions();
+      (wrapper.vm.$ as any).setupState.doFetchOptions();
 
       await wrapper.vm.$nextTick();
 
@@ -1599,7 +1601,7 @@ describe('TRichSelect.vue', () => {
         props: {
           fetchOptions: () => {},
           prefetchOptions: true,
-        },
+        } as any,
       });
 
       expect(fetchOptionsSpy).toHaveBeenCalled();
@@ -1660,7 +1662,7 @@ describe('TRichSelect.vue', () => {
       // Wait until options were stored in the state
       await wrapper.vm.$nextTick();
 
-      wrapper.vm.$.provides.dropdownBottomReachedHandler();
+      (wrapper.vm.$ as any).provides.dropdownBottomReachedHandler();
 
       // Called again
       expect(fetchOptionsMock).toHaveBeenCalledTimes(2);
@@ -1700,7 +1702,7 @@ describe('TRichSelect.vue', () => {
       // Wait until options were stored in the state
       await wrapper.vm.$nextTick();
 
-      wrapper.vm.$.provides.dropdownBottomReachedHandler();
+      (wrapper.vm.$ as any).provides.dropdownBottomReachedHandler();
 
       // Still called 1 time
       expect(fetchOptionsMock).toHaveBeenCalledTimes(1);
@@ -1742,7 +1744,7 @@ describe('TRichSelect.vue', () => {
       // Wait until options were stored in the state
       await wrapper.vm.$nextTick();
 
-      wrapper.vm.$.provides.dropdownBottomReachedHandler();
+      (wrapper.vm.$ as any).provides.dropdownBottomReachedHandler();
 
       // Called again
       expect(fetchOptionsMock).toHaveBeenCalledTimes(2);
@@ -1751,10 +1753,10 @@ describe('TRichSelect.vue', () => {
 
       fetchOptionsMock.mockReturnValue(responsePromise2);
 
-      wrapper.vm.$.provides.dropdownBottomReachedHandler();
+      (wrapper.vm.$ as any).provides.dropdownBottomReachedHandler();
 
       // Bottom reached again but previous call is still busy
-      wrapper.vm.$.provides.dropdownBottomReachedHandler();
+      (wrapper.vm.$ as any).provides.dropdownBottomReachedHandler();
 
       await wrapper.vm.$nextTick();
       // Was not called again (still called twice) since its busy
@@ -1764,7 +1766,7 @@ describe('TRichSelect.vue', () => {
     it('calls the fetchOptionsCancel method when component unmonted', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      const cancelSpy = jest.spyOn(wrapper.vm.$.setupState, 'fetchOptionsCancel');
+      const cancelSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'fetchOptionsCancel');
 
       wrapper.unmount();
 

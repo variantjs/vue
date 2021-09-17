@@ -22,22 +22,6 @@
         multiple
         tags
       />
-
-      <div>
-        <label
-          v-for="option in options"
-          :key="option"
-          class="flex items-center"
-        >
-          <t-checkbox
-            v-model="selected"
-            :value="option"
-            name="option"
-          />
-
-          <span class="ml-2">{{ option }}</span>
-        </label>
-      </div>
     </div>
   </div>
 </template>
@@ -45,14 +29,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import TSelect from '../components/TSelect.vue';
-import TCheckbox from '../components/TCheckbox.vue';
 import TRichSelect from '../components/TRichSelect.vue';
 
 export default defineComponent({
   name: 'Multioptions',
   components: {
     TSelect,
-    TCheckbox,
     TRichSelect,
   },
   data() {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NormalizedOption } from '@variantjs/core';
 import { mount, shallowMount } from '@vue/test-utils';
 import { ref } from 'vue';
@@ -217,7 +218,7 @@ describe('RichSelectOption', () => {
     // First time when created
     expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
 
-    wrapper.vm.$options.watch.isActive.call(wrapper.vm);
+    (wrapper.vm.$options.watch!.isActive as any).call(wrapper.vm);
 
     // Second time when state changed
     expect(scrollIntoViewMock).toHaveBeenCalledTimes(2);
@@ -483,7 +484,7 @@ describe('RichSelectOption', () => {
             text: 'Foo',
           },
           deep,
-        },
+        } as any,
         global,
       });
 

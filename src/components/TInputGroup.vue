@@ -96,7 +96,7 @@ export default defineComponent({
         .filter((e) => (e === 'default' ? (!!configuration.body || !!slots.default) : (!!configuration[e] || !!slots[e])))
         .map((e) => ({
           name: e,
-          tagName: e === 'default' ? configuration.bodyTagName : configuration[`${e}TagName`] as string,
+          tagName: (e === 'default' ? configuration.bodyTagName : configuration[`${e}TagName`]) as string,
         }));
     },
   },

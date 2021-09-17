@@ -354,7 +354,7 @@ export default defineComponent({
       fetchedOptionsHaveMorePages,
       fetchOptionsCancel,
     } = useFetchsOptions(
-      computed(() => configuration.options),
+      computed(() => configuration.options as InputOptions | undefined),
       computed(() => configuration.textAttribute),
       computed(() => configuration.valueAttribute),
       computed(() => configuration.normalizeOptions!),

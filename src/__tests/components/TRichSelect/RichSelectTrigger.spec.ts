@@ -214,8 +214,10 @@ describe('RichSelectTrigger', () => {
       expect(wrapper.vm.$refs.placeholder).not.toBeDefined();
       expect(wrapper.vm.$refs.fetchingPlaceholder).toBeDefined();
       expect(wrapper.vm.$refs.loadingIcon).toBeDefined();
-      expect(wrapper.vm.$refs.fetchingPlaceholder.placeholder).toBe('Loading...');
-      expect(wrapper.vm.$refs.fetchingPlaceholder.classProperty).toBe('selectButtonSearchingPlaceholder');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((wrapper.vm.$refs.fetchingPlaceholder as any).placeholder).toBe('Loading...');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((wrapper.vm.$refs.fetchingPlaceholder as any).classProperty).toBe('selectButtonSearchingPlaceholder');
     });
   });
 });

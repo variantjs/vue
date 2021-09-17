@@ -23,7 +23,32 @@
         <t-checkbox checked />
         <span class="ml-2">Check me</span>
       </label>
-      <div>
+
+      <div class="mt-2">
+        <label class="flex items-center">
+          <t-checkbox
+            v-model="checkboxValue"
+            name="radio"
+            value="hola"
+            checked
+          />
+
+          <span class="ml-2">Select this </span>
+        </label>
+        <label class="flex items-center">
+          <t-checkbox
+            v-model="checkboxValue"
+            name="radio"
+            value="hello"
+          />
+
+          <span class="ml-2">And select this</span>
+        </label>
+
+        <pre>{{ checkboxValue }}</pre>
+      </div>
+
+      <div class="mt-2">
         <label class="flex items-center">
           <t-radio
             v-model="radioValue"
@@ -96,6 +121,7 @@ export default defineComponent({
   },
   data() {
     return {
+      checkboxValue: [],
       radioValue: '1',
       model: '',
       options: [

@@ -1,5 +1,5 @@
 import {
-  Data, InputOptions, Measure, TRichSelectClassesValidKeys, WithVariantPropsAndClassesList,
+  Data, InputOptions, Measure, NormalizedOption, NormalizedOptions, TRichSelectClassesValidKeys, WithVariantPropsAndClassesList,
 } from '@variantjs/core';
 import { HTMLAttributes } from 'vue';
 import { Placement, Options } from '@popperjs/core';
@@ -10,7 +10,7 @@ export type MinimumInputLengthTextProp = ((minimumInputLength: number, query?: s
 
 export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   modelValue?: TSelectValue,
-  options?: InputOptions
+  options?: InputOptions | NormalizedOption[] | NormalizedOptions,
   multiple?: boolean
   name?: string,
   tags?: boolean

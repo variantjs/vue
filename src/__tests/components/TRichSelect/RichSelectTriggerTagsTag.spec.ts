@@ -356,7 +356,7 @@ describe('RichSelectTriggerTagsTag', () => {
             value: { foo: 'bar' },
             text: 'Foo Bar',
           },
-        },
+        } as any,
       });
 
       expect(wrapper.vm.dataValueAttribute).toEqual('{"foo":"bar"}');
