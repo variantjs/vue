@@ -2,7 +2,6 @@
 import { NormalizedOption, normalizeOptions } from '@variantjs/core';
 import { shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
-import { FetchOptionsFn } from '../../types';
 import { componentHasAttributeWithInlineHandlerAndParameter, componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
 
 describe('TRichSelect.vue', () => {

@@ -356,6 +356,7 @@ describe('RichSelectTriggerTagsTag', () => {
             value: { foo: 'bar' },
             text: 'Foo Bar',
           },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       });
 
