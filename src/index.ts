@@ -4,7 +4,9 @@ import { VariantJSConfiguration } from './types';
 
 import Emitter from './utils/emitter';
 
-export default {
+export * from './components';
+
+export const VariantJS = {
   install: (app: App<Element>, configuration: VariantJSConfiguration = {}): void => {
     // eslint-disable-next-line no-param-reassign
     app.config.globalProperties.emitter = new Emitter();

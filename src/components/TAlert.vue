@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import {
-  TAlertConfig, TAlertClassesKeys, TAlertClassesValidKeys, Data,
+  TAlertConfig, TAlertClassesKeys, TAlertClassesValidKeys,
 } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';

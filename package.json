@@ -1,8 +1,10 @@
 {
   "name": "@variantjs/vue",
-  "version": "0.0.0",
-  "description": "Vue VariantJS: Fully configuratable Vue 3 components styled with TailwindCSS",
-  "files": ["dist"],
+  "version": "0.0.1",
+  "description": "Vue VariantJS: Fully configurable Vue 3 components styled with TailwindCSS",
+  "files": [
+    "dist/**/*"
+  ],
   "main": "./dist/vue.umd.js",
   "module": "./dist/vue.es.js",
   "exports": {
@@ -18,7 +20,14 @@
     "variantjs",
     "vue3"
   ],
-  "scripts": {
+  "author": "Alfonso Bribiesca <alfonso@vexilo.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/variantjs/vue"
+  },
+  "license": "MIT",
+  "private": false,
+    "scripts": {
     "serve": "vite preview",
     "build": "vue-tsc --noEmit && vite build",
     "test": "jest -t",
@@ -29,6 +38,7 @@
   },
   "devDependencies": {
     "@popperjs/core": "^2.9.0",
+    "@rollup/plugin-dynamic-import-vars": "^1.4.0",
     "@tailwindcss/forms": "^0.3.3",
     "@testing-library/vue": "^6.4.2",
     "@types/jest": "^26.0.23",
