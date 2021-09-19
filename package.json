@@ -1,6 +1,6 @@
 {
   "name": "@variantjs/vue",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Vue VariantJS: Fully configurable Vue 3 components styled with TailwindCSS",
   "files": [
     "dist/**/*"
@@ -29,7 +29,7 @@
   "private": false,
   "scripts": {
     "serve": "vite preview",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --emitDeclarationOnly && vite build",
     "test": "jest -t",
     "test:watch": "jest --watch -t",
     "dev": "vite",
@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@popperjs/core": "^2.9.0",
+    "@rollup/plugin-typescript": "^8.2.5",
     "@tailwindcss/forms": "^0.3.3",
     "@testing-library/vue": "^6.4.2",
     "@types/jest": "^26.0.23",
