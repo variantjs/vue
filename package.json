@@ -1,6 +1,6 @@
 {
   "name": "@variantjs/vue",
-  "version": "0.0.3",
+  "version": "0.0.2",
   "description": "Vue VariantJS: Fully configurable Vue 3 components styled with TailwindCSS",
   "files": [
     "dist/**/*"
@@ -29,7 +29,7 @@
   "private": false,
   "scripts": {
     "serve": "vite preview",
-    "build": "vue-tsc --emitDeclarationOnly && vite build",
+    "build": "vue-tsc --noEmit && vite build",
     "test": "jest -t",
     "test:watch": "jest --watch -t",
     "dev": "vite",
