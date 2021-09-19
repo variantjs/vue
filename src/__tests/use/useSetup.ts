@@ -1,5 +1,7 @@
 /* eslint-disable vue/one-component-per-file */
-import { defineComponent, createApp, h, ComponentPropsOptions } from 'vue';
+import {
+  defineComponent, createApp, h, ComponentPropsOptions,
+} from 'vue';
 import { VariantJS as variantJsPlugin } from '../..';
 import { VariantJSConfiguration } from '../../types';
 
