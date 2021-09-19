@@ -5,12 +5,12 @@
   "files": [
     "dist/**/*"
   ],
-  "main": "./dist/vue.umd.js",
-  "module": "./dist/vue.es.js",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
   "exports": {
     ".": {
-      "import": "./dist/vue.es.js",
-      "require": "./dist/vue.umd.js"
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js"
     }
   },
   "keywords": [
