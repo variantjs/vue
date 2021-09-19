@@ -6,6 +6,10 @@ import Emitter from './utils/emitter';
 
 export * from './components';
 
+export * from './types';
+
+export * from './use';
+
 export const VariantJS = {
   install: (app: App<Element>, configuration: VariantJSConfiguration = {}): void => {
     // eslint-disable-next-line no-param-reassign
