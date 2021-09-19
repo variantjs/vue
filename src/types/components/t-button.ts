@@ -14,4 +14,4 @@ type RouterLinkProps = {
 export type TButtonOptions = WithVariantProps<{
   tagName?: string
   href?: string
-} & RouterLinkProps> & ButtonHTMLAttributes & Data;
+} & RouterLinkProps & ButtonHTMLAttributes & Data>;

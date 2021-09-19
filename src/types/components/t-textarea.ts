@@ -5,4 +5,4 @@ export type TTextareaValue = string | number | string[] | undefined;
 
 export type TTextareaOptions = WithVariantProps<{
   modelValue?: TTextareaValue,
-}> & InputHTMLAttributes & Data;
+} & InputHTMLAttributes & Data>;

@@ -6,4 +6,4 @@ export type TCardOptions = WithVariantPropsAndClassesList<{
   body?: string
   header?: string
   footer?: string
-}, TCardClassesValidKeys> & HTMLAttributes & Data;
+} & HTMLAttributes & Data, TCardClassesValidKeys>;

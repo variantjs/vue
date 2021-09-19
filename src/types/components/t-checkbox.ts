@@ -8,6 +8,6 @@ export type TCheckboxValue = TCheckboxSimpleValue | TCheckboxSimpleValue[] | Obj
 
 export type TCheckboxOptions = WithVariantProps<{
   modelValue?: TCheckboxValue
-}> & InputHTMLAttributes & {
+} & InputHTMLAttributes & {
   type?: 'checkbox'
-} & Data;
+} & Data>;

@@ -5,4 +5,4 @@ export type TInputValue = string | number | string[] | undefined;
 
 export type TInputOptions = WithVariantProps<{
   modelValue?: TInputValue,
-}> & InputHTMLAttributes & Data;
+} & InputHTMLAttributes & Data>;

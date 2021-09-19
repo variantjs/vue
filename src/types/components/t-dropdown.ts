@@ -23,4 +23,4 @@ export type TDropdownOptions = WithVariantPropsAndClassesList<{
 
   placement?: Placement,
   popperOptions?: Options,
-}, TDropdownClassesValidKeys> & HTMLAttributes & Data;
+} & HTMLAttributes & Data, TDropdownClassesValidKeys>;

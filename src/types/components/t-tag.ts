@@ -4,4 +4,4 @@ import { HTMLAttributes } from 'vue';
 export type TTagOptions = WithVariantProps<{
   tagName?: string
   text?: string
-}> & HTMLAttributes & Data;
+} & HTMLAttributes & Data>;

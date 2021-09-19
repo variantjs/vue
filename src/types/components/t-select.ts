@@ -14,4 +14,4 @@ export type TSelectOptions = WithVariantProps<{
   normalizeOptions?: boolean,
   valueAttribute?: string
   textAttribute?: string
-}> & SelectHTMLAttributes & Data;
+} & SelectHTMLAttributes & Data>;

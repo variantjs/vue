@@ -8,6 +8,6 @@ export type TRadioValue = TRadioSimpleValue | TRadioSimpleValue[] | ObjectWithPr
 
 export type TRadioOptions = WithVariantProps<{
   modelValue?: TRadioValue
-}> & InputHTMLAttributes & {
+} & InputHTMLAttributes & {
   type?: 'radio'
-} & Data;
+} & Data>;

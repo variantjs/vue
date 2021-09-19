@@ -14,4 +14,4 @@ export type TInputGroupOptions = WithVariantPropsAndClassesList<{
   labelTagName?: string,
   feedbackTagName?: string,
   descriptionTagName?: string,
-}, TInputGroupClassesValidKeys> & HTMLAttributes & Data;
+} & HTMLAttributes & Data, TInputGroupClassesValidKeys>;

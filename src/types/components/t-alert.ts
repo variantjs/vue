@@ -11,4 +11,4 @@ export type TAlertOptions = WithVariantPropsAndClassesList<{
   timeout?: number,
   animate?: boolean,
   closeIcon?: IconProp,
-}, TAlertClassesValidKeys> & HTMLAttributes & Data;
+} & HTMLAttributes & Data, TAlertClassesValidKeys>;
