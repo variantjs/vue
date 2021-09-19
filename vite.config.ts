@@ -10,7 +10,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'VariantJS',
-      fileName: (format) => `index.${format}.js`
+      fileName: (format) => `index${format === 'umd' ? '' : `.${format}`}.js`
     },
     rollupOptions: {
       plugins: [

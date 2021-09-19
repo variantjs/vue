@@ -5,12 +5,12 @@
   "files": [
     "dist/**/*"
   ],
-  "main": "./dist/index.umd.js",
+  "main": "./dist/index.js",
   "module": "./dist/index.es.js",
   "exports": {
     ".": {
       "import": "./dist/index.es.js",
-      "require": "./dist/index.umd.js"
+      "require": "./dist/index.js"
     }
   },
   "keywords": [

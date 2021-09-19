@@ -8,6 +8,8 @@ export * from './components';
 
 export * from './use';
 
+export * from './types';
+
 export const VariantJS = {
   install: (app: App<Element>, configuration: VariantJSConfiguration = {}): void => {
     // eslint-disable-next-line no-param-reassign
