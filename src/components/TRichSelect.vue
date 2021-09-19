@@ -15,7 +15,7 @@
 
     <t-dropdown
       ref="dropdownComponent"
-      :classes="dropdownClasses"
+      :classes="(dropdownClasses as any)"
       :fixed-classes="undefined"
       :toggle-on-focus="false"
       :toggle-on-click="false"
@@ -614,9 +614,6 @@ export default defineComponent({
         && !this.optionsWereFetched
         && !this.needsMoreCharsToFetch;
     },
-    /**
-     * @TODO
-     */
     dropdownClasses(): CSSRawClassesList {
       const {
         enterActiveClass,
