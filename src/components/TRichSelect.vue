@@ -15,7 +15,7 @@
 
     <t-dropdown
       ref="dropdownComponent"
-      :classes="(dropdownClasses as any)"
+      :classes="dropdownClasses"
       :fixed-classes="undefined"
       :toggle-on-focus="false"
       :toggle-on-click="false"
