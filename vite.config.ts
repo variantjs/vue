@@ -15,7 +15,7 @@ export default defineConfig({
     rollupOptions: {
       plugins: [
         typescript({
-          'declaration': true
+          "exclude": ["node_modules", 'src/__tests/**/*']
         })
       ],
       external: ['vue'],
