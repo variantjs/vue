@@ -1,7 +1,6 @@
 import { App } from 'vue';
 
 import { VariantJSConfiguration } from './types';
-// export * from './types';
 
 import {
   Emitter,
@@ -10,6 +9,8 @@ import {
   sameWidthModifier,
   svgToVueComponent,
 } from './utils';
+
+export * from './types';
 
 export {
   TAlert,
