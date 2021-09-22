@@ -21,7 +21,7 @@ export default defineConfig({
           "exclude": ["node_modules", 'src/__tests/**/*']
         }),
       ],
-      external: ['vue', '@popperjs/core'],
+      external: ['vue', '@popperjs/core', '@variantjs/core'],
       output: {
         globals: {
           vue: 'Vue'
