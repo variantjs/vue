@@ -12,6 +12,19 @@ import {
 
 export * from './types';
 
+const TAlert = () => import('./components/TAlert.vue');
+const TButton = () => import('./components/TButton.vue');
+const TCard = () => import('./components/TCard.vue');
+const TCheckbox = () => import('./components/TCheckbox.vue');
+const TDropdown = () => import('./components/TDropdown.vue');
+const TInput = () => import('./components/TInput.vue');
+const TInputGroup = () => import('./components/TInputGroup.vue');
+const TRadio = () => import('./components/TRadio.vue');
+const TRichSelect = () => import('./components/TRichSelect.vue');
+const TSelect = () => import('./components/TSelect.vue');
+const TTag = () => import('./components/TTag.vue');
+const TTextarea = () => import('./components/TTextarea.vue');
+
 export {
   TAlert,
   TButton,
@@ -25,7 +38,7 @@ export {
   TSelect,
   TTag,
   TTextarea,
-} from './components';
+};
 
 export {
   Emitter,

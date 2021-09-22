@@ -6,10 +6,10 @@
     "dist/**/*"
   ],
   "main": "./dist/index.js",
-  "module": "./dist/index.cjs.js",
+  "module": "./dist/index.es.js",
   "exports": {
     ".": {
-      "import": "./dist/index.cjs.js",
+      "import": "./dist/index.es.js",
       "require": "./dist/index.js"
     }
   },
