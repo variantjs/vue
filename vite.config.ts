@@ -13,14 +13,7 @@ export default defineConfig({
       fileName: (format) => `index${format === 'umd' ? '' : `.${format}`}.js`
     },
     rollupOptions: {
-      treeshake: {
-        annotations: false,
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-        tryCatchDeoptimization: false,
-        unknownGlobalSideEffects: false
-      },
-      
+      treeshake: true,
       plugins: [
         typescript({
           "exclude": ["node_modules", 'src/__tests/**/*']
