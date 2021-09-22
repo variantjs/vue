@@ -49,7 +49,7 @@ export {
   useVModel,
 } from './use';
 
-export default {
+export const install = {
   install: (app: App<Element>, configuration: VariantJSConfiguration = {}): void => {
     // eslint-disable-next-line no-param-reassign
     app.config.globalProperties.emitter = new Emitter();
