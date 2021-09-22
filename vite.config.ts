@@ -2,13 +2,6 @@ import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import typescript from '@rollup/plugin-typescript'
-import * as core from '@variantjs/core'
-
-const coreKeys = {}
-
-Object.keys(core).forEach(key => {
-  coreKeys[key] = core[key]
-})
 
 export default defineConfig({
   plugins: [vue()],
@@ -26,12 +19,10 @@ export default defineConfig({
           "exclude": ["node_modules", 'src/__tests/**/*']
         })
       ],
-      external: ['vue', '@popperjs/core', '@variantjs/core'],
+      external: ['vue', '@popperjs/core'],
       output: {
         globals: {
-          vue: 'Vue',
-          '@variantjs/core': 'variantjs-core',
-          '@popperjs/core': 'popperjs-core',
+          vue: 'Vue'
         },
       }
     }
