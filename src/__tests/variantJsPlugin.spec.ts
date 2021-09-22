@@ -1,6 +1,6 @@
 /* eslint-disable vue/one-component-per-file */
 import { createApp } from 'vue';
-import variantJsPlugin, { Emitter } from '..';
+import { variantJsPlugin, Emitter } from '..';
 import { VariantJSConfiguration } from '../types';
 
 describe('plugin installer', () => {
