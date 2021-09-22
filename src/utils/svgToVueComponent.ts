@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { Data } from '@variantjs/core';
 import { h, VNode, VNodeProps } from 'vue';
 
@@ -5,7 +6,7 @@ const icons: {
   [key: string]: VNode
 } = {};
 
-const svgToVueComponent = (el: Element | string, deep = 0): VNode => {
+export const svgToVueComponent = (el: Element | string, deep = 0): VNode => {
   let iconAsString: string | null = null;
 
   if (deep === 0) {
@@ -46,5 +47,3 @@ const svgToVueComponent = (el: Element | string, deep = 0): VNode => {
 
   return component;
 };
-
-export default svgToVueComponent;

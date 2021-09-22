@@ -47,7 +47,7 @@
 import { NormalizedOption, normalizedOptionIsDisabled } from '@variantjs/core';
 import { defineComponent, inject, PropType } from 'vue';
 import CloseIcon from '../../icons/CloseIcon.vue';
-import { useInjectsClassesList } from '../../use';
+import { useInjectsClassesList } from '../..';
 
 export default defineComponent({
   name: 'RichSelectTriggerTagsTag',

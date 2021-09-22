@@ -49,7 +49,7 @@ import {
 import { debounce, NormalizedOptions, normalizeMeasure } from '@variantjs/core';
 import RichSelectOption from './RichSelectOption.vue';
 import { TRichSelectOptions } from '../../types';
-import { useInjectsClassesList } from '../../use';
+import { useInjectsClassesList } from '../..';
 
 export default defineComponent({
   name: 'RichSelectOptionsList',

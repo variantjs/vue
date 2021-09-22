@@ -1,7 +1,7 @@
 import './assets/tailwind.css';
 import { createApp } from 'vue';
 import { VariantJSConfiguration } from './types';
-import { VariantJS as variantJsPlugin } from '.';
+import variantJsPlugin from '.';
 
 import App from './development/App.vue';
 

@@ -19,12 +19,22 @@
   },
   "plugins": [
     "vue",
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "tree-shaking"
   ],
   "rules": {
     "max-len": "off",
     "import/no-cycle": "off",
-    "@typescript-eslint/no-non-null-assertion": "off"
-  }
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "tree-shaking/no-side-effects-in-initialization": 2
+  },
+  "overrides": [
+    {
+      "files": ["*.spec.ts", "src/main.ts", "src/development/*"],
+      "rules": {
+        "tree-shaking/no-side-effects-in-initialization": "off"
+      }
+    }
+  ]
 }
 

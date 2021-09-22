@@ -26,7 +26,7 @@
 <script lang="ts">
 import { NormalizedOption } from '@variantjs/core';
 import { ComputedRef, defineComponent, inject } from 'vue';
-import { useInjectsClassesListClass } from '../../use';
+import { useInjectsClassesListClass } from '../..';
 import RichSelectTriggerTagsTag from './RichSelectTriggerTagsTag.vue';
 
 export default defineComponent({

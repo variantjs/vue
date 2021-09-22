@@ -52,7 +52,7 @@ import { NormalizedOptions } from '@variantjs/core';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import RichSelectSearchInput from './RichSelectSearchInput.vue';
 import RichSelectState from './RichSelectState.vue';
-import { useInjectsClassesListClass } from '../../use';
+import { useInjectsClassesListClass } from '../..';
 
 export default defineComponent({
   name: 'RichSelectDropdown',

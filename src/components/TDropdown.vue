@@ -74,8 +74,7 @@ import {
   DebouncedFn,
 } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
-import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
-import { useConfigurationWithClassesList } from '../use';
+import { getVariantPropsWithClassesList, useConfigurationWithClassesList } from '..';
 import { TDropdownOptions } from '../types';
 import Transitionable from './misc/Transitionable.vue';
 

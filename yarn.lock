@@ -2805,6 +2805,11 @@ eslint-plugin-import@^2.24.2:
     resolve "^1.20.0"
     tsconfig-paths "^3.11.0"
 
+eslint-plugin-tree-shaking@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-tree-shaking/-/eslint-plugin-tree-shaking-1.9.2.tgz#f3055ba6baf596336fe55c7a2ef5fc6d89b22cbc"
+  integrity sha512-3nF/ea5aeH1Qby7WPrbLGm/5oYH8Oh+8GQiNrqT6L/AS7chciKo+8tvghGAYogqAHkHLYhgCrJkjgomPY7kthg==
+
 eslint-plugin-vue@^7.18.0:
   version "7.18.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-7.18.0.tgz#02a452142330c7f27c242db21a1b9e25238540f6"

@@ -2,7 +2,7 @@
 import {
   defineComponent, createApp, h, ComponentPropsOptions,
 } from 'vue';
-import { VariantJS as variantJsPlugin } from '../..';
+import variantJsPlugin from '../..';
 import { VariantJSConfiguration } from '../../types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { IconProp } from '../types';
-import svgToVueComponent from '../utils/svgToVueComponent';
+import { svgToVueComponent } from '..';
 
 // @vue/component
 export default defineComponent({

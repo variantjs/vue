@@ -74,7 +74,7 @@ import RichSelectTriggerTags from './RichSelectTriggerTags.vue';
 import SelectorIcon from '../../icons/SelectorIcon.vue';
 import LoadingIcon from '../../icons/LoadingIcon.vue';
 import { TRichSelectOptions } from '../../types';
-import { useInjectsClassesList, useInjectsConfiguration } from '../../use';
+import { useInjectsClassesList, useInjectsConfiguration } from '../..';
 
 export default defineComponent({
   name: 'RichSelectTrigger',

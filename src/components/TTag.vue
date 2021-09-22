@@ -13,8 +13,7 @@
 import { TTagConfig } from '@variantjs/core';
 import { defineComponent } from 'vue';
 import { TTagOptions } from '../types';
-import { getVariantProps } from '../utils/getVariantProps';
-import { useConfiguration } from '../use';
+import { getVariantProps, useConfiguration } from '..';
 
 // @vue/component
 export default defineComponent({

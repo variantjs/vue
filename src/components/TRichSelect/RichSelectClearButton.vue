@@ -13,7 +13,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import CloseIcon from '../../icons/CloseIcon.vue';
-import { useInjectsClassesListClass } from '../../use';
+import { useInjectsClassesListClass } from '../..';
 
 export default defineComponent({
   name: 'RichSelectClearButton',

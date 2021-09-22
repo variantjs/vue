@@ -163,9 +163,9 @@ import {
   useFetchsOptions,
   useMulipleableVModel,
   useSelectableOption,
-} from '../use';
-import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
-import { sameWidthModifier } from '../utils/popper';
+  getVariantPropsWithClassesList,
+  sameWidthModifier,
+} from '..';
 import {
   FetchOptionsFn, MinimumInputLengthTextProp, TRichSelectOptions, TSelectValue,
 } from '../types';

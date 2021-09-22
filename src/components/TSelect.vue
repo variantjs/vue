@@ -17,11 +17,10 @@ import {
   InputOptions, NormalizedOption, NormalizedOptions, TSelectConfig,
 } from '@variantjs/core';
 import { defineComponent, PropType, computed } from 'vue';
-import { getVariantProps } from '../utils/getVariantProps';
 import { Truthy, TSelectOptions, TSelectValue } from '../types';
 import {
-  useMulipleableVModel, useConfiguration, useMultioptions,
-} from '../use';
+  useMulipleableVModel, useConfiguration, useMultioptions, getVariantProps,
+} from '..';
 import TSelectOption from './TSelect/TSelectOption.vue';
 
 // @vue/component

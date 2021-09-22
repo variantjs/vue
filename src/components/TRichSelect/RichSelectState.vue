@@ -29,7 +29,7 @@ import {
   ComputedRef, defineComponent, inject, Ref,
 } from 'vue';
 import { TRichSelectOptions } from '../../types';
-import { useInjectsClassesList, useInjectsConfiguration } from '../../use';
+import { useInjectsClassesList, useInjectsConfiguration } from '../..';
 
 export default defineComponent({
   name: 'RichSelectState',
