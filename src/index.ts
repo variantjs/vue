@@ -1,12 +1,14 @@
-import { App } from 'vue';
+// import { App } from 'vue';
 
-import { VariantJSConfiguration } from './types';
+// import { VariantJSConfiguration } from './types';
 
 // Import Utils
-import { Emitter } from './utils/emitter';
+// import { Emitter } from './utils/emitter';
 // import { getVariantProps, getVariantPropsWithClassesList } from './utils/getVariantProps';
 // import { sameWidthModifier } from './utils/popper';
 // import { svgToVueComponent } from './utils/svgToVueComponent';
+
+import plugin from './plugin';
 
 // Import Components
 import TAlert from './components/TAlert.vue';
@@ -51,6 +53,8 @@ export {
   TSelect,
   TTag,
   TTextarea,
+  // Installer
+  plugin as variantJsPlugin,
 };
 
 // // Export utils
@@ -76,12 +80,3 @@ export {
 //   useSelectableOption,
 //   useVModel,
 // };
-
-export const variantJsPlugin = {
-  install: (app: App<Element>, configuration: VariantJSConfiguration = {}): void => {
-    // eslint-disable-next-line no-param-reassign
-    app.config.globalProperties.emitter = new Emitter();
-
-    app.provide('configuration', configuration);
-  },
-};

@@ -1,5 +1,6 @@
 /* eslint-disable vue/one-component-per-file */
-import { getVariantProps } from '../..';
+
+import { getVariantProps } from '../../utils/getVariantProps';
 
 describe('getVariantProps()', () => {
   it('get the default variant props', () => {

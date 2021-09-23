@@ -1,4 +1,4 @@
-import { Emitter } from '../..';
+import { Emitter } from '../../utils/emitter';
 
 describe.only('Emitter', () => {
   let emitter: Emitter;

@@ -1,5 +1,5 @@
 import { VNode } from 'vue';
-import { svgToVueComponent } from '../..';
+import { svgToVueComponent } from '../../utils/svgToVueComponent';
 
 describe('svgToVueComponent', () => {
   const svg = `<svg
