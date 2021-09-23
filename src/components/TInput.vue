@@ -8,8 +8,10 @@
 <script lang="ts">
 import { TInputConfig } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
-import { useVModel, useConfiguration, getVariantProps } from '..';
-import { TInputOptions, TInputValue } from '../types';
+import { TInputOptions, TInputValue } from '../types/components/t-input';
+import useVModel from '../use/useVModel';
+import useConfiguration from '../use/useConfiguration';
+import { getVariantProps } from '../utils/getVariantProps';
 
 export default defineComponent({
   name: 'TInput',

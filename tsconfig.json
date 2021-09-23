@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "declaration": true,
+    "declaration": false,
     "outDir": "./dist",
     "moduleResolution": "node",
     "strict": true,
