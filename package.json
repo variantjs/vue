@@ -30,7 +30,7 @@
   "private": false,
   "scripts": {
     "serve": "vite preview",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "test": "jest -t",
     "test:watch": "jest --watch -t",
     "dev": "vite",
@@ -78,10 +78,6 @@
   },
   "release-it": {
     "hooks": {
-      "before:init": [
-        "yarn lint",
-        "yarn test"
-      ],
       "after:bump": "yarn build"
     }
   }
