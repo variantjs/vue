@@ -8,8 +8,10 @@
 <script lang="ts">
 import { TTextareaConfig } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
-import { useVModel, useConfiguration, getVariantProps } from '..';
 import { TTextareaOptions, TTextareaValue } from '../types';
+import { getVariantProps } from '../utils/getVariantProps';
+import useVModel from '../use/useVModel';
+import useConfiguration from '../use/useConfiguration';
 
 export default defineComponent({
   name: 'TTextarea',

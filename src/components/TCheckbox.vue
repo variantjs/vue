@@ -10,7 +10,9 @@
 import { TCheckboxConfig } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
 import { TCheckboxOptions, TCheckboxValue } from '../types';
-import { getVariantProps, useConfiguration, useVModel } from '..';
+import { getVariantProps } from '../utils/getVariantProps';
+import useConfiguration from '../use/useConfiguration';
+import useVModel from '../use/useVModel';
 
 // @vue/component
 export default defineComponent({

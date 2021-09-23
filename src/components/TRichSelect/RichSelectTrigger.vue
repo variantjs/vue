@@ -73,8 +73,9 @@ import TextPlaceholder from '../misc/TextPlaceholder.vue';
 import RichSelectTriggerTags from './RichSelectTriggerTags.vue';
 import SelectorIcon from '../../icons/SelectorIcon.vue';
 import LoadingIcon from '../../icons/LoadingIcon.vue';
-import { TRichSelectOptions } from '../../types';
-import { useInjectsClassesList, useInjectsConfiguration } from '../..';
+import { TRichSelectOptions } from '../../types/components/t-rich-select';
+import useInjectsClassesList from '../../use/useInjectsClassesList';
+import useInjectsConfiguration from '../../use/useInjectsConfiguration';
 
 export default defineComponent({
   name: 'RichSelectTrigger',

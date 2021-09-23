@@ -157,15 +157,12 @@ import {
   Data,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
-import {
-  useActivableOption,
-  useConfigurationWithClassesList,
-  useFetchsOptions,
-  useMulipleableVModel,
-  useSelectableOption,
-  getVariantPropsWithClassesList,
-  sameWidthModifier,
-} from '..';
+import useActivableOption from '../use/useActivableOption';
+import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
+import useMulipleableVModel from '../use/useMulipleableVModel';
+import useFetchsOptions from '../use/useFetchsOptions';
+import useSelectableOption from '../use/useSelectableOption';
+import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import {
   FetchOptionsFn, MinimumInputLengthTextProp, TRichSelectOptions, TSelectValue,
 } from '../types';
@@ -174,6 +171,7 @@ import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import RichSelectClearButton from './TRichSelect/RichSelectClearButton.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
 import TSelect from './TSelect.vue';
+import { sameWidthModifier } from '../utils/popper';
 
 // @vue/component
 export default defineComponent({

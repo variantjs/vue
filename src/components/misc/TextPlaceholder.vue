@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useInjectsClassesListClass } from '../..';
+import useInjectsClassesListClass from '../../use/useInjectsClassesListClass';
 
 export default defineComponent({
   name: 'TextPlaceholder',

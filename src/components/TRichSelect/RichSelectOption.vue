@@ -82,7 +82,7 @@ import {
 import { CSSClass, NormalizedOption, normalizedOptionIsDisabled } from '@variantjs/core';
 import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import CheckmarkIcon from '../../icons/CheckmarkIcon.vue';
-import { useInjectsClassesList } from '../..';
+import useInjectsClassesList from '../../use/useInjectsClassesList';
 
 export default defineComponent({
   name: 'RichSelectOption',

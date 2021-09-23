@@ -18,8 +18,9 @@
 import {
   ComputedRef, defineComponent, inject, watch, ref, Ref,
 } from 'vue';
-import { TRichSelectOptions } from '../../types';
-import { useInjectsClassesList, useInjectsConfiguration } from '../..';
+import { TRichSelectOptions } from '../../types/components/t-rich-select';
+import useInjectsClassesList from '../../use/useInjectsClassesList';
+import useInjectsConfiguration from '../../use/useInjectsConfiguration';
 
 export default defineComponent({
   name: 'RichSelectSearchInput',

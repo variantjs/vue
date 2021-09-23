@@ -26,8 +26,9 @@
 <script lang="ts">
 import { TInputGroupConfig, TInputGroupClassesKeys, TInputGroupClassesValidKeys } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
-import { getVariantPropsWithClassesList, useConfigurationWithClassesList } from '..';
 import { TInputGroupOptions, TInputGroupValidChilElementsKeys } from '../types';
+import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
+import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 
 // @vue/component
 export default defineComponent({
