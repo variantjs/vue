@@ -11,18 +11,18 @@
 import plugin from './plugin';
 
 // Import Components
-import TAlert from './components/TAlert.vue';
-import TButton from './components/TButton.vue';
-import TCard from './components/TCard.vue';
-import TCheckbox from './components/TCheckbox.vue';
-import TDropdown from './components/TDropdown.vue';
 import TInput from './components/TInput.vue';
-import TInputGroup from './components/TInputGroup.vue';
-import TRadio from './components/TRadio.vue';
-import TRichSelect from './components/TRichSelect.vue';
-import TSelect from './components/TSelect.vue';
-import TTag from './components/TTag.vue';
+import TButton from './components/TButton.vue';
 import TTextarea from './components/TTextarea.vue';
+import TSelect from './components/TSelect.vue';
+import TCheckbox from './components/TCheckbox.vue';
+import TRadio from './components/TRadio.vue';
+// import TAlert from './components/TAlert.vue';
+// import TCard from './components/TCard.vue';
+// import TDropdown from './components/TDropdown.vue';
+// import TInputGroup from './components/TInputGroup.vue';
+// import TRichSelect from './components/TRichSelect.vue';
+// import TTag from './components/TTag.vue';
 
 // Import uses
 // import useActivableOption from './use/useActivableOption';
@@ -41,18 +41,26 @@ export * from './types';
 
 // Export components
 export {
-  TAlert,
-  TButton,
-  TCard,
-  TCheckbox,
-  TDropdown,
+  // Basic Form Components
   TInput,
-  TInputGroup,
-  TRadio,
-  TRichSelect,
-  TSelect,
-  TTag,
+  TButton,
   TTextarea,
+  TSelect,
+  TCheckbox,
+  TRadio,
+
+  // // Form Components
+  // TInputGroup,
+  // TRichSelect,
+
+  // // Single tag componets
+  // TTag,
+
+  // // Components
+  // TCard,
+  // TDropdown,
+  // TAlert,
+
   // Installer
   plugin as variantJsPlugin,
 };
