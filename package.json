@@ -1,16 +1,17 @@
 {
   "name": "@variantjs/vue",
-  "version": "0.0.3-21",
+  "version": "0.0.3-23",
   "description": "Vue VariantJS: Fully configurable Vue 3 components styled with TailwindCSS",
   "files": [
     "dist/**/*"
   ],
-  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.umd.js",
   "module": "./dist/index.es.js",
   "exports": {
     ".": {
       "import": "./dist/index.es.js",
-      "require": "./dist/index.js"
+      "require": "./dist/index.umd.js"
     }
   },
   "sideEffects": false,
@@ -38,7 +39,7 @@
     "release": "release-it"
   },
   "devDependencies": {
-    "@popperjs/core": "^2.9.0",
+    "@popperjs/core": "^2.10.1",
     "@rollup/plugin-typescript": "^8.2.5",
     "@tailwindcss/forms": "^0.3.3",
     "@testing-library/vue": "^6.4.2",
@@ -72,7 +73,6 @@
     "vue-tsc": "^0.3.0"
   },
   "peerDependencies": {
-    "@variantjs/core": "^0.0.37",
     "@popperjs/core": "^2.10.1",
     "vue": "^3.1.1"
   },
@@ -84,5 +84,8 @@
       ],
       "after:bump": "yarn build"
     }
+  },
+  "dependencies": {
+    "@variantjs/core": "^0.0.38"
   }
 }

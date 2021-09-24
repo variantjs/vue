@@ -787,7 +787,7 @@
   dependencies:
     "@octokit/openapi-types" "^10.2.2"
 
-"@popperjs/core@^2.9.0":
+"@popperjs/core@^2.10.1":
   version "2.10.1"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.10.1.tgz#728ecd95ab207aab8a9a4e421f0422db329232be"
   integrity sha512-HnUhk1Sy9IuKrxEMdIRCxpIqPw6BFsbYSEUO9p/hNw5sMld/+3OLMWQP80F8/db9qsv3qUjs7ZR5bS/R+iinXw==
@@ -1146,10 +1146,10 @@
     "@typescript-eslint/types" "4.31.2"
     eslint-visitor-keys "^2.0.0"
 
-"@variantjs/core@^0.0.37":
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/@variantjs/core/-/core-0.0.37.tgz#593e5d5b973339d94a70d6d7052aa3bc54b07738"
-  integrity sha512-bBBfnOsbs0Dp7yngt2LZwDDIi8kmArdOw58dHDRoeByEEHX9jEzEWQUWLQHIpojWxlwUQqe/rQr5CGzC8uzdjw==
+"@variantjs/core@^0.0.38":
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/@variantjs/core/-/core-0.0.38.tgz#cbf4df932b2d714b48af85bbc07430571a728425"
+  integrity sha512-BpCPPu5zfB3g+OfpUn1FmFTgCHo+sStMT9lzTyaqsPP2Jr3myNCgGTA8OdAlaNhcq77aC41Zd/xwFOTssaM71Q==
 
 "@vitejs/plugin-vue@^1.9.0":
   version "1.9.0"

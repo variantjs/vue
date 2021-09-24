@@ -12,16 +12,15 @@ export default defineConfig({
       formats: ['es', 'cjs'],
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'VariantJS',
-      fileName: (format) => `index${format === 'umd' ? '' : `.${format}`}.js`
+      fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
-      treeshake: true,
       plugins: [
         typescript({
           "exclude": ["node_modules", 'src/__tests/**/*']
         }),
       ],
-      external: ['vue', '@popperjs/core', '@variantjs/core'],
+      external: ['vue', '@popperjs/core'],
       output: {
         globals: {
           vue: 'Vue'
