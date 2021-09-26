@@ -37,7 +37,7 @@
     "lint": "eslint src --fix",
     "release": "release-it",
     "demo": "vite --config ./vite.demo.config.ts",
-    "demo:build": "vue-tsc --noEmit --config ./vite.demo.config.ts && vite build --config ./vite.demo.config.ts",
+    "demo:build": "vite build --config ./vite.demo.config.ts",
     "demo:serve": "vite preview --config ./vite.demo.config.ts"
   },
   "devDependencies": {
