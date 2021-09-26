@@ -77,7 +77,7 @@ npm install @variantjs/vue@next @variantjs/vue@core --save
 Or: 
 
 ```console
-yarn add @variantjs/vue@next @variantjs/vue@core --save
+yarn add @variantjs/vue@next @variantjs/vue@core 
 ``` 
 
 The Dropdown and the RichSelect component depends on [Popperjs](https://popper.js.org/) so you need to add that dependency also if you need those components.
