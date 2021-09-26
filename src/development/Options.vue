@@ -23,7 +23,7 @@
         placeholder="select an option"
         :fetch-options="fetchOptions"
         :minimum-input-length="3"
-        value-attribute="imdb ID"
+        value-attribute="imdbID"
         text-attribute="Title"
       >
         <template #option="{ option: { raw: movie }, className, isSelected }">
