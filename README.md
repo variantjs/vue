@@ -1,5 +1,9 @@
 # VariantJS/Vue (PREVIEW)
 
+
+![CI](https://github.com/variantjs/vue/workflows/CI/badge.svg) [![CI](https://github.com/variantjs/vue/actions/workflows/yarn.yml/badge.svg?event=release)](https://github.com/variantjs/vue/actions/workflows/yarn.yml)
+
+
 - Consider that this is a preview all components are subject to change until I release the final version.
 - If you find any error, typo or have comments feel free to create [an issue](https://github.com/variantjs/vue/issues) or open a PR.
 - Also a friendly reminder to consider [sponsor this project](https://github.com/sponsors/alfonsobries) there is a lot of work behind, **a lot**.
@@ -48,8 +52,6 @@ Everything will be documented, of course, but meanwhile, you can check the sourc
 - [ ] TToggle
 - [ ] More to announce soon...
 
-
-![CI](https://github.com/variantjs/vue/workflows/CI/badge.svg)
 
 **VarianJS/Vue** is the next version of the [VueTailwind](https://github.com/alfonsobries/vue-tailwind) package built from scratch for Vue 3.
 
