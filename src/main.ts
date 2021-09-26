@@ -1,7 +1,7 @@
 import './assets/tailwind.css';
 import { createApp } from 'vue';
-import { VariantJSConfiguration } from './types';
-import { variantJS } from '.';
+import plugin from './plugin';
+import { VariantJSConfiguration } from './types/variantCore';
 
 import App from './development/App.vue';
 
@@ -13,6 +13,6 @@ app.use(router);
 
 const configuration: VariantJSConfiguration = {};
 
-app.use(variantJS, configuration);
+app.use(plugin, configuration);
 
 app.mount('#app');
