@@ -1,6 +1,6 @@
 /* eslint-disable vue/one-component-per-file */
 import { createApp } from 'vue';
-import { variantJsPlugin } from '..';
+import { variantJS } from '..';
 import { VariantJSConfiguration } from '../types';
 import { Emitter } from '../utils/emitter';
 
@@ -14,7 +14,7 @@ describe('plugin installer', () => {
       },
     };
 
-    app.use(variantJsPlugin, configuration);
+    app.use(variantJS, configuration);
 
     const component = app.component('Example', {});
 
@@ -25,7 +25,7 @@ describe('plugin installer', () => {
   it('handles an empty configuration', () => {
     const app = createApp({});
 
-    app.use(variantJsPlugin);
+    app.use(variantJS);
 
     const component = app.component('Example', {});
 
@@ -36,7 +36,7 @@ describe('plugin installer', () => {
   it('adds an emitter as a global property', () => {
     const app = createApp({});
 
-    app.use(variantJsPlugin);
+    app.use(variantJS);
 
     // eslint-disable-next-line no-underscore-dangle
     expect(app.config.globalProperties.emitter).toBeInstanceOf(Emitter);

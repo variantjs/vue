@@ -2,7 +2,7 @@
 import {
   defineComponent, createApp, h, ComponentPropsOptions,
 } from 'vue';
-import { variantJsPlugin } from '../..';
+import { variantJS } from '../..';
 import { VariantJSConfiguration } from '../../types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,7 +14,7 @@ export function mount<V>(Comp: V, attributes?: Record<string, unknown>, configur
   const el = document.createElement('div');
   const app = createApp(Comp, attributes);
 
-  app.use(variantJsPlugin, configuration);
+  app.use(variantJS, configuration);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return app.mount(el) as any as VM<V>;

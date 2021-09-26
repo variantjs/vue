@@ -131,7 +131,7 @@ module.exports = {
 ```js
 import { createApp } from 'vue'
 import App from './App.vue'
-import { variantJsPlugin } from '@variantjs/vue'
+import { variantJS } from '@variantjs/vue'
 
 const app = createApp(App)
 
@@ -139,7 +139,7 @@ const configuration = {
   //...
 }
 
-app.use(variantJsPlugin, configuration)
+app.use(variantJS, configuration)
 
 app.mount('#app')
 
@@ -150,7 +150,7 @@ You can also use `typescript` for type checking:
 ```ts
 import { createApp } from 'vue'
 import App from './App.vue'
-import { variantJsPlugin, VariantJSConfiguration } from '@variantjs/vue'
+import { variantJS, VariantJSConfiguration } from '@variantjs/vue'
 
 const app = createApp(App)
 
@@ -158,7 +158,7 @@ const configuration: VariantJSConfiguration = {
   //...
 }
 
-app.use(variantJsPlugin, configuration)
+app.use(variantJS, configuration)
 
 app.mount('#app')
 
@@ -183,7 +183,7 @@ const configuration = {
   // ...
 }
 
-app.use(variantJsPlugin, configuration)
+app.use(variantJS, configuration)
 // ...
 ```
 3. The official documentation for this package is stil a WIP. You can use the the [VueTailwind Docs](https://www.vue-tailwind.com/) as reference but consider that some props were removed or updated, you can also see the source code of the components for more information.
