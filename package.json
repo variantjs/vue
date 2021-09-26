@@ -30,11 +30,10 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "serve": "vite preview",
+    "demo": "vite build --config ./vite.demo.config.ts && vite preview --config ./vite.demo.config.ts",
     "build": "vue-tsc --noEmit && vite build",
     "test": "jest -t",
     "test:watch": "jest --watch -t",
-    "dev": "vite",
     "lint": "eslint src --fix",
     "release": "release-it"
   },
