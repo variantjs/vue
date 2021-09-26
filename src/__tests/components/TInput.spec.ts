@@ -17,6 +17,26 @@ describe('TInput.vue', () => {
     expect(wrapper.html()).toBe(`<input class="${TInputConfig.classes}">`);
   });
 
+  it('adds the value attribute', () => {
+    const wrapper = shallowMount(TInput,
+      {
+        global: {
+          provide: {
+            configuration: {
+              TInput: {
+                classes: undefined,
+              },
+            },
+          },
+        },
+        attrs: {
+          value: 'foo bar',
+        },
+      });
+
+    expect(wrapper.vm.$el.value).toBe('foo bar');
+  });
+
   it('renders the input without attributes if no default theme', () => {
     const wrapper = shallowMount(TInput, {
       global: {

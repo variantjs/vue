@@ -17,6 +17,26 @@ describe('TTextarea.vue', () => {
     expect(wrapper.html()).toBe(`<textarea class="${TTextareaConfig.classes}"></textarea>`);
   });
 
+  it('adds the value attribute', () => {
+    const wrapper = shallowMount(TTextarea,
+      {
+        global: {
+          provide: {
+            configuration: {
+              TInput: {
+                classes: undefined,
+              },
+            },
+          },
+        },
+        attrs: {
+          value: 'foo bar',
+        },
+      });
+
+    expect(wrapper.vm.$el.value).toBe('foo bar');
+  });
+
   it('renders the textarea without attributes if no default theme', () => {
     const wrapper = shallowMount(TTextarea, {
       global: {

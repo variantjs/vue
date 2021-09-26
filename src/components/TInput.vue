@@ -1,13 +1,18 @@
 <template>
   <input
+    v-if="usesVModel"
     v-model="localValue"
+    v-bind="attributes"
+  >
+  <input
+    v-else
     v-bind="attributes"
   >
 </template>
 
 <script lang="ts">
 import { TInputConfig } from '@variantjs/core';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, getCurrentInstance } from 'vue';
 import { TInputOptions, TInputValue } from '../types/components/t-input';
 import { getVariantProps } from '../utils/getVariantProps';
 import useVModel from '../use/useVModel';
@@ -23,10 +28,19 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const vm = getCurrentInstance();
+
+    const definedProps = vm?.vnode.props;
+
+    const usesVModel = definedProps && definedProps.modelValue !== undefined;
+
     const localValue = useVModel(props, 'modelValue');
+
     const { configuration, attributes } = useConfiguration<TInputOptions>(TInputConfig);
 
-    return { localValue, configuration, attributes };
+    return {
+      localValue, configuration, attributes, usesVModel,
+    };
   },
 });
 </script>
