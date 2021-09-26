@@ -1,7 +1,7 @@
 # VariantJS/Vue (PREVIEW)
 
 
-![CI](https://github.com/variantjs/vue/workflows/CI/badge.svg) ![CI](https://github.com/variantjs/vue/workflows/CI/badge.svg)
+![CI](https://github.com/variantjs/vue/workflows/CI/badge.svg) [![CI](https://github.com/variantjs/vue/actions/workflows/yarn.yml/badge.svg?event=release)](https://github.com/variantjs/vue/actions/workflows/yarn.yml)
 
 
 - Consider that this is a preview all components are subject to change until I release the final version.
