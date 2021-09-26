@@ -56,7 +56,7 @@ We love to be productive.
 
 ### Best of both worlds
 
-The **VarianJS** components are meant to be customized with custom CSS classes that you can define when you install the library.
+The **VariantJS** components are meant to be customized with custom CSS classes that you can define when you install the library.
 
 Plus, most component settings are configurable, so using this library is like having your personal set of components for your particular needs.
 
