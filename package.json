@@ -30,13 +30,15 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "demo": "vite preview --config ./vite.demo.config.ts",
-    "demo:build": "vite build --config ./vite.demo.config.ts",
     "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview",
     "test": "jest -t",
     "test:watch": "jest --watch -t",
     "lint": "eslint src --fix",
-    "release": "release-it"
+    "release": "release-it",
+    "demo": "vite --config ./vite.demo.config.ts",
+    "demo:build": "vue-tsc --noEmit --config ./vite.demo.config.ts && vite build --config ./vite.demo.config.ts",
+    "demo:serve": "vite preview --config ./vite.demo.config.ts"    
   },
   "devDependencies": {
     "@popperjs/core": "^2.10.1",
