@@ -1,6 +1,6 @@
 {
   "name": "@variantjs/vue",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Vue VariantJS: Fully configurable Vue 3 components styled with TailwindCSS",
   "files": [
     "dist/**/*"
@@ -38,7 +38,7 @@
     "release": "release-it",
     "demo": "vite --config ./vite.demo.config.ts",
     "demo:build": "vue-tsc --noEmit --config ./vite.demo.config.ts && vite build --config ./vite.demo.config.ts",
-    "demo:serve": "vite preview --config ./vite.demo.config.ts"    
+    "demo:serve": "vite preview --config ./vite.demo.config.ts"
   },
   "devDependencies": {
     "@popperjs/core": "^2.10.1",
