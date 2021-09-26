@@ -58,7 +58,7 @@ export {
   TAlert,
 
   // Installer
-  plugin as variantJsPlugin,
+  plugin as variantJS,
 };
 
 // // Export utils
