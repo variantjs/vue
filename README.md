@@ -4,6 +4,23 @@
 - If you find any error, typo or have comments feel free to create [an issue](https://github.com/variantjs/vue/issues) or open a PR.
 - Also a friendly reminder to consider [sponsor this project](https://github.com/sponsors/alfonsobries) there is a lot of work behind, **a lot**.
 - Demo: [https://variantjs.vercel.app/](https://variantjs.vercel.app/#/)
+  
+
+## Whats new?
+
+Main changes against VueTailwind: 
+
+- Smaller bundle
+- Better Typescript integration
+- 100% test coverage
+- Built from scratch with Vue 3 + Vite
+- Simpler code and back to use template syntax
+
+In general, initial components wil be pretty much the same, but some components have new settings. As an example, TDropDown and TRichSelect now have a `teleport` and `teleportTo` prop that allows you to move the content of the dropdown to any place on the DOM by using the new teleport setting from Vue. Also, both now use PopperJS, meaning you can have more control over the dropdown position.
+
+Another note is that the default theme for some components changed a bit. You can check the new default configuration (theme) in the [@variantjs/core](https://github.com/variantjs/core/blob/main/src/config) source code. [Example for the TRichSelect component.](https://github.com/variantjs/core/blob/main/src/config/TRichSelectConfig.ts)
+
+Everything will be documented, of course, but meanwhile, you can check the source code of the components that is way cleaner and easier to understand.
 
 *Components that are ready to be tested*
 
