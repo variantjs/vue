@@ -16,7 +16,7 @@ Main changes against VueTailwind:
 - Built from scratch with Vue 3 + Vite
 - Simpler code and back to use template syntax
 
-In general, initial components wil be pretty much the same, but some components have new settings. As an example, TDropDown and TRichSelect now have a `teleport` and `teleportTo` prop that allows you to move the content of the dropdown to any place on the DOM by using the new teleport setting from Vue. Also, both now use PopperJS, meaning you can have more control over the dropdown position.
+In general, initial components will be pretty much the same, but some components have new settings. As an example, TDropDown and TRichSelect now have a `teleport` and `teleportTo` prop that allows you to move the content of the dropdown to any place on the DOM by using the new teleport setting from Vue. Also, both now use PopperJS, meaning you can have more control over the dropdown position.
 
 Another note is that the default theme for some components changed a bit. You can check the new default configuration (theme) in the [@variantjs/core](https://github.com/variantjs/core/blob/main/src/config) source code. [Example for the TRichSelect component.](https://github.com/variantjs/core/blob/main/src/config/TRichSelectConfig.ts)
 
