@@ -6,6 +6,7 @@ export { TCheckboxValue, TCheckboxOptions } from './components/t-checkbox';
 export { TSelectValue, TSelectOptions } from './components/t-select';
 export { TButtonOptions } from './components/t-button';
 export { TCardOptions } from './components/t-card';
+export { TModalOptions } from './components/t-modal';
 export { TTagOptions } from './components/t-tag';
 export { TAlertOptions } from './components/t-alert';
 export { TDropdownOptions } from './components/t-dropdown';
