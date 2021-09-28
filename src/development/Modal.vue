@@ -6,6 +6,31 @@
       </template>
 
       <TInputGroup
+        label="Open with modal name"
+        class="mb-4"
+      >
+        <t-modal name="my-modal">
+          <template #header>
+            This it the header
+          </template>
+          <t-button
+            type="button"
+            @click="$modal.hide('my-modal')"
+          >
+            Hide modal
+          </t-button>
+        </t-modal>
+
+        <div class="flex space-x-2">
+          <t-button
+            @click="$modal.show('my-modal')"
+          >
+            Show modal
+          </t-button>
+        </div>
+      </TInputGroup>
+
+      <TInputGroup
         label="Syncs show property"
         class="mb-4"
       >
@@ -31,6 +56,7 @@
 import { defineComponent } from 'vue';
 
 import TCheckbox from '../components/TCheckbox.vue';
+import TButton from '../components/TButton.vue';
 import TCard from '../components/TCard.vue';
 import TModal from '../components/TModal.vue';
 import TInputGroup from '../components/TInputGroup.vue';
@@ -38,6 +64,7 @@ import TInputGroup from '../components/TInputGroup.vue';
 export default defineComponent({
   name: 'App',
   components: {
+    TButton,
     TCheckbox,
     TCard,
     TModal,

@@ -98,10 +98,11 @@
 
 <script lang="ts">
 import {
-  defineComponent, PropType, ref, watch, nextTick, onBeforeUnmount, onMounted,
+  defineComponent, PropType, ref, watch, nextTick, onBeforeUnmount, onMounted, getCurrentInstance, inject,
 } from 'vue';
 import { BodyScrollOptions, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
-import { TModalOptions } from '../types';
+import { Data } from '@variantjs/core';
+import { TModalOptions, EmitterInterface } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import CloseIcon from '../icons/CloseIcon.vue';
@@ -147,6 +148,10 @@ export default defineComponent({
   },
   props: {
     ...getVariantPropsWithClassesList<TModalOptions, TModalClassesValidKeys>(),
+    name: {
+      type: String,
+      default: undefined,
+    },
     modelValue: {
       type: Boolean,
       default: false,
@@ -218,7 +223,7 @@ export default defineComponent({
     };
 
     const open = () :void => {
-      show.value = false;
+      show.value = true;
     };
 
     const initModal = () :void => {
@@ -318,6 +323,27 @@ export default defineComponent({
     onBeforeUnmount(() => {
       reset();
     });
+
+    if (configuration.name) {
+      const emitter = inject<EmitterInterface>('emitter')!;
+
+      // @TODO handle params
+      emitter.on('modal:show', (name, params) => {
+        if (configuration.name !== name) {
+          return;
+        }
+
+        open();
+      });
+
+      emitter.on('modal:hide', (name) => {
+        if (configuration.name !== name) {
+          return;
+        }
+
+        close();
+      });
+    }
 
     return {
       configuration,

@@ -5,9 +5,21 @@ import { Emitter } from './utils/emitter';
 const plugin = {
   install: (app: App<Element>, configuration: VariantJSConfiguration = {}): void => {
     // eslint-disable-next-line no-param-reassign
-    app.config.globalProperties.emitter = new Emitter();
+    const emitter = new Emitter();
+
+    // eslint-disable-next-line no-param-reassign
+    app.config.globalProperties.$modal = {
+      show(name: string, params?: { [k: string]: string }) {
+        emitter.emit('modal:show', name, params);
+      },
+      hide(name: string) {
+        emitter.emit('modal:hide', name);
+      },
+    };
 
     app.provide('configuration', configuration);
+
+    app.provide('emitter', emitter);
   },
 };
 

@@ -27,6 +27,7 @@ type TModalClassesValidKeys = 'overlay' | 'wrapper' | 'modal' | 'body' | 'header
 //   leaveToClass: '',
 
 export type TModalOptions = WithVariantPropsAndClassesList<{
+  name?: string,
   modelValue?: boolean,
   tagName?: string
   body?: string

@@ -16,5 +16,5 @@ export {
   Truthy, IconProp, FetchOptionsFn, FetchedOptions,
 } from './misc';
 export { ObjectWithProperties, KeysOfType } from './helpers';
-export { EmitterEvents, EmitterFunction } from './utils';
+export { EmitterEvents, EmitterFunction, EmitterInterface } from './utils';
 export { VueRouteAriaCurrentValue, VueRouteRouteLocationRaw } from './vueRouter';
