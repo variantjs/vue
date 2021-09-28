@@ -16,9 +16,12 @@
     >
       <div
         v-show="showOverlay"
+        v-bind="attributes"
+        ref="overlay"
         tabindex="0"
         class="fixed top-0 bottom-0 left-0 right-0 z-40 w-full h-full overflow-auto scrolling-touch bg-black bg-opacity-50"
-        v-bind="attributes"
+        @keydown.escape="onKeydownEscapeHandler"
+        @click="onClickHandler"
       >
         <transitionable
           :classes-list="{
@@ -34,8 +37,15 @@
             v-show="showModal"
             class="relative z-50 max-w-lg px-3 py-12 mx-auto"
           >
-            <div class="relative overflow-visible bg-white rounded shadow">
+            <template v-if="noBody">
+              <slot />
+            </template>
+            <div
+              v-else
+              class="relative overflow-visible bg-white rounded shadow"
+            >
               <button
+                v-if="!hideCloseButton"
                 type="button"
                 class="absolute top-0 right-0 flex items-center justify-center w-8 h-8 -m-3 text-gray-600 transition ease-in-out bg-gray-100 rounded-full duration-400 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 hover:bg-gray-200"
                 @click="close"
@@ -88,8 +98,9 @@
 
 <script lang="ts">
 import {
-  defineComponent, PropType, ref, watch, nextTick,
+  defineComponent, PropType, ref, watch, nextTick, onBeforeUnmount, onMounted,
 } from 'vue';
+import { BodyScrollOptions, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { TModalOptions } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
@@ -152,6 +163,34 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+    focusOnOpen: {
+      type: Boolean,
+      default: true,
+    },
+    clickToClose: {
+      type: Boolean,
+      default: true,
+    },
+    escToClose: {
+      type: Boolean,
+      default: true,
+    },
+    disableBodyScroll: {
+      type: Boolean,
+      default: true,
+    },
+    noBody: {
+      type: Boolean,
+      default: false,
+    },
+    hideCloseButton: {
+      type: Boolean,
+      default: false,
+    },
+    bodyScrollLockOptions: {
+      type: Object as PropType<BodyScrollOptions>,
+      default: () => ({}),
+    },
     teleport: {
       type: Boolean,
       default: true,
@@ -162,6 +201,10 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const { configuration, attributes } = useConfigurationWithClassesList<TModalOptions>(TModalConfig, TModalClassesKeys);
+
+    const overlay = ref<HTMLDivElement>();
+
     const show = useVModel(props, 'modelValue');
 
     const showComponent = ref(show.value);
@@ -178,9 +221,45 @@ export default defineComponent({
       show.value = false;
     };
 
+    const initModal = () :void => {
+      if (configuration.focusOnOpen) {
+        overlay.value!.focus();
+      }
+
+      if (configuration.disableBodyScroll) {
+        disableBodyScroll(overlay.value!, configuration.bodyScrollLockOptions);
+      }
+    };
+
+    const reset = () :void => {
+      if (configuration.disableBodyScroll) {
+        enableBodyScroll(overlay.value!);
+      }
+    };
+
+    const onBeforeShow = () :void => {
+      emit('before-show');
+    };
+
+    const onBeforeHide = () :void => {
+      emit('before-hide');
+    };
+
+    const onShown = () :void => {
+      emit('shown');
+
+      initModal();
+    };
+
+    const onHidden = () :void => {
+      emit('hidden');
+
+      reset();
+    };
+
     watch(show, (isShow: boolean) => {
       if (isShow) {
-        emit('before-show');
+        onBeforeShow();
 
         showComponent.value = true;
 
@@ -191,12 +270,12 @@ export default defineComponent({
             showModal.value = true;
 
             nextTick(() => {
-              emit('shown');
+              onShown();
             });
           });
         });
       } else {
-        emit('before-hide');
+        onBeforeHide();
 
         showModal.value = false;
 
@@ -207,17 +286,51 @@ export default defineComponent({
             showComponent.value = true;
 
             nextTick(() => {
-              emit('hidden');
+              onHidden();
             });
           });
         });
       }
     });
 
-    const { configuration, attributes } = useConfigurationWithClassesList<TModalOptions>(TModalConfig, TModalClassesKeys);
+    const onKeydownEscapeHandler = () :void => {
+      if (!configuration.escToClose) {
+        return;
+      }
+
+      close();
+    };
+
+    const onClickHandler = () :void => {
+      if (!configuration.clickToClose) {
+        return;
+      }
+
+      close();
+    };
+
+    onMounted(() => {
+      if (show.value) {
+        initModal();
+      }
+    });
+
+    onBeforeUnmount(() => {
+      reset();
+    });
 
     return {
-      configuration, attributes, show, close, open, showOverlay, showModal, showComponent,
+      configuration,
+      attributes,
+      show,
+      showOverlay,
+      showModal,
+      showComponent,
+      overlay,
+      close,
+      open,
+      onKeydownEscapeHandler,
+      onClickHandler,
     };
   },
 });

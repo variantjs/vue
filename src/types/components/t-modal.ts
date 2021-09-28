@@ -1,4 +1,5 @@
 import { WithVariantPropsAndClassesList, Data } from '@variantjs/core';
+import { BodyScrollOptions } from 'body-scroll-lock';
 import { HTMLAttributes } from 'vue';
 
 // @TODO: add this to core library
@@ -31,6 +32,13 @@ export type TModalOptions = WithVariantPropsAndClassesList<{
   body?: string
   header?: string
   footer?: string
+  clickToClose?: boolean,
+  escToClose?: boolean,
+  focusOnOpen?: boolean,
+  disableBodyScroll?: boolean,
+  bodyScrollLockOptions?: BodyScrollOptions,
   teleport?: boolean,
   teleportTo?: string | HTMLElement,
+  noBody?: boolean,
+  hideCloseButton?: boolean,
 } & HTMLAttributes & Data, TModalClassesValidKeys>;
