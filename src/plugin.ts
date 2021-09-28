@@ -4,11 +4,14 @@ import { Emitter } from './utils/emitter';
 
 const plugin = {
   install: (app: App<Element>, configuration: VariantJSConfiguration = {}): void => {
-    // eslint-disable-next-line no-param-reassign
     const emitter = new Emitter();
 
+    // @TODO: ensure this variable is exposed for https://vuetelescope.com/
     // eslint-disable-next-line no-param-reassign
-    app.config.globalProperties.$modal = {
+    app.config.globalProperties.$variantJS = true;
+
+    // eslint-disable-next-line no-param-reassign
+    app.config.globalProperties.$tModal = {
       show(name: string, params?: { [k: string]: string }) {
         emitter.emit('modal:show', name, params);
       },
@@ -22,5 +25,15 @@ const plugin = {
     app.provide('emitter', emitter);
   },
 };
+
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $variantJS: boolean;
+    $tModal: {
+      show: (name: string, params?: { [k: string]: string }) => void;
+      hide: (name: string) => void;
+    }
+  }
+}
 
 export default plugin;
