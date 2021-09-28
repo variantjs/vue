@@ -1,15 +1,15 @@
 <template>
   <teleport
-    v-if="show || showOverlay"
+    v-if="showComponent"
     :to="configuration.teleportTo"
     :disabled="! configuration.teleport"
   >
     <transitionable
       :classes-list="{
-        enterActiveClass: 'transition ease-out duration-100',
+        enterActiveClass: 'transition ease-out duration-300',
         enterFromClass: 'transform opacity-0',
         enterToClass: 'transform opacity-100',
-        leaveActiveClass: 'transition duration-100 ease-in',
+        leaveActiveClass: 'transition duration-300 ease-in',
         leaveFromClass: 'transform opacity-100',
         leaveToClass: 'transform  opacity-0',
       }"
@@ -25,7 +25,7 @@
             enterActiveClass: 'transition duration-100 ease-out',
             enterFromClass: 'transform scale-95 opacity-0',
             enterToClass: 'transform scale-100 opacity-100',
-            leaveActiveClass: 'transition duration-75 ease-in',
+            leaveActiveClass: 'transition duration-100 ease-in',
             leaveFromClass: 'transform scale-100 opacity-100',
             leaveToClass: 'transform scale-95 opacity-0',
           }"
@@ -164,6 +164,8 @@ export default defineComponent({
   setup(props, { emit }) {
     const show = useVModel(props, 'modelValue');
 
+    const showComponent = ref(show.value);
+
     const showOverlay = ref(show.value);
 
     const showModal = ref(show.value);
@@ -172,9 +174,15 @@ export default defineComponent({
       show.value = false;
     };
 
+    const open = () :void => {
+      show.value = false;
+    };
+
     watch(show, (isShow: boolean) => {
       if (isShow) {
         emit('before-show');
+
+        showComponent.value = true;
 
         nextTick(() => {
           showOverlay.value = true;
@@ -190,11 +198,13 @@ export default defineComponent({
       } else {
         emit('before-hide');
 
+        showModal.value = false;
+
         nextTick(() => {
-          showModal.value = false;
+          showOverlay.value = false;
 
           nextTick(() => {
-            showOverlay.value = false;
+            showComponent.value = true;
 
             nextTick(() => {
               emit('hidden');
@@ -207,7 +217,7 @@ export default defineComponent({
     const { configuration, attributes } = useConfigurationWithClassesList<TModalOptions>(TModalConfig, TModalClassesKeys);
 
     return {
-      configuration, attributes, show, close, showOverlay, showModal,
+      configuration, attributes, show, close, open, showOverlay, showModal, showComponent,
     };
   },
 });
