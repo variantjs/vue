@@ -12,7 +12,6 @@
         tabindex="0"
         :class="configuration.classesList?.overlay"
         @keydown.escape="onKeydownEscapeHandler"
-        @click="onClickHandler"
       >
         <transitionable :classes-list="configuration.classesList">
           <div
@@ -158,10 +157,28 @@ export default defineComponent({
       default: 'body',
     },
   },
+  // emits: {
+  //   keydown: (e: KeyboardEvent) => e instanceof KeyboardEvent,
+  //   focus: (e: FocusEvent) => e instanceof FocusEvent,
+  //   blur: (e: FocusEvent) => e instanceof FocusEvent,
+  //   mousedown: (e: MouseEvent) => e instanceof MouseEvent,
+  //   mouseover: (e: MouseEvent) => e instanceof MouseEvent,
+  //   mouseleave: (e: MouseEvent) => e instanceof MouseEvent,
+  //   touchstart: (e: TouchEvent) => e instanceof TouchEvent,
+  //   shown: () => true,
+  //   hidden: () => true,
+  //   'before-show': () => true,
+  //   'before-hide': () => true,
+  //   'fetch-options-success': () => true,
+  //   'fetch-options-error': () => true,
+  //   'update:modelValue': () => true,
+  // },
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TModalOptions>(TModalConfig, TModalClassesKeys);
 
     const overlay = ref<HTMLDivElement>();
+
+    let modalParameters: unknown;
 
     const showModel = useVModel(props, 'modelValue');
 
@@ -175,7 +192,9 @@ export default defineComponent({
       showModel.value = false;
     };
 
-    const show = () :void => {
+    const show = (params: unknown) :void => {
+      modalParameters = params;
+
       showModel.value = true;
     };
 
@@ -193,15 +212,26 @@ export default defineComponent({
       if (configuration.disableBodyScroll) {
         enableBodyScroll(overlay.value!);
       }
+
+      modalParameters = undefined;
     };
 
-    const onBeforeShow = () :void => {
-      emit('before-show');
-    };
+    const onBeforeShow = () : Promise<void> => new Promise((resolve, reject) => {
+      emit('before-show', {
+        cancel: reject,
+        params: modalParameters,
+      });
 
-    const onBeforeHide = () :void => {
-      emit('before-hide');
-    };
+      resolve();
+    });
+
+    const onBeforeHide = () : Promise<void> => new Promise((resolve, reject) => {
+      emit('before-hide', {
+        cancel: reject,
+      });
+
+      resolve();
+    });
 
     const onShown = () :void => {
       emit('shown');
@@ -215,9 +245,13 @@ export default defineComponent({
       reset();
     };
 
-    watch(showModel, (isShow: boolean) => {
+    watch(showModel, async (isShow: boolean): Promise<void> => {
       if (isShow) {
-        onBeforeShow();
+        try {
+          await onBeforeShow();
+        } catch (e) {
+          return;
+        }
 
         showComponent.value = true;
 
@@ -233,7 +267,11 @@ export default defineComponent({
           });
         });
       } else {
-        onBeforeHide();
+        try {
+          await onBeforeHide();
+        } catch (e) {
+          return;
+        }
 
         showModal.value = false;
 
@@ -286,7 +324,7 @@ export default defineComponent({
           return;
         }
 
-        show();
+        show(params);
       });
 
       emitter.on('modal:hide', (name) => {

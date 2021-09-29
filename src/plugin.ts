@@ -1,3 +1,4 @@
+import { Data } from '@variantjs/core';
 import { App } from 'vue';
 import { VariantJSConfiguration } from './types';
 import { Emitter } from './utils/emitter';
@@ -30,7 +31,7 @@ declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $variantJS: boolean;
     $modal: {
-      show: (name: string, params?: { [k: string]: string }) => void;
+      show: (name: string, params?: Data) => void;
       hide: (name: string) => void;
     }
   }
