@@ -48,7 +48,7 @@
                 v-if="!hideCloseButton"
                 type="button"
                 class="absolute top-0 right-0 flex items-center justify-center w-8 h-8 -m-3 text-gray-600 transition ease-in-out bg-gray-100 rounded-full duration-400 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 hover:bg-gray-200"
-                @click="close"
+                @click="hide"
               >
                 <close-icon class="w-4 h-4" />
               </button>
@@ -210,20 +210,20 @@ export default defineComponent({
 
     const overlay = ref<HTMLDivElement>();
 
-    const show = useVModel(props, 'modelValue');
+    const showModel = useVModel(props, 'modelValue');
 
-    const showComponent = ref(show.value);
+    const showComponent = ref(showModel.value);
 
-    const showOverlay = ref(show.value);
+    const showOverlay = ref(showModel.value);
 
-    const showModal = ref(show.value);
+    const showModal = ref(showModel.value);
 
-    const close = () :void => {
-      show.value = false;
+    const hide = () :void => {
+      showModel.value = false;
     };
 
-    const open = () :void => {
-      show.value = true;
+    const show = () :void => {
+      showModel.value = true;
     };
 
     const initModal = () :void => {
@@ -262,7 +262,7 @@ export default defineComponent({
       reset();
     };
 
-    watch(show, (isShow: boolean) => {
+    watch(showModel, (isShow: boolean) => {
       if (isShow) {
         onBeforeShow();
 
@@ -303,7 +303,7 @@ export default defineComponent({
         return;
       }
 
-      close();
+      hide();
     };
 
     const onClickHandler = () :void => {
@@ -311,11 +311,11 @@ export default defineComponent({
         return;
       }
 
-      close();
+      hide();
     };
 
     onMounted(() => {
-      if (show.value) {
+      if (showModel.value) {
         initModal();
       }
     });
@@ -333,7 +333,7 @@ export default defineComponent({
           return;
         }
 
-        open();
+        show();
       });
 
       emitter.on('modal:hide', (name) => {
@@ -341,20 +341,19 @@ export default defineComponent({
           return;
         }
 
-        close();
+        hide();
       });
     }
 
     return {
       configuration,
       attributes,
-      show,
       showOverlay,
       showModal,
       showComponent,
       overlay,
-      close,
-      open,
+      show,
+      hide,
       onKeydownEscapeHandler,
       onClickHandler,
     };

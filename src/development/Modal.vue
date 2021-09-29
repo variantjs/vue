@@ -29,6 +29,31 @@
           </t-button>
         </div>
       </TInputGroup>
+      <TInputGroup
+
+        label="Open with ref"
+        class="mb-4"
+      >
+        <t-modal ref="modal">
+          <template #header>
+            This it the header
+          </template>
+          <t-button
+            type="button"
+            @click="$refs.modal.hide()"
+          >
+            Hide modal
+          </t-button>
+        </t-modal>
+
+        <div class="flex space-x-2">
+          <t-button
+            @click="$refs.modal.show()"
+          >
+            Show modal
+          </t-button>
+        </div>
+      </TInputGroup>
 
       <TInputGroup
         label="Syncs show property"
