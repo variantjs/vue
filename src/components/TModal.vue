@@ -324,7 +324,6 @@ export default defineComponent({
     if (configuration.name) {
       const emitter = inject<EmitterInterface>('emitter')!;
 
-      // @TODO handle params
       emitter.on('modal:show', (name, params) => {
         if (configuration.name !== name) {
           return;
