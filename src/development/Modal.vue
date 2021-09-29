@@ -74,7 +74,7 @@
           </template>
           <t-button
             type="button"
-            @click="$refs.modal.hide()"
+            @click="($refs.modal as any).hide()"
           >
             Hide modal
           </t-button>
@@ -82,7 +82,7 @@
 
         <div class="flex space-x-2">
           <t-button
-            @click="$refs.modal.show()"
+            @click="($refs.modal as any).show()"
           >
             Show modal
           </t-button>
