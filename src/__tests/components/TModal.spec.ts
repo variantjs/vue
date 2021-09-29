@@ -50,7 +50,45 @@ describe('TModal.vue', () => {
 
       expect(focusSpy).toHaveBeenCalled();
 
-      focusSpy.mockReset();
+      focusSpy.mockRestore();
+    });
+
+    it('emits the hide-related events in order', async () => {
+      const wrapper = mount(TModal, {
+        props,
+      });
+
+      expect(wrapper.emitted('before-hide')).toBeFalsy();
+      expect(wrapper.emitted('hidden')).toBeFalsy();
+
+      wrapper.vm.hide();
+
+      // After press hidden it just change the modelValue, no events yet
+      expect(wrapper.emitted('before-hide')).toBeFalsy();
+      expect(wrapper.emitted('hidden')).toBeFalsy();
+
+      // Model is about to hide
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('before-hide')).toBeTruthy();
+      expect(Object.keys((wrapper.emitted('before-hide')![0] as any)[0])).toEqual([
+        'cancel',
+      ]);
+      expect(wrapper.emitted('hidden')).toBeFalsy();
+
+      // Modal is hidden, overlay is about to hide (no new events emitted)
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('before-hide')).toBeTruthy();
+      expect(wrapper.emitted('hidden')).toBeFalsy();
+
+      // Overlay is hidden, component is about to be removed from the DOM (no new events emitted)
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('before-hide')).toBeTruthy();
+      expect(wrapper.emitted('hidden')).toBeFalsy();
+
+      // component is removed from the DOM
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('before-hide')).toBeTruthy();
+      expect(wrapper.emitted('hidden')).toBeTruthy();
     });
   });
 
@@ -74,7 +112,7 @@ describe('TModal.vue', () => {
 
       expect(focusSpy).toHaveBeenCalled();
 
-      focusSpy.mockReset();
+      focusSpy.mockRestore();
     });
 
     it('emits the open-related events in order', async () => {
@@ -82,8 +120,8 @@ describe('TModal.vue', () => {
         props,
       });
 
-      expect(wrapper.emitted()['before-show']).toBeFalsy();
-      expect(wrapper.emitted().shown).toBeFalsy();
+      expect(wrapper.emitted('before-show')).toBeFalsy();
+      expect(wrapper.emitted('shown')).toBeFalsy();
 
       wrapper.vm.show();
 
@@ -103,29 +141,17 @@ describe('TModal.vue', () => {
       // Overlay is about to show (no new events emitted)
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('before-show')).toBeTruthy();
-      expect(Object.keys((wrapper.emitted('before-show')![0] as any)[0])).toEqual([
-        'cancel',
-        'params',
-      ]);
       expect(wrapper.emitted('shown')).toBeFalsy();
 
       // Overlay is shown, modal is about to show (no new events emitted)
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('before-show')).toBeTruthy();
-      expect(Object.keys((wrapper.emitted('before-show')![0] as any)[0])).toEqual([
-        'cancel',
-        'params',
-      ]);
       expect(wrapper.emitted('shown')).toBeFalsy();
 
       // Modal is shown
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('before-show')).toBeTruthy();
       expect(wrapper.emitted('shown')).toBeTruthy();
-      expect(Object.keys((wrapper.emitted('before-show')![0] as any)[0])).toEqual([
-        'cancel',
-        'params',
-      ]);
     });
   });
 });
