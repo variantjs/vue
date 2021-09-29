@@ -11,7 +11,7 @@ const plugin = {
     app.config.globalProperties.$variantJS = true;
 
     // eslint-disable-next-line no-param-reassign
-    app.config.globalProperties.$tModal = {
+    app.config.globalProperties.$modal = {
       show(name: string, params?: { [k: string]: string }) {
         emitter.emit('modal:show', name, params);
       },
@@ -29,7 +29,7 @@ const plugin = {
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $variantJS: boolean;
-    $tModal: {
+    $modal: {
       show: (name: string, params?: { [k: string]: string }) => void;
       hide: (name: string) => void;
     }
