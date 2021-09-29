@@ -157,22 +157,14 @@ export default defineComponent({
       default: 'body',
     },
   },
-  // emits: {
-  //   keydown: (e: KeyboardEvent) => e instanceof KeyboardEvent,
-  //   focus: (e: FocusEvent) => e instanceof FocusEvent,
-  //   blur: (e: FocusEvent) => e instanceof FocusEvent,
-  //   mousedown: (e: MouseEvent) => e instanceof MouseEvent,
-  //   mouseover: (e: MouseEvent) => e instanceof MouseEvent,
-  //   mouseleave: (e: MouseEvent) => e instanceof MouseEvent,
-  //   touchstart: (e: TouchEvent) => e instanceof TouchEvent,
-  //   shown: () => true,
-  //   hidden: () => true,
-  //   'before-show': () => true,
-  //   'before-hide': () => true,
-  //   'fetch-options-success': () => true,
-  //   'fetch-options-error': () => true,
-  //   'update:modelValue': () => true,
-  // },
+  emits: {
+    shown: () => true,
+    hidden: () => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+    'before-show': ({ cancel, params }: { cancel: (reason?: any) => void, params: unknown }) => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+    'before-hide': ({ cancel }: { cancel: (reason?: any) => void }) => true,
+  },
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TModalOptions>(TModalConfig, TModalClassesKeys);
 
