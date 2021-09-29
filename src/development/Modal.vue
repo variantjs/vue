@@ -107,6 +107,26 @@
           </template>
         </t-modal>
       </TInputGroup>
+
+      <TInputGroup
+        label="Only closable trough the custom button inside"
+        class="mb-4"
+      >
+        <t-button @click="$modal.show('notClosable')">
+          Show modal
+        </t-button>
+
+        <t-modal
+          name="notClosable"
+          :esc-to-close="false"
+          :click-to-close="false"
+          hide-close-button
+        >
+          <t-button @click="$modal.hide('notClosable')">
+            Close this
+          </t-button>
+        </t-modal>
+      </TInputGroup>
     </t-card>
   </div>
 </template>

@@ -12,12 +12,14 @@
         tabindex="0"
         :class="configuration.classesList?.overlay"
         @keydown.escape="onKeydownEscapeHandler"
+        @click="onClickHandler"
       >
         <transitionable :classes-list="configuration.classesList">
           <div
             v-show="showModal"
             :class="configuration.classesList?.wrapper"
             v-bind="modalAttributes"
+            @click.stop
           >
             <template v-if="noBody">
               <slot />
