@@ -92,6 +92,6 @@
     }
   },
   "dependencies": {
-    "@variantjs/core": "^0.0.40"
+    "@variantjs/core": "^0.0.41"
   }
 }

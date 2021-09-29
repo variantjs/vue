@@ -161,9 +161,10 @@ export default defineComponent({
     shown: () => true,
     hidden: () => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-    'before-show': ({ cancel, params }: { cancel: (reason?: any) => void, params: unknown }) => true,
+    'before-show': ({ cancel, params }: { cancel: (reason?: any) => void, params: any }) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     'before-hide': ({ cancel }: { cancel: (reason?: any) => void }) => true,
+    'update:modelValue': () => true,
   },
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TModalOptions>(TModalConfig, TModalClassesKeys);
@@ -179,6 +180,8 @@ export default defineComponent({
     const showOverlay = ref(showModel.value);
 
     const showModal = ref(showModel.value);
+
+    const canceled = ref(false);
 
     const hide = () :void => {
       showModel.value = false;
@@ -238,10 +241,17 @@ export default defineComponent({
     };
 
     watch(showModel, async (isShow: boolean): Promise<void> => {
+      if (canceled.value) {
+        canceled.value = false;
+        return;
+      }
+
       if (isShow) {
         try {
           await onBeforeShow();
         } catch (e) {
+          canceled.value = true;
+          showModel.value = false;
           return;
         }
 
@@ -262,6 +272,8 @@ export default defineComponent({
         try {
           await onBeforeHide();
         } catch (e) {
+          canceled.value = true;
+          showModel.value = true;
           return;
         }
 
