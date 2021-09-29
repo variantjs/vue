@@ -4,64 +4,44 @@
     :to="configuration.teleportTo"
     :disabled="! configuration.teleport"
   >
-    <transitionable
-      :classes-list="{
-        enterActiveClass: 'transition ease-out duration-300',
-        enterFromClass: 'transform opacity-0',
-        enterToClass: 'transform opacity-100',
-        leaveActiveClass: 'transition duration-300 ease-in',
-        leaveFromClass: 'transform opacity-100',
-        leaveToClass: 'transform  opacity-0',
-      }"
-    >
+    <transitionable :classes-list="overlayTransitionClassesList">
       <div
         v-show="showOverlay"
         v-bind="attributes"
         ref="overlay"
         tabindex="0"
-        class="fixed top-0 bottom-0 left-0 right-0 z-40 w-full h-full overflow-auto scrolling-touch bg-black bg-opacity-50"
+        :class="configuration.classesList?.overlay"
         @keydown.escape="onKeydownEscapeHandler"
         @click="onClickHandler"
       >
-        <transitionable
-          :classes-list="{
-            enterActiveClass: 'transition duration-100 ease-out',
-            enterFromClass: 'transform scale-95 opacity-0',
-            enterToClass: 'transform scale-100 opacity-100',
-            leaveActiveClass: 'transition duration-100 ease-in',
-            leaveFromClass: 'transform scale-100 opacity-100',
-            leaveToClass: 'transform scale-95 opacity-0',
-          }"
-        >
+        <transitionable :classes-list="configuration.classesList">
           <div
             v-show="showModal"
-            class="relative z-50 max-w-lg px-3 py-12 mx-auto"
+            :class="configuration.classesList?.wrapper"
+            v-bind="modalAttributes"
           >
             <template v-if="noBody">
               <slot />
             </template>
             <div
               v-else
-              class="relative overflow-visible bg-white rounded shadow"
+              :class="configuration.classesList?.modal"
             >
               <button
                 v-if="!hideCloseButton"
                 type="button"
-                class="absolute top-0 right-0 flex items-center justify-center w-8 h-8 -m-3 text-gray-600 transition ease-in-out bg-gray-100 rounded-full duration-400 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 hover:bg-gray-200"
+                :class="configuration.classesList?.close"
                 @click="hide"
               >
-                <close-icon class="w-4 h-4" />
+                <close-icon :class="configuration.classesList?.closeIcon" />
               </button>
 
               <div
                 v-if="$slots.header || configuration.header"
                 ref="header"
-                class="p-3 border-b border-gray-100 rounded-t"
+                :class="configuration.classesList?.header"
               >
-                <slot
-                  name="header"
-                  :configuration="configuration"
-                >
+                <slot name="header">
                   {{ configuration.header }}
                 </slot>
               </div>
@@ -69,9 +49,9 @@
               <div
                 v-if="$slots.default || configuration.body"
                 ref="body"
-                class="p-3"
+                :class="configuration.classesList?.body"
               >
-                <slot :configuration="configuration">
+                <slot>
                   {{ configuration.body }}
                 </slot>
               </div>
@@ -79,12 +59,9 @@
               <div
                 v-if="$slots.footer || configuration.footer"
                 ref="footer"
-                class="p-3 bg-gray-100 rounded-b "
+                :class="configuration.classesList?.footer"
               >
-                <slot
-                  name="footer"
-                  :configuration="configuration"
-                >
+                <slot name="footer">
                   {{ configuration.footer }}
                 </slot>
               </div>
@@ -98,46 +75,18 @@
 
 <script lang="ts">
 import {
-  defineComponent, PropType, ref, watch, nextTick, onBeforeUnmount, onMounted, getCurrentInstance, inject,
+  defineComponent, PropType, ref, watch, nextTick, onBeforeUnmount, onMounted, HTMLAttributes, inject, computed,
 } from 'vue';
 import { BodyScrollOptions, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
-import { Data } from '@variantjs/core';
+import {
+  Data, TModalConfig, TModalClassesKeys, TModalClassesValidKeys,
+} from '@variantjs/core';
 import { TModalOptions, EmitterInterface } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import CloseIcon from '../icons/CloseIcon.vue';
 import useVModel from '../use/useVModel';
 import Transitionable from './misc/Transitionable.vue';
-
-// @TODO: move this to the core library
-export const TModalConfig = {
-  classes: {
-    overlay: 'z-40 bg-black bg-opacity-50',
-    wrapper: 'z-50 max-w-lg px-3 py-12',
-    modal: 'bg-white shadow rounded',
-    body: 'p-3',
-    header: 'border-b border-gray-100 p-3 rounded-t',
-    footer: 'bg-gray-100 p-3 rounded-b',
-    close: 'bg-gray-100 text-gray-600 rounded-full absolute right-0 top-0 -m-3 h-8 w-8 transition duration-100 ease-in-out hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50',
-    closeIcon: 'fill-current h-4 w-4',
-    overlayEnterClass: 'opacity-0',
-    overlayEnterActiveClass: 'transition ease-out duration-100',
-    overlayEnterToClass: 'opacity-100',
-    overlayLeaveClass: 'opacity-100',
-    overlayLeaveActiveClass: 'transition ease-in duration-75',
-    overlayLeaveToClass: 'opacity-0',
-    enterClass: '',
-    enterActiveClass: '',
-    enterToClass: '',
-    leaveClass: '',
-    leaveActiveClass: '',
-    leaveToClass: '',
-  },
-};
-
-export const TModalClassesKeys = Object.keys(TModalConfig.classes);
-
-export type TModalClassesValidKeys = keyof typeof TModalConfig.classes;
 
 // @vue/component
 export default defineComponent({
@@ -155,6 +104,10 @@ export default defineComponent({
     modelValue: {
       type: Boolean,
       default: false,
+    },
+    modalAttributes: {
+      type: Object as PropType<HTMLAttributes & Data>,
+      default: () => ({}),
     },
     header: {
       type: String,
@@ -345,6 +298,15 @@ export default defineComponent({
       });
     }
 
+    const overlayTransitionClassesList = computed(() => ({
+      enterActiveClass: configuration.classesList?.overlayEnterActiveClass,
+      enterFromClass: configuration.classesList?.overlayEnterFromClass,
+      enterToClass: configuration.classesList?.overlayEnterToClass,
+      leaveActiveClass: configuration.classesList?.overlayLeaveActiveClass,
+      leaveFromClass: configuration.classesList?.overlayLeaveFromClass,
+      leaveToClass: configuration.classesList?.overlayLeaveToClass,
+    }));
+
     return {
       configuration,
       attributes,
@@ -352,6 +314,7 @@ export default defineComponent({
       showModal,
       showComponent,
       overlay,
+      overlayTransitionClassesList,
       show,
       hide,
       onKeydownEscapeHandler,
@@ -359,5 +322,4 @@ export default defineComponent({
     };
   },
 });
-
 </script>
