@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMount, mount, VueWrapper } from '@vue/test-utils';
 import * as bodyScrollLockModule from 'body-scroll-lock';
 import TModal from '@/components/TModal.vue';
 import plugin from '../../plugin';
@@ -374,6 +374,82 @@ describe('TModal.vue', () => {
         expect(disableBodyScrollSpy).not.toHaveBeenCalled();
 
         disableBodyScrollSpy.mockRestore();
+      });
+    });
+
+    describe('enable body scroll', () => {
+      it('enables body scroll when unmounted', () => {
+        const enableBodyScrollSpy = jest.spyOn(bodyScrollLockModule, 'enableBodyScroll');
+
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        wrapper.unmount();
+
+        expect(enableBodyScrollSpy).toHaveBeenCalled();
+
+        enableBodyScrollSpy.mockRestore();
+      });
+
+      it('doesnt enables body scroll when unmounted if `disableBodyScroll` is set to `false`', () => {
+        const enableBodyScrollSpy = jest.spyOn(bodyScrollLockModule, 'enableBodyScroll');
+
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            disableBodyScroll: false,
+          },
+        });
+
+        wrapper.unmount();
+
+        expect(enableBodyScrollSpy).not.toHaveBeenCalled();
+
+        enableBodyScrollSpy.mockRestore();
+      });
+
+      it('enables body scroll when modal is closed', async () => {
+        const enableBodyScrollSpy = jest.spyOn(bodyScrollLockModule, 'enableBodyScroll');
+
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        wrapper.vm.hide();
+
+        // Whole close lifecycle
+        await wrapper.vm.$nextTick();
+        await wrapper.vm.$nextTick();
+        await wrapper.vm.$nextTick();
+        await wrapper.vm.$nextTick();
+
+        expect(enableBodyScrollSpy).toHaveBeenCalled();
+
+        enableBodyScrollSpy.mockRestore();
+      });
+
+      it('doesnt enables body scroll when modal is closed if `disableBodyScroll` is set to `false`', async () => {
+        const enableBodyScrollSpy = jest.spyOn(bodyScrollLockModule, 'enableBodyScroll');
+
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            disableBodyScroll: false,
+          },
+        });
+
+        wrapper.vm.hide();
+
+        // Whole close lifecycle
+        await wrapper.vm.$nextTick();
+        await wrapper.vm.$nextTick();
+        await wrapper.vm.$nextTick();
+        await wrapper.vm.$nextTick();
+
+        expect(enableBodyScrollSpy).not.toHaveBeenCalled();
+
+        enableBodyScrollSpy.mockRestore();
       });
     });
 
