@@ -122,9 +122,11 @@
           :click-to-close="false"
           hide-close-button
         >
-          <t-button @click="$modal.hide('notClosable')">
-            Close this
-          </t-button>
+          <template #default="{ hide }">
+            <t-button @click="hide">
+              Close this
+            </t-button>
+          </template>
         </t-modal>
       </TInputGroup>
     </t-card>

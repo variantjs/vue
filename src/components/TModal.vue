@@ -35,7 +35,9 @@
                 :class="configuration.classesList?.close"
                 @click="hide"
               >
-                <close-icon :class="configuration.classesList?.closeIcon" />
+                <slot name="closeButton">
+                  <close-icon :class="configuration.classesList?.closeIcon" />
+                </slot>
               </button>
 
               <div
@@ -43,7 +45,10 @@
                 ref="header"
                 :class="configuration.classesList?.header"
               >
-                <slot name="header">
+                <slot
+                  name="header"
+                  :hide="hide"
+                >
                   {{ configuration.header }}
                 </slot>
               </div>
@@ -53,7 +58,7 @@
                 ref="body"
                 :class="configuration.classesList?.body"
               >
-                <slot>
+                <slot :hide="hide">
                   {{ configuration.body }}
                 </slot>
               </div>
@@ -63,7 +68,10 @@
                 ref="footer"
                 :class="configuration.classesList?.footer"
               >
-                <slot name="footer">
+                <slot
+                  name="footer"
+                  :hide="hide"
+                >
                   {{ configuration.footer }}
                 </slot>
               </div>
