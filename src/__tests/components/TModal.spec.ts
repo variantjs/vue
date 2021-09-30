@@ -53,6 +53,21 @@ describe('TModal.vue', () => {
       focusSpy.mockRestore();
     });
 
+    it('doesnt focus the overlay if `focusOnOpen` is set to `false`', () => {
+      const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
+
+      mount(TModal, {
+        props: {
+          ...props,
+          focusOnOpen: false,
+        },
+      });
+
+      expect(focusSpy).not.toHaveBeenCalled();
+
+      focusSpy.mockRestore();
+    });
+
     it('emits the hide-related events in order', async () => {
       const wrapper = mount(TModal, {
         props,
