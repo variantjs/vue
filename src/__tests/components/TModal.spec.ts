@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { shallowMount, mount } from '@vue/test-utils';
+import * as bodyScrollLockModule from 'body-scroll-lock';
 import TModal from '@/components/TModal.vue';
 
 const waitUntilModalIsVisible = (wrapper: any) : Promise<void> => new Promise((resolve) => {
@@ -41,31 +42,62 @@ describe('TModal.vue', () => {
       expect(wrapper.html()).toContain('Hello World');
     });
 
-    it('focus the overlay', () => {
-      const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
+    describe('disable body scroll', () => {
+      it('disables the body scroll', () => {
+        const disableBodyScrollSpy = jest.spyOn(bodyScrollLockModule, 'disableBodyScroll');
 
-      mount(TModal, {
-        props,
+        mount(TModal, {
+          props,
+        });
+
+        expect(disableBodyScrollSpy).toHaveBeenCalled();
+
+        disableBodyScrollSpy.mockRestore();
       });
 
-      expect(focusSpy).toHaveBeenCalled();
+      it('doesnt disabled the body scroll if `disableBodyScroll` is set to `false`', () => {
+        const disableBodyScrollSpy = jest.spyOn(bodyScrollLockModule, 'disableBodyScroll');
 
-      focusSpy.mockRestore();
+        mount(TModal, {
+          props: {
+            ...props,
+            disableBodyScroll: false,
+          },
+        });
+
+        expect(disableBodyScrollSpy).not.toHaveBeenCalled();
+
+        disableBodyScrollSpy.mockRestore();
+      });
     });
 
-    it('doesnt focus the overlay if `focusOnOpen` is set to `false`', () => {
-      const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
+    describe('focus overlay', () => {
+      it('focus the overlay', () => {
+        const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
 
-      mount(TModal, {
-        props: {
-          ...props,
-          focusOnOpen: false,
-        },
+        mount(TModal, {
+          props,
+        });
+
+        expect(focusSpy).toHaveBeenCalled();
+
+        focusSpy.mockRestore();
       });
 
-      expect(focusSpy).not.toHaveBeenCalled();
+      it('doesnt focus the overlay if `focusOnOpen` is set to `false`', () => {
+        const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
 
-      focusSpy.mockRestore();
+        mount(TModal, {
+          props: {
+            ...props,
+            focusOnOpen: false,
+          },
+        });
+
+        expect(focusSpy).not.toHaveBeenCalled();
+
+        focusSpy.mockRestore();
+      });
     });
 
     it('emits the hide-related events in order', async () => {
