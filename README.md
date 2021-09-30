@@ -40,12 +40,12 @@ Everything will be documented, of course, but meanwhile, you can check the sourc
 - [x] TInputGroup
 - [x] TRichSelect
 - [x] TTag
+- [x] TModal (^0.0.5)
 
 *Next ones:*
 
 - [ ] TRadioGroup
 - [ ] TCheckboxGroup
-- [ ] TModal
 - [ ] TDialog
 - [ ] TTable
 - [ ] TPagination
@@ -91,13 +91,13 @@ All that means that with this library, you will be able to:
 ### 1. Install the dependencies 
 
 ```console
-npm install @variantjs/vue@next @variantjs/vue@core --save
+npm install @variantjs/vue@next @variantjs/core --save
 ``` 
 
 Or: 
 
 ```console
-yarn add @variantjs/vue@next @variantjs/vue@core 
+yarn add @variantjs/vue@next @variantjs@core 
 ``` 
 
 The Dropdown and the RichSelect component depends on [Popperjs](https://popper.js.org/) so you need to add that dependency also if you need those components.
