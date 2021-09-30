@@ -202,6 +202,135 @@ describe('TModal.vue', () => {
     });
   });
 
+  describe('hiding modal', () => {
+    const props = {
+      teleport: false,
+      modelValue: true,
+    };
+
+    describe('with the `hide` method', () => {
+      it('hides the component when calling the hide method', async () => {
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        expect(wrapper.vm.showModal).toBe(true);
+
+        wrapper.vm.hide();
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showModal).toBe(false);
+      });
+
+      it('cancel the hide if the cancel method is called', async () => {
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        const emitSpy = jest.spyOn(wrapper.vm.$, 'emit').mockImplementation((name, ...params) => {
+          if (name === 'before-hide') {
+            (params as any).cancel();
+          }
+        });
+
+        wrapper.vm.hide();
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showModal).toBe(true);
+
+        emitSpy.mockRestore();
+      });
+    });
+
+    describe('with the $modal global property', () => {
+      it('show the component when calling the show method', async () => {
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            name: 'modal-name',
+          },
+          global: {
+            plugins: [plugin],
+          },
+        });
+
+        expect(wrapper.vm.showModal).toBe(true);
+
+        wrapper.vm.$modal.hide('modal-name');
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showModal).toBe(false);
+      });
+
+      it('doesnt show the component when calling the show method if different name', async () => {
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            name: 'other-name',
+          },
+          global: {
+            plugins: [plugin],
+          },
+        });
+
+        expect(wrapper.vm.showModal).toBe(true);
+
+        wrapper.vm.$modal.hide('modal-name');
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showModal).toBe(true);
+      });
+
+      it('cancel the show if the cancel method is called', async () => {
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            name: 'modal-name',
+          },
+          global: {
+            plugins: [plugin],
+          },
+        });
+
+        const emitSpy = jest.spyOn(wrapper.vm.$, 'emit').mockImplementation((name, ...params) => {
+          if (name === 'before-hide') {
+            (params as any).cancel();
+          }
+        });
+
+        wrapper.vm.$modal.hide('modal-name');
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showModal).toBe(true);
+
+        emitSpy.mockRestore();
+      });
+    });
+
+    describe('with the vModel', () => {
+      it('hides the component when updated the v-model to false', async () => {
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        expect(wrapper.vm.showModal).toBe(true);
+
+        wrapper.setProps({
+          modelValue: false,
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showModal).toBe(false);
+      });
+    });
+  });
+
   describe('modal is shown initially', () => {
     const props = {
       modelValue: true,
