@@ -2,6 +2,7 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import * as bodyScrollLockModule from 'body-scroll-lock';
 import TModal from '@/components/TModal.vue';
+import plugin from '../../plugin';
 
 const waitUntilModalIsVisible = (wrapper: any) : Promise<void> => new Promise((resolve) => {
   // 1. Component is added to the DOM
@@ -23,6 +24,182 @@ describe('TModal.vue', () => {
   it('doesnt show the component by default', () => {
     const wrapper = shallowMount(TModal);
     expect(wrapper.vm.$el.tagName).toBeUndefined();
+  });
+
+  describe('opening modal', () => {
+    const props = {
+      teleport: false,
+    };
+
+    describe('with the `show` method', () => {
+      it('show the component when calling the show method', async () => {
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        expect(wrapper.vm.showComponent).toBe(false);
+
+        wrapper.vm.show();
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showComponent).toBe(true);
+      });
+
+      it('pass parameters from the show method to the before-show event', async () => {
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        const params = {
+          foo: 'bar',
+        };
+
+        expect(wrapper.vm.showComponent).toBe(false);
+
+        wrapper.vm.show(params);
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showComponent).toBe(true);
+
+        expect((wrapper.emitted('before-show')![0] as any)[0].params).toEqual(params);
+      });
+
+      it('cancel the show if the cancel method is called', async () => {
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+          },
+        });
+
+        const emitSpy = jest.spyOn(wrapper.vm.$, 'emit').mockImplementation((name, ...params) => {
+          if (name === 'before-show') {
+            (params as any).cancel();
+          }
+        });
+
+        wrapper.vm.show();
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showComponent).toBe(false);
+
+        emitSpy.mockRestore();
+      });
+    });
+
+    describe('with the $modal global property', () => {
+      it('show the component when calling the show method', async () => {
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            name: 'modal-name',
+          },
+          global: {
+            plugins: [plugin],
+          },
+        });
+
+        expect(wrapper.vm.showComponent).toBe(false);
+
+        wrapper.vm.$modal.show('modal-name');
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showComponent).toBe(true);
+      });
+
+      it('doesnt show the component when calling the show method if different name', async () => {
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            name: 'other-name',
+          },
+          global: {
+            plugins: [plugin],
+          },
+        });
+
+        expect(wrapper.vm.showComponent).toBe(false);
+
+        wrapper.vm.$modal.show('modal-name');
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showComponent).toBe(false);
+      });
+
+      it('pass parameters from the show method to the before-show event', async () => {
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            name: 'modal-name',
+          },
+          global: {
+            plugins: [plugin],
+          },
+        });
+
+        const params = {
+          foo: 'bar',
+        };
+
+        expect(wrapper.vm.showComponent).toBe(false);
+
+        wrapper.vm.$modal.show('modal-name', params);
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showComponent).toBe(true);
+
+        expect((wrapper.emitted('before-show')![0] as any)[0].params).toEqual(params);
+      });
+
+      it('cancel the show if the cancel method is called', async () => {
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            name: 'modal-name',
+          },
+          global: {
+            plugins: [plugin],
+          },
+        });
+
+        const emitSpy = jest.spyOn(wrapper.vm.$, 'emit').mockImplementation((name, ...params) => {
+          if (name === 'before-show') {
+            (params as any).cancel();
+          }
+        });
+
+        wrapper.vm.$modal.show('modal-name');
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showComponent).toBe(false);
+
+        emitSpy.mockRestore();
+      });
+    });
+
+    describe('with the vModel', () => {
+      it('show the component when updated the v-model to true', async () => {
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        expect(wrapper.vm.showComponent).toBe(false);
+
+        wrapper.setProps({
+          modelValue: true,
+        });
+
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.showComponent).toBe(true);
+      });
+    });
   });
 
   describe('modal is shown initially', () => {
