@@ -19,6 +19,7 @@ import TDropdown from './components/TDropdown.vue';
 import TInputGroup from './components/TInputGroup.vue';
 import TRichSelect from './components/TRichSelect.vue';
 import TTag from './components/TTag.vue';
+import TModal from './components/TModal.vue';
 
 // Import uses
 import useActivableOption from './use/useActivableOption';
@@ -45,7 +46,7 @@ export {
   TCheckbox,
   TRadio,
 
-  // // Form Components
+  // Form Components
   TInputGroup,
   TRichSelect,
 
@@ -56,6 +57,7 @@ export {
   TCard,
   TDropdown,
   TAlert,
+  TModal,
 
   // Installer
   plugin as variantJS,
