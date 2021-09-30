@@ -1,7 +1,7 @@
-import { EmitterEvents, EmitterFunction } from '../types';
+/* eslint-disable import/prefer-default-export */
+import { EmitterEvents, EmitterFunction, EmitterInterface } from '../types';
 
-// eslint-disable-next-line import/prefer-default-export
-export class Emitter {
+export class Emitter implements EmitterInterface {
   private events: EmitterEvents = {};
 
   on(name: keyof EmitterEvents, callback: EmitterFunction): void {

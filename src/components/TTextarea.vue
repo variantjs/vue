@@ -30,7 +30,7 @@ export default defineComponent({
   setup(props) {
     const vm = getCurrentInstance();
 
-    const definedProps = vm?.vnode.props;
+    const definedProps = vm!.vnode.props;
 
     const usesVModel = definedProps && definedProps.modelValue !== undefined;
 

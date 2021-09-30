@@ -937,6 +937,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/body-scroll-lock@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@types/body-scroll-lock/-/body-scroll-lock-3.1.0.tgz#435f6abf682bf58640e1c2ee5978320b891970e7"
+  integrity sha512-3owAC4iJub5WPqRhxd8INarF2bWeQq1yQHBgYhN0XLBJMpd5ED10RrJ3aKiAwlTyL5wK7RkBD4SZUQz2AAAMdA==
+
 "@types/cacheable-request@^6.0.1":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@types/cacheable-request/-/cacheable-request-6.0.2.tgz#c324da0197de0a98a2312156536ae262429ff6b9"
@@ -1146,10 +1151,10 @@
     "@typescript-eslint/types" "4.31.2"
     eslint-visitor-keys "^2.0.0"
 
-"@variantjs/core@^0.0.39":
-  version "0.0.39"
-  resolved "https://registry.yarnpkg.com/@variantjs/core/-/core-0.0.39.tgz#0592a9cf5bac88f301d8c21cb9edb95e172b6071"
-  integrity sha512-0yxCeFpz0fnGu71PcppYP4jkczcJcRNz2BZgpR3ugnR/Dbxa7NGnProDm6hXzVDfacAo46EwXUOmvilBQc7CxA==
+"@variantjs/core@^0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@variantjs/core/-/core-0.0.42.tgz#98089d29a5cce0a6b1fa67bf38c9eec0adcbe159"
+  integrity sha512-cbbT759YWUsn0d/8yg3exbw7HKeuh9JlrG3LIginaL/cx1/R55Uks0OlQ2SeAQA0XpkNHOss38s10+FPYazZ+Q==
 
 "@vitejs/plugin-vue@^1.9.0":
   version "1.9.0"
@@ -1745,6 +1750,11 @@ bl@^4.1.0:
     buffer "^5.5.0"
     inherits "^2.0.4"
     readable-stream "^3.4.0"
+
+body-scroll-lock@^4.0.0-beta.0:
+  version "4.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/body-scroll-lock/-/body-scroll-lock-4.0.0-beta.0.tgz#4f78789d10e6388115c0460cd6d7d4dd2bbc4f7e"
+  integrity sha512-a7tP5+0Mw3YlUJcGAKUqIBkYYGlYxk2fnCasq/FUph1hadxlTRjF+gAcZksxANnaMnALjxEddmSi/H3OR8ugcQ==
 
 boxen@^5.0.0:
   version "5.1.1"

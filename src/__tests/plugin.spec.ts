@@ -5,12 +5,12 @@ import { VariantJSConfiguration } from '../types';
 import { Emitter } from '../utils/emitter';
 
 describe('plugin installer', () => {
-  it('adds the configuration to the provides', () => {
+  it('provides the configuration', () => {
     const app = createApp({});
 
     const configuration: VariantJSConfiguration = {
       TInput: {
-        placeholder: 'Wharever',
+        placeholder: 'Whatever',
       },
     };
 
@@ -33,12 +33,24 @@ describe('plugin installer', () => {
     expect(component._context.provides.configuration).toEqual({});
   });
 
-  it('adds an emitter as a global property', () => {
+  it('provides an emitter ', () => {
     const app = createApp({});
 
     app.use(variantJS);
 
     // eslint-disable-next-line no-underscore-dangle
-    expect(app.config.globalProperties.emitter).toBeInstanceOf(Emitter);
+    expect(app._context.provides.emitter).toBeInstanceOf(Emitter);
+  });
+
+  it('adds an $modal util as a global property', () => {
+    const app = createApp({});
+
+    app.use(variantJS);
+
+    expect(typeof app.config.globalProperties.$modal).toBe('object');
+
+    expect(typeof app.config.globalProperties.$modal.show).toBe('function');
+
+    expect(typeof app.config.globalProperties.$modal.hide).toBe('function');
   });
 });
