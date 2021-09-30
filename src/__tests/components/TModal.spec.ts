@@ -107,7 +107,7 @@ describe('TModal.vue', () => {
         expect(wrapper.vm.$.setupState.showModal).toBe(false);
       });
 
-      it('doesnt hids the modal when press esc if `escToClose` is set to `false`', async () => {
+      it('doesnt hide the modal when press esc if `escToClose` is set to `false`', async () => {
         const wrapper = mount(TModal, {
           props: {
             ...props,
@@ -118,6 +118,50 @@ describe('TModal.vue', () => {
         wrapper.vm.$refs.overlay.dispatchEvent(new KeyboardEvent('keydown', {
           key: 'Escape',
         }));
+
+        await wrapper.vm.$nextTick();
+
+        // Meaning the modal was hidden
+        expect(wrapper.vm.$.setupState.showModal).toBe(true);
+      });
+    });
+
+    describe('user clicks the overlay (outside)', () => {
+      it('hides the modal when clicks outside', async () => {
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        wrapper.vm.$refs.overlay.dispatchEvent(new MouseEvent('click'));
+
+        await wrapper.vm.$nextTick();
+
+        // Meaning the modal was hidden
+        expect(wrapper.vm.$.setupState.showModal).toBe(false);
+      });
+
+      it('doesnt hides the modal when clicks the modal', async () => {
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        wrapper.vm.$refs.modal.dispatchEvent(new MouseEvent('click'));
+
+        await wrapper.vm.$nextTick();
+
+        // Meaning the modal was hidden
+        expect(wrapper.vm.$.setupState.showModal).toBe(true);
+      });
+
+      it('doesnt hide the modal when click outside if `clickToClose` is set to `false`', async () => {
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            clickToClose: false,
+          },
+        });
+
+        wrapper.vm.$refs.overlay.dispatchEvent(new MouseEvent('click'));
 
         await wrapper.vm.$nextTick();
 

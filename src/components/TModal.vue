@@ -17,8 +17,9 @@
         <transitionable :classes-list="configuration.classesList">
           <div
             v-show="showModal"
-            :class="configuration.classesList?.wrapper"
             v-bind="modalAttributes"
+            ref="modal"
+            :class="configuration.classesList?.wrapper"
             @click.stop
           >
             <template v-if="noBody">
