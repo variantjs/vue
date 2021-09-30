@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { shallowMount, mount, VueWrapper } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import * as bodyScrollLockModule from 'body-scroll-lock';
+import { TModalConfig } from '@variantjs/core';
 import TModal from '@/components/TModal.vue';
 import plugin from '../../plugin';
 
@@ -660,6 +661,27 @@ describe('TModal.vue', () => {
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('before-show')).toBeTruthy();
       expect(wrapper.emitted('shown')).toBeTruthy();
+    });
+  });
+
+  describe('classes', () => {
+    const props = {
+      teleport: false,
+    };
+
+    it('creates the overlayTransitionClassesList computed property from default configuration', () => {
+      const wrapper = mount(TModal, {
+        props,
+      });
+
+      expect(wrapper.vm.overlayTransitionClassesList).toEqual({
+        enterActiveClass: TModalConfig.classes.overlayEnterActiveClass,
+        enterFromClass: TModalConfig.classes.overlayEnterFromClass,
+        enterToClass: TModalConfig.classes.overlayEnterToClass,
+        leaveActiveClass: TModalConfig.classes.overlayLeaveActiveClass,
+        leaveFromClass: TModalConfig.classes.overlayLeaveFromClass,
+        leaveToClass: TModalConfig.classes.overlayLeaveToClass,
+      });
     });
   });
 });

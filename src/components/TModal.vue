@@ -351,12 +351,12 @@ export default defineComponent({
     }
 
     const overlayTransitionClassesList = computed(() => ({
-      enterActiveClass: configuration.classesList?.overlayEnterActiveClass,
-      enterFromClass: configuration.classesList?.overlayEnterFromClass,
-      enterToClass: configuration.classesList?.overlayEnterToClass,
-      leaveActiveClass: configuration.classesList?.overlayLeaveActiveClass,
-      leaveFromClass: configuration.classesList?.overlayLeaveFromClass,
-      leaveToClass: configuration.classesList?.overlayLeaveToClass,
+      enterActiveClass: configuration.classesList!.overlayEnterActiveClass,
+      enterFromClass: configuration.classesList!.overlayEnterFromClass,
+      enterToClass: configuration.classesList!.overlayEnterToClass,
+      leaveActiveClass: configuration.classesList!.overlayLeaveActiveClass,
+      leaveFromClass: configuration.classesList!.overlayLeaveFromClass,
+      leaveToClass: configuration.classesList!.overlayLeaveToClass,
     }));
 
     return {
