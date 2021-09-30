@@ -90,6 +90,41 @@ describe('TModal.vue', () => {
       expect(wrapper.emitted('before-hide')).toBeTruthy();
       expect(wrapper.emitted('hidden')).toBeTruthy();
     });
+
+    describe('press esc key', () => {
+      it('hides the modal when press esc', async () => {
+        const wrapper = mount(TModal, {
+          props,
+        });
+
+        wrapper.vm.$refs.overlay.dispatchEvent(new KeyboardEvent('keydown', {
+          key: 'Escape',
+        }));
+
+        await wrapper.vm.$nextTick();
+
+        // Meaning the modal was hidden
+        expect(wrapper.vm.$.setupState.showModal).toBe(false);
+      });
+
+      it('doesnt hids the modal when press esc if `escToClose` is set to `false`', async () => {
+        const wrapper = mount(TModal, {
+          props: {
+            ...props,
+            esctoClose: false,
+          },
+        });
+
+        wrapper.vm.$refs.overlay.dispatchEvent(new KeyboardEvent('keydown', {
+          key: 'Escape',
+        }));
+
+        await wrapper.vm.$nextTick();
+
+        // Meaning the modal was hidden
+        expect(wrapper.vm.$.setupState.showModal).toBe(true);
+      });
+    });
   });
 
   describe('modal is hidden initially', () => {
