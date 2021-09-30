@@ -91,26 +91,19 @@ All that means that with this library, you will be able to:
 ### 1. Install the dependencies 
 
 ```console
-npm install @variantjs/vue@next @variantjs/core --save
+npm install @variantjs/vue@next @variantjs/core @popperjs/core body-scroll-lock --save
 ``` 
 
 Or: 
 
 ```console
-yarn add @variantjs/vue@next @variantjs@core 
+yarn add @variantjs/vue@next @variantjs@core @popperjs/core body-scroll-lock
 ``` 
 
-The Dropdown and the RichSelect component depends on [Popperjs](https://popper.js.org/) so you need to add that dependency also if you need those components.
+Notes: 
 
-```console
-npm install @popperjs/core --save
-``` 
-
-Or: 
-
-```console
-yarn add @popperjs/core
-``` 
+* `@popperjs/core` is only need if you use the `TRichSelect` or `TDropdown` component.
+* `body-scroll-lock` is only need if you use the `TModal` component and the incoming `TDialog` component.
 
 
 ## 2. Install TailwindCSS (Optional)
