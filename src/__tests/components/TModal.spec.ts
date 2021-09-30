@@ -158,7 +158,7 @@ describe('TModal.vue', () => {
         const wrapper = mount(TModal, {
           props: {
             ...props,
-            esctoClose: false,
+            escToClose: false,
           },
         });
 
