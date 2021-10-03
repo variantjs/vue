@@ -1,9 +1,6 @@
-import { WithVariantPropsAndClassesList, Data } from '@variantjs/core';
+import { WithVariantPropsAndClassesList, Data, TDialogClassesValidKeys } from '@variantjs/core';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import { HTMLAttributes } from 'vue';
-
-// @TODO: move this to @variant/core
-type TDialogClassesKeys = 'wrapper';
 
 export type TDialogOptions = WithVariantPropsAndClassesList<{
   name?: string,
@@ -21,4 +18,4 @@ export type TDialogOptions = WithVariantPropsAndClassesList<{
   teleport?: boolean,
   teleportTo?: string | HTMLElement,
   showCloseButton?: boolean,
-} & HTMLAttributes & Data, TDialogClassesKeys>;
+} & HTMLAttributes & Data, TDialogClassesValidKeys>;
