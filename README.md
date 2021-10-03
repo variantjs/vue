@@ -98,7 +98,7 @@ npm install @variantjs/vue@next @variantjs/core @popperjs/core body-scroll-lock 
 Or: 
 
 ```console
-yarn add @variantjs/vue@next @variantjs@core @popperjs/core body-scroll-lock
+yarn add @variantjs/vue@next @variantjs/core @popperjs/core body-scroll-lock
 ``` 
 
 Notes: 
