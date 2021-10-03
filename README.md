@@ -92,13 +92,13 @@ All that means that with this library, you will be able to:
 ### 1. Install the dependencies 
 
 ```console
-npm install @variantjs/vue@next @variantjs/core @popperjs/core body-scroll-lock --save
+npm install @variantjs/vue @variantjs/core @popperjs/core body-scroll-lock --save
 ``` 
 
 Or: 
 
 ```console
-yarn add @variantjs/vue@next @variantjs/core @popperjs/core body-scroll-lock
+yarn add @variantjs/vue @variantjs/core @popperjs/core body-scroll-lock
 ``` 
 
 Notes: 
