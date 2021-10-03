@@ -1,9 +1,13 @@
 <template>
   <div class="pb-36">
-    <div class="max-w-md mx-auto my-10">
-      <app-menu />
+    <div class="flex max-w-2xl mx-auto my-10 space-x-4">
+      <div>
+        <app-menu />
+      </div>
 
-      <router-view />
+      <div class="flex flex-col items-center flex-grow">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>
