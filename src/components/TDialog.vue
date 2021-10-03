@@ -17,7 +17,7 @@
   >
     <template #header="{ hide }">
       <slot
-        name="header"
+        name="title"
         :hide="hide"
       >
         <!-- {{ configuration.header }} -->
@@ -83,7 +83,7 @@ import {
 } from 'vue';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import {
-  Data, TDialogConfig, TDialogClassesKeys, TDialogClassesValidKeys, DialogType,
+  Data, TDialogConfig, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn,
 } from '@variantjs/core';
 import { TDialogOptions, EmitterInterface } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -101,8 +101,48 @@ export default defineComponent({
     ...getVariantPropsWithClassesList<TDialogOptions, TDialogClassesValidKeys>(),
     type: {
       type: String as PropType<DialogType>,
-      default: 'alert',
+      default: DialogType.Alert,
     },
+
+    // @TODO
+    title: {
+      type: String,
+      default: undefined,
+    },
+    titleTag: {
+      type: String,
+      default: 'h3',
+    },
+    textTag: {
+      type: String,
+      default: 'p',
+    },
+    text: {
+      type: String,
+      default: undefined,
+    },
+
+    cancelButtonText: {
+      type: String,
+      default: 'Cancel',
+    },
+    cancelButtonAriaLabel: {
+      type: String,
+      default: undefined,
+    },
+    okButtonText: {
+      type: String,
+      default: 'OK',
+    },
+    okButtonAriaLabel: {
+      type: String,
+      default: undefined,
+    },
+    preConfirm: {
+      type: Function as PropType<DialogPreconfirmFn>,
+      default: undefined,
+    },
+
     name: {
       type: String,
       default: undefined,
@@ -115,10 +155,7 @@ export default defineComponent({
       type: Object as PropType<HTMLAttributes & Data>,
       default: () => ({}),
     },
-    header: {
-      type: String,
-      default: undefined,
-    },
+
     body: {
       type: String,
       default: undefined,
