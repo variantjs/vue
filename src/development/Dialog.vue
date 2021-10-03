@@ -9,23 +9,13 @@
         label="Open with modal name"
         class="mb-4"
       >
-        <t-dialog name="my-modal">
-          <template #header>
-            This it the header
-          </template>
-          <t-button
-            type="button"
-            @click="$modal.hide('my-modal')"
-          >
-            Hide modal
-          </t-button>
-        </t-dialog>
+        <t-dialog name="my-dialog" />
 
         <div class="flex space-x-2">
           <t-button
-            @click="$modal.show('my-modal')"
+            @click="$dialog.show('my-dialog')"
           >
-            Show modal
+            Show dialog
           </t-button>
         </div>
       </TInputGroup>
@@ -56,9 +46,9 @@
 
         <div class="flex space-x-2">
           <t-button
-            @click="$modal.show('param-modal', { email })"
+            @click="$dialog.show('param-modal', { email })"
           >
-            Show modal with parameter
+            Show dialog with parameter
           </t-button>
         </div>
       </TInputGroup>
@@ -84,10 +74,10 @@
           <t-button
             @click="($refs.modal as any).show()"
           >
-            Show modal
+            Show dialog
           </t-button>
         </div>
-      </TInputGroup>
+      </TInputGroup>-->
 
       <TInputGroup
         label="Syncs show property"
@@ -97,30 +87,21 @@
           <t-checkbox v-model="show" />
         </div>
 
-        <t-dialog v-model="show">
-          <template #header>
-            This it the header
-          </template>
-          <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repudiandae totam, alias voluptas deleniti ex tempora asperiores perspiciatis qui. Repellendus, exercitationem itaque! Beatae error ut fuga vel tempora, repellat optio molestiae!</p>
-          <template #footer>
-            this is the footer
-          </template>
-        </t-dialog>
+        <t-dialog v-model="show" />
       </TInputGroup>
 
       <TInputGroup
         label="Only closable trough the custom button inside"
         class="mb-4"
       >
-        <t-button @click="$modal.show('notClosable')">
-          Show modal
+        <t-button @click="$dialog.show('notClosable')">
+          Show dialog
         </t-button>
 
         <t-dialog
           name="notClosable"
           :esc-to-close="false"
           :click-to-close="false"
-          hide-close-button
         >
           <template #default="{ hide }">
             <t-button @click="hide">
@@ -129,7 +110,6 @@
           </template>
         </t-dialog>
       </TInputGroup>
-    </t-card> -->
     </t-card>
   </div>
 </template>
