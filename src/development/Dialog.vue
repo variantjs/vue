@@ -20,6 +20,56 @@
         </div>
       </TInputGroup>
 
+      <TInputGroup
+        label="Dialog types"
+        class="mb-4"
+        :type="dialogType"
+      >
+        <t-dialog name="dialog-type" />
+
+        <div class="flex mb-2 space-x-3">
+          <label
+            for="alert"
+            class="flex items-center space-x-1"
+          >
+            <t-radio
+              id="alert"
+              v-model="dialogType"
+              value="alert"
+            />
+            <span>Alert</span>
+          </label>
+          <label
+            for="confirm"
+            class="flex items-center space-x-1"
+          >
+            <t-radio
+              id="confirm"
+              v-model="dialogType"
+              value="confirm"
+            />
+            <span>Confirm</span>
+          </label>
+          <label
+            for="prompt"
+            class="flex items-center space-x-1"
+          >
+            <t-radio
+              id="prompt"
+              v-model="dialogType"
+              value="prompt"
+            />
+            <span>Prompt</span>
+          </label>
+        </div>
+
+        <t-button
+          @click="$dialog.show('dialog-type')"
+        >
+          Show {{ dialogType.charAt(0).toUpperCase() + dialogType.slice(1) }}
+        </t-button>
+      </TInputGroup>
+
       <!-- <TInputGroup
         label="Pass parameter trough the `before-show` event"
         class="mb-4"
@@ -117,12 +167,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import { Data } from '@variantjs/core';
+import { Data, DialogType } from '@variantjs/core';
 import TCheckbox from '../components/TCheckbox.vue';
 import TButton from '../components/TButton.vue';
 import TCard from '../components/TCard.vue';
 import TDialog from '../components/TDialog.vue';
 import TInput from '../components/TInput.vue';
+import TRadio from '../components/TRadio.vue';
 import TInputGroup from '../components/TInputGroup.vue';
 
 export default defineComponent({
@@ -134,9 +185,11 @@ export default defineComponent({
     TDialog,
     TInput,
     TInputGroup,
+    TRadio,
   },
   data() {
     return {
+      dialogType: 'alert' as DialogType,
       show: false,
       email: 'alfonso@variantjs.com',
       name: 'Alfonso',
