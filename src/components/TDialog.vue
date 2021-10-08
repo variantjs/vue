@@ -105,7 +105,7 @@
       </slot>
     </template>
 
-    <template #footer="{ hide }">
+    <template #footer>
       <slot
         name="footer"
         :hide="hide"
@@ -114,6 +114,7 @@
           type="button"
           :class="configuration.classesList?.cancelButton"
           :aria-label="cancelButtonAriaLabel"
+          @click="hide(DialogHideReason.Cancel)"
         >
           {{ cancelButtonText }}
         </button>
@@ -121,6 +122,7 @@
           type="button"
           :class="configuration.classesList?.okButton"
           :aria-label="okButtonAriaLabel"
+          @click="hide(DialogHideReason.Ok)"
         >
           {{ okButtonText }}
         </button>
@@ -279,33 +281,38 @@ export default defineComponent({
 
     const showModel = useVModel(props, 'modelValue');
 
+    const hideReason = ref<DialogHideReason | undefined>(DialogHideReason.Other);
+
     const promiseResolve = ref<((value: DialogResponse) => void) | undefined>(undefined);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const promiseReject = ref<PromiseRejectFn | undefined>(undefined);
 
     const reset = (): void => {
       promiseResolve.value = undefined;
       promiseReject.value = undefined;
+      hideReason.value = undefined;
     };
 
     const onBeforeShow = (e: { cancel: PromiseRejectFn, params: unknown }) => {
       emit('before-show', e);
     };
 
-    const onBeforeHide = (e: { cancel: PromiseRejectFn }) => {
+    const onBeforeHide = (e: { cancel: PromiseRejectFn, reason: DialogHideReason }) => {
       emit('before-hide', e);
     };
 
-    const onHidden = () => {
+    const onHidden = (reason: DialogHideReason) => {
       emit('hidden');
 
-      // Temporal
       if (promiseResolve.value) {
+        const hideReasonValue = hideReason.value !== undefined ? hideReason.value : reason;
+
         promiseResolve.value({
-          hideReason: DialogHideReason.Cancel,
-          isOk: true,
-          isCancel: false,
-          isDismissed: false,
+          hideReason: hideReasonValue,
+          isOk: hideReasonValue === DialogHideReason.Ok,
+          isCancel: hideReasonValue === DialogHideReason.Cancel,
+          isDismissed: ![DialogHideReason.Cancel, DialogHideReason.Ok].includes(hideReasonValue),
+          // @TODO: input & response
           // input?: DialogInput;
           response: {},
         });
@@ -318,7 +325,9 @@ export default defineComponent({
       emit('shown');
     };
 
-    const hide = () :void => {
+    const hide = (reason: DialogHideReason = DialogHideReason.Other) :void => {
+      hideReason.value = reason;
+
       showModel.value = false;
     };
 
@@ -360,7 +369,7 @@ export default defineComponent({
           return;
         }
 
-        hide();
+        hide(DialogHideReason.Method);
       });
     }
 
@@ -391,10 +400,13 @@ export default defineComponent({
       attributes,
       showModel,
       modalClasses,
+      show,
+      hide,
       onBeforeShow,
       onBeforeHide,
       onShown,
       onHidden,
+      DialogHideReason,
     };
   },
 });

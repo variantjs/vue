@@ -193,8 +193,6 @@ export default defineComponent({
 
     const showModal = ref(showModel.value);
 
-    // Default value is `ModalHideReason.Value` because the `v-model` is the only
-    // way to hide the modal without passing a reason
     const hideReason = ref<ModalHideReason>(ModalHideReason.Value);
 
     const canceled = ref(false);
