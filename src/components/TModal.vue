@@ -33,7 +33,7 @@
                 v-if="!hideCloseButton"
                 type="button"
                 :class="configuration.classesList?.close"
-                @click="hide"
+                @click="hide(ModalHideReason.Close)"
               >
                 <slot name="closeButton">
                   <close-icon :class="configuration.classesList?.closeIcon" />
@@ -89,7 +89,7 @@ import {
 } from 'vue';
 import { BodyScrollOptions, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import {
-  Data, TModalConfig, TModalClassesKeys, TModalClassesValidKeys,
+  Data, TModalConfig, TModalClassesKeys, TModalClassesValidKeys, ModalHideReason,
 } from '@variantjs/core';
 import { TModalOptions, EmitterInterface } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -170,11 +170,12 @@ export default defineComponent({
   },
   emits: {
     shown: () => true,
-    hidden: () => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    hidden: (reason: ModalHideReason) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     'before-show': ({ cancel, params }: { cancel: (reason?: any) => void, params: any }) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-    'before-hide': ({ cancel }: { cancel: (reason?: any) => void }) => true,
+    'before-hide': ({ cancel, reason }: { cancel: (reason?: any) => void, reason: ModalHideReason }) => true,
     'update:modelValue': () => true,
   },
   setup(props, { emit }) {
@@ -192,9 +193,15 @@ export default defineComponent({
 
     const showModal = ref(showModel.value);
 
+    // Default value is `ModalHideReason.Value` because the `v-model` is the only
+    // way to hide the modal without passing a reason
+    const hideReason = ref<ModalHideReason>(ModalHideReason.Value);
+
     const canceled = ref(false);
 
-    const hide = () :void => {
+    const hide = (reason: ModalHideReason = ModalHideReason.Other) :void => {
+      hideReason.value = reason;
+
       showModel.value = false;
     };
 
@@ -220,6 +227,7 @@ export default defineComponent({
       }
 
       modalParameters = undefined;
+      hideReason.value = ModalHideReason.Value;
     };
 
     const onBeforeShow = () : Promise<void> => new Promise((resolve, reject) => {
@@ -234,6 +242,7 @@ export default defineComponent({
     const onBeforeHide = () : Promise<void> => new Promise((resolve, reject) => {
       emit('before-hide', {
         cancel: reject,
+        reason: hideReason.value,
       });
 
       resolve();
@@ -246,7 +255,7 @@ export default defineComponent({
     };
 
     const onHidden = () :void => {
-      emit('hidden');
+      emit('hidden', hideReason.value);
 
       reset();
     };
@@ -309,7 +318,7 @@ export default defineComponent({
         return;
       }
 
-      hide();
+      hide(ModalHideReason.Esc);
     };
 
     const onClickHandler = () :void => {
@@ -317,7 +326,7 @@ export default defineComponent({
         return;
       }
 
-      hide();
+      hide(ModalHideReason.Outside);
     };
 
     onMounted(() => {
@@ -346,7 +355,7 @@ export default defineComponent({
           return;
         }
 
-        hide();
+        hide(ModalHideReason.Method);
       });
     }
 
@@ -371,6 +380,7 @@ export default defineComponent({
       hide,
       onKeydownEscapeHandler,
       onClickHandler,
+      ModalHideReason,
     };
   },
 });
