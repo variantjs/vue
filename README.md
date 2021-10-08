@@ -6,7 +6,7 @@
 
 - Consider that this is a preview and all components are subject to change until I release the final version.
 - If you find any error, typo or have comments feel free to create [an issue](https://github.com/variantjs/vue/issues) or open a PR.
-- Also a friendly reminder to consider [sponsor this project](https://github.com/sponsors/alfonsobries) there is a lot of work behind, **a lot**.
+- Also a friendly reminder to consider [sponsor this project](https://github.com/sponsors/variantjs) there is a lot of work behind, **a lot**.
 - You can track the progress (or even see what tasks are pending if you want to contribute) [here](https://github.com/variantjs/vue/projects/1).
 - Demo: [https://variantjs.vercel.app/](https://variantjs.vercel.app/#/)
   
@@ -47,7 +47,7 @@ Everything will be documented, of course, but meanwhile, you can check the sourc
 
 - [ ] TRadioGroup
 - [ ] TCheckboxGroup
-- [ ] TDialog
+- [ ] TDialog 
 - [ ] TTable
 - [ ] TPagination
 - [ ] TToggle
