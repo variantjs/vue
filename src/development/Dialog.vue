@@ -163,7 +163,7 @@
           <template #input="{ setInputValue }">
             <TSelect
               :options="['A', 'B', 'C']"
-              @change="setInputValue($event.currentTarget.value)"
+              @change="setInputValue(($event as any).target.value)"
             />
           </template>
         </t-dialog>
@@ -304,7 +304,7 @@ export default defineComponent({
     };
   },
   methods: {
-    async showNamedDialog(name) {
+    async showNamedDialog(name: string) {
       this.$dialog.show(name)
         .then((result) => {
           console.log('result', result);

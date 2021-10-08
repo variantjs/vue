@@ -106,6 +106,9 @@
             <slot
               name="input"
               :setInputValue="setInputValue"
+              :inputValue="inputValue"
+              :variant="configuration.inputVariant"
+              :inputAttributes="configuration.inputAttributes"
             >
               <t-input
                 v-model="inputModel"
@@ -313,7 +316,7 @@ export default defineComponent({
     },
     inputValue: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<any>,
+      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol],
       default: undefined,
     },
   },
@@ -333,7 +336,7 @@ export default defineComponent({
     const showModel = useVModel(props, 'modelValue');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const inputModel = useVModel(props, 'inputValue');
+    const inputModel = ref<any>(props.inputValue);
 
     const hideReason = ref<DialogHideReason | undefined>(DialogHideReason.Other);
 
