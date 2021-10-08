@@ -17,93 +17,91 @@
     @before-show="onBeforeShow"
     @before-hide="onBeforeHide"
   >
-    <template #default="{ hide }">
-      <slot :hide="hide">
-        <div
-          v-if="configuration.icon"
-          :class="configuration.classesList?.iconWrapper"
+    <slot :hide="hide">
+      <div
+        v-if="configuration.icon"
+        :class="configuration.classesList?.iconWrapper"
+      >
+        <slot
+          name="icon"
+          :hide="hide"
         >
-          <slot
-            name="icon"
-            :hide="hide"
-          >
-            <template v-if="configuration.useSolidIcon">
-              <solid-check-circle-icon
-                v-if="configuration.icon === 'success'"
-                :class="configuration.classesList?.icon"
-              />
-              <solid-question-mark-circle-icon
-                v-else-if="configuration.icon === 'question'"
-                :class="configuration.classesList?.icon"
-              />
-              <solid-information-circle-icon
-                v-else-if="configuration.icon === 'info'"
-                :class="configuration.classesList?.icon"
-              />
-              <solid-exclamation-icon
-                v-else-if="configuration.icon === 'warning'"
-                :class="configuration.classesList?.icon"
-              />
-              <solid-cross-circle-icon
-                v-else-if="configuration.icon === 'error'"
-                :class="configuration.classesList?.icon"
-              />
-            </template>
-            <template v-else>
-              <check-circle-icon
-                v-if="configuration.icon === 'success'"
-                :class="configuration.classesList?.icon"
-              />
-              <question-mark-circle-icon
-                v-else-if="configuration.icon === 'question'"
-                :class="configuration.classesList?.icon"
-              />
-              <information-circle-icon
-                v-else-if="configuration.icon === 'info'"
-                :class="configuration.classesList?.icon"
-              />
-              <exclamation-icon
-                v-else-if="configuration.icon === 'warning'"
-                :class="configuration.classesList?.icon"
-              />
-              <cross-circle-icon
-                v-else-if="configuration.icon === 'error'"
-                :class="configuration.classesList?.icon"
-              />
-            </template>
-          </slot>
-        </div>
+          <template v-if="configuration.useSolidIcon">
+            <solid-check-circle-icon
+              v-if="configuration.icon === 'success'"
+              :class="configuration.classesList?.icon"
+            />
+            <solid-question-mark-circle-icon
+              v-else-if="configuration.icon === 'question'"
+              :class="configuration.classesList?.icon"
+            />
+            <solid-information-circle-icon
+              v-else-if="configuration.icon === 'info'"
+              :class="configuration.classesList?.icon"
+            />
+            <solid-exclamation-icon
+              v-else-if="configuration.icon === 'warning'"
+              :class="configuration.classesList?.icon"
+            />
+            <solid-cross-circle-icon
+              v-else-if="configuration.icon === 'error'"
+              :class="configuration.classesList?.icon"
+            />
+          </template>
+          <template v-else>
+            <check-circle-icon
+              v-if="configuration.icon === 'success'"
+              :class="configuration.classesList?.icon"
+            />
+            <question-mark-circle-icon
+              v-else-if="configuration.icon === 'question'"
+              :class="configuration.classesList?.icon"
+            />
+            <information-circle-icon
+              v-else-if="configuration.icon === 'info'"
+              :class="configuration.classesList?.icon"
+            />
+            <exclamation-icon
+              v-else-if="configuration.icon === 'warning'"
+              :class="configuration.classesList?.icon"
+            />
+            <cross-circle-icon
+              v-else-if="configuration.icon === 'error'"
+              :class="configuration.classesList?.icon"
+            />
+          </template>
+        </slot>
+      </div>
 
-        <div :class="configuration.classesList?.content">
-          <div :class="configuration.classesList?.titleWrapper">
-            <component
-              :is="configuration.titleTag"
-              :class="configuration.classesList?.title"
+      <div :class="configuration.classesList?.content">
+        <div :class="configuration.classesList?.titleWrapper">
+          <component
+            :is="configuration.titleTag"
+            :class="configuration.classesList?.title"
+          >
+            <slot
+              name="title"
+              :hide="hide"
             >
-              <slot
-                name="title"
-                :hide="hide"
-              >
-                {{ configuration.title }}
-              </slot>
-            </component>
-          </div>
-          <div :class="configuration.classesList?.textWrapper">
-            <component
-              :is="configuration.textTag"
-              :class="configuration.classesList?.text"
-            >
-              <slot
-                name="text"
-                :hide="hide"
-              >
-                {{ configuration.text }}
-              </slot>
-            </component>
-          </div>
+              {{ configuration.title }}
+            </slot>
+          </component>
         </div>
-      </slot>
-    </template>
+        <div :class="configuration.classesList?.textWrapper">
+          <component
+            :is="configuration.textTag"
+            :class="configuration.classesList?.text"
+          >
+            <slot
+              name="text"
+              :hide="hide"
+            >
+              {{ configuration.text }}
+            </slot>
+          </component>
+        </div>
+      </div>
+    </slot>
 
     <template #footer>
       <slot
