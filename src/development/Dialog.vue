@@ -9,7 +9,12 @@
         label="Open with modal name"
         class="mb-4"
       >
-        <t-dialog name="my-dialog" />
+        <t-dialog
+          name="my-dialog"
+          title="Are you sure?"
+          text="This action cannot be undone"
+          :icon="dialogIcon"
+        />
 
         <div class="flex space-x-2">
           <t-button
@@ -60,6 +65,64 @@
               value="prompt"
             />
             <span>Prompt</span>
+          </label>
+        </div>
+
+        <div class="flex mb-2 space-x-3">
+          <label
+            for="success"
+            class="flex items-center space-x-1"
+          >
+            <t-radio
+              id="success"
+              v-model="dialogIcon"
+              value="success"
+            />
+            <span>success</span>
+          </label>
+          <label
+            for="error"
+            class="flex items-center space-x-1"
+          >
+            <t-radio
+              id="error"
+              v-model="dialogIcon"
+              value="error"
+            />
+            <span>Error</span>
+          </label>
+          <label
+            for="warning"
+            class="flex items-center space-x-1"
+          >
+            <t-radio
+              id="warning"
+              v-model="dialogIcon"
+              value="warning"
+            />
+            <span>Warning</span>
+          </label>
+          <label
+            for="info"
+            class="flex items-center space-x-1"
+          >
+            <t-radio
+              id="info"
+              v-model="dialogIcon"
+              value="info"
+            />
+            <span>Info</span>
+          </label>
+          <label
+            for="question"
+            class="flex items-center space-x-1"
+          >
+            <t-radio
+              id="question"
+              v-model="dialogIcon"
+              value="question"
+            />
+            <span>Question</span>
           </label>
         </div>
 
@@ -167,7 +230,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import { Data, DialogType } from '@variantjs/core';
+import { Data, DialogIcon, DialogType } from '@variantjs/core';
 import TCheckbox from '../components/TCheckbox.vue';
 import TButton from '../components/TButton.vue';
 import TCard from '../components/TCard.vue';
@@ -189,6 +252,7 @@ export default defineComponent({
   },
   data() {
     return {
+      dialogIcon: 'success' as DialogIcon,
       dialogType: 'alert' as DialogType,
       show: false,
       email: 'alfonso@variantjs.com',

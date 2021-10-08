@@ -1,12 +1,13 @@
 import {
-  WithVariantPropsAndClassesList, Data, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn,
+  WithVariantPropsAndClassesList, Data, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogIcon,
 } from '@variantjs/core';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import { HTMLAttributes } from 'vue';
 
 export type TDialogOptions = WithVariantPropsAndClassesList<{
   type?: DialogType,
-
+  icon?: DialogIcon,
+  useSolidIcon?: boolean,
   title?: string,
   titleTag?: string,
   text?: string,
@@ -16,20 +17,16 @@ export type TDialogOptions = WithVariantPropsAndClassesList<{
   okButtonText?: string,
   okButtonAriaLabel?: string,
   preConfirm?: DialogPreconfirmFn,
-
   name?: string,
   modelValue?: boolean,
   modalAttributes?: HTMLAttributes & Data,
   tagName?: string
-  body?: string
-
-  footer?: string
   clickToClose?: boolean,
   escToClose?: boolean,
   focusOnOpen?: boolean,
+  showCloseButton?: boolean,
   disableBodyScroll?: boolean,
   bodyScrollLockOptions?: BodyScrollOptions,
   teleport?: boolean,
   teleportTo?: string | HTMLElement,
-  showCloseButton?: boolean,
 } & HTMLAttributes & Data, TDialogClassesValidKeys>;

@@ -1151,10 +1151,10 @@
     "@typescript-eslint/types" "4.31.2"
     eslint-visitor-keys "^2.0.0"
 
-"@variantjs/core@^0.0.46":
-  version "0.0.46"
-  resolved "https://registry.yarnpkg.com/@variantjs/core/-/core-0.0.46.tgz#d84441f2cabda6694b900a92c14cb2ce2de70342"
-  integrity sha512-l78LZB5VhPhAjXqulzi4T6sxL6HZvExvGZZeYfV2n2SIEQG6vbh4dp5gvcOYTJ6+odWpdCAoJ/MjGNnQ6Qw8lQ==
+"@variantjs/core@^0.0.47":
+  version "0.0.47"
+  resolved "https://registry.yarnpkg.com/@variantjs/core/-/core-0.0.47.tgz#bc12aa96c02457bc7efa898c09dc6b3a6368a77f"
+  integrity sha512-9dh6LAsPCS7BNa8TxNhNBSxHislzIwqZc7DICj75Kb77ewBQRMPaxDELHIbOgyOzDaywMcWEFBAm8B8CUP35cg==
 
 "@vitejs/plugin-vue@^1.9.0":
   version "1.9.0"

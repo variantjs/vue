@@ -1,19 +1,17 @@
 <template>
   <t-modal
     v-model="showModel"
-    :modal-attributes="modalAttributes"
-    :focus-on-open="focusOnOpen"
-    :click-to-close="clickToClose"
-    :esc-to-close="escToClose"
-    :hide-close-button="! showCloseButton"
-    :disable-body-scroll="disableBodyScroll"
-    :body-scroll-lock-options="bodyScrollLockOptions"
-    :teleport="teleport"
-    :teleport-to="teleportTo"
+    :modal-attributes="configuration.modalAttributes"
+    :focus-on-open="configuration.focusOnOpen"
+    :click-to-close="configuration.clickToClose"
+    :esc-to-close="configuration.escToClose"
+    :hide-close-button="! configuration.showCloseButton"
+    :disable-body-scroll="configuration.disableBodyScroll"
+    :body-scroll-lock-options="configuration.bodyScrollLockOptions"
+    :teleport="configuration.teleport"
+    :teleport-to="configuration.teleportTo"
     :classes="modalClasses"
-    :fixed-classes="{
-      wrapper: ''
-    }"
+    :fixed-classes="undefined"
     @shown="$emit('shown')"
     @hidden="$emit('hidden')"
     @before-show="$emit('before-show', $event)"
@@ -21,31 +19,87 @@
   >
     <template #default="{ hide }">
       <slot :hide="hide">
-        <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-gray-100 rounded-full">
-          <svg
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-6 h-6 text-gray-500"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          /></svg>
+        <div
+          v-if="configuration.icon"
+          :class="configuration.classesList?.iconWrapper"
+        >
+          <slot
+            name="icon"
+            :hide="hide"
+          >
+            <template v-if="configuration.useSolidIcon">
+              <solid-check-circle-icon
+                v-if="configuration.icon === 'success'"
+                :class="configuration.classesList?.icon"
+              />
+              <solid-question-mark-circle-icon
+                v-else-if="configuration.icon === 'question'"
+                :class="configuration.classesList?.icon"
+              />
+              <solid-information-circle-icon
+                v-else-if="configuration.icon === 'info'"
+                :class="configuration.classesList?.icon"
+              />
+              <solid-exclamation-icon
+                v-else-if="configuration.icon === 'warning'"
+                :class="configuration.classesList?.icon"
+              />
+              <solid-cross-circle-icon
+                v-else-if="configuration.icon === 'error'"
+                :class="configuration.classesList?.icon"
+              />
+            </template>
+            <template v-else>
+              <check-circle-icon
+                v-if="configuration.icon === 'success'"
+                :class="configuration.classesList?.icon"
+              />
+              <question-mark-circle-icon
+                v-else-if="configuration.icon === 'question'"
+                :class="configuration.classesList?.icon"
+              />
+              <information-circle-icon
+                v-else-if="configuration.icon === 'info'"
+                :class="configuration.classesList?.icon"
+              />
+              <exclamation-icon
+                v-else-if="configuration.icon === 'warning'"
+                :class="configuration.classesList?.icon"
+              />
+              <cross-circle-icon
+                v-else-if="configuration.icon === 'error'"
+                :class="configuration.classesList?.icon"
+              />
+            </template>
+          </slot>
         </div>
 
-        <div class="flex flex-col justify-center w-full">
-          <div class="">
-            <h3 class="text-lg font-medium leading-6 text-center text-gray-900">
-              Delete user?
-            </h3>
+        <div :class="configuration.classesList?.content">
+          <div :class="configuration.classesList?.titleWrapper">
+            <component
+              :is="configuration.titleTag"
+              :class="configuration.classesList?.title"
+            >
+              <slot
+                name="title"
+                :hide="hide"
+              >
+                {{ configuration.title }}
+              </slot>
+            </component>
           </div>
-          <div class="w-full text-left">
-            <p class="text-sm text-gray-500">
-              This action cannot be undone.
-            </p>
+          <div :class="configuration.classesList?.textWrapper">
+            <component
+              :is="configuration.textTag"
+              :class="configuration.classesList?.text"
+            >
+              <slot
+                name="text"
+                :hide="hide"
+              >
+                {{ configuration.text }}
+              </slot>
+            </component>
           </div>
         </div>
       </slot>
@@ -58,15 +112,17 @@
       >
         <button
           type="button"
-          class="block w-full max-w-xs px-4 py-2 transition duration-100 ease-in-out bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-100 focus:border-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="configuration.classesList?.cancelButton"
+          :aria-label="cancelButtonAriaLabel"
         >
-          Cancel
+          {{ cancelButtonText }}
         </button>
         <button
           type="button"
-          class="block w-full max-w-xs px-4 py-2 text-white transition duration-100 ease-in-out bg-blue-500 border border-transparent rounded shadow-sm hover:bg-blue-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="configuration.classesList?.okButton"
+          :aria-label="okButtonAriaLabel"
         >
-          OK
+          {{ okButtonText }}
         </button>
       </slot>
     </template>
@@ -79,49 +135,40 @@ import {
 } from 'vue';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import {
-  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn,
+  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, TDialogConfig, DialogIcon,
 } from '@variantjs/core';
 import { TDialogOptions, EmitterInterface } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import useVModel from '../use/useVModel';
 import TModal from './TModal.vue';
-import { TModalOptions } from '../types/components/t-modal';
 
-const TDialogConfig = {
-  fixedClasses: {
-    overlay: 'fixed top-0 bottom-0 left-0 right-0 w-full h-full overflow-auto scrolling-touch',
-    wrapper: '',
-    modal: 'overflow-visible relative ',
-  },
-  classes: {
-    overlay: 'z-40 bg-black bg-opacity-50',
-    wrapper: '',
-    close: 'absolute top-0 right-0 flex items-center justify-center w-8 h-8 -m-3 text-gray-700 transition ease-in-out bg-gray-100 rounded-full shadow duration-400 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 hover:bg-gray-200',
-    closeIcon: 'w-4 h-4',
-    modal: 'bg-white rounded shadow',
-    body: 'p-3',
-    footer: 'flex justify-center p-3 space-x-4 bg-gray-100 rounded-b',
-    overlayEnterActiveClass: 'transition ease-out duration-300',
-    overlayEnterFromClass: 'transform opacity-0',
-    overlayEnterToClass: 'transform opacity-100',
-    overlayLeaveActiveClass: 'transition duration-300 ease-in',
-    overlayLeaveFromClass: 'transform opacity-100',
-    overlayLeaveToClass: 'transform opacity-0',
-    enterActiveClass: 'transition duration-100 ease-out',
-    enterFromClass: 'transform scale-95 opacity-0',
-    enterToClass: 'transform scale-100 opacity-100',
-    leaveActiveClass: 'transition duration-100 ease-in',
-    leaveFromClass: 'transform scale-100 opacity-100',
-    leaveToClass: 'transform scale-95 opacity-0',
-  },
-};
+import CheckCircleIcon from '../icons/CheckCircleIcon.vue';
+import QuestionMarkCircleIcon from '../icons/QuestionMarkCircleIcon.vue';
+import InformationCircleIcon from '../icons/InformationCircleIcon.vue';
+import ExclamationIcon from '../icons/ExclamationIcon.vue';
+import SolidCheckCircleIcon from '../icons/SolidCheckCircleIcon.vue';
+import SolidQuestionMarkCircleIcon from '../icons/SolidQuestionMarkCircleIcon.vue';
+import SolidInformationCircleIcon from '../icons/SolidInformationCircleIcon.vue';
+import SolidExclamationIcon from '../icons/SolidExclamationIcon.vue';
+import CrossCircleIcon from '../icons/CrossCircleIcon.vue';
+import SolidCrossCircleIcon from '../icons/SolidCrossCircleIcon.vue';
 
 // @vue/component
 export default defineComponent({
   name: 'TDialog',
   components: {
     TModal,
+    CrossCircleIcon,
+    SolidCrossCircleIcon,
+    CheckCircleIcon,
+    QuestionMarkCircleIcon,
+    InformationCircleIcon,
+    ExclamationIcon,
+    SolidQuestionMarkCircleIcon,
+    SolidInformationCircleIcon,
+    SolidExclamationIcon,
+    SolidCheckCircleIcon,
   },
   props: {
     ...getVariantPropsWithClassesList<TDialogOptions, TDialogClassesValidKeys>(),
@@ -129,8 +176,14 @@ export default defineComponent({
       type: String as PropType<DialogType>,
       default: DialogType.Alert,
     },
-
-    // @TODO
+    icon: {
+      type: String as PropType<DialogIcon>,
+      default: undefined,
+    },
+    useSolidIcon: {
+      type: Boolean,
+      default: false,
+    },
     title: {
       type: String,
       default: undefined,
@@ -147,14 +200,13 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
-
     cancelButtonText: {
       type: String,
       default: 'Cancel',
     },
     cancelButtonAriaLabel: {
       type: String,
-      default: undefined,
+      default: 'Cancel',
     },
     okButtonText: {
       type: String,
@@ -162,13 +214,12 @@ export default defineComponent({
     },
     okButtonAriaLabel: {
       type: String,
-      default: undefined,
+      default: 'OK',
     },
     preConfirm: {
       type: Function as PropType<DialogPreconfirmFn>,
       default: undefined,
     },
-
     name: {
       type: String,
       default: undefined,
@@ -180,15 +231,6 @@ export default defineComponent({
     modalAttributes: {
       type: Object as PropType<HTMLAttributes & Data>,
       default: () => ({}),
-    },
-
-    body: {
-      type: String,
-      default: undefined,
-    },
-    footer: {
-      type: String,
-      default: undefined,
     },
     focusOnOpen: {
       type: Boolean,
@@ -270,9 +312,9 @@ export default defineComponent({
       wrapper: configuration.classesList!.wrapper,
       close: configuration.classesList!.close,
       closeIcon: configuration.classesList!.closeIcon,
-      modal: configuration.classesList!.modal,
+      modal: configuration.classesList!.dialog,
       body: configuration.classesList!.body,
-      footer: configuration.classesList!.footer,
+      footer: configuration.classesList!.buttons,
       overlayEnterActiveClass: configuration.classesList!.overlayEnterActiveClass,
       overlayEnterFromClass: configuration.classesList!.overlayEnterFromClass,
       overlayEnterToClass: configuration.classesList!.overlayEnterToClass,
