@@ -28,10 +28,12 @@
       <TInputGroup
         label="Dialog types"
         class="mb-4"
-        :type="dialogType"
       >
         <t-dialog
           :icon="dialogIcon"
+          :type="dialogType"
+          title="Are you sure?"
+          text="This action cannot be undone"
           name="dialog-type"
         />
 

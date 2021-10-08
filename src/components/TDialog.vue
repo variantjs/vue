@@ -109,6 +109,7 @@
         :hide="hide"
       >
         <button
+          v-if="showCancelButton"
           type="button"
           :class="configuration.classesList?.cancelButton"
           :aria-label="cancelButtonAriaLabel"
@@ -393,11 +394,14 @@ export default defineComponent({
       leaveToClass: configuration.classesList!.leaveToClass,
     }));
 
+    const showCancelButton = computed(() => configuration.type !== DialogType.Alert);
+
     return {
       configuration,
       attributes,
       showModel,
       modalClasses,
+      showCancelButton,
       show,
       hide,
       onBeforeShow,
