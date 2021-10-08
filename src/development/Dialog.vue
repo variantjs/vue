@@ -133,6 +133,29 @@
         </div>
       </TInputGroup>
 
+      <TInputGroup
+        label="Prompt with select"
+        class="mb-4"
+      >
+        <t-dialog
+          icon="question"
+          type="prompt"
+          input-type="text"
+          :input-options="['A', 'B', 'C']"
+          input-value="A"
+          title="Select an option"
+          text="This action cannot be undone"
+          name="select"
+        />
+        <div class="flex space-x-2">
+          <t-button
+            @click="showNamedDialog('select')"
+          >
+            Show {{ dialogType }} dialog
+          </t-button>
+        </div>
+      </TInputGroup>
+
       <!-- <TInputGroup
         label="Pass parameter trough the `before-show` event"
         class="mb-4"
@@ -261,8 +284,8 @@ export default defineComponent({
     };
   },
   methods: {
-    async showNamedDialog() {
-      this.$dialog.show('my-dialog')
+    async showNamedDialog(name = 'my-dialog') {
+      this.$dialog.show(name)
         .then((result) => {
           console.log('result', result);
         }).catch((error) => {

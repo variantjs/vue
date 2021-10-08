@@ -101,27 +101,43 @@
           </component>
         </div>
 
-        <div :class="configuration.classesList?.inputWrapper">
-          <input
-            name="input"
-            type="text"
-            :class="configuration.classesList?.input"
-            @input="inputHandler"
+        <template v-if="configuration.type === 'prompt'">
+          <div
+            v-if="configuration.inputType === 'radio' "
+            :class="configuration.classesList?.radioWrapper"
           >
-          <select
-            name="input"
-            type="text"
-            :class="configuration.classesList?.input"
-            @input="inputHandler"
+            <!--  -->
+          </div>
+          <div
+            v-if="configuration.inputType === 'checkbox' "
+            :class="configuration.classesList?.checkboxWrapper"
           >
-            <option value="1">
-              one
-            </option>
-            <option value="2">
-              two
-            </option>
-          </select>
-        </div>
+            <!--  -->
+          </div>
+          <div
+            v-else
+            :class="configuration.classesList?.inputWrapper"
+          >
+            <t-select
+              v-if="configuration.inputType === 'select'"
+              :fixed-classes="undefined"
+              :classes="configuration.classesList?.select"
+              :options="configuration.inputOptions"
+              :model-value="configuration.inputValue"
+              v-bind="configuration.inputAttributes"
+              @change="inputHandler"
+            />
+            <input
+              v-else
+              :type="configuration.inputType"
+              :class="configuration.classesList?.input"
+              :placeholder="configuration.inputPlaceholder"
+              :value="configuration.inputValue"
+              v-bind="configuration.inputAttributes"
+              @change="inputHandler"
+            >
+          </div>
+        </template>
       </div>
     </slot>
 
@@ -167,6 +183,7 @@ import useConfigurationWithClassesList from '../use/useConfigurationWithClassesL
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import useVModel from '../use/useVModel';
 import TModal from './TModal.vue';
+import TSelect from './TSelect.vue';
 
 import CheckCircleIcon from '../icons/CheckCircleIcon.vue';
 import QuestionMarkCircleIcon from '../icons/QuestionMarkCircleIcon.vue';
@@ -184,6 +201,7 @@ export default defineComponent({
   name: 'TDialog',
   components: {
     TModal,
+    TSelect,
     CrossCircleIcon,
     SolidCrossCircleIcon,
     CheckCircleIcon,
@@ -198,11 +216,11 @@ export default defineComponent({
   props: {
     ...getVariantPropsWithClassesList<TDialogOptions, TDialogClassesValidKeys>(),
     type: {
-      type: String as PropType<DialogType>,
+      type: String,
       default: DialogType.Alert,
     },
     icon: {
-      type: String as PropType<DialogIcon>,
+      type: String,
       default: undefined,
     },
     useSolidIcon: {
@@ -342,6 +360,8 @@ export default defineComponent({
 
     const promiseReject = ref<PromiseRejectFn | undefined>(undefined);
 
+    const inputValue = ref<any>(undefined);
+
     const reset = (): void => {
       promiseResolve.value = undefined;
       promiseReject.value = undefined;
@@ -478,8 +498,10 @@ export default defineComponent({
     const showCancelButton = computed(() => configuration.type !== DialogType.Alert);
 
     const inputHandler = (e: Event) => {
-      console.log(e);
-      console.log(e.target.value);
+      // @TODO: finish this and reset the value
+      if (e && e.target) {
+        inputValue.value = e.target.value ? e.target.value : undefined;
+      }
     };
 
     return {
