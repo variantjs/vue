@@ -155,7 +155,7 @@ import {
 } from 'vue';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import {
-  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogResponse, DialogHideReason, DialogInputValidatorFn, TDialogConfig,
+  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogResponse, DialogHideReason, DialogInputValidatorFn, TDialogConfig, ModalHideReason,
 } from '@variantjs/core';
 import {
   TDialogOptions, EmitterInterface, PromiseRejectFn,
@@ -360,7 +360,7 @@ export default defineComponent({
       emit('before-show', e);
     };
 
-    const onBeforeHide = (e: { cancel: PromiseRejectFn, reason: DialogHideReason }) => {
+    const onBeforeHide = (e: { cancel: PromiseRejectFn, reason: ModalHideReason }) => {
       emit('before-hide', e);
     };
 
