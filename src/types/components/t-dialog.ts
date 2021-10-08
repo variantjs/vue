@@ -8,6 +8,8 @@ export type TDialogOptions = WithVariantPropsAndClassesList<{
   type?: DialogType,
   icon?: DialogIcon,
   useSolidIcon?: boolean,
+  rejectOnCancel?: boolean,
+  rejectOnDismiss?: boolean,
   title?: string,
   titleTag?: string,
   text?: string,

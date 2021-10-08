@@ -6,26 +6,6 @@
       </template>
 
       <TInputGroup
-        label="Open with dialog name"
-        class="mb-4"
-      >
-        <t-dialog
-          name="my-dialog"
-          title="Are you sure?"
-          text="This action cannot be undone"
-          :icon="dialogIcon"
-        />
-
-        <div class="flex space-x-2">
-          <t-button
-            @click="showNamedDialog"
-          >
-            Show dialog
-          </t-button>
-        </div>
-      </TInputGroup>
-
-      <TInputGroup
         label="Dialog types"
         class="mb-4"
       >
@@ -130,12 +110,27 @@
             <span>Question</span>
           </label>
         </div>
+      </TInputGroup>
 
-        <t-button
-          @click="$dialog.show('dialog-type')"
-        >
-          Show {{ dialogType.charAt(0).toUpperCase() + dialogType.slice(1) }}
-        </t-button>
+      <TInputGroup
+        label="Open with dialog name"
+        class="mb-4"
+      >
+        <t-dialog
+          name="my-dialog"
+          title="Are you sure?"
+          text="This action cannot be undone"
+          :icon="dialogIcon"
+          :type="dialogType"
+        />
+
+        <div class="flex space-x-2">
+          <t-button
+            @click="showNamedDialog"
+          >
+            Show {{ dialogType }} dialog
+          </t-button>
+        </div>
       </TInputGroup>
 
       <!-- <TInputGroup
@@ -267,9 +262,12 @@ export default defineComponent({
   },
   methods: {
     async showNamedDialog() {
-      const result = await this.$dialog.show('my-dialog');
-
-      console.log(':D', result);
+      this.$dialog.show('my-dialog')
+        .then((result) => {
+          console.log('result', result);
+        }).catch((error) => {
+          console.log('error', error);
+        });
     },
     onBeforeShow({ params, cancel }: { params: { email: string }, cancel: () => void }) {
       const { email } = params;

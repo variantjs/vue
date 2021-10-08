@@ -185,6 +185,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    rejectOnCancel: {
+      type: Boolean,
+      default: true,
+    },
+    rejectOnDismiss: {
+      type: Boolean,
+      default: undefined,
+    },
     title: {
       type: String,
       default: undefined,
@@ -300,12 +308,37 @@ export default defineComponent({
       emit('before-hide', e);
     };
 
+    const rejectOnDismiss = computed<boolean>(() => {
+      if (configuration.rejectOnDismiss === undefined) {
+        return configuration.type !== DialogType.Alert;
+      }
+
+      return configuration.rejectOnDismiss;
+    });
+
     const onHidden = (reason: DialogHideReason) => {
       emit('hidden');
 
-      if (promiseResolve.value) {
-        const hideReasonValue = hideReason.value !== undefined ? hideReason.value : reason;
+      const hideReasonValue = hideReason.value !== undefined ? hideReason.value : reason;
 
+      const response: DialogResponse = {
+        hideReason: hideReasonValue,
+        isOk: hideReasonValue === DialogHideReason.Ok,
+        isCancel: hideReasonValue === DialogHideReason.Cancel,
+        isDismissed: ![DialogHideReason.Cancel, DialogHideReason.Ok].includes(hideReasonValue),
+        // @TODO: input & response
+        // input?: DialogInput;
+        response: {},
+      };
+
+      if (
+        (response.isCancel && configuration.rejectOnCancel)
+        || (response.isDismissed && rejectOnDismiss.value)
+      ) {
+        if (promiseReject.value) {
+          promiseReject.value(response);
+        }
+      } else if (promiseResolve.value) {
         promiseResolve.value({
           hideReason: hideReasonValue,
           isOk: hideReasonValue === DialogHideReason.Ok,
