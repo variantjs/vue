@@ -176,65 +176,6 @@
         </div>
       </TInputGroup>
 
-      <!-- <TInputGroup
-        label="Pass parameter trough the `before-show` event"
-        class="mb-4"
-      >
-        <t-dialog
-          name="param-modal"
-          @before-show="onBeforeShow"
-          @before-hide="onBeforeHide"
-        >
-          User email is: <strong>{{ user.email }}</strong>
-
-          <div class="mb-4">
-            <span class="text-sm text-gray-600 uppercase">set new email:</span>
-            <t-input v-model="email" />
-            <span class="text-xs text-gray-500">write `cancel` to prevent the modal to hide</span>
-          </div>
-        </t-dialog>
-
-        <div class="mb-4">
-          <span class="text-sm text-gray-600 uppercase">set user email:</span>
-          <t-input v-model="email" />
-          <span class="text-xs text-gray-500">write `cancel` to prevent the modal to show</span>
-        </div>
-
-        <div class="flex space-x-2">
-          <t-button
-            @click="$dialog.show('param-modal', { email })"
-          >
-            Show dialog with parameter
-          </t-button>
-        </div>
-      </TInputGroup>
-
-      <TInputGroup
-
-        label="Open with ref"
-        class="mb-4"
-      >
-        <t-dialog ref="modal">
-          <template #header>
-            This it the header
-          </template>
-          <t-button
-            type="button"
-            @click="($refs.modal as any).hide()"
-          >
-            Hide modal
-          </t-button>
-        </t-dialog>
-
-        <div class="flex space-x-2">
-          <t-button
-            @click="($refs.modal as any).show()"
-          >
-            Show dialog
-          </t-button>
-        </div>
-      </TInputGroup>-->
-
       <TInputGroup
         label="Syncs show property"
         class="mb-4"
