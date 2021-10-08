@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/prefer-default-export */
 import { EmitterEvents, EmitterFunction, EmitterInterface } from '../types';
 
@@ -13,7 +14,7 @@ export class Emitter implements EmitterInterface {
   }
 
   once(name: keyof EmitterEvents, callback: EmitterFunction): void {
-    const listener = (...args: unknown[]) => {
+    const listener = (...args: any[]) => {
       callback(...args);
       this.off(name, listener);
     };
@@ -21,7 +22,7 @@ export class Emitter implements EmitterInterface {
     return this.on(name, listener);
   }
 
-  emit(name: keyof EmitterEvents, ...args: unknown[]): void {
+  emit(name: keyof EmitterEvents, ...args: any[]): void {
     const events = this.events[name];
 
     if (events === undefined) {

@@ -26,10 +26,12 @@ const plugin = {
 
     // eslint-disable-next-line no-param-reassign
     app.config.globalProperties.$dialog = {
-      show(name: string, params?: { [k: string]: string }) {
-        emitter.emit('dialog:show', name, params);
+      show(name: string): Promise<DialogResponse> {
+        const promise = new Promise((resolve, reject) => {
+          emitter.emit('dialog:show', name, resolve, reject);
+        });
 
-        // @TODO: Return promise
+        return promise as Promise<DialogResponse>;
       },
       hide(name: string) {
         emitter.emit('dialog:hide', name);

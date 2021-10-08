@@ -2,11 +2,11 @@
   <div>
     <t-card>
       <template #header>
-        <h1>Modal</h1>
+        <h1>Dialog</h1>
       </template>
 
       <TInputGroup
-        label="Open with modal name"
+        label="Open with dialog name"
         class="mb-4"
       >
         <t-dialog
@@ -18,7 +18,7 @@
 
         <div class="flex space-x-2">
           <t-button
-            @click="$dialog.show('my-dialog')"
+            @click="showNamedDialog"
           >
             Show dialog
           </t-button>
@@ -264,6 +264,11 @@ export default defineComponent({
     };
   },
   methods: {
+    async showNamedDialog() {
+      const result = await this.$dialog.show('my-dialog');
+
+      console.log(':D', result);
+    },
     onBeforeShow({ params, cancel }: { params: { email: string }, cancel: () => void }) {
       const { email } = params;
       if (email === 'cancel') {

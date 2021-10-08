@@ -12,10 +12,10 @@
     :teleport-to="configuration.teleportTo"
     :classes="modalClasses"
     :fixed-classes="undefined"
-    @shown="$emit('shown')"
-    @hidden="$emit('hidden')"
-    @before-show="$emit('before-show', $event)"
-    @before-hide="$emit('before-hide', $event)"
+    @shown="onShown"
+    @hidden="onHidden"
+    @before-show="onBeforeShow"
+    @before-hide="onBeforeHide"
   >
     <template #default="{ hide }">
       <slot :hide="hide">
@@ -131,13 +131,13 @@
 
 <script lang="ts">
 import {
-  defineComponent, PropType, HTMLAttributes, inject, computed,
+  defineComponent, PropType, HTMLAttributes, inject, computed, ref,
 } from 'vue';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import {
-  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, TDialogConfig, DialogIcon,
+  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, TDialogConfig, DialogIcon, DialogResponse, DialogHideReason,
 } from '@variantjs/core';
-import { TDialogOptions, EmitterInterface } from '../types';
+import { TDialogOptions, EmitterInterface, PromiseRejectFn } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import useVModel from '../use/useVModel';
@@ -274,26 +274,83 @@ export default defineComponent({
     'before-hide': ({ cancel }: { cancel: (reason?: any) => void }) => true,
     'update:modelValue': () => true,
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TDialogOptions>(TDialogConfig, TDialogClassesKeys);
 
     const showModel = useVModel(props, 'modelValue');
+
+    const promiseResolve = ref<((value: DialogResponse) => void) | undefined>(undefined);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const promiseReject = ref<PromiseRejectFn | undefined>(undefined);
+
+    const reset = (): void => {
+      promiseResolve.value = undefined;
+      promiseReject.value = undefined;
+    };
+
+    const onBeforeShow = (e: { cancel: PromiseRejectFn, params: unknown }) => {
+      emit('before-show', e);
+    };
+
+    const onBeforeHide = (e: { cancel: PromiseRejectFn }) => {
+      emit('before-hide', e);
+    };
+
+    const onHidden = () => {
+      emit('hidden');
+
+      // Temporal
+      if (promiseResolve.value) {
+        promiseResolve.value({
+          hideReason: DialogHideReason.Cancel,
+          isOk: true,
+          isCancel: false,
+          isDismissed: false,
+          // input?: DialogInput;
+          response: {},
+        });
+      }
+
+      reset();
+    };
+
+    const onShown = () => {
+      emit('shown');
+    };
 
     const hide = () :void => {
       showModel.value = false;
     };
 
-    const show = () :void => {
-      showModel.value = true;
+    const show = () : Promise<DialogResponse> | void => {
+      if (promiseResolve.value !== undefined) {
+        showModel.value = true;
+        return;
+      }
+
+      const promise = new Promise((resolve, reject) => {
+        promiseResolve.value = resolve;
+
+        promiseReject.value = reject;
+
+        showModel.value = true;
+      });
+
+      // eslint-disable-next-line consistent-return
+      return promise as Promise<DialogResponse>;
     };
 
     if (configuration.name) {
       const emitter = inject<EmitterInterface>('emitter')!;
 
-      emitter.on('dialog:show', (name) => {
+      emitter.on('dialog:show', (name: string, resolve: ((value: DialogResponse) => void), reject: PromiseRejectFn) => {
         if (configuration.name !== name) {
           return;
         }
+
+        promiseResolve.value = resolve;
+
+        promiseReject.value = reject;
 
         show();
       });
@@ -334,6 +391,10 @@ export default defineComponent({
       attributes,
       showModel,
       modalClasses,
+      onBeforeShow,
+      onBeforeHide,
+      onShown,
+      onHidden,
     };
   },
 });

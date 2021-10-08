@@ -14,7 +14,7 @@ export { TDropdownOptions } from './components/t-dropdown';
 export { TRichSelectOptions, MinimumInputLengthTextProp } from './components/t-rich-select';
 export { TInputGroupOptions, TInputGroupValidChilElementsKeys } from './components/t-input-group';
 export {
-  Truthy, IconProp, FetchOptionsFn, FetchedOptions,
+  Truthy, IconProp, FetchOptionsFn, FetchedOptions, PromiseRejectFn,
 } from './misc';
 export { ObjectWithProperties, KeysOfType } from './helpers';
 export { EmitterEvents, EmitterFunction, EmitterInterface } from './utils';
