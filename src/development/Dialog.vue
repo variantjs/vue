@@ -30,7 +30,10 @@
         class="mb-4"
         :type="dialogType"
       >
-        <t-dialog name="dialog-type" />
+        <t-dialog
+          :icon="dialogIcon"
+          name="dialog-type"
+        />
 
         <div class="flex mb-2 space-x-3">
           <label
