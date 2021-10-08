@@ -100,6 +100,28 @@
             </slot>
           </component>
         </div>
+
+        <div :class="configuration.classesList?.inputWrapper">
+          <input
+            name="input"
+            type="text"
+            :class="configuration.classesList?.input"
+            @input="inputHandler"
+          >
+          <select
+            name="input"
+            type="text"
+            :class="configuration.classesList?.input"
+            @input="inputHandler"
+          >
+            <option value="1">
+              one
+            </option>
+            <option value="2">
+              two
+            </option>
+          </select>
+        </div>
       </div>
     </slot>
 
@@ -136,9 +158,11 @@ import {
 } from 'vue';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import {
-  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, TDialogConfig, DialogIcon, DialogResponse, DialogHideReason,
+  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, TDialogConfig, DialogIcon, DialogResponse, DialogHideReason, DialogInputValidatorFn, InputOptions,
 } from '@variantjs/core';
-import { TDialogOptions, EmitterInterface, PromiseRejectFn } from '../types';
+import {
+  TDialogOptions, EmitterInterface, PromiseRejectFn, TSelectValue,
+} from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import useVModel from '../use/useVModel';
@@ -272,6 +296,30 @@ export default defineComponent({
     teleportTo: {
       type: [String, Object] as PropType<string | HTMLElement>,
       default: 'body',
+    },
+    inputAttributes: {
+      type: Object as PropType<HTMLAttributes & Data>,
+      default: () => ({}),
+    },
+    inputType: {
+      type: String,
+      default: 'text',
+    },
+    inputValidator: {
+      type: Function as PropType<DialogInputValidatorFn>,
+      default: undefined,
+    },
+    inputValue: {
+      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TSelectValue | string>,
+      default: undefined,
+    },
+    inputOptions: {
+      type: [Array, Object] as PropType<InputOptions>,
+      default: undefined,
+    },
+    inputPlaceholder: {
+      type: String,
+      default: undefined,
     },
   },
   emits: {
@@ -429,6 +477,11 @@ export default defineComponent({
 
     const showCancelButton = computed(() => configuration.type !== DialogType.Alert);
 
+    const inputHandler = (e: Event) => {
+      console.log(e);
+      console.log(e.target.value);
+    };
+
     return {
       configuration,
       attributes,
@@ -441,6 +494,7 @@ export default defineComponent({
       onBeforeHide,
       onShown,
       onHidden,
+      inputHandler,
       DialogHideReason,
     };
   },
