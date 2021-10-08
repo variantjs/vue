@@ -102,40 +102,18 @@
         </div>
 
         <template v-if="configuration.type === 'prompt'">
-          <div
-            v-if="configuration.inputType === 'radio' "
-            :class="configuration.classesList?.radioWrapper"
-          >
-            <!--  -->
-          </div>
-          <div
-            v-if="configuration.inputType === 'checkbox' "
-            :class="configuration.classesList?.checkboxWrapper"
-          >
-            <!--  -->
-          </div>
-          <div
-            v-else
-            :class="configuration.classesList?.inputWrapper"
-          >
-            <t-select
-              v-if="configuration.inputType === 'select'"
-              :fixed-classes="undefined"
-              :classes="configuration.classesList?.select"
-              :options="configuration.inputOptions"
-              :model-value="configuration.inputValue"
-              v-bind="configuration.inputAttributes"
-              @change="inputHandler"
-            />
-            <input
-              v-else
-              :type="configuration.inputType"
-              :class="configuration.classesList?.input"
-              :placeholder="configuration.inputPlaceholder"
-              :value="configuration.inputValue"
-              v-bind="configuration.inputAttributes"
-              @change="inputHandler"
+          <div :class="configuration.classesList?.inputWrapper">
+            <slot
+              name="input"
+              :setInputValue="setInputValue"
             >
+              <t-input
+                v-model="inputModel"
+                :variant="configuration.inputVariant"
+                :type="configuration.inputType"
+                v-bind="configuration.inputAttributes"
+              />
+            </slot>
           </div>
         </template>
       </div>
@@ -174,16 +152,19 @@ import {
 } from 'vue';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import {
-  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, TDialogConfig, DialogIcon, DialogResponse, DialogHideReason, DialogInputValidatorFn, InputOptions,
+  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogResponse, DialogHideReason, DialogInputValidatorFn, TDialogConfig,
 } from '@variantjs/core';
 import {
-  TDialogOptions, EmitterInterface, PromiseRejectFn, TSelectValue,
+  TDialogOptions, EmitterInterface, PromiseRejectFn,
 } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import useVModel from '../use/useVModel';
 import TModal from './TModal.vue';
+import TInput from './TInput.vue';
 import TSelect from './TSelect.vue';
+import TTextarea from './TTextarea.vue';
+import TCheckbox from './TCheckbox.vue';
 
 import CheckCircleIcon from '../icons/CheckCircleIcon.vue';
 import QuestionMarkCircleIcon from '../icons/QuestionMarkCircleIcon.vue';
@@ -200,6 +181,9 @@ import SolidCrossCircleIcon from '../icons/SolidCrossCircleIcon.vue';
 export default defineComponent({
   name: 'TDialog',
   components: {
+    TInput,
+    TCheckbox,
+    TTextarea,
     TModal,
     TSelect,
     CrossCircleIcon,
@@ -319,24 +303,17 @@ export default defineComponent({
       type: Object as PropType<HTMLAttributes & Data>,
       default: () => ({}),
     },
-    inputType: {
+    inputVariant: {
       type: String,
-      default: 'text',
+      default: undefined,
     },
     inputValidator: {
       type: Function as PropType<DialogInputValidatorFn>,
       default: undefined,
     },
     inputValue: {
-      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TSelectValue | string>,
-      default: undefined,
-    },
-    inputOptions: {
-      type: [Array, Object] as PropType<InputOptions>,
-      default: undefined,
-    },
-    inputPlaceholder: {
-      type: String,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<any>,
       default: undefined,
     },
   },
@@ -348,11 +325,15 @@ export default defineComponent({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     'before-hide': ({ cancel }: { cancel: (reason?: any) => void }) => true,
     'update:modelValue': () => true,
+    'update:inputValue': () => true,
   },
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TDialogOptions>(TDialogConfig, TDialogClassesKeys);
 
     const showModel = useVModel(props, 'modelValue');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const inputModel = useVModel(props, 'inputValue');
 
     const hideReason = ref<DialogHideReason | undefined>(DialogHideReason.Other);
 
@@ -360,12 +341,16 @@ export default defineComponent({
 
     const promiseReject = ref<PromiseRejectFn | undefined>(undefined);
 
-    const inputValue = ref<any>(undefined);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setInputValue = (value: any) => {
+      inputModel.value = value;
+    };
 
     const reset = (): void => {
       promiseResolve.value = undefined;
       promiseReject.value = undefined;
       hideReason.value = undefined;
+      setInputValue(props.inputValue);
     };
 
     const onBeforeShow = (e: { cancel: PromiseRejectFn, params: unknown }) => {
@@ -394,10 +379,12 @@ export default defineComponent({
         isOk: hideReasonValue === DialogHideReason.Ok,
         isCancel: hideReasonValue === DialogHideReason.Cancel,
         isDismissed: ![DialogHideReason.Cancel, DialogHideReason.Ok].includes(hideReasonValue),
-        // @TODO: input & response
-        // input?: DialogInput;
         response: {},
       };
+
+      if (configuration.type === DialogType.Prompt) {
+        response.input = inputModel.value;
+      }
 
       if (
         (response.isCancel && configuration.rejectOnCancel)
@@ -407,15 +394,7 @@ export default defineComponent({
           promiseReject.value(response);
         }
       } else if (promiseResolve.value) {
-        promiseResolve.value({
-          hideReason: hideReasonValue,
-          isOk: hideReasonValue === DialogHideReason.Ok,
-          isCancel: hideReasonValue === DialogHideReason.Cancel,
-          isDismissed: ![DialogHideReason.Cancel, DialogHideReason.Ok].includes(hideReasonValue),
-          // @TODO: input & response
-          // input?: DialogInput;
-          response: {},
-        });
+        promiseResolve.value(response);
       }
 
       reset();
@@ -497,27 +476,21 @@ export default defineComponent({
 
     const showCancelButton = computed(() => configuration.type !== DialogType.Alert);
 
-    const inputHandler = (e: Event) => {
-      // @TODO: finish this and reset the value
-      if (e && e.target) {
-        inputValue.value = e.target.value ? e.target.value : undefined;
-      }
-    };
-
     return {
       configuration,
       attributes,
       showModel,
       modalClasses,
       showCancelButton,
+      DialogHideReason,
+      inputModel,
       show,
       hide,
       onBeforeShow,
       onBeforeHide,
       onShown,
       onHidden,
-      inputHandler,
-      DialogHideReason,
+      setInputValue,
     };
   },
 });

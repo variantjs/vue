@@ -9,14 +9,6 @@
         label="Dialog types"
         class="mb-4"
       >
-        <t-dialog
-          :icon="dialogIcon"
-          :type="dialogType"
-          title="Are you sure?"
-          text="This action cannot be undone"
-          name="dialog-type"
-        />
-
         <div class="flex mb-2 space-x-3">
           <label
             for="alert"
@@ -126,7 +118,7 @@
 
         <div class="flex space-x-2">
           <t-button
-            @click="showNamedDialog"
+            @click="showNamedDialog('my-dialog')"
           >
             Show {{ dialogType }} dialog
           </t-button>
@@ -134,24 +126,52 @@
       </TInputGroup>
 
       <TInputGroup
-        label="Prompt with select"
+        label="Prompt"
         class="mb-4"
       >
         <t-dialog
           icon="question"
           type="prompt"
           input-type="text"
-          :input-options="['A', 'B', 'C']"
           input-value="A"
-          title="Select an option"
-          text="This action cannot be undone"
-          name="select"
+          title="Favorite color?"
+          text="Write something"
+          name="input-dialog"
         />
         <div class="flex space-x-2">
           <t-button
-            @click="showNamedDialog('select')"
+            @click="showNamedDialog('input-dialog')"
           >
-            Show {{ dialogType }} dialog
+            Show dialog with text input
+          </t-button>
+        </div>
+      </TInputGroup>
+
+      <TInputGroup
+        label="Prompt with custom input"
+        class="mb-4"
+      >
+        <t-dialog
+          icon="question"
+          type="prompt"
+          input-type="text"
+          input-value="A"
+          title="Favorite color?"
+          text="Write something"
+          name="custom-input-dialog"
+        >
+          <template #input="{ setInputValue }">
+            <TSelect
+              :options="['A', 'B', 'C']"
+              @change="setInputValue($event.currentTarget.value)"
+            />
+          </template>
+        </t-dialog>
+        <div class="flex space-x-2">
+          <t-button
+            @click="showNamedDialog('custom-input-dialog')"
+          >
+            Show witch custom select input
           </t-button>
         </div>
       </TInputGroup>
@@ -258,7 +278,7 @@ import TCheckbox from '../components/TCheckbox.vue';
 import TButton from '../components/TButton.vue';
 import TCard from '../components/TCard.vue';
 import TDialog from '../components/TDialog.vue';
-import TInput from '../components/TInput.vue';
+import TSelect from '../components/TSelect.vue';
 import TRadio from '../components/TRadio.vue';
 import TInputGroup from '../components/TInputGroup.vue';
 
@@ -269,7 +289,7 @@ export default defineComponent({
     TCheckbox,
     TCard,
     TDialog,
-    TInput,
+    TSelect,
     TInputGroup,
     TRadio,
   },
@@ -284,7 +304,7 @@ export default defineComponent({
     };
   },
   methods: {
-    async showNamedDialog(name = 'my-dialog') {
+    async showNamedDialog(name) {
       this.$dialog.show(name)
         .then((result) => {
           console.log('result', result);
