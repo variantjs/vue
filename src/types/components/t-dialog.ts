@@ -36,8 +36,6 @@ export type TDialogOptions = WithVariantPropsAndClassesList<{
   inputAttributes?: HTMLAttributes & Data,
   // Type for the prompt input (accepts 'input', 'textarea' ,'select' and 'checkbox')
   inputType?: 'string',
-  // variant for the input
-  inputVariant?: string,
   // Function for validate the value of the prompt, receives the prompt value and should return an error message or empty if no errors. It accepts a promise
   inputValidator?: DialogInputValidatorFn,
   // Default value of the input

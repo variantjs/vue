@@ -134,8 +134,8 @@
           type="prompt"
           input-type="text"
           input-value="A"
-          title="Favorite color?"
-          text="Write something"
+          title="This is a restricted section"
+          text="Whats is your secret word?"
           name="input-dialog"
         />
         <div class="flex space-x-2">
@@ -156,8 +156,8 @@
           type="prompt"
           input-type="text"
           input-value="A"
-          title="Favorite color?"
-          text="Write something"
+          title="This is a restricted section"
+          text="Whats is your secret word?"
           name="custom-input-dialog"
         >
           <template #input="{ setInputValue }">

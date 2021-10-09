@@ -114,12 +114,13 @@
               :variant="configuration.inputVariant"
               :inputAttributes="configuration.inputAttributes"
             >
-              <t-input
+              <input
                 v-model="inputModel"
                 :variant="configuration.inputVariant"
                 :type="configuration.inputType"
+                :class="configuration.classesList?.input"
                 v-bind="configuration.inputAttributes"
-              />
+              >
             </slot>
           </div>
         </template>
@@ -168,10 +169,6 @@ import useConfigurationWithClassesList from '../use/useConfigurationWithClassesL
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import useVModel from '../use/useVModel';
 import TModal from './TModal.vue';
-import TInput from './TInput.vue';
-import TSelect from './TSelect.vue';
-import TTextarea from './TTextarea.vue';
-import TCheckbox from './TCheckbox.vue';
 
 import CheckCircleIcon from '../icons/CheckCircleIcon.vue';
 import QuestionMarkCircleIcon from '../icons/QuestionMarkCircleIcon.vue';
@@ -188,11 +185,7 @@ import SolidCrossCircleIcon from '../icons/SolidCrossCircleIcon.vue';
 export default defineComponent({
   name: 'TDialog',
   components: {
-    TInput,
-    TCheckbox,
-    TTextarea,
     TModal,
-    TSelect,
     CrossCircleIcon,
     SolidCrossCircleIcon,
     CheckCircleIcon,
@@ -309,10 +302,6 @@ export default defineComponent({
     inputAttributes: {
       type: Object as PropType<HTMLAttributes & Data>,
       default: () => ({}),
-    },
-    inputVariant: {
-      type: String,
-      default: undefined,
     },
     inputValidator: {
       type: Function as PropType<DialogInputValidatorFn>,
