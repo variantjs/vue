@@ -175,8 +175,9 @@ import {
 } from 'vue';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import {
-  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogResponse, DialogHideReason, DialogInputValidatorFn, TDialogConfig, ModalHideReason, getFocusableElements,
+  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogResponse, DialogHideReason, DialogInputValidatorFn, TDialogConfig, ModalHideReason, getFocusableElements, promisifyFunctionResult, DialogBeforeHideParams, DialogBeforeShowParams,
 } from '@variantjs/core';
+import { config } from '@vue/test-utils';
 import {
   TDialogOptions, EmitterInterface, PromiseRejectFn,
 } from '../types';
@@ -336,9 +337,9 @@ export default defineComponent({
     shown: () => true,
     hidden: () => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-    'before-show': ({ cancel, params }: { cancel: (reason?: any) => void, params: any }) => true,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-    'before-hide': ({ cancel }: { cancel: (reason?: any) => void }) => true,
+    'before-show': (e: DialogBeforeShowParams) => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'before-hide': (e: DialogBeforeHideParams) => true,
     'update:modelValue': () => true,
     'update:inputValue': () => true,
   },
@@ -354,7 +355,12 @@ export default defineComponent({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const inputModel = ref<any>(props.inputValue);
 
+    const busy = ref<boolean>(false);
+
     const hideReason = ref<DialogHideReason | undefined>(DialogHideReason.Other);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const preConfirmResponse = ref<any>(undefined);
 
     const promiseResolve = ref<((value: DialogResponse) => void) | undefined>(undefined);
 
@@ -398,15 +404,38 @@ export default defineComponent({
       promiseResolve.value = undefined;
       promiseReject.value = undefined;
       hideReason.value = undefined;
+      busy.value = false;
+      preConfirmResponse.value = undefined;
       setInputValue(props.inputValue);
     };
 
-    const onBeforeShow = (e: { cancel: PromiseRejectFn, params: unknown }) => {
+    const onBeforeShow = (e: DialogBeforeShowParams) => {
       emit('before-show', e);
     };
 
     const onBeforeHide = (e: { cancel: PromiseRejectFn, reason: ModalHideReason }) => {
-      emit('before-hide', e);
+      // The `e.reason` comes from the modal so may differ to the dialog reason
+      const hideReasonValue: DialogHideReason = (hideReason.value !== undefined ? hideReason.value : e.reason) as DialogHideReason;
+
+      const response: DialogResponse = {
+        hideReason: hideReasonValue,
+        isOk: hideReasonValue === DialogHideReason.Ok,
+        isCancel: hideReasonValue === DialogHideReason.Cancel,
+        isDismissed: ![DialogHideReason.Cancel, DialogHideReason.Ok].includes(hideReasonValue),
+      };
+
+      if (configuration.preConfirm) {
+        response.response = preConfirmResponse.value;
+      }
+
+      if (isPrompt.value) {
+        response.input = inputModel.value;
+      }
+
+      emit('before-hide', {
+        cancel: e.cancel,
+        response,
+      });
     };
 
     const rejectOnDismiss = computed<boolean>(() => {
@@ -417,18 +446,24 @@ export default defineComponent({
       return configuration.rejectOnDismiss;
     });
 
-    const onHidden = (reason: DialogHideReason) => {
+    const onHidden = (reason: ModalHideReason) => {
       emit('hidden');
 
-      const hideReasonValue = hideReason.value !== undefined ? hideReason.value : reason;
+      // @TODO store the response on the before hide method and remove teh code below
+      //
+      // The `reason` comes from the modal so may differ to the dialog reason
+      const hideReasonValue: DialogHideReason = (hideReason.value !== undefined ? hideReason.value : reason) as DialogHideReason;
 
       const response: DialogResponse = {
         hideReason: hideReasonValue,
         isOk: hideReasonValue === DialogHideReason.Ok,
         isCancel: hideReasonValue === DialogHideReason.Cancel,
         isDismissed: ![DialogHideReason.Cancel, DialogHideReason.Ok].includes(hideReasonValue),
-        response: {},
       };
+
+      if (configuration.preConfirm) {
+        response.response = preConfirmResponse.value;
+      }
 
       if (isPrompt.value) {
         response.input = inputModel.value;
@@ -460,8 +495,25 @@ export default defineComponent({
       showModel.value = false;
     };
 
-    const ok = () :void => {
-      hide(DialogHideReason.Ok);
+    const ok = () : void => {
+      if (configuration.preConfirm) {
+        const promise = promisifyFunctionResult(configuration.preConfirm, inputModel.value);
+
+        busy.value = true;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        promise.then((response: any) => {
+          preConfirmResponse.value = response;
+
+          hide(DialogHideReason.Ok);
+        }).catch((error) => {
+          console.log(error);
+        }).then(() => {
+          busy.value = false;
+        });
+      } else {
+        hide(DialogHideReason.Ok);
+      }
     };
 
     const cancel = () :void => {

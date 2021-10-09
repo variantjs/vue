@@ -177,6 +177,50 @@
       </TInputGroup>
 
       <TInputGroup
+        label="Alert with failing promise"
+        class="mb-4"
+      >
+        <t-dialog
+          icon="question"
+          type="alert"
+          title="Delete?"
+          text="This action cannot be undone"
+          name="promise-alert"
+          :pre-confirm="failingAlertPromise"
+        />
+
+        <div class="flex space-x-2">
+          <t-button
+            @click="showNamedDialog('promise-alert')"
+          >
+            Show alert that will fail
+          </t-button>
+        </div>
+      </TInputGroup>
+
+      <TInputGroup
+        label="Alert with success promise"
+        class="mb-4"
+      >
+        <t-dialog
+          icon="question"
+          type="alert"
+          title="Delete?"
+          text="This action cannot be undone"
+          name="promise-alert-succeed"
+          :pre-confirm="successAlertResponse"
+        />
+
+        <div class="flex space-x-2">
+          <t-button
+            @click="showNamedDialog('promise-alert-succeed')"
+          >
+            Show alert that will succeed
+          </t-button>
+        </div>
+      </TInputGroup>
+
+      <TInputGroup
         label="Syncs show property"
         class="mb-4"
       >
@@ -223,6 +267,20 @@ import TSelect from '../components/TSelect.vue';
 import TRadio from '../components/TRadio.vue';
 import TInputGroup from '../components/TInputGroup.vue';
 
+const failingAlertPromise = () => new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject(new Error('Failed to delete'));
+  }, 1000);
+});
+
+const successAlertResponse = () => new Promise((resolve) => {
+  setTimeout(() => {
+    resolve({
+      foo: 'bar',
+    });
+  }, 1000);
+});
+
 export default defineComponent({
   name: 'App',
   components: {
@@ -242,6 +300,8 @@ export default defineComponent({
       email: 'alfonso@variantjs.com',
       name: 'Alfonso',
       user: {} as Data,
+      failingAlertPromise,
+      successAlertResponse,
     };
   },
   methods: {
