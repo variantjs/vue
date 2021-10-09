@@ -209,9 +209,13 @@ export default defineComponent({
       showModel.value = true;
     };
 
+    const focusModal = () :void => {
+      overlay.value!.focus();
+    };
+
     const initModal = () :void => {
       if (configuration.focusOnOpen) {
-        overlay.value!.focus();
+        focusModal();
       }
 
       if (configuration.disableBodyScroll) {
@@ -376,6 +380,7 @@ export default defineComponent({
       overlayTransitionClassesList,
       show,
       hide,
+      focusModal,
       onKeydownEscapeHandler,
       onClickHandler,
       ModalHideReason,

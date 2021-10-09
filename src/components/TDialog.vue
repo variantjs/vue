@@ -1,8 +1,9 @@
 <template>
   <t-modal
+    ref="modalRef"
     v-model="showModel"
     :modal-attributes="configuration.modalAttributes"
-    :focus-on-open="configuration.focusOnOpen"
+    :focus-on-open="false"
     :click-to-close="configuration.clickToClose"
     :esc-to-close="configuration.escToClose"
     :hide-close-button="! configuration.showCloseButton"
@@ -102,7 +103,10 @@
         </div>
 
         <template v-if="configuration.type === 'prompt'">
-          <div :class="configuration.classesList?.inputWrapper">
+          <div
+            ref="inputWrapperRef"
+            :class="configuration.classesList?.inputWrapper"
+          >
             <slot
               name="input"
               :setInputValue="setInputValue"
@@ -151,11 +155,11 @@
 
 <script lang="ts">
 import {
-  defineComponent, PropType, HTMLAttributes, inject, computed, ref,
+  defineComponent, PropType, HTMLAttributes, inject, computed, ref, onMounted,
 } from 'vue';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import {
-  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogResponse, DialogHideReason, DialogInputValidatorFn, TDialogConfig, ModalHideReason,
+  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogResponse, DialogHideReason, DialogInputValidatorFn, TDialogConfig, ModalHideReason, getFocusableElements,
 } from '@variantjs/core';
 import {
   TDialogOptions, EmitterInterface, PromiseRejectFn,
@@ -333,6 +337,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TDialogOptions>(TDialogConfig, TDialogClassesKeys);
 
+    const inputWrapperRef = ref<HTMLDivElement>();
+
+    const modalRef = ref<typeof TModal>();
+
     const showModel = useVModel(props, 'modelValue');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -343,6 +351,35 @@ export default defineComponent({
     const promiseResolve = ref<((value: DialogResponse) => void) | undefined>(undefined);
 
     const promiseReject = ref<PromiseRejectFn | undefined>(undefined);
+
+    const isPrompt = computed<boolean>(() => configuration.type === DialogType.Prompt);
+
+    const focusDialog = () => {
+      modalRef.value!.focusModal();
+    };
+
+    const focusPromptInput = () => {
+      const focusableField = getFocusableElements(inputWrapperRef.value!).shift();
+      if (focusableField) {
+        focusableField.focus();
+      }
+    };
+
+    const initDialog = () => {
+      if (configuration.focusOnOpen) {
+        if (isPrompt.value) {
+          focusPromptInput();
+        } else {
+          focusDialog();
+        }
+      }
+    };
+
+    onMounted(() => {
+      if (showModel.value) {
+        initDialog();
+      }
+    });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setInputValue = (value: any) => {
@@ -385,7 +422,7 @@ export default defineComponent({
         response: {},
       };
 
-      if (configuration.type === DialogType.Prompt) {
+      if (isPrompt.value) {
         response.input = inputModel.value;
       }
 
@@ -405,6 +442,8 @@ export default defineComponent({
 
     const onShown = () => {
       emit('shown');
+
+      initDialog();
     };
 
     const hide = (reason: DialogHideReason = DialogHideReason.Other) :void => {
@@ -494,6 +533,8 @@ export default defineComponent({
       onShown,
       onHidden,
       setInputValue,
+      inputWrapperRef,
+      modalRef,
     };
   },
 });
