@@ -303,6 +303,10 @@ export default defineComponent({
       type: Object as PropType<HTMLAttributes & Data>,
       default: () => ({}),
     },
+    inputType: {
+      type: String,
+      default: 'text',
+    },
     inputValidator: {
       type: Function as PropType<DialogInputValidatorFn>,
       default: undefined,
