@@ -18,7 +18,11 @@
     @before-show="onBeforeShow"
     @before-hide="onBeforeHide"
   >
-    <slot :hide="hide">
+    <slot
+      :hide="hide"
+      :ok="ok"
+      :cancel="cancel"
+    >
       <div
         v-if="configuration.icon"
         :class="configuration.classesList?.iconWrapper"
@@ -26,6 +30,8 @@
         <slot
           name="icon"
           :hide="hide"
+          :ok="ok"
+          :cancel="cancel"
         >
           <template v-if="configuration.useSolidIcon">
             <solid-check-circle-icon
@@ -83,6 +89,8 @@
             <slot
               name="title"
               :hide="hide"
+              :ok="ok"
+              :cancel="cancel"
             >
               {{ configuration.title }}
             </slot>
@@ -96,6 +104,8 @@
             <slot
               name="text"
               :hide="hide"
+              :ok="ok"
+              :cancel="cancel"
             >
               {{ configuration.text }}
             </slot>
@@ -109,6 +119,9 @@
           >
             <slot
               name="input"
+              :hide="hide"
+              :ok="ok"
+              :cancel="cancel"
               :setInputValue="setInputValue"
               :inputValue="inputValue"
               :variant="configuration.inputVariant"
@@ -131,13 +144,15 @@
       <slot
         name="footer"
         :hide="hide"
+        :ok="ok"
+        :cancel="cancel"
       >
         <button
           v-if="showCancelButton"
           type="button"
           :class="configuration.classesList?.cancelButton"
           :aria-label="cancelButtonAriaLabel"
-          @click="hide(DialogHideReason.Cancel)"
+          @click="cancel"
         >
           {{ cancelButtonText }}
         </button>
@@ -145,7 +160,7 @@
           type="button"
           :class="configuration.classesList?.okButton"
           :aria-label="okButtonAriaLabel"
-          @click="hide(DialogHideReason.Ok)"
+          @click="ok"
         >
           {{ okButtonText }}
         </button>
@@ -445,6 +460,14 @@ export default defineComponent({
       showModel.value = false;
     };
 
+    const ok = () :void => {
+      hide(DialogHideReason.Ok);
+    };
+
+    const cancel = () :void => {
+      hide(DialogHideReason.Cancel);
+    };
+
     const show = () : Promise<DialogResponse> | void => {
       if (promiseResolve.value !== undefined) {
         showModel.value = true;
@@ -521,6 +544,8 @@ export default defineComponent({
       inputModel,
       show,
       hide,
+      ok,
+      cancel,
       onBeforeShow,
       onBeforeHide,
       onShown,
