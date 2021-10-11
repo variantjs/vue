@@ -473,6 +473,11 @@ export default defineComponent({
     };
 
     const onBeforeHide = (e: { cancel: PromiseRejectFn, reason: ModalHideReason }) => {
+      if (busy.value) {
+        e.cancel();
+        return;
+      }
+
       // The `e.reason` comes from the modal so may differ to the dialog reason
       const hideReasonValue: DialogHideReason = (hideReason.value !== undefined ? hideReason.value : e.reason) as DialogHideReason;
 
