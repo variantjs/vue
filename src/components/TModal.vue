@@ -17,7 +17,7 @@
         <transitionable :classes-list="configuration.classesList">
           <div
             v-show="showModal"
-            v-bind="modalAttributes"
+            v-bind="configuration.modalAttributes"
             ref="modal"
             :class="configuration.classesList?.wrapper"
             @click.stop
@@ -29,16 +29,24 @@
               v-else
               :class="configuration.classesList?.modal"
             >
-              <button
-                v-if="!hideCloseButton"
-                type="button"
-                :class="configuration.classesList?.close"
-                @click="hide(ModalHideReason.Close)"
+              <slot
+                v-if="!configuration.hideCloseButton"
+                name="closeButton"
+                :hide="hide"
               >
-                <slot name="closeButton">
-                  <close-icon :class="configuration.classesList?.closeIcon" />
-                </slot>
-              </button>
+                <button
+                  type="button"
+                  :class="configuration.classesList?.close"
+                  @click="hide(ModalHideReason.Close)"
+                >
+                  <slot
+                    name="closeButtonIcon"
+                    :hide="hide"
+                  >
+                    <close-icon :class="configuration.classesList?.closeIcon" />
+                  </slot>
+                </button>
+              </slot>
 
               <div
                 v-if="$slots.header || configuration.header"

@@ -18,6 +18,33 @@
     @before-show="onBeforeShow"
     @before-hide="onBeforeHide"
   >
+    <template #closeButton>
+      <button
+        v-if="!configuration.hideCloseButton"
+        type="button"
+        :disabled="busy"
+        :class="configuration.classesList?.close"
+        @click="hide(DialogHideReason.Close)"
+      >
+        <slot
+          name="closeButtonIcon"
+          :hide="hide"
+        >
+          <close-icon :class="configuration.classesList?.closeIcon" />
+        </slot>
+      </button>
+    </template>
+
+    <div
+      v-if="busy"
+      :class="configuration.classesList?.busyWrapper"
+    >
+      <loading-icon
+
+        :class="configuration.classesList?.busyIcon"
+      />
+    </div>
+
     <slot
       :hide="hide"
       :ok="ok"
@@ -152,6 +179,7 @@
           type="button"
           :class="configuration.classesList?.cancelButton"
           :aria-label="cancelButtonAriaLabel"
+          :disabled="busy"
           @click="cancel"
         >
           {{ cancelButtonText }}
@@ -160,6 +188,7 @@
           type="button"
           :class="configuration.classesList?.okButton"
           :aria-label="okButtonAriaLabel"
+          :disabled="busy"
           @click="ok"
         >
           {{ okButtonText }}
@@ -196,12 +225,16 @@ import SolidInformationCircleIcon from '../icons/SolidInformationCircleIcon.vue'
 import SolidExclamationIcon from '../icons/SolidExclamationIcon.vue';
 import CrossCircleIcon from '../icons/CrossCircleIcon.vue';
 import SolidCrossCircleIcon from '../icons/SolidCrossCircleIcon.vue';
+import LoadingIcon from '../icons/LoadingIcon.vue';
+import CloseIcon from '../icons/CloseIcon.vue';
 
 // @vue/component
 export default defineComponent({
   name: 'TDialog',
   components: {
     TModal,
+    CloseIcon,
+    LoadingIcon,
     CrossCircleIcon,
     SolidCrossCircleIcon,
     CheckCircleIcon,
@@ -359,6 +392,8 @@ export default defineComponent({
 
     const hideReason = ref<DialogHideReason | undefined>(DialogHideReason.Other);
 
+    const dialogResponse = ref<DialogResponse | undefined>(undefined);
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const preConfirmResponse = ref<any>(undefined);
 
@@ -404,6 +439,7 @@ export default defineComponent({
       promiseResolve.value = undefined;
       promiseReject.value = undefined;
       hideReason.value = undefined;
+      dialogResponse.value = undefined;
       busy.value = false;
       preConfirmResponse.value = undefined;
       setInputValue(props.inputValue);
@@ -432,6 +468,8 @@ export default defineComponent({
         response.input = inputModel.value;
       }
 
+      dialogResponse.value = response;
+
       emit('before-hide', {
         cancel: e.cancel,
         response,
@@ -446,28 +484,10 @@ export default defineComponent({
       return configuration.rejectOnDismiss;
     });
 
-    const onHidden = (reason: ModalHideReason) => {
+    const onHidden = () => {
       emit('hidden');
 
-      // @TODO store the response on the before hide method and remove teh code below
-      //
-      // The `reason` comes from the modal so may differ to the dialog reason
-      const hideReasonValue: DialogHideReason = (hideReason.value !== undefined ? hideReason.value : reason) as DialogHideReason;
-
-      const response: DialogResponse = {
-        hideReason: hideReasonValue,
-        isOk: hideReasonValue === DialogHideReason.Ok,
-        isCancel: hideReasonValue === DialogHideReason.Cancel,
-        isDismissed: ![DialogHideReason.Cancel, DialogHideReason.Ok].includes(hideReasonValue),
-      };
-
-      if (configuration.preConfirm) {
-        response.response = preConfirmResponse.value;
-      }
-
-      if (isPrompt.value) {
-        response.input = inputModel.value;
-      }
+      const response = dialogResponse.value!;
 
       if (
         (response.isCancel && configuration.rejectOnCancel)
@@ -507,6 +527,7 @@ export default defineComponent({
 
           hide(DialogHideReason.Ok);
         }).catch((error) => {
+          // @TODO: Handle error
           console.log(error);
         }).then(() => {
           busy.value = false;
@@ -565,8 +586,6 @@ export default defineComponent({
     const modalClasses = computed(() => ({
       overlay: configuration.classesList!.overlay,
       wrapper: configuration.classesList!.wrapper,
-      close: configuration.classesList!.close,
-      closeIcon: configuration.classesList!.closeIcon,
       modal: configuration.classesList!.dialog,
       body: configuration.classesList!.body,
       footer: configuration.classesList!.buttons,
@@ -594,6 +613,7 @@ export default defineComponent({
       showCancelButton,
       DialogHideReason,
       inputModel,
+      busy,
       show,
       hide,
       ok,
@@ -605,6 +625,7 @@ export default defineComponent({
       setInputValue,
       inputWrapperRef,
       modalRef,
+
     };
   },
 });
