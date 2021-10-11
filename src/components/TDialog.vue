@@ -39,10 +39,7 @@
       v-if="busy"
       :class="configuration.classesList?.busyWrapper"
     >
-      <loading-icon
-
-        :class="configuration.classesList?.busyIcon"
-      />
+      <loading-icon :class="configuration.classesList?.busyIcon" />
     </div>
 
     <slot
@@ -50,6 +47,20 @@
       :ok="ok"
       :cancel="cancel"
     >
+      <div
+        v-if="errorMessage !== undefined"
+        :class="configuration.classesList?.errorMessage"
+      >
+        <slot
+          name="error"
+          :setError="setError"
+          :hide="hide"
+          :error-message="errorMessage"
+        >
+          {{ errorMessage }}
+        </slot>
+      </div>
+
       <div
         v-if="configuration.icon"
         :class="configuration.classesList?.iconWrapper"
@@ -206,7 +217,6 @@ import { BodyScrollOptions } from 'body-scroll-lock';
 import {
   Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogResponse, DialogHideReason, DialogInputValidatorFn, TDialogConfig, ModalHideReason, getFocusableElements, promisifyFunctionResult, DialogBeforeHideParams, DialogBeforeShowParams,
 } from '@variantjs/core';
-import { config } from '@vue/test-utils';
 import {
   TDialogOptions, EmitterInterface, PromiseRejectFn,
 } from '../types';
@@ -370,6 +380,8 @@ export default defineComponent({
     shown: () => true,
     hidden: () => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+    error: (response: any) => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     'before-show': (e: DialogBeforeShowParams) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     'before-hide': (e: DialogBeforeHideParams) => true,
@@ -390,6 +402,8 @@ export default defineComponent({
 
     const busy = ref<boolean>(false);
 
+    const errorMessage = ref<string | undefined>(undefined);
+
     const hideReason = ref<DialogHideReason | undefined>(DialogHideReason.Other);
 
     const dialogResponse = ref<DialogResponse | undefined>(undefined);
@@ -402,6 +416,14 @@ export default defineComponent({
     const promiseReject = ref<PromiseRejectFn | undefined>(undefined);
 
     const isPrompt = computed<boolean>(() => configuration.type === DialogType.Prompt);
+
+    const setError = (error: string | undefined | Error) => {
+      if (error instanceof Error) {
+        errorMessage.value = error.message;
+      } else {
+        errorMessage.value = error;
+      }
+    };
 
     const focusDialog = () => {
       modalRef.value!.focusModal();
@@ -441,6 +463,7 @@ export default defineComponent({
       hideReason.value = undefined;
       dialogResponse.value = undefined;
       busy.value = false;
+      setError(undefined);
       preConfirmResponse.value = undefined;
       setInputValue(props.inputValue);
     };
@@ -521,14 +544,17 @@ export default defineComponent({
 
         busy.value = true;
 
+        setError(undefined);
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         promise.then((response: any) => {
           preConfirmResponse.value = response;
 
           hide(DialogHideReason.Ok);
         }).catch((error) => {
-          // @TODO: Handle error
-          console.log(error);
+          setError(error);
+
+          emit('error', error);
         }).then(() => {
           busy.value = false;
         });
@@ -623,6 +649,8 @@ export default defineComponent({
       onShown,
       onHidden,
       setInputValue,
+      setError,
+      errorMessage,
       inputWrapperRef,
       modalRef,
 
