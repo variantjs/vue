@@ -502,6 +502,7 @@ describe('TModal.vue', () => {
       expect(wrapper.emitted('before-hide')).toBeTruthy();
       expect(Object.keys((wrapper.emitted('before-hide')![0] as any)[0])).toEqual([
         'cancel',
+        'reason',
       ]);
       expect(wrapper.emitted('hidden')).toBeFalsy();
 
