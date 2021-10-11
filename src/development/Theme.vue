@@ -1,5 +1,5 @@
 <template>
-  <t-card>
+  <t-card class="w-full">
     <template #header>
       Simple component
     </template>
@@ -77,7 +77,7 @@
     </div>
   </t-card>
 
-  <t-card>
+  <t-card class="w-full">
     <template #header>
       Complex for component
     </template>
