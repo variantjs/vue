@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <t-card header="Options">
     <div class="grid grid-cols-1 gap-6">
       <p>Options components v-model sync</p>
       <t-select
@@ -71,7 +71,7 @@
     <t-button @click="selected = null">
       Clear value
     </t-button>
-  </div>
+  </t-card>
 </template>
 
 <script lang="ts">
@@ -79,6 +79,7 @@ import { defineComponent } from 'vue';
 import TSelect from '../components/TSelect.vue';
 import TRichSelect from '../components/TRichSelect.vue';
 import TButton from '../components/TButton.vue';
+import TCard from '../components/TCard.vue';
 
 const fetchOptions = (query?: string, nextPage?: number) => {
   const url = `https://www.omdbapi.com/?apikey=e1b3617e&s=${query}&page=${nextPage || 1}`;
@@ -95,6 +96,7 @@ export default defineComponent({
   name: 'Options',
   components: {
     TSelect,
+    TCard,
     TButton,
     TRichSelect,
   },

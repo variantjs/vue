@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <t-card
+    class="w-full"
+    header="Attributes"
+  >
     <div class="grid grid-cols-1 gap-6">
       <p>Gets the same placeholder attribute from different sources</p>
 
@@ -24,17 +27,19 @@
       <p>Placeholder on the variant</p>
       <t-input variant="alt" />
     </div>
-  </div>
+  </t-card>
 </template>
 
 <script lang="ts">
 import { defineComponent, provide } from 'vue';
 import TInput from '../components/TInput.vue';
+import TCard from '../components/TCard.vue';
 
 export default defineComponent({
   name: 'Attributes',
   components: {
     TInput,
+    TCard,
   },
   setup() {
     provide('configuration', {

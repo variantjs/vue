@@ -11,7 +11,13 @@ const app = createApp(App);
 
 app.use(router);
 
-const configuration: VariantJSConfiguration = {};
+const configuration: VariantJSConfiguration = {
+  TCard: {
+    classes: {
+      wrapper: 'bg-white border border-gray-100 rounded shadow-sm w-full',
+    },
+  },
+};
 
 app.use(plugin, configuration);
 
