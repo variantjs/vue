@@ -305,15 +305,6 @@ export default defineComponent({
     TInputGroup,
     TRadio,
   },
-  setup() {
-    provide('configuration', {
-      TDialog: {
-        classes: {
-          overlay: 'bg-yellow-500',
-        },
-      },
-    });
-  },
   data() {
     return {
       dialogIcon: 'success' as DialogIcon,
