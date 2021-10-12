@@ -1,5 +1,5 @@
 <template>
-  <t-card>
+  <t-card class="w-full">
     <template #header>
       <h1>Dialog</h1>
     </template>
@@ -250,11 +250,26 @@
         </template>
       </t-dialog>
     </TInputGroup>
+
+    <TInputGroup
+      label="Open alert programatically"
+      class="mb-4"
+    >
+      <t-button @click="programaticAlert">
+        Show alert
+      </t-button>
+      <t-button @click="programaticAlert2">
+        Show alert alt
+      </t-button>
+      <t-button @click="programaticFailingAlert">
+        Show failing alert
+      </t-button>
+    </TInputGroup>
   </t-card>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, provide } from 'vue';
 
 import { Data, DialogIcon, DialogType } from '@variantjs/core';
 import TCheckbox from '../components/TCheckbox.vue';
@@ -290,6 +305,15 @@ export default defineComponent({
     TInputGroup,
     TRadio,
   },
+  setup() {
+    provide('configuration', {
+      TDialog: {
+        classes: {
+          overlay: 'bg-yellow-500',
+        },
+      },
+    });
+  },
   data() {
     return {
       dialogIcon: 'success' as DialogIcon,
@@ -303,6 +327,31 @@ export default defineComponent({
     };
   },
   methods: {
+    programaticAlert() {
+      this.$dialog.alert('Whatever').then((result) => {
+        console.log('result', result);
+      }).catch((error) => {
+        console.log('error', error);
+      });
+    },
+    programaticAlert2() {
+      this.$confirm('Whatever').then((result) => {
+        console.log('result', result);
+      }).catch((error) => {
+        console.log('error', error);
+      });
+    },
+    programaticFailingAlert() {
+      this.$dialog.alert({
+        title: 'Will fail',
+        icon: DialogIcon.Error,
+        preConfirm: failingAlertPromise,
+      }).then((result) => {
+        console.log('result', result);
+      }).catch((error) => {
+        console.log('error', error);
+      });
+    },
     async showNamedDialog(name: string) {
       this.$dialog.show(name)
         .then((result) => {

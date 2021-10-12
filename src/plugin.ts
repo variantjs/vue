@@ -1,9 +1,10 @@
 import {
-  DialogHideFn, DialogResponse, DialogShowFn, ModalHideFn, ModalShowFn,
+  DialogHideFn, DialogProgramaticallyShowFn, DialogResponse, DialogShowFn, DialogType, ModalHideFn, ModalShowFn,
 } from '@variantjs/core';
 import { App } from 'vue';
 import { VariantJSConfiguration } from './types';
 import { TDialogOptions } from './types/components/t-dialog';
+import { createDialogProgramatically } from './components/TDialog.vue';
 import { Emitter } from './utils/emitter';
 
 const plugin = {
@@ -24,6 +25,12 @@ const plugin = {
       },
     };
 
+    const alert: DialogProgramaticallyShowFn = (titleOrDialogOptions: TDialogOptions | string, text?: string, icon?: string) : Promise<DialogResponse> => createDialogProgramatically(configuration, DialogType.Alert, titleOrDialogOptions, text, icon);
+
+    const prompt: DialogProgramaticallyShowFn = (titleOrDialogOptions: TDialogOptions | string, text?: string, icon?: string) : Promise<DialogResponse> => createDialogProgramatically(configuration, DialogType.Prompt, titleOrDialogOptions, text, icon);
+
+    const confirm: DialogProgramaticallyShowFn = (titleOrDialogOptions: TDialogOptions | string, text?: string, icon?: string) : Promise<DialogResponse> => createDialogProgramatically(configuration, DialogType.Confirm, titleOrDialogOptions, text, icon);
+
     // eslint-disable-next-line no-param-reassign
     app.config.globalProperties.$dialog = {
       show(name: string): Promise<DialogResponse> {
@@ -36,7 +43,17 @@ const plugin = {
       hide(name: string) {
         emitter.emit('dialog:hide', name);
       },
+      alert,
+      confirm,
+      prompt,
     };
+
+    // eslint-disable-next-line no-param-reassign
+    app.config.globalProperties.$alert = alert;
+    // eslint-disable-next-line no-param-reassign
+    app.config.globalProperties.$confirm = confirm;
+    // eslint-disable-next-line no-param-reassign
+    app.config.globalProperties.$prompt = prompt;
 
     app.provide('configuration', configuration);
 
@@ -54,13 +71,13 @@ declare module '@vue/runtime-core' {
     $dialog: {
       show: DialogShowFn;
       hide: DialogHideFn;
-      alert: (titleOrDialogOptions: TDialogOptions, text?: string, icon?: string) => Promise<DialogResponse>;
-      confirm: (titleOrDialogOptions: TDialogOptions, text?: string, icon?: string) => Promise<DialogResponse>;
-      prompt: (titleOrDialogOptions: TDialogOptions, text?: string, icon?: string) => Promise<DialogResponse>;
+      alert: DialogProgramaticallyShowFn;
+      confirm: DialogProgramaticallyShowFn;
+      prompt: DialogProgramaticallyShowFn;
     },
-    $alert: (titleOrDialogOptions: TDialogOptions, text?: string, icon?: string) => Promise<DialogResponse>;
-    $confirm: (titleOrDialogOptions: TDialogOptions, text?: string, icon?: string) => Promise<DialogResponse>;
-    $prompt: (titleOrDialogOptions: TDialogOptions, text?: string, icon?: string) => Promise<DialogResponse>;
+    $alert: DialogProgramaticallyShowFn;
+    $confirm: DialogProgramaticallyShowFn;
+    $prompt: DialogProgramaticallyShowFn;
   }
 }
 

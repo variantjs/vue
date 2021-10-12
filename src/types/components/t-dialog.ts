@@ -5,8 +5,8 @@ import { BodyScrollOptions } from 'body-scroll-lock';
 import { HTMLAttributes } from 'vue';
 
 export type TDialogOptions = WithVariantPropsAndClassesList<{
-  type?: DialogType,
-  icon?: DialogIcon,
+  type?: string,
+  icon?: string,
   useSolidIcon?: boolean,
   rejectOnCancel?: boolean,
   rejectOnDismiss?: boolean,
