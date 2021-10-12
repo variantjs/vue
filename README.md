@@ -8,7 +8,7 @@
 - If you find any error, typo or have comments feel free to create [an issue](https://github.com/variantjs/vue/issues) or open a PR.
 - Also a friendly reminder to consider [sponsor this project](https://github.com/sponsors/variantjs) there is a lot of work behind, **a lot**.
 - You can track the progress (or even see what tasks are pending if you want to contribute) [here](https://github.com/variantjs/vue/projects/1).
-- Demo: [https://variantjs.vercel.app/](https://variantjs.vercel.app/#/)
+- Demo: [https://variantjs.netlify.app](https://variantjs.netlify.app)
   
 
 ## Whats new?
