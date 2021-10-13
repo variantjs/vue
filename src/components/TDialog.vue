@@ -221,20 +221,32 @@
 
 <script lang="ts">
 import {
-  defineComponent, PropType, HTMLAttributes, inject, computed, ref, onMounted, createApp,
+  defineComponent, PropType, HTMLAttributes, inject, computed, ref, onMounted,
 } from 'vue';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import {
-  Data, TDialogClassesKeys, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogResponse, DialogHideReason, DialogInputValidatorFn, TDialogConfig, ModalHideReason, getFocusableElements, promisifyFunctionResult, DialogBeforeHideParams, DialogBeforeShowParams,
+  Data,
+  TDialogClassesKeys,
+  TDialogClassesValidKeys,
+  DialogType,
+  DialogPreconfirmFn,
+  DialogResponse,
+  DialogHideReason,
+  DialogInputValidatorFn,
+  TDialogConfig,
+  ModalHideReason,
+  getFocusableElements,
+  promisifyFunctionResult,
+  DialogBeforeHideParams,
+  DialogBeforeShowParams,
 } from '@variantjs/core';
 import {
-  TDialogOptions, EmitterInterface, PromiseRejectFn, VariantJSConfiguration,
+  TDialogOptions, EmitterInterface, PromiseRejectFn,
 } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import useVModel from '../use/useVModel';
 import TModal from './TModal.vue';
-
 import CheckCircleIcon from '../icons/CheckCircleIcon.vue';
 import QuestionMarkCircleIcon from '../icons/QuestionMarkCircleIcon.vue';
 import InformationCircleIcon from '../icons/InformationCircleIcon.vue';
@@ -249,7 +261,7 @@ import LoadingIcon from '../icons/LoadingIcon.vue';
 import CloseIcon from '../icons/CloseIcon.vue';
 
 // @vue/component
-const dialogComponent = defineComponent({
+export default defineComponent({
   name: 'TDialog',
   components: {
     TModal,
@@ -667,49 +679,4 @@ const dialogComponent = defineComponent({
     };
   },
 });
-
-export const createDialogProgramatically = (configuration: VariantJSConfiguration, type: DialogType, titleOrDialogOptions: TDialogOptions | string, text?: string, icon?: string) : Promise<DialogResponse> => {
-  const { props } = dialogComponent;
-
-  if (typeof titleOrDialogOptions === 'string') {
-    props.title.default = titleOrDialogOptions;
-  } else {
-    Object.keys(titleOrDialogOptions).forEach((key) => {
-      props[key].default = titleOrDialogOptions[key];
-    });
-  }
-
-  if (typeof text === 'string') {
-    props.text.default = text;
-  }
-
-  if (typeof icon === 'string') {
-    props.icon.default = icon;
-  }
-
-  props.type.default = type;
-
-  const instance = createApp(dialogComponent);
-
-  instance.provide('configuration', configuration);
-
-  const dialogInstance = instance.mount(document.createElement('div'));
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const promise = (dialogInstance as any).show() as Promise<DialogResponse>;
-
-  return promise
-    .then((response) => {
-      instance.unmount();
-
-      return Promise.resolve(response);
-    })
-    .catch((error) => {
-      instance.unmount();
-
-      return Promise.reject(error);
-    });
-};
-
-export default dialogComponent;
 </script>

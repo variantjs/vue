@@ -4,7 +4,7 @@ import {
 import { App } from 'vue';
 import { VariantJSConfiguration } from './types';
 import { TDialogOptions } from './types/components/t-dialog';
-import { createDialogProgramatically } from './components/TDialog.vue';
+import createDialogProgramatically from './utils/createDialogProgramatically';
 import { Emitter } from './utils/emitter';
 
 const plugin = {
