@@ -310,7 +310,7 @@ const dialogComponent = defineComponent({
     },
     cancelButtonAriaLabel: {
       type: String,
-      default: 'Cancel Button',
+      default: 'Cancel',
     },
     okButtonText: {
       type: String,
@@ -318,7 +318,7 @@ const dialogComponent = defineComponent({
     },
     okButtonAriaLabel: {
       type: String,
-      default: 'OK Button',
+      default: 'OK',
     },
     preConfirm: {
       type: Function as PropType<DialogPreconfirmFn>,

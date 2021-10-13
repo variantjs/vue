@@ -121,6 +121,108 @@ describe('TDialog.vue', () => {
     });
   });
 
+  describe('Cancel Button', () => {
+    const props = {
+      type: 'confirm',
+    };
+
+    it('has a default label', () => {
+      const wrapper = mount(TDialog, { props });
+
+      const cancelButton = wrapper.vm.$refs.cancelButton as HTMLButtonElement;
+
+      expect(cancelButton.textContent).toEqual('Cancel');
+    });
+
+    it('has a default aria-label attribute', () => {
+      const wrapper = mount(TDialog, { props });
+
+      const cancelButton = wrapper.vm.$refs.cancelButton as HTMLButtonElement;
+
+      expect(cancelButton.getAttribute('aria-label')).toEqual('Cancel');
+    });
+
+    it('accepts a different label and aria-label', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          ...props,
+          cancelButtonText: 'Nah',
+          cancelButtonAriaLabel: 'Nah Button',
+        },
+      });
+
+      const cancelButton = wrapper.vm.$refs.cancelButton as HTMLButtonElement;
+
+      expect(cancelButton.textContent).toEqual('Nah');
+      expect(cancelButton.getAttribute('aria-label')).toEqual('Nah Button');
+    });
+
+    it('calls the cancel method when clicked', () => {
+      const wrapper = mount(TDialog, { props });
+
+      const cancelFnMock = jest.fn();
+
+      wrapper.vm.cancel = cancelFnMock;
+
+      const cancelButton = wrapper.vm.$refs.cancelButton as HTMLButtonElement;
+
+      cancelButton.dispatchEvent(new Event('click'));
+
+      expect(cancelFnMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('OK Button', () => {
+    const props = {
+      type: 'confirm',
+    };
+
+    it('has a default label', () => {
+      const wrapper = mount(TDialog, { props });
+
+      const okButton = wrapper.vm.$refs.okButton as HTMLButtonElement;
+
+      expect(okButton.textContent).toEqual('OK');
+    });
+
+    it('has a default aria-label attribute', () => {
+      const wrapper = mount(TDialog, { props });
+
+      const okButton = wrapper.vm.$refs.okButton as HTMLButtonElement;
+
+      expect(okButton.getAttribute('aria-label')).toEqual('OK');
+    });
+
+    it('accepts a different label and aria-label', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          ...props,
+          okButtonText: 'Yei!',
+          okButtonAriaLabel: 'Ok Button',
+        },
+      });
+
+      const okButton = wrapper.vm.$refs.okButton as HTMLButtonElement;
+
+      expect(okButton.textContent).toEqual('Yei!');
+      expect(okButton.getAttribute('aria-label')).toEqual('Ok Button');
+    });
+
+    it('calls the ok method when clicked', () => {
+      const wrapper = mount(TDialog, { props });
+
+      const okFnMock = jest.fn();
+
+      wrapper.vm.ok = okFnMock;
+
+      const okButton = wrapper.vm.$refs.okButton as HTMLButtonElement;
+
+      okButton.dispatchEvent(new Event('click'));
+
+      expect(okFnMock).toHaveBeenCalled();
+    });
+  });
+
   describe('Dialog types', () => {
     describe('Alert type', () => {
       const props = {
