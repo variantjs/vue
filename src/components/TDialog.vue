@@ -63,6 +63,7 @@
 
       <div
         v-if="configuration.icon"
+        ref="iconWrapperRef"
         :class="configuration.classesList?.iconWrapper"
       >
         <slot

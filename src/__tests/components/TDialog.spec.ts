@@ -271,4 +271,37 @@ describe('TDialog.vue', () => {
       });
     });
   });
+
+  describe('Dialog Icon', () => {
+    it('doesnt add an icon by default', () => {
+      const wrapper = mount(TDialog);
+
+      expect(wrapper.vm.$refs.iconWrapperRef).toBeFalsy();
+    });
+
+    it.each(['success', 'question', 'info', 'warning', 'error'])('adds the icon', (icon) => {
+      const wrapper = mount(TDialog, {
+        props: {
+          icon,
+        },
+      });
+
+      expect(wrapper.vm.$refs.iconWrapperRef).toBeTruthy();
+
+      expect((wrapper.vm.$refs.iconWrapperRef as HTMLDivElement).children[0].tagName).toBe('svg');
+    });
+
+    it.each(['success', 'question', 'info', 'warning', 'error'])('adds the icon when useSolidIcon is iset', (icon) => {
+      const wrapper = mount(TDialog, {
+        props: {
+          icon,
+          useSolidIcon: true,
+        },
+      });
+
+      expect(wrapper.vm.$refs.iconWrapperRef).toBeTruthy();
+
+      expect((wrapper.vm.$refs.iconWrapperRef as HTMLDivElement).children[0].tagName).toBe('svg');
+    });
+  });
 });
