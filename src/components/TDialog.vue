@@ -139,7 +139,10 @@
             </slot>
           </component>
         </div>
-        <div :class="configuration.classesList?.textWrapper">
+        <div
+          v-if="configuration.text !== undefined || $slots.text"
+          :class="configuration.classesList?.textWrapper"
+        >
           <component
             :is="configuration.textTag"
             :class="configuration.classesList?.text"

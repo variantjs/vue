@@ -54,6 +54,16 @@ describe('TDialog.vue', () => {
       expect(wrapper.find('h3').text()).toEqual('Are you sure?');
     });
 
+    it('adds the title trough the slot', () => {
+      const wrapper = mount(TDialog, {
+        slots: {
+          title: 'Are you sure?',
+        },
+      });
+
+      expect(wrapper.find('h3').text()).toEqual('Are you sure?');
+    });
+
     it('accepts a title tag', () => {
       const wrapper = mount(TDialog, {
         props: {
@@ -69,6 +79,45 @@ describe('TDialog.vue', () => {
       const wrapper = mount(TDialog);
 
       expect(wrapper.find('h3').exists()).toBe(false);
+    });
+  });
+
+  describe('Text', () => {
+    it('adds the text', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          text: 'This action cannot be undone',
+        },
+      });
+
+      expect(wrapper.find('p').text()).toEqual('This action cannot be undone');
+    });
+
+    it('adds the text trough the slot', () => {
+      const wrapper = mount(TDialog, {
+        slots: {
+          text: 'This action cannot be undone',
+        },
+      });
+
+      expect(wrapper.find('p').text()).toEqual('This action cannot be undone');
+    });
+
+    it('accepts a text tag', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          text: 'This action cannot be undone',
+          textTag: 'blockquote',
+        },
+      });
+
+      expect(wrapper.find('blockquote').text()).toEqual('This action cannot be undone');
+    });
+
+    it('doesnt add the text if not set', () => {
+      const wrapper = mount(TDialog);
+
+      expect(wrapper.find('p').exists()).toBe(false);
     });
   });
 
