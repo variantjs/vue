@@ -162,5 +162,113 @@ describe('TDialog.vue', () => {
         expect(reject).not.toHaveBeenCalled();
       });
     });
+
+    describe('Confirm type', () => {
+      const props = {
+        type: 'confirm',
+      };
+
+      it('has an ok button', () => {
+        const wrapper = mount(TDialog, { props });
+
+        const { okButton } = wrapper.vm.$refs;
+
+        expect(okButton).toBeTruthy();
+      });
+
+      it('has a cancel button', () => {
+        const wrapper = mount(TDialog, { props });
+
+        const { cancelButton } = wrapper.vm.$refs;
+
+        expect(cancelButton).toBeTruthy();
+      });
+
+      it('reject a promise when is dimissed by default', async () => {
+        const emitter = new Emitter();
+
+        const wrapper = mount(TDialog, {
+          props: {
+            ...props,
+            name: 'my-dialog',
+            modelValue: false,
+          },
+          global: {
+            provide: {
+              // Emulates the plugin system
+              emitter,
+            },
+          },
+
+        });
+
+        // @see vue/src/plugin.ts show helper
+        const resolve = jest.fn();
+        const reject = jest.fn();
+
+        emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+        await waitUntilModalIsShown(wrapper);
+
+        emitter.emit('dialog:hide', 'my-dialog');
+        await waitUntilModalIsHidden(wrapper);
+
+        expect(resolve).not.toHaveBeenCalled();
+        expect(reject).toHaveBeenCalled();
+      });
+    });
+
+    describe('Prompt type', () => {
+      const props = {
+        type: 'prompt',
+      };
+
+      it('has an ok button', () => {
+        const wrapper = mount(TDialog, { props });
+
+        const { okButton } = wrapper.vm.$refs;
+
+        expect(okButton).toBeTruthy();
+      });
+
+      it('has a cancel button', () => {
+        const wrapper = mount(TDialog, { props });
+
+        const { cancelButton } = wrapper.vm.$refs;
+
+        expect(cancelButton).toBeTruthy();
+      });
+
+      it('reject a promise when is dimissed by default', async () => {
+        const emitter = new Emitter();
+
+        const wrapper = mount(TDialog, {
+          props: {
+            ...props,
+            name: 'my-dialog',
+            modelValue: false,
+          },
+          global: {
+            provide: {
+              // Emulates the plugin system
+              emitter,
+            },
+          },
+
+        });
+
+        // @see vue/src/plugin.ts show helper
+        const resolve = jest.fn();
+        const reject = jest.fn();
+
+        emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+        await waitUntilModalIsShown(wrapper);
+
+        emitter.emit('dialog:hide', 'my-dialog');
+        await waitUntilModalIsHidden(wrapper);
+
+        expect(resolve).not.toHaveBeenCalled();
+        expect(reject).toHaveBeenCalled();
+      });
+    });
   });
 });
