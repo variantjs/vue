@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { mount } from '@vue/test-utils';
-import { DialogHideReason } from '@variantjs/core';
+import { mount, MountingOptions } from '@vue/test-utils';
+import { Data, DialogHideReason } from '@variantjs/core';
 import TDialog from '@/components/TDialog.vue';
 import { Emitter } from '../..';
 
@@ -63,104 +63,6 @@ describe('TDialog.vue', () => {
 
         expect(cancelButton).toBeUndefined();
       });
-
-      it('doesnt reject a promise when is dimissed', async () => {
-        const emitter = new Emitter();
-
-        const wrapper = mount(TDialog, {
-          props: {
-            ...props,
-            name: 'my-dialog',
-            modelValue: false,
-          },
-          global: {
-            provide: {
-              // Emulates the plugin system
-              emitter,
-            },
-          },
-
-        });
-
-        // @see vue/src/plugin.ts show helper
-        const resolve = jest.fn();
-        const reject = jest.fn();
-
-        emitter.emit('dialog:show', 'my-dialog', resolve, reject);
-        await waitUntilModalIsShown(wrapper);
-
-        emitter.emit('dialog:hide', 'my-dialog');
-        await waitUntilModalIsHidden(wrapper);
-
-        expect(resolve).toHaveBeenCalled();
-        expect(reject).not.toHaveBeenCalled();
-      });
-
-      it('reject a promise when is dimissed if rejectOnDismiss is set', async () => {
-        const emitter = new Emitter();
-
-        const wrapper = mount(TDialog, {
-          props: {
-            ...props,
-            name: 'my-dialog',
-            modelValue: false,
-            rejectOnDismiss: true,
-          },
-          global: {
-            provide: {
-              // Emulates the plugin system
-              emitter,
-            },
-          },
-
-        });
-
-        // @see vue/src/plugin.ts show helper
-        const resolve = jest.fn();
-        const reject = jest.fn();
-
-        emitter.emit('dialog:show', 'my-dialog', resolve, reject);
-        await waitUntilModalIsShown(wrapper);
-
-        emitter.emit('dialog:hide', 'my-dialog');
-        await waitUntilModalIsHidden(wrapper);
-
-        expect(resolve).not.toHaveBeenCalled();
-        expect(reject).toHaveBeenCalled();
-      });
-
-      it('resolve a promise when is dimissed if rejectOnDismiss is set to true', async () => {
-        const emitter = new Emitter();
-
-        const wrapper = mount(TDialog, {
-          props: {
-            ...props,
-            name: 'my-dialog',
-            modelValue: false,
-            rejectOnDismiss: false,
-          },
-          global: {
-            provide: {
-              // Emulates the plugin system
-              emitter,
-            },
-          },
-
-        });
-
-        // @see vue/src/plugin.ts show helper
-        const resolve = jest.fn();
-        const reject = jest.fn();
-
-        emitter.emit('dialog:show', 'my-dialog', resolve, reject);
-        await waitUntilModalIsShown(wrapper);
-
-        emitter.emit('dialog:hide', 'my-dialog');
-        await waitUntilModalIsHidden(wrapper);
-
-        expect(resolve).toHaveBeenCalled();
-        expect(reject).not.toHaveBeenCalled();
-      });
     });
 
     describe('Confirm type', () => {
@@ -183,38 +85,6 @@ describe('TDialog.vue', () => {
 
         expect(cancelButton).toBeTruthy();
       });
-
-      it('reject a promise when is dimissed by default', async () => {
-        const emitter = new Emitter();
-
-        const wrapper = mount(TDialog, {
-          props: {
-            ...props,
-            name: 'my-dialog',
-            modelValue: false,
-          },
-          global: {
-            provide: {
-              // Emulates the plugin system
-              emitter,
-            },
-          },
-
-        });
-
-        // @see vue/src/plugin.ts show helper
-        const resolve = jest.fn();
-        const reject = jest.fn();
-
-        emitter.emit('dialog:show', 'my-dialog', resolve, reject);
-        await waitUntilModalIsShown(wrapper);
-
-        emitter.emit('dialog:hide', 'my-dialog');
-        await waitUntilModalIsHidden(wrapper);
-
-        expect(resolve).not.toHaveBeenCalled();
-        expect(reject).toHaveBeenCalled();
-      });
     });
 
     describe('Prompt type', () => {
@@ -236,38 +106,6 @@ describe('TDialog.vue', () => {
         const { cancelButton } = wrapper.vm.$refs;
 
         expect(cancelButton).toBeTruthy();
-      });
-
-      it('reject a promise when is dimissed by default', async () => {
-        const emitter = new Emitter();
-
-        const wrapper = mount(TDialog, {
-          props: {
-            ...props,
-            name: 'my-dialog',
-            modelValue: false,
-          },
-          global: {
-            provide: {
-              // Emulates the plugin system
-              emitter,
-            },
-          },
-
-        });
-
-        // @see vue/src/plugin.ts show helper
-        const resolve = jest.fn();
-        const reject = jest.fn();
-
-        emitter.emit('dialog:show', 'my-dialog', resolve, reject);
-        await waitUntilModalIsShown(wrapper);
-
-        emitter.emit('dialog:hide', 'my-dialog');
-        await waitUntilModalIsHidden(wrapper);
-
-        expect(resolve).not.toHaveBeenCalled();
-        expect(reject).toHaveBeenCalled();
       });
     });
   });
@@ -302,6 +140,209 @@ describe('TDialog.vue', () => {
       expect(wrapper.vm.$refs.iconWrapperRef).toBeTruthy();
 
       expect((wrapper.vm.$refs.iconWrapperRef as HTMLDivElement).children[0].tagName).toBe('svg');
+    });
+  });
+
+  describe('promise behaviour on reject', () => {
+    const emitter = new Emitter();
+
+    const params = {
+      props: {
+        type: 'confirm',
+        name: 'my-dialog',
+        modelValue: false,
+      },
+      global: {
+        provide: {
+          // Emulates the plugin system
+          emitter,
+        },
+      },
+    };
+
+    it('resolves the promise when is ok by default', async () => {
+      const wrapper = mount(TDialog, params);
+
+      // @see vue/src/plugin.ts show helper
+      const resolve = jest.fn();
+      const reject = jest.fn();
+
+      emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+      await waitUntilModalIsShown(wrapper);
+
+      wrapper.vm.hide(DialogHideReason.Ok);
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(resolve).toHaveBeenCalled();
+      expect(reject).not.toHaveBeenCalled();
+    });
+
+    it('rejects the promise when is dismissed by default', async () => {
+      const wrapper = mount(TDialog, params);
+
+      // @see vue/src/plugin.ts show helper
+      const resolve = jest.fn();
+      const reject = jest.fn();
+
+      emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+      await waitUntilModalIsShown(wrapper);
+
+      wrapper.vm.hide(DialogHideReason.Outside);
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(resolve).not.toHaveBeenCalled();
+      expect(reject).toHaveBeenCalled();
+    });
+
+    it('doesnt rejects the promise when is dismissed for alert dialogs', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          ...params.props,
+          type: 'alert',
+        },
+        global: params.global,
+      });
+
+      // @see vue/src/plugin.ts show helper
+      const resolve = jest.fn();
+      const reject = jest.fn();
+
+      emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+      await waitUntilModalIsShown(wrapper);
+
+      wrapper.vm.hide(DialogHideReason.Outside);
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(resolve).toHaveBeenCalled();
+      expect(reject).not.toHaveBeenCalled();
+    });
+
+    it('rejects the promise when rejectOnDismiss is set', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          ...params.props,
+          rejectOnDismiss: true,
+        },
+        global: params.global,
+      });
+
+      // @see vue/src/plugin.ts show helper
+      const resolve = jest.fn();
+      const reject = jest.fn();
+
+      emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+      await waitUntilModalIsShown(wrapper);
+
+      wrapper.vm.hide(DialogHideReason.Outside);
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(resolve).not.toHaveBeenCalled();
+      expect(reject).toHaveBeenCalled();
+    });
+
+    it('rejects the promise when rejectOnDismiss is set for alerts', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          ...params.props,
+          type: 'alert',
+          rejectOnDismiss: true,
+        },
+        global: params.global,
+      });
+
+      // @see vue/src/plugin.ts show helper
+      const resolve = jest.fn();
+      const reject = jest.fn();
+
+      emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+      await waitUntilModalIsShown(wrapper);
+
+      wrapper.vm.hide(DialogHideReason.Outside);
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(resolve).not.toHaveBeenCalled();
+      expect(reject).toHaveBeenCalled();
+    });
+  });
+
+  describe('Promise behaviour on cancel', () => {
+    const emitter = new Emitter();
+
+    const params = {
+      props: {
+        type: 'confirm',
+        name: 'my-dialog',
+        modelValue: false,
+      },
+      global: {
+        provide: {
+          // Emulates the plugin system
+          emitter,
+        },
+      },
+    };
+
+    it('rejects the promise when is cancel by default', async () => {
+      const wrapper = mount(TDialog, params);
+
+      // @see vue/src/plugin.ts show helper
+      const resolve = jest.fn();
+      const reject = jest.fn();
+
+      emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+      await waitUntilModalIsShown(wrapper);
+
+      wrapper.vm.hide(DialogHideReason.Cancel);
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(resolve).not.toHaveBeenCalled();
+      expect(reject).toHaveBeenCalled();
+    });
+
+    it('rejects the promise when rejectOnCancel is set', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          ...params.props,
+          rejectOnCancel: true,
+        },
+        global: params.global,
+      });
+
+      // @see vue/src/plugin.ts show helper
+      const resolve = jest.fn();
+      const reject = jest.fn();
+
+      emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+      await waitUntilModalIsShown(wrapper);
+
+      wrapper.vm.hide(DialogHideReason.Cancel);
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(resolve).not.toHaveBeenCalled();
+      expect(reject).toHaveBeenCalled();
+    });
+
+    it('resolves the promise when rejectOnCancel is set to `false`', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          ...params.props,
+          rejectOnCancel: false,
+        },
+        global: params.global,
+      });
+
+      // @see vue/src/plugin.ts show helper
+      const resolve = jest.fn();
+      const reject = jest.fn();
+
+      emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+      await waitUntilModalIsShown(wrapper);
+
+      wrapper.vm.hide(DialogHideReason.Cancel);
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(resolve).toHaveBeenCalled();
+      expect(reject).not.toHaveBeenCalled();
     });
   });
 });
