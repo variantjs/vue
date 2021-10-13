@@ -92,14 +92,74 @@ describe('TDialog.vue', () => {
         emitter.emit('dialog:hide', 'my-dialog');
         await waitUntilModalIsHidden(wrapper);
 
-        await wrapper.vm.$nextTick();
-
         expect(resolve).toHaveBeenCalled();
         expect(reject).not.toHaveBeenCalled();
       });
 
-      it('reject a promise when is dimissed if rejectOnDismiss is set', () => {
+      it('reject a promise when is dimissed if rejectOnDismiss is set', async () => {
+        const emitter = new Emitter();
 
+        const wrapper = mount(TDialog, {
+          props: {
+            ...props,
+            name: 'my-dialog',
+            modelValue: false,
+            rejectOnDismiss: true,
+          },
+          global: {
+            provide: {
+              // Emulates the plugin system
+              emitter,
+            },
+          },
+
+        });
+
+        // @see vue/src/plugin.ts show helper
+        const resolve = jest.fn();
+        const reject = jest.fn();
+
+        emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+        await waitUntilModalIsShown(wrapper);
+
+        emitter.emit('dialog:hide', 'my-dialog');
+        await waitUntilModalIsHidden(wrapper);
+
+        expect(resolve).not.toHaveBeenCalled();
+        expect(reject).toHaveBeenCalled();
+      });
+
+      it('resolve a promise when is dimissed if rejectOnDismiss is set to true', async () => {
+        const emitter = new Emitter();
+
+        const wrapper = mount(TDialog, {
+          props: {
+            ...props,
+            name: 'my-dialog',
+            modelValue: false,
+            rejectOnDismiss: false,
+          },
+          global: {
+            provide: {
+              // Emulates the plugin system
+              emitter,
+            },
+          },
+
+        });
+
+        // @see vue/src/plugin.ts show helper
+        const resolve = jest.fn();
+        const reject = jest.fn();
+
+        emitter.emit('dialog:show', 'my-dialog', resolve, reject);
+        await waitUntilModalIsShown(wrapper);
+
+        emitter.emit('dialog:hide', 'my-dialog');
+        await waitUntilModalIsHidden(wrapper);
+
+        expect(resolve).toHaveBeenCalled();
+        expect(reject).not.toHaveBeenCalled();
       });
     });
   });
