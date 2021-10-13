@@ -120,9 +120,13 @@
       </div>
 
       <div :class="configuration.classesList?.content">
-        <div :class="configuration.classesList?.titleWrapper">
+        <div
+          v-if="configuration.title !== undefined || $slots.title"
+          :class="configuration.classesList?.titleWrapper"
+        >
           <component
             :is="configuration.titleTag"
+
             :class="configuration.classesList?.title"
           >
             <slot

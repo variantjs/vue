@@ -43,6 +43,35 @@ describe('TDialog.vue', () => {
     expect(wrapper.get('div').attributes('tabindex')).toEqual('0');
   });
 
+  describe('Title', () => {
+    it('adds the title', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          title: 'Are you sure?',
+        },
+      });
+
+      expect(wrapper.find('h3').text()).toEqual('Are you sure?');
+    });
+
+    it('accepts a title tag', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          title: 'Are you sure?',
+          titleTag: 'h1',
+        },
+      });
+
+      expect(wrapper.find('h1').text()).toEqual('Are you sure?');
+    });
+
+    it('doesnt add the title if not set', () => {
+      const wrapper = mount(TDialog);
+
+      expect(wrapper.find('h3').exists()).toBe(false);
+    });
+  });
+
   describe('Dialog types', () => {
     describe('Alert type', () => {
       const props = {
