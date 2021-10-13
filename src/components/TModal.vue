@@ -232,10 +232,6 @@ export default defineComponent({
     };
 
     const reset = () :void => {
-      if (configuration.disableBodyScroll) {
-        enableBodyScroll(overlay.value!);
-      }
-
       modalParameters = undefined;
       hideReason.value = ModalHideReason.Value;
     };
@@ -254,6 +250,10 @@ export default defineComponent({
         cancel: reject,
         reason: hideReason.value,
       });
+
+      if (configuration.disableBodyScroll) {
+        enableBodyScroll(overlay.value!);
+      }
 
       resolve();
     });
@@ -313,7 +313,7 @@ export default defineComponent({
           showOverlay.value = false;
 
           nextTick(() => {
-            showComponent.value = true;
+            showComponent.value = false;
 
             nextTick(() => {
               onHidden();

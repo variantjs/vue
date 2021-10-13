@@ -187,6 +187,7 @@
       >
         <button
           v-if="showCancelButton"
+          ref="cancelButton"
           type="button"
           :class="configuration.classesList?.cancelButton"
           :aria-label="cancelButtonAriaLabel"
@@ -196,6 +197,7 @@
           {{ cancelButtonText }}
         </button>
         <button
+          ref="okButton"
           type="button"
           :class="configuration.classesList?.okButton"
           :aria-label="okButtonAriaLabel"
@@ -300,7 +302,7 @@ const dialogComponent = defineComponent({
     },
     cancelButtonAriaLabel: {
       type: String,
-      default: 'Cancel',
+      default: 'Cancel Button',
     },
     okButtonText: {
       type: String,
@@ -308,7 +310,7 @@ const dialogComponent = defineComponent({
     },
     okButtonAriaLabel: {
       type: String,
-      default: 'OK',
+      default: 'OK Button',
     },
     preConfirm: {
       type: Function as PropType<DialogPreconfirmFn>,
@@ -597,7 +599,7 @@ const dialogComponent = defineComponent({
 
         promiseReject.value = reject;
 
-        show();
+        showModel.value = true;
       });
 
       emitter.on('dialog:hide', (name) => {
