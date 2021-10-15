@@ -660,4 +660,38 @@ describe('TDialog.vue', () => {
       expect(wrapper.emitted()).toHaveProperty('hidden');
     });
   });
+
+  describe('vModel', () => {
+    it('shows the component when updated the v-model to true', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          modelValue: false,
+        },
+      });
+
+      wrapper.setProps({
+        modelValue: true,
+      });
+
+      await waitUntilModalIsShown(wrapper);
+
+      expect(wrapper.emitted()).toHaveProperty('shown');
+    });
+
+    it('hides the component when updated the v-model to false', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          modelValue: true,
+        },
+      });
+
+      wrapper.setProps({
+        modelValue: false,
+      });
+
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(wrapper.emitted()).toHaveProperty('hidden');
+    });
+  });
 });
