@@ -444,7 +444,7 @@ export default defineComponent({
 
     const validationErrorMessage = ref<string | undefined>(undefined);
 
-    const hideReason = ref<DialogHideReason | undefined>(DialogHideReason.Other);
+    const hideReason = ref<DialogHideReason | undefined>(undefined);
 
     const dialogResponse = ref<DialogResponse | undefined>(undefined);
 

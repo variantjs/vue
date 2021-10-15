@@ -943,6 +943,28 @@ describe('TDialog.vue', () => {
 
       expect(focusDivMock).toHaveBeenCalled();
     });
+
+    it('doesnt focus anything if `focusOnOpen` is set to `false', async () => {
+      const focusInputMock = jest.fn();
+      const focusDivMock = jest.fn();
+      window.HTMLInputElement.prototype.focus = focusInputMock;
+      window.HTMLDivElement.prototype.focus = focusDivMock;
+
+      const wrapper = mount(TDialog, {
+        props: {
+          modelValue: false,
+          type: DialogType.Prompt,
+          focusOnOpen: false,
+        },
+      });
+
+      wrapper.vm.show();
+
+      await waitUntilModalIsShown(wrapper);
+
+      expect(focusInputMock).not.toHaveBeenCalled();
+      expect(focusDivMock).not.toHaveBeenCalled();
+    });
   });
 
   describe('Input related props', () => {
@@ -1133,6 +1155,25 @@ describe('TDialog.vue', () => {
       await waitUntilModalIsHidden(wrapper);
 
       expect(wrapper.emitted()).toHaveProperty('hidden');
+    });
+
+    it('uses the modal hide reason', async () => {
+      const wrapper = mount(TDialog);
+
+      wrapper.vm.$refs.modalRef.$refs.overlay.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'Escape',
+      }));
+
+      // wrapper.vm.$refs.modalRef.onKeydownEscapeHandler();
+
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(wrapper.emitted('hidden')).toEqual([[{
+        hideReason: 'esc',
+        isCancel: false,
+        isDismissed: true,
+        isOk: false,
+      }]]);
     });
   });
 });
