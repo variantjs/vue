@@ -202,15 +202,15 @@ describe('TAlert.vue', () => {
     // @TODO consider an alternative to this
     jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    const closeIcon = '<span>x</span>';
+    const closeButton = '<button><span>x</span></button>';
 
     const wrapper = mount(TAlert, {
       slots: {
-        closeButton: closeIcon,
+        closeButton,
       },
     });
 
-    expect(wrapper.vm.$refs.close.innerHTML).toContain(closeIcon);
+    expect(wrapper.html()).toContain(closeButton);
   });
 
   it('exposes the `toggle`, `show` and `hide` methods and the configuration to the closeButton slot ', () => {
