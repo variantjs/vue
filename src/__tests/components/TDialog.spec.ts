@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { mount, VueWrapper } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { h } from 'vue';
 import { DialogHideReason, DialogType } from '@variantjs/core';
 import TDialog from '@/components/TDialog.vue';

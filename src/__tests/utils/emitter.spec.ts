@@ -1,6 +1,6 @@
 import { Emitter } from '../../utils/emitter';
 
-describe.only('Emitter', () => {
+describe('Emitter', () => {
   let emitter: Emitter;
 
   beforeEach(() => {
