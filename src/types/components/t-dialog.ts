@@ -1,5 +1,5 @@
 import {
-  WithVariantPropsAndClassesList, Data, TDialogClassesValidKeys, DialogType, DialogPreconfirmFn, DialogIcon, DialogInputValidatorFn,
+  WithVariantPropsAndClassesList, Data, TDialogClassesValidKeys, DialogPreconfirmFn, DialogInputValidatorFn,
 } from '@variantjs/core';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import { HTMLAttributes } from 'vue';
@@ -21,7 +21,7 @@ export type TDialogOptions = WithVariantPropsAndClassesList<{
   preConfirm?: DialogPreconfirmFn,
   name?: string,
   modelValue?: boolean,
-  modalAttributes?: HTMLAttributes & Data,
+  dialogAttributes?: HTMLAttributes & Data,
   tagName?: string
   clickToClose?: boolean,
   escToClose?: boolean,

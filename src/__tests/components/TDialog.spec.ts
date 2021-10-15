@@ -43,6 +43,21 @@ describe('TDialog.vue', () => {
     expect(wrapper.get('div').attributes('tabindex')).toEqual('0');
   });
 
+  it('accepts attributes for the dialog', () => {
+    const dialogAttributes = {
+      'data-foo': 'bar',
+      class: 'bg-red-500',
+    };
+
+    const wrapper = mount(TDialog, {
+      props: {
+        dialogAttributes,
+      },
+    });
+
+    expect(wrapper.vm.$refs.modalRef.modalAttributes).toEqual(dialogAttributes);
+  });
+
   describe('Title', () => {
     it('adds the title', () => {
       const wrapper = mount(TDialog, {

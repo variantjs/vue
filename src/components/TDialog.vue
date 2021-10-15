@@ -2,7 +2,7 @@
   <t-modal
     ref="modalRef"
     v-model="showModel"
-    :modal-attributes="configuration.modalAttributes"
+    :modal-attributes="configuration.dialogAttributes"
     :focus-on-open="false"
     :click-to-close="configuration.clickToClose"
     :esc-to-close="configuration.escToClose"
@@ -344,7 +344,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    modalAttributes: {
+    dialogAttributes: {
       type: Object as PropType<HTMLAttributes & Data>,
       default: () => ({}),
     },
