@@ -1053,4 +1053,36 @@ describe('TDialog.vue', () => {
       expect(wrapper.html()).not.toContain('error!');
     });
   });
+
+  describe('Misc validations', () => {
+    it('doesnt closes the dialog if is busy', async () => {
+      const wrapper = mount(TDialog);
+
+      wrapper.vm.busy = true;
+
+      wrapper.vm.hide();
+
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.emitted()).not.toHaveProperty('hidden');
+    });
+
+    it('closes the dialog when is busy when hide reason is "ok"', async () => {
+      const wrapper = mount(TDialog);
+
+      wrapper.vm.busy = true;
+
+      wrapper.vm.hide(DialogHideReason.Ok);
+
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(wrapper.emitted()).toHaveProperty('hidden');
+    });
+  });
 });

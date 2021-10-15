@@ -425,7 +425,6 @@ export default defineComponent({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     'before-hide': (e: DialogBeforeHideParams) => true,
     'update:modelValue': () => true,
-    'update:inputValue': () => true,
   },
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TDialogOptions>(TDialogConfig, TDialogClassesKeys);
