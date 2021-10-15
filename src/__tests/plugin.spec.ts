@@ -42,7 +42,7 @@ describe('plugin installer', () => {
     expect(app._context.provides.emitter).toBeInstanceOf(Emitter);
   });
 
-  it('adds an $modal util as a global property', () => {
+  it('adds a $modal util as a global property', () => {
     const app = createApp({});
 
     app.use(variantJS);
@@ -52,5 +52,34 @@ describe('plugin installer', () => {
     expect(typeof app.config.globalProperties.$modal.show).toBe('function');
 
     expect(typeof app.config.globalProperties.$modal.hide).toBe('function');
+  });
+
+  it('adds a $dialog util as a global property', () => {
+    const app = createApp({});
+
+    app.use(variantJS);
+
+    expect(typeof app.config.globalProperties.$dialog).toBe('object');
+
+    expect(typeof app.config.globalProperties.$dialog.show).toBe('function');
+
+    expect(typeof app.config.globalProperties.$dialog.hide).toBe('function');
+    expect(typeof app.config.globalProperties.$dialog.alert).toBe('function');
+    expect(typeof app.config.globalProperties.$dialog.prompt).toBe('function');
+    expect(typeof app.config.globalProperties.$dialog.confirm).toBe('function');
+
+    expect(typeof app.config.globalProperties.$alert).toBe('function');
+    expect(typeof app.config.globalProperties.$prompt).toBe('function');
+    expect(typeof app.config.globalProperties.$confirm).toBe('function');
+  });
+
+  it('the alert, prompt and confirm methods are callable', () => {
+    const app = createApp({});
+
+    app.use(variantJS);
+
+    expect(app.config.globalProperties.$confirm('Title')).toBeInstanceOf(Promise);
+    expect(app.config.globalProperties.$alert('Title')).toBeInstanceOf(Promise);
+    expect(app.config.globalProperties.$prompt('Title')).toBeInstanceOf(Promise);
   });
 });

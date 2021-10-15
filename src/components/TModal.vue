@@ -17,7 +17,7 @@
         <transitionable :classes-list="configuration.classesList">
           <div
             v-show="showModal"
-            v-bind="modalAttributes"
+            v-bind="configuration.modalAttributes"
             ref="modal"
             :class="configuration.classesList?.wrapper"
             @click.stop
@@ -29,16 +29,24 @@
               v-else
               :class="configuration.classesList?.modal"
             >
-              <button
-                v-if="!hideCloseButton"
-                type="button"
-                :class="configuration.classesList?.close"
-                @click="hide"
+              <slot
+                v-if="!configuration.hideCloseButton"
+                name="closeButton"
+                :hide="hide"
               >
-                <slot name="closeButton">
-                  <close-icon :class="configuration.classesList?.closeIcon" />
-                </slot>
-              </button>
+                <button
+                  type="button"
+                  :class="configuration.classesList?.close"
+                  @click="hide(ModalHideReason.Close)"
+                >
+                  <slot
+                    name="closeButtonIcon"
+                    :hide="hide"
+                  >
+                    <close-icon :class="configuration.classesList?.closeIcon" />
+                  </slot>
+                </button>
+              </slot>
 
               <div
                 v-if="$slots.header || configuration.header"
@@ -89,7 +97,7 @@ import {
 } from 'vue';
 import { BodyScrollOptions, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import {
-  Data, TModalConfig, TModalClassesKeys, TModalClassesValidKeys,
+  Data, TModalConfig, TModalClassesKeys, TModalClassesValidKeys, ModalHideReason,
 } from '@variantjs/core';
 import { TModalOptions, EmitterInterface } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -170,11 +178,12 @@ export default defineComponent({
   },
   emits: {
     shown: () => true,
-    hidden: () => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    hidden: (reason: ModalHideReason) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     'before-show': ({ cancel, params }: { cancel: (reason?: any) => void, params: any }) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-    'before-hide': ({ cancel }: { cancel: (reason?: any) => void }) => true,
+    'before-hide': ({ cancel, reason }: { cancel: (reason?: any) => void, reason: ModalHideReason }) => true,
     'update:modelValue': () => true,
   },
   setup(props, { emit }) {
@@ -192,9 +201,13 @@ export default defineComponent({
 
     const showModal = ref(showModel.value);
 
+    const hideReason = ref<ModalHideReason>(ModalHideReason.Value);
+
     const canceled = ref(false);
 
-    const hide = () :void => {
+    const hide = (reason: ModalHideReason = ModalHideReason.Other) :void => {
+      hideReason.value = reason;
+
       showModel.value = false;
     };
 
@@ -204,9 +217,13 @@ export default defineComponent({
       showModel.value = true;
     };
 
+    const focusModal = () :void => {
+      overlay.value!.focus();
+    };
+
     const initModal = () :void => {
       if (configuration.focusOnOpen) {
-        overlay.value!.focus();
+        focusModal();
       }
 
       if (configuration.disableBodyScroll) {
@@ -215,11 +232,8 @@ export default defineComponent({
     };
 
     const reset = () :void => {
-      if (configuration.disableBodyScroll) {
-        enableBodyScroll(overlay.value!);
-      }
-
       modalParameters = undefined;
+      hideReason.value = ModalHideReason.Value;
     };
 
     const onBeforeShow = () : Promise<void> => new Promise((resolve, reject) => {
@@ -234,7 +248,12 @@ export default defineComponent({
     const onBeforeHide = () : Promise<void> => new Promise((resolve, reject) => {
       emit('before-hide', {
         cancel: reject,
+        reason: hideReason.value,
       });
+
+      if (configuration.disableBodyScroll) {
+        enableBodyScroll(overlay.value!);
+      }
 
       resolve();
     });
@@ -246,7 +265,7 @@ export default defineComponent({
     };
 
     const onHidden = () :void => {
-      emit('hidden');
+      emit('hidden', hideReason.value);
 
       reset();
     };
@@ -294,7 +313,7 @@ export default defineComponent({
           showOverlay.value = false;
 
           nextTick(() => {
-            showComponent.value = true;
+            showComponent.value = false;
 
             nextTick(() => {
               onHidden();
@@ -309,7 +328,7 @@ export default defineComponent({
         return;
       }
 
-      hide();
+      hide(ModalHideReason.Esc);
     };
 
     const onClickHandler = () :void => {
@@ -317,7 +336,7 @@ export default defineComponent({
         return;
       }
 
-      hide();
+      hide(ModalHideReason.Outside);
     };
 
     onMounted(() => {
@@ -328,6 +347,10 @@ export default defineComponent({
 
     onBeforeUnmount(() => {
       reset();
+
+      if (configuration.disableBodyScroll) {
+        enableBodyScroll(overlay.value!);
+      }
     });
 
     if (configuration.name) {
@@ -346,7 +369,7 @@ export default defineComponent({
           return;
         }
 
-        hide();
+        hide(ModalHideReason.Method);
       });
     }
 
@@ -369,8 +392,10 @@ export default defineComponent({
       overlayTransitionClassesList,
       show,
       hide,
+      focusModal,
       onKeydownEscapeHandler,
       onClickHandler,
+      ModalHideReason,
     };
   },
 });

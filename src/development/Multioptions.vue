@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <t-card
+    header="Multioptions"
+  >
     <div class="grid grid-cols-1 gap-6">
       <p>Multioptions components v-model sync</p>
       <t-select
@@ -23,12 +25,13 @@
         tags
       />
     </div>
-  </div>
+  </t-card>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import TSelect from '../components/TSelect.vue';
+import TCard from '../components/TCard.vue';
 import TRichSelect from '../components/TRichSelect.vue';
 
 export default defineComponent({
@@ -36,6 +39,7 @@ export default defineComponent({
   components: {
     TSelect,
     TRichSelect,
+    TCard,
   },
   data() {
     return {

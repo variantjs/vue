@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center mb-4 space-x-4">
+  <div class="flex flex-col space-y-3">
     <t-button to="/">
       Home
     </t-button>
@@ -23,6 +23,9 @@
     </t-button>
     <t-button to="/modal">
       Modal
+    </t-button>
+    <t-button to="/dialog">
+      Dialog
     </t-button>
     <t-button to="/about">
       About

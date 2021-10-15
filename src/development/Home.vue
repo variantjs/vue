@@ -1,87 +1,85 @@
 <template>
-  <div>
-    <t-card>
-      <template #header>
-        <h1>List of components</h1>
-      </template>
+  <t-card>
+    <template #header>
+      <h1>List of components</h1>
+    </template>
 
-      <t-alert>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam id iusto quas quaerat quasi cum alias consequuntur perspiciatis, quam ea. Quibusdam incidunt ex vel illum ab quaerat, sed tempora beatae!
-      </t-alert>
+    <t-alert>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam id iusto quas quaerat quasi cum alias consequuntur perspiciatis, quam ea. Quibusdam incidunt ex vel illum ab quaerat, sed tempora beatae!
+    </t-alert>
 
-      <t-input
-        v-model="model"
-        placeholder="My placeholder"
-        type="text"
-      />
-      <t-textarea
-        v-model="model"
-        placeholder="My placeholder"
-      />
-      <t-select :options="options" />
+    <t-input
+      v-model="model"
+      placeholder="My placeholder"
+      type="text"
+    />
+    <t-textarea
+      v-model="model"
+      placeholder="My placeholder"
+    />
+    <t-select :options="options" />
+    <label class="flex items-center">
+      <t-checkbox checked />
+      <span class="ml-2">Check me</span>
+    </label>
+
+    <div class="mt-2">
       <label class="flex items-center">
-        <t-checkbox checked />
-        <span class="ml-2">Check me</span>
+        <t-checkbox
+          v-model="checkboxValue"
+          name="radio"
+          value="hola"
+          checked
+        />
+
+        <span class="ml-2">Select this </span>
+      </label>
+      <label class="flex items-center">
+        <t-checkbox
+          v-model="checkboxValue"
+          name="radio"
+          value="hello"
+        />
+
+        <span class="ml-2">And select this</span>
       </label>
 
-      <div class="mt-2">
-        <label class="flex items-center">
-          <t-checkbox
-            v-model="checkboxValue"
-            name="radio"
-            value="hola"
-            checked
-          />
+      <pre>{{ checkboxValue }}</pre>
+    </div>
 
-          <span class="ml-2">Select this </span>
-        </label>
-        <label class="flex items-center">
-          <t-checkbox
-            v-model="checkboxValue"
-            name="radio"
-            value="hello"
-          />
+    <div class="mt-2">
+      <label class="flex items-center">
+        <t-radio
+          v-model="radioValue"
+          name="radio"
+          value="1"
+          checked
+        />
 
-          <span class="ml-2">And select this</span>
-        </label>
+        <span class="ml-2">Select this ({{ radioValue }}) </span>
+      </label>
+      <label class="flex items-center">
+        <t-radio
+          v-model="radioValue"
+          name="radio"
+          value="2"
+        />
 
-        <pre>{{ checkboxValue }}</pre>
-      </div>
+        <span class="ml-2">Or select this ({{ radioValue }})</span>
+      </label>
+    </div>
 
-      <div class="mt-2">
-        <label class="flex items-center">
-          <t-radio
-            v-model="radioValue"
-            name="radio"
-            value="1"
-            checked
-          />
+    <div class="flex justify-between mt-2">
+      <t-button>My button</t-button>
+      <t-submit>
+        TSubmit (Custom component)
+      </t-submit>
+    </div>
 
-          <span class="ml-2">Select this ({{ radioValue }}) </span>
-        </label>
-        <label class="flex items-center">
-          <t-radio
-            v-model="radioValue"
-            name="radio"
-            value="2"
-          />
-
-          <span class="ml-2">Or select this ({{ radioValue }})</span>
-        </label>
-      </div>
-
-      <div class="flex justify-between mt-2">
-        <t-button>My button</t-button>
-        <t-submit>
-          TSubmit (Custom component)
-        </t-submit>
-      </div>
-
-      <template #footer>
-        <h1>Footer content</h1>
-      </template>
-    </t-card>
-  </div>
+    <template #footer>
+      <h1>Footer content</h1>
+    </template>
+  </t-card>
 </template>
 
 <script lang="ts">

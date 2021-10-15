@@ -7,13 +7,14 @@ export { TSelectValue, TSelectOptions } from './components/t-select';
 export { TButtonOptions } from './components/t-button';
 export { TCardOptions } from './components/t-card';
 export { TModalOptions } from './components/t-modal';
+export { TDialogOptions } from './components/t-dialog';
 export { TTagOptions } from './components/t-tag';
 export { TAlertOptions } from './components/t-alert';
 export { TDropdownOptions } from './components/t-dropdown';
 export { TRichSelectOptions, MinimumInputLengthTextProp } from './components/t-rich-select';
 export { TInputGroupOptions, TInputGroupValidChilElementsKeys } from './components/t-input-group';
 export {
-  Truthy, IconProp, FetchOptionsFn, FetchedOptions,
+  Truthy, IconProp, FetchOptionsFn, FetchedOptions, PromiseRejectFn,
 } from './misc';
 export { ObjectWithProperties, KeysOfType } from './helpers';
 export { EmitterEvents, EmitterFunction, EmitterInterface } from './utils';

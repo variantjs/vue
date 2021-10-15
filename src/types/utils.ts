@@ -1,4 +1,5 @@
-type EmitterFunction = (...args : unknown[]) => void;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type EmitterFunction = (...args : any[]) => void;
 
 type EmitterEvents = {
   [key: string]: EmitterFunction[]
@@ -7,8 +8,8 @@ type EmitterEvents = {
 interface EmitterInterface {
   on(name: keyof EmitterEvents, callback: EmitterFunction): void;
   once(name: keyof EmitterEvents, callback: EmitterFunction): void;
-  emit(name: keyof EmitterEvents, ...args: unknown[]): void;
-  emit(name: keyof EmitterEvents, ...args: unknown[]): void;
+  emit(name: keyof EmitterEvents, ...args: any[]): void;
+  emit(name: keyof EmitterEvents, ...args: any[]): void;
   off(name: keyof EmitterEvents, callback: EmitterFunction): void;
 }
 
