@@ -276,13 +276,15 @@ const configuration = {
     },
     variants: {
       danger: {
-        wrapper: 'bg-red-100 border-red-500',
-        body: 'text-red-700',
-        close: 'text-red-700 hover:text-red-500 hover:bg-red-200'
-        // Notice that I am not defining the `closeIcon` class since we only
-        // need to write the classes we want to override
+        classes: {
+          wrapper: 'bg-red-100 border-red-500',
+          body: 'text-red-700',
+          close: 'text-red-700 hover:text-red-500 hover:bg-red-200'
+          // Notice that I am not defining the `closeIcon` class since we only
+          // need to write the classes we want to override
+        },
       },
-    }
+    },
   },
 }
 ```
