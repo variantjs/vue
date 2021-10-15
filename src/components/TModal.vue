@@ -347,6 +347,10 @@ export default defineComponent({
 
     onBeforeUnmount(() => {
       reset();
+
+      if (configuration.disableBodyScroll) {
+        enableBodyScroll(overlay.value!);
+      }
     });
 
     if (configuration.name) {
