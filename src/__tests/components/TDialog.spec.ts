@@ -266,6 +266,22 @@ describe('TDialog.vue', () => {
 
       expect(cancelFnMock).toHaveBeenCalled();
     });
+
+    it('closes the modal when cancel button is clicked', async () => {
+      const wrapper = mount(TDialog, { props });
+
+      wrapper.vm.cancel();
+
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(wrapper.emitted()).toHaveProperty('hidden');
+      expect(wrapper.emitted('hidden')).toEqual([[{
+        hideReason: 'cancel',
+        isCancel: true,
+        isDismissed: false,
+        isOk: false,
+      }]]);
+    });
   });
 
   describe('OK Button', () => {
@@ -732,6 +748,20 @@ describe('TDialog.vue', () => {
       expect(wrapper.emitted()).toHaveProperty('shown');
     });
 
+    it('doesnt opens the dialog if name is different', async () => {
+      const wrapper = mount(TDialog, settings);
+
+      wrapper.vm.$dialog.show('another-dialog');
+
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.emitted()).not.toHaveProperty('shown');
+    });
+
     it('return a promise', async () => {
       const wrapper = mount(TDialog, settings);
 
@@ -754,6 +784,26 @@ describe('TDialog.vue', () => {
       await waitUntilModalIsHidden(wrapper);
 
       expect(wrapper.emitted()).toHaveProperty('hidden');
+    });
+
+    it('doesnt hides the dialog if using another name', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          ...settings.props,
+          modelValue: true,
+        },
+        global: settings.global,
+      });
+
+      wrapper.vm.$dialog.hide('another-dialog');
+
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.emitted()).not.toHaveProperty('hidden');
     });
   });
 
