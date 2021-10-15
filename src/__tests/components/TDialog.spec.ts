@@ -596,11 +596,13 @@ describe('TDialog.vue', () => {
 
       wrapper.vm.ok();
 
-      await waitUntilModalIsHidden(wrapper);
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
 
       expect(wrapper.emitted()).toHaveProperty('error');
 
-      expect(wrapper.emitted('error')).toEqual([error]);
+      expect(wrapper.emitted('error')).toEqual([[error]]);
 
       expect(wrapper.vm.busy).toBe(false);
 
