@@ -894,4 +894,64 @@ describe('TDialog.vue', () => {
       expect(focusDivMock).toHaveBeenCalled();
     });
   });
+
+  describe('Input related props', () => {
+    it('assigns the inputValue to the inputModel', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          inputValue: 'hello',
+          type: DialogType.Prompt,
+        },
+      });
+
+      expect(wrapper.vm.inputModel).toBe('hello');
+      expect(wrapper.find('input').element.value).toBe('hello');
+    });
+
+    it('resets to the value on the inputValue when modal is closed', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          inputValue: 'hello',
+          type: DialogType.Prompt,
+        },
+      });
+
+      expect(wrapper.vm.inputModel).toBe('hello');
+      wrapper.find('input').element.value = 'world';
+      wrapper.find('input').trigger('input');
+      expect(wrapper.vm.inputModel).toBe('world');
+
+      wrapper.vm.hide();
+
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(wrapper.vm.inputModel).toBe('hello');
+    });
+
+    it('passes the inputType to the input', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          inputType: 'password',
+          type: DialogType.Prompt,
+        },
+      });
+
+      expect(wrapper.find('input').attributes('type')).toBe('password');
+    });
+
+    it('passes the inputAttributes to the input', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          inputAttributes: {
+            'data-foo': 'bar',
+            width: '100',
+          },
+          type: DialogType.Prompt,
+        },
+      });
+
+      expect(wrapper.find('input').attributes('data-foo')).toBe('bar');
+      expect(wrapper.find('input').attributes('width')).toBe('100');
+    });
+  });
 });
