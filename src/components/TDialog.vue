@@ -456,6 +456,8 @@ export default defineComponent({
       const focusableField = getFocusableElements(inputWrapperRef.value!).shift();
       if (focusableField) {
         focusableField.focus();
+      } else {
+        focusDialog();
       }
     };
 

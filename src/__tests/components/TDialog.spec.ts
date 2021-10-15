@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { mount } from '@vue/test-utils';
-import { DialogHideReason } from '@variantjs/core';
+import { h } from 'vue';
+import { DialogHideReason, DialogType } from '@variantjs/core';
 import TDialog from '@/components/TDialog.vue';
 import { Emitter } from '../../utils/emitter';
 import plugin from '../../plugin';
@@ -43,19 +44,99 @@ describe('TDialog.vue', () => {
     expect(wrapper.get('div').attributes('tabindex')).toEqual('0');
   });
 
-  it('accepts attributes for the dialog', () => {
-    const dialogAttributes = {
-      'data-foo': 'bar',
-      class: 'bg-red-500',
-    };
+  describe('Props passed to the modal', () => {
+    it('passes the dialogAttributes to the modalAttributes ', () => {
+      const dialogAttributes = {
+        'data-foo': 'bar',
+        class: 'bg-red-500',
+      };
 
-    const wrapper = mount(TDialog, {
-      props: {
-        dialogAttributes,
-      },
+      const wrapper = mount(TDialog, {
+        props: {
+          dialogAttributes,
+        },
+      });
+
+      expect(wrapper.vm.$refs.modalRef.modalAttributes).toEqual(dialogAttributes);
     });
 
-    expect(wrapper.vm.$refs.modalRef.modalAttributes).toEqual(dialogAttributes);
+    it('passes the clickToClose setting ', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          clickToClose: false,
+        },
+      });
+
+      expect(wrapper.vm.$refs.modalRef.clickToClose).toBe(false);
+    });
+
+    it('passes the escToClose setting ', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          escToClose: false,
+        },
+      });
+
+      expect(wrapper.vm.$refs.modalRef.escToClose).toBe(false);
+    });
+
+    it('passes the disableBodyScroll setting ', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          disableBodyScroll: false,
+        },
+      });
+
+      expect(wrapper.vm.$refs.modalRef.disableBodyScroll).toBe(false);
+    });
+
+    it('passes the bodyScrollLockOptions setting ', () => {
+      const bodyScrollLockOptions = {
+        reserveScrollBarGap: true,
+      };
+      const wrapper = mount(TDialog, {
+        props: {
+          bodyScrollLockOptions,
+        },
+      });
+
+      expect(wrapper.vm.$refs.modalRef.bodyScrollLockOptions).toEqual(bodyScrollLockOptions);
+    });
+
+    it('passes the negative value of showCloseButton setting to the hideCloseButton ', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          showCloseButton: false,
+        },
+      });
+
+      expect(wrapper.vm.$refs.modalRef.hideCloseButton).toBe(true);
+    });
+
+    it('passes the teleport setting ', () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          teleport: false,
+        },
+      });
+
+      expect(wrapper.vm.$refs.modalRef.teleport).toBe(false);
+    });
+
+    it('passes the teleportTo setting ', () => {
+      const div = document.createElement('div');
+      div.id = 'app';
+
+      document.body.append(div);
+
+      const wrapper = mount(TDialog, {
+        props: {
+          teleportTo: '#app',
+        },
+      });
+
+      expect(wrapper.vm.$refs.modalRef.teleportTo).toBe('#app');
+    });
   });
 
   describe('Title', () => {
@@ -707,6 +788,110 @@ describe('TDialog.vue', () => {
       await waitUntilModalIsHidden(wrapper);
 
       expect(wrapper.emitted()).toHaveProperty('hidden');
+    });
+  });
+
+  describe('focus on open', () => {
+    let originalDivFocus: any;
+    let originalInputFocus: any;
+    let originalTextareaFocus: any;
+    beforeEach(() => {
+      originalInputFocus = window.HTMLInputElement.prototype.focus;
+      originalTextareaFocus = window.HTMLTextAreaElement.prototype.focus;
+      originalDivFocus = window.HTMLInputElement.prototype.focus;
+    });
+
+    afterEach(() => {
+      window.HTMLTextAreaElement.prototype.focus = originalTextareaFocus;
+      window.HTMLInputElement.prototype.focus = originalInputFocus;
+      window.HTMLInputElement.prototype.focus = originalDivFocus;
+    });
+
+    it('focus the div when focus on open is set an is not a prompt type', async () => {
+      const focusInputMock = jest.fn();
+      const focusDivMock = jest.fn();
+      window.HTMLInputElement.prototype.focus = focusInputMock;
+      window.HTMLDivElement.prototype.focus = focusDivMock;
+
+      const wrapper = mount(TDialog, {
+        props: {
+          modelValue: false,
+          type: DialogType.Alert,
+        },
+      });
+
+      wrapper.vm.show();
+
+      await waitUntilModalIsShown(wrapper);
+
+      expect(focusInputMock).not.toHaveBeenCalled();
+      expect(focusDivMock).toHaveBeenCalled();
+    });
+
+    it('focus the input when focus on open is set and is a prompt type', async () => {
+      const focusInputMock = jest.fn();
+      const focusDivMock = jest.fn();
+      window.HTMLInputElement.prototype.focus = focusInputMock;
+      window.HTMLDivElement.prototype.focus = focusDivMock;
+
+      const wrapper = mount(TDialog, {
+        props: {
+          modelValue: false,
+          type: DialogType.Prompt,
+        },
+      });
+
+      wrapper.vm.show();
+
+      await waitUntilModalIsShown(wrapper);
+
+      expect(focusInputMock).toHaveBeenCalled();
+      expect(focusDivMock).not.toHaveBeenCalled();
+    });
+
+    it('focus first focusable item when using the slot and is a prompt type', async () => {
+      const focusDivMock = jest.fn();
+      const focusTextareaMock = jest.fn();
+      window.HTMLDivElement.prototype.focus = focusDivMock;
+      window.HTMLTextAreaElement.prototype.focus = focusTextareaMock;
+
+      const wrapper = mount(TDialog, {
+        props: {
+          modelValue: false,
+          type: DialogType.Prompt,
+        },
+        slots: {
+          input: () => h('textarea'),
+        },
+      });
+
+      wrapper.vm.show();
+
+      await waitUntilModalIsShown(wrapper);
+
+      expect(focusTextareaMock).toHaveBeenCalled();
+      expect(focusDivMock).not.toHaveBeenCalled();
+    });
+
+    it('focus the dialog if no focusable item when using the slot and is a prompt type', async () => {
+      const focusDivMock = jest.fn();
+      window.HTMLDivElement.prototype.focus = focusDivMock;
+
+      const wrapper = mount(TDialog, {
+        props: {
+          modelValue: false,
+          type: DialogType.Prompt,
+        },
+        slots: {
+          input: () => h('div'),
+        },
+      });
+
+      wrapper.vm.show();
+
+      await waitUntilModalIsShown(wrapper);
+
+      expect(focusDivMock).toHaveBeenCalled();
     });
   });
 });
