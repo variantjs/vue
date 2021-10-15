@@ -2,8 +2,8 @@
 import { mount } from '@vue/test-utils';
 import { DialogHideReason } from '@variantjs/core';
 import TDialog from '@/components/TDialog.vue';
-import { Emitter } from '../..';
-
+import { Emitter } from '../../utils/emitter';
+import plugin from '../../plugin';
 // eslint-disable-next-line no-async-promise-executor
 const waitUntilModalIsShown = (wrapper: any): Promise<void> => new Promise(async (resolve) => {
   do {
@@ -612,6 +612,52 @@ describe('TDialog.vue', () => {
       await wrapper.vm.$nextTick();
 
       expect(wrapper.vm.modelValue).toBe(true);
+    });
+  });
+
+  describe('named dialog', () => {
+    const settings = {
+      props: {
+        name: 'named-dialog',
+        modelValue: false,
+      },
+      global: {
+        plugins: [plugin],
+      },
+    };
+
+    it('opens the dialog by his name', async () => {
+      const wrapper = mount(TDialog, settings);
+
+      wrapper.vm.$dialog.show('named-dialog');
+
+      await waitUntilModalIsShown(wrapper);
+
+      expect(wrapper.emitted()).toHaveProperty('shown');
+    });
+
+    it('return a promise', async () => {
+      const wrapper = mount(TDialog, settings);
+
+      const promise = wrapper.vm.$dialog.show('named-dialog');
+
+      expect(promise).toBeInstanceOf(Promise);
+    });
+
+    it('hides the dialog by his name', async () => {
+      const wrapper = mount(TDialog, {
+        props: {
+          ...settings.props,
+          modelValue: true,
+        },
+        global: settings.global,
+      });
+
+      wrapper.vm.$dialog.hide('named-dialog');
+
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(wrapper.emitted()).toHaveProperty('hidden');
     });
   });
 });
