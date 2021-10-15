@@ -42,12 +42,12 @@ Everything will be documented, of course, but meanwhile, you can check the sourc
 - [x] TRichSelect
 - [x] TTag
 - [x] TModal (^0.0.5)
+- [x] TDialog (^0.0.6)
 
 *Next ones:*
 
 - [ ] TRadioGroup
 - [ ] TCheckboxGroup
-- [ ] TDialog 
 - [ ] TTable
 - [ ] TPagination
 - [ ] TToggle
