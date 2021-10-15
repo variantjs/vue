@@ -176,6 +176,28 @@
     </TInputGroup>
 
     <TInputGroup
+      label="Input with a validator"
+      class="mb-4"
+    >
+      <t-dialog
+        icon="question"
+        type="prompt"
+        title="Secret word?"
+        text="Pass a word that is between 5 and 10 chars"
+        name="input-with-validator"
+        :input-validator="inputValidator"
+      />
+
+      <div class="flex space-x-2">
+        <t-button
+          @click="showNamedDialog('input-with-validator')"
+        >
+          Show input
+        </t-button>
+      </div>
+    </TInputGroup>
+
+    <TInputGroup
       label="Alert with failing promise"
       class="mb-4"
     >
@@ -318,6 +340,15 @@ export default defineComponent({
     };
   },
   methods: {
+    inputValidator(input: any) {
+      const isProperLength = String(input).length >= 5 && String(input).length <= 10;
+
+      if (!isProperLength) {
+        return `Your word is ${String(input).length} chars length`;
+      }
+
+      return null;
+    },
     programaticAlert() {
       this.$dialog.alert('Whatever').then((result) => {
         console.log('result', result);

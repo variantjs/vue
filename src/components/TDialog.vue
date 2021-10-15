@@ -181,6 +181,20 @@
                 v-bind="configuration.inputAttributes"
               >
             </slot>
+
+            <div
+              v-if="validationErrorMessage !== undefined"
+              :class="configuration.classesList?.inputValidationError"
+            >
+              <slot
+                name="validation-error"
+                :setError="setValidationError"
+                :hide="hide"
+                :error-message="validationErrorMessage"
+              >
+                {{ validationErrorMessage }}
+              </slot>
+            </div>
           </div>
         </template>
       </div>
@@ -221,7 +235,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, PropType, HTMLAttributes, inject, computed, ref, onMounted,
+  defineComponent, PropType, HTMLAttributes, inject, computed, ref, onMounted, watch,
 } from 'vue';
 import { BodyScrollOptions } from 'body-scroll-lock';
 import {
@@ -404,6 +418,8 @@ export default defineComponent({
     hidden: (response: DialogResponse) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     error: (response: any) => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'validation-error': (message: string) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     'before-show': (e: DialogBeforeShowParams) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -427,6 +443,8 @@ export default defineComponent({
 
     const errorMessage = ref<string | undefined>(undefined);
 
+    const validationErrorMessage = ref<string | undefined>(undefined);
+
     const hideReason = ref<DialogHideReason | undefined>(DialogHideReason.Other);
 
     const dialogResponse = ref<DialogResponse | undefined>(undefined);
@@ -446,6 +464,10 @@ export default defineComponent({
       } else {
         errorMessage.value = error;
       }
+    };
+
+    const setValidationError = (error: string | undefined) => {
+      validationErrorMessage.value = error;
     };
 
     const focusDialog = () => {
@@ -489,6 +511,7 @@ export default defineComponent({
       dialogResponse.value = undefined;
       busy.value = false;
       setError(undefined);
+      setValidationError(undefined);
       preConfirmResponse.value = undefined;
       setInputValue(props.inputValue);
     };
@@ -569,12 +592,26 @@ export default defineComponent({
     };
 
     const ok = () : void => {
+      setValidationError(undefined);
+
+      setError(undefined);
+
+      if (configuration.inputValidator && isPrompt.value) {
+        const response = configuration.inputValidator(inputModel.value);
+
+        if (typeof response === 'string' && response.length > 0) {
+          setValidationError(response);
+
+          emit('validation-error', response);
+
+          return;
+        }
+      }
+
       if (configuration.preConfirm) {
         const promise = promisifyFunctionResult(configuration.preConfirm, inputModel.value);
 
         busy.value = true;
-
-        setError(undefined);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         promise.then((response: any) => {
@@ -634,6 +671,22 @@ export default defineComponent({
       });
     }
 
+    watch(inputModel, () => {
+      if (!configuration.inputValidator) {
+        return;
+      }
+
+      const response = configuration.inputValidator(inputModel.value);
+
+      if (typeof response === 'string' && response.length > 0) {
+        setValidationError(response);
+
+        emit('validation-error', response);
+      } else {
+        setValidationError(undefined);
+      }
+    });
+
     const modalClasses = computed(() => ({
       overlay: configuration.classesList!.overlay,
       wrapper: configuration.classesList!.wrapper,
@@ -675,7 +728,9 @@ export default defineComponent({
       onHidden,
       setInputValue,
       setError,
+      setValidationError,
       errorMessage,
+      validationErrorMessage,
       inputWrapperRef,
       modalRef,
 

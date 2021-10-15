@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { mount } from '@vue/test-utils';
+import { mount, VueWrapper } from '@vue/test-utils';
 import { h } from 'vue';
 import { DialogHideReason, DialogType } from '@variantjs/core';
 import TDialog from '@/components/TDialog.vue';
@@ -952,6 +952,105 @@ describe('TDialog.vue', () => {
 
       expect(wrapper.find('input').attributes('data-foo')).toBe('bar');
       expect(wrapper.find('input').attributes('width')).toBe('100');
+    });
+  });
+
+  describe('Input validation', () => {
+    it('doesnt hides the dialog when validation returns a message', async () => {
+      const inputValidator = () => 'error!';
+      const wrapper = mount(TDialog, {
+        props: {
+          type: DialogType.Prompt,
+          inputValidator,
+        },
+      });
+
+      expect(wrapper.html()).not.toContain('error!');
+
+      wrapper.vm.ok();
+
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.emitted()).toHaveProperty('validation-error');
+
+      expect(wrapper.emitted('validation-error')).toEqual([['error!']]);
+
+      expect(wrapper.vm.busy).toBe(false);
+
+      expect(wrapper.html()).toContain('error!');
+
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.modelValue).toBe(true);
+    });
+
+    it('resets the validation error when ok', async () => {
+      const inputValidator = () => null;
+      const wrapper = mount(TDialog, {
+        props: {
+          type: DialogType.Prompt,
+          inputValidator,
+        },
+      });
+
+      wrapper.vm.setValidationError('error!');
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.html()).toContain('error!');
+
+      wrapper.vm.ok();
+
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.html()).not.toContain('error!');
+    });
+
+    it('validates on input', async () => {
+      const inputValidator = (val: string) => (val === 'fail' ? 'fail' : null);
+      const wrapper = mount(TDialog, {
+        props: {
+          type: DialogType.Prompt,
+          inputValidator,
+        },
+      });
+
+      wrapper.find('input').element.value = 'fail';
+      wrapper.find('input').trigger('input');
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.html()).toContain('fail');
+    });
+
+    it('resets the validation when input', async () => {
+      const inputValidator = () => null;
+      const wrapper = mount(TDialog, {
+        props: {
+          type: DialogType.Prompt,
+          inputValidator,
+        },
+      });
+
+      wrapper.vm.setValidationError('error!');
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.html()).toContain('error!');
+
+      wrapper.find('input').element.value = 'something';
+      wrapper.find('input').trigger('input');
+
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.html()).not.toContain('error!');
     });
   });
 });
