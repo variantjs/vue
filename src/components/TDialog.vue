@@ -400,7 +400,8 @@ export default defineComponent({
   },
   emits: {
     shown: () => true,
-    hidden: () => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    hidden: (response: DialogResponse) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     error: (response: any) => true,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
@@ -495,13 +496,13 @@ export default defineComponent({
     };
 
     const onBeforeHide = (e: { cancel: PromiseRejectFn, reason: ModalHideReason }) => {
-      if (busy.value) {
+      // The `e.reason` comes from the modal so may differ to the dialog reason
+      const hideReasonValue: DialogHideReason = (hideReason.value !== undefined ? hideReason.value : e.reason) as DialogHideReason;
+
+      if (busy.value && hideReasonValue !== DialogHideReason.Ok) {
         e.cancel();
         return;
       }
-
-      // The `e.reason` comes from the modal so may differ to the dialog reason
-      const hideReasonValue: DialogHideReason = (hideReason.value !== undefined ? hideReason.value : e.reason) as DialogHideReason;
 
       const response: DialogResponse = {
         hideReason: hideReasonValue,
@@ -535,9 +536,9 @@ export default defineComponent({
     });
 
     const onHidden = () => {
-      emit('hidden');
-
       const response = dialogResponse.value!;
+
+      emit('hidden', response);
 
       if (
         (response.isCancel && configuration.rejectOnCancel)

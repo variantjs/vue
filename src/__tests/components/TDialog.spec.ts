@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { mount, MountingOptions } from '@vue/test-utils';
-import { Data, DialogHideReason } from '@variantjs/core';
+import { mount } from '@vue/test-utils';
+import { DialogHideReason } from '@variantjs/core';
 import TDialog from '@/components/TDialog.vue';
 import { Emitter } from '../..';
 
@@ -330,7 +330,6 @@ describe('TDialog.vue', () => {
       props: {
         type: 'confirm',
         name: 'my-dialog',
-        modelValue: false,
       },
       global: {
         provide: {
@@ -452,7 +451,6 @@ describe('TDialog.vue', () => {
       props: {
         type: 'confirm',
         name: 'my-dialog',
-        modelValue: false,
       },
       global: {
         provide: {
@@ -523,6 +521,95 @@ describe('TDialog.vue', () => {
 
       expect(resolve).toHaveBeenCalled();
       expect(reject).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('preconfirm', () => {
+    it('closes the dialog with the response of the confirm method', async () => {
+      const response = { success: true };
+      const preConfirm = () => new Promise((resolve) => {
+        resolve(response);
+      });
+
+      const wrapper = mount(TDialog, {
+        props: {
+          preConfirm,
+        },
+      });
+
+      wrapper.vm.ok();
+
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(wrapper.emitted()).toHaveProperty('hidden');
+
+      expect(wrapper.emitted('hidden')).toEqual([[{
+        hideReason: 'ok',
+        isCancel: false,
+        isDismissed: false,
+        isOk: true,
+        response,
+      }]]);
+
+      expect(wrapper.vm.busy).toBe(false);
+    });
+
+    it('uses the result of function that is not a promise as result', async () => {
+      const response = { success: true };
+      const preConfirm = () => response;
+
+      const wrapper = mount(TDialog, {
+        props: {
+          preConfirm,
+        },
+      });
+
+      wrapper.vm.ok();
+
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(wrapper.emitted()).toHaveProperty('hidden');
+
+      expect(wrapper.emitted('hidden')).toEqual([[{
+        hideReason: 'ok',
+        isCancel: false,
+        isDismissed: false,
+        isOk: true,
+        response,
+      }]]);
+
+      expect(wrapper.vm.busy).toBe(false);
+    });
+
+    it('doesnt closes the dialog when response fails', async () => {
+      const error = new Error('something went wrong!');
+
+      const preConfirm = () => new Promise((_resolve, reject) => {
+        reject(error);
+      });
+
+      const wrapper = mount(TDialog, {
+        props: {
+          preConfirm,
+        },
+      });
+
+      wrapper.vm.ok();
+
+      await waitUntilModalIsHidden(wrapper);
+
+      expect(wrapper.emitted()).toHaveProperty('error');
+
+      expect(wrapper.emitted('error')).toEqual([error]);
+
+      expect(wrapper.vm.busy).toBe(false);
+
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.modelValue).toBe(true);
     });
   });
 });
