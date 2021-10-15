@@ -25,19 +25,19 @@
         </slot>
       </component>
 
-      <button
+      <slot
         v-if="dismissible"
-        ref="close"
-        type="button"
-        :class="configuration.classesList?.close"
-        @click="doHide"
+        name="closeButton"
+        :show="doShow"
+        :hide="doHide"
+        :toggle="doToggle"
+        :configuration="configuration"
       >
-        <slot
-          name="closeButton"
-          :show="doShow"
-          :hide="doHide"
-          :toggle="doToggle"
-          :configuration="configuration"
+        <button
+          ref="close"
+          type="button"
+          :class="configuration.classesList?.close"
+          @click="doHide"
         >
           <custom-icon
             v-if="closeIcon"
@@ -49,8 +49,8 @@
             v-else
             ref="closeIcon"
           />
-        </slot>
-      </button>
+        </button>
+      </slot>
     </component>
   </transitionable>
 </template>
