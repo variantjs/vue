@@ -35,4 +35,19 @@ describe('main file', () => {
       'useVModel',
     ]);
   });
+
+  describe('callable utils', () => {
+    it('can create an instance of emitter', () => {
+      const emitter = new library.Emitter();
+
+      expect(emitter).toBeInstanceOf(library.Emitter);
+    });
+
+    it('have functions', () => {
+      expect(typeof library.getVariantProps).toBe('function');
+      expect(typeof library.getVariantPropsWithClassesList).toBe('function');
+      expect(typeof library.sameWidthModifier).toBe('object');
+      expect(typeof library.svgToVueComponent).toBe('function');
+    });
+  });
 });
