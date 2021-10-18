@@ -9,6 +9,9 @@
     <t-button to="/attributes">
       Attributes
     </t-button>
+    <t-button to="/checkbox">
+      Checkbox
+    </t-button>
     <t-button to="/options">
       Options
     </t-button>
