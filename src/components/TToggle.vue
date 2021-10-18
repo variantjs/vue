@@ -2,30 +2,30 @@
   <span
     role="checkbox"
     tabindex="0"
-    aria-checked="true"
-    class="relative inline-flex flex-shrink-0 transition-colors duration-200 ease-in-out bg-blue-500 border-2 border-transparent rounded-full cursor-pointer focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50"
+    :aria-checked="isChecked ? 'true' : 'false'"
+    :class="classes.wrapper"
   >
     <input
-      value="true"
+      v-model="localValue"
       type="hidden"
     >
     <span
       aria-hidden="true"
-      class="flex items-center justify-center w-5 h-5 text-xs text-gray-400 rounded-full"
+      :class="configuration.classesList?.uncheckedPlaceholder"
     />
     <span
       aria-hidden="true"
-      class="flex items-center justify-center w-5 h-5 text-xs text-gray-400 rounded-full"
+      :class="configuration.classesList?.checkedPlaceholder"
     />
     <span
       aria-hidden="true"
-      class="absolute flex items-center justify-center w-5 h-5 text-xs text-blue-500 transition duration-200 ease-in-out transform translate-x-full bg-white rounded-full shadow"
+      :class="classes.button"
     />
   </span>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import {
   TToggleConfig,
   TToggleClassesKeys,
@@ -33,21 +33,59 @@ import {
 } from '@variantjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
-import { TToggleOptions } from '../types/components/t-toggle';
+import { TToggleOptions, TToggleValue } from '../types/components/t-toggle';
+import useVModel from '../use/useVModel';
 
 // @vue/component
 export default defineComponent({
   name: 'TToggle',
   props: {
     ...getVariantPropsWithClassesList<TToggleOptions, TToggleClassesValidKeys>(),
-
+    modelValue: {
+      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TToggleValue>,
+      default: undefined,
+    },
   },
-  setup() {
+  setup(props) {
     const { configuration, attributes } = useConfigurationWithClassesList<TToggleOptions>(TToggleConfig, TToggleClassesKeys);
+
+    const localValue = useVModel(props, 'modelValue');
+
+    const isChecked = computed(() => {
+      console.log(localValue.value);
+      return true;
+    });
+
+    const isDisabled = computed(() => false);
+
+    const classes = computed(() => {
+      if (isDisabled.value) {
+        return {
+          wrapper: isChecked.value ? configuration.classesList?.wrapperCheckedDisabled : configuration.classesList?.wrapperDisabled,
+          button: configuration.classesList?.buttonChecked,
+        };
+      }
+
+      if (isChecked.value) {
+        return {
+          wrapper: configuration.classesList?.wrapperChecked,
+          button: configuration.classesList?.buttonChecked,
+        };
+      }
+
+      return {
+        wrapper: configuration.classesList?.wrapper,
+        button: configuration.classesList?.button,
+      };
+    });
 
     return {
       configuration,
       attributes,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      localValue: localValue as any,
+      isChecked,
+      classes,
     };
   },
 });

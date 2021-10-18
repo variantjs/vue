@@ -1,12 +1,15 @@
 <template>
   <t-card header="Options">
-    <p>Toggle/Checkbox model sync </p>
-    <t-toggle v-model="selected" />
-    <t-checkbox v-model="selected" />
-    <input
-      v-model="selected"
-      type="checkbox"
-    >
+    <form method="get">
+      <p>Toggle/Checkbox model sync </p>
+      <t-toggle v-model="selected" />
+      <t-checkbox v-model="selected" />
+      <input
+        v-model="selected"
+        type="checkbox"
+      >
+      <input type="submit">
+    </form>
   </t-card>
 </template>
 
