@@ -1,13 +1,17 @@
 <template>
-  <span
+  <button
     role="checkbox"
     tabindex="0"
     :aria-checked="isChecked ? 'true' : 'false'"
     :class="classes.wrapper"
+    type="button"
+    @click="toggle"
   >
     <input
-      v-model="localValue"
+      v-if="!isMultiple || isChecked"
+      :value="inputValue"
       type="hidden"
+      :name="configuration.name"
     >
     <span
       aria-hidden="true"
@@ -21,39 +25,131 @@
       aria-hidden="true"
       :class="classes.button"
     />
-  </span>
+  </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+import {
+  defineComponent, PropType, computed, ref, watch, getCurrentInstance,
+} from 'vue';
 import {
   TToggleConfig,
   TToggleClassesKeys,
   TToggleClassesValidKeys,
+  isEqual,
+  hasProperty,
+  substractFromArray,
+  addToArray,
 } from '@variantjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { TToggleOptions, TToggleValue } from '../types/components/t-toggle';
-import useVModel from '../use/useVModel';
 
 // @vue/component
 export default defineComponent({
   name: 'TToggle',
   props: {
     ...getVariantPropsWithClassesList<TToggleOptions, TToggleClassesValidKeys>(),
+    name: {
+      type: String,
+      default: undefined,
+    },
     modelValue: {
       type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TToggleValue>,
       default: undefined,
     },
+    value: {
+      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TToggleValue>,
+      default: true,
+    },
+    uncheckedValue: {
+      type: [String, Number, Boolean, Array, Object, Date, Function, Symbol] as PropType<TToggleValue>,
+      default: false,
+    },
+    checked: {
+      type: Boolean,
+      default: undefined,
+    },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TToggleOptions>(TToggleConfig, TToggleClassesKeys);
 
-    const localValue = useVModel(props, 'modelValue');
+    const vm = getCurrentInstance();
 
-    const isChecked = computed(() => {
-      console.log(localValue.value);
-      return true;
+    const getInitialValue = (): TToggleValue => {
+      const modelValueIsDefined = hasProperty(vm!.vnode.props || {}, 'modelValue');
+      if (modelValueIsDefined) {
+        return props.modelValue;
+      }
+
+      if (configuration.checked === true) {
+        return configuration.value;
+      }
+
+      return configuration.uncheckedValue;
+    };
+
+    const localValue = ref<TToggleValue>(getInitialValue());
+
+    const isMultiple = computed<boolean>(() => Array.isArray(localValue.value));
+
+    const isChecked = computed<boolean>(() => {
+      if (isMultiple.value) {
+        return (localValue.value as TToggleValue[]).some((value) => isEqual(value, configuration.value));
+      }
+
+      return isEqual(localValue.value, configuration.value);
+    });
+
+    const inputValue = computed(() => {
+      if (isChecked.value) {
+        return configuration.value;
+      }
+
+      return configuration.uncheckedValue;
+    });
+
+    const check = () => {
+      if (isMultiple.value) {
+        localValue.value = addToArray(localValue.value, configuration.value);
+      } else {
+        localValue.value = configuration.value;
+      }
+    };
+
+    const uncheck = () => {
+      if (isMultiple.value) {
+        localValue.value = substractFromArray(localValue.value, configuration.value);
+      } else {
+        localValue.value = configuration.uncheckedValue;
+      }
+    };
+
+    const toggle = () => {
+      if (isChecked.value) {
+        uncheck();
+      } else {
+        check();
+      }
+    };
+
+    watch(localValue, (newValue: TToggleValue) => {
+      emit('update:modelValue', newValue);
+    });
+    watch(isChecked, (newIsChecked: boolean) => {
+      emit('update:checked', newIsChecked);
+    });
+
+    watch(() => props.modelValue, (newModelValue: TToggleValue) => {
+      localValue.value = newModelValue;
+    });
+
+    watch(() => configuration.checked, (newChecked: boolean | undefined) => {
+      if (newChecked) {
+        check();
+      } else {
+        uncheck();
+      }
     });
 
     const isDisabled = computed(() => false);
@@ -85,7 +181,10 @@ export default defineComponent({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       localValue: localValue as any,
       isChecked,
+      isMultiple,
       classes,
+      inputValue,
+      toggle,
     };
   },
 });
