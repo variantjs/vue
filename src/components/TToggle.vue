@@ -16,18 +16,33 @@
     <span
       aria-hidden="true"
       :class="configuration.classesList?.uncheckedPlaceholder"
-      v-text="configuration.uncheckedPlaceholder"
-    />
+    >
+      <slot
+        name="unchecked"
+        :value="inputValue"
+        :is-checked="isChecked"
+      >{{ configuration.uncheckedPlaceholder }}</slot>
+    </span>
 
     <span
       aria-hidden="true"
       :class="configuration.classesList?.checkedPlaceholder"
-      v-text="configuration.checkedPlaceholder"
-    />
+    >
+      <slot
+        name="checked"
+        :value="inputValue"
+        :is-checked="isChecked"
+      >{{ configuration.checkedPlaceholder }}</slot>
+    </span>
     <span
       aria-hidden="true"
       :class="classes.button"
-    />
+    >
+      <slot
+        :value="inputValue"
+        :is-checked="isChecked"
+      />
+    </span>
   </button>
 </template>
 
