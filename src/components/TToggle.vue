@@ -97,6 +97,12 @@ export default defineComponent({
       default: undefined,
     },
   },
+  emits: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:checked': (isChecked: boolean) => true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:modelValue': (value: TToggleValue) => true,
+  },
   setup(props, { emit }) {
     const { configuration, attributes } = useConfigurationWithClassesList<TToggleOptions>(TToggleConfig, TToggleClassesKeys);
 
