@@ -10,4 +10,6 @@ export type TToggleOptions = WithVariantPropsAndClassesList<{
   value?: TToggleValue,
   uncheckedValue?: TToggleValue,
   checked?: boolean,
+  checkedPlaceholder?: string,
+  uncheckedPlaceholder?: string,
 } & HTMLAttributes & Data, TToggleClassesValidKeys>;

@@ -130,6 +130,16 @@
         <p>Value {{ multiple }}</p>
       </div>
     </TInputGroup>
+
+    <TInputGroup
+      label="Toggle placeholders"
+      class="mb-4"
+    >
+      <t-toggle
+        checked-placeholder="AM"
+        unchecked-placeholder="PM"
+      />
+    </TInputGroup>
   </t-card>
 </template>
 

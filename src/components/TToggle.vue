@@ -16,10 +16,13 @@
     <span
       aria-hidden="true"
       :class="configuration.classesList?.uncheckedPlaceholder"
+      v-text="configuration.uncheckedPlaceholder"
     />
+
     <span
       aria-hidden="true"
       :class="configuration.classesList?.checkedPlaceholder"
+      v-text="configuration.checkedPlaceholder"
     />
     <span
       aria-hidden="true"
@@ -68,6 +71,14 @@ export default defineComponent({
     },
     checked: {
       type: Boolean,
+      default: undefined,
+    },
+    checkedPlaceholder: {
+      type: String,
+      default: undefined,
+    },
+    uncheckedPlaceholder: {
+      type: String,
       default: undefined,
     },
   },
