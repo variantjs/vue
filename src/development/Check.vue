@@ -117,13 +117,11 @@
         <input
           v-model="multiple"
           type="checkbox"
-          checked
           value="b"
         >
         <input
           v-model="multiple"
           type="checkbox"
-          checked
           value="c"
         >
 
