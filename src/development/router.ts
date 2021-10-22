@@ -10,6 +10,7 @@ import Alert from './Alert.vue';
 import Modal from './Modal.vue';
 import Dialog from './Dialog.vue';
 import Checkbox from './Check.vue';
+import Datepicker from './Datepicker.vue';
 import Theme from './Theme.vue';
 import Attributes from './Attributes.vue';
 
@@ -25,6 +26,7 @@ const routes = [
   { path: '/theme', component: Theme },
   { path: '/attributes', component: Attributes },
   { path: '/checkbox', component: Checkbox },
+  { path: '/datepicker', component: Datepicker },
 ];
 
 const router = createRouter({
