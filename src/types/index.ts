@@ -10,6 +10,7 @@ export { TModalOptions } from './components/t-modal';
 export { TDialogOptions } from './components/t-dialog';
 export { TTagOptions } from './components/t-tag';
 export { TAlertOptions } from './components/t-alert';
+export { TToggleValue, TToggleOptions } from './components/t-toggle';
 export { TDropdownOptions } from './components/t-dropdown';
 export { TRichSelectOptions, MinimumInputLengthTextProp } from './components/t-rich-select';
 export { TInputGroupOptions, TInputGroupValidChilElementsKeys } from './components/t-input-group';

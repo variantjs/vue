@@ -30,6 +30,7 @@ export default defineComponent({
     const { attributes } = useConfiguration<TCheckboxOptions>(TCheckboxConfig);
 
     return {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       localValue: localValue as any,
       attributes,
     };
