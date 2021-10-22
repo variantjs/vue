@@ -127,28 +127,20 @@
 import {
   defineComponent,
   PropType,
-  provide,
-  ref,
-  computed,
 } from 'vue';
+
 import {
-  InputOptions,
-  TRichSelectConfig,
-  TRichSelectClassesKeys,
-  TRichSelectClassesValidKeys,
-  NormalizedOption,
-  CSSRawClassesList,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
-  isEqual,
-  throttle,
-  Measure,
-  Data,
+  TDatepickerClassesValidKeys,
+  TDatepickerConfig,
+  TDatepickerClassesKeys,
+
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import {
-  TRichSelectOptions, TSelectValue,
+  TDatepickerOptions, TSelectValue,
 } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
@@ -156,18 +148,17 @@ import { sameWidthModifier } from '../utils/popper';
 
 // @vue/component
 export default defineComponent({
-  name: 'TRichSelect',
+  name: 'TDatepicker',
   components: {
     DatepickerDropdown,
     TDropdown,
   },
   props: {
-    ...getVariantPropsWithClassesList<TRichSelectOptions, TRichSelectClassesValidKeys>(),
+    ...getVariantPropsWithClassesList<TDatepickerOptions, TDatepickerClassesValidKeys>(),
     modelValue: {
       type: [Date, String, Number, Array] as PropType<TSelectValue>,
       default: undefined,
     },
-
     dropdownPlacement: {
       type: String as PropType<Placement>,
       default: undefined,
@@ -191,9 +182,10 @@ export default defineComponent({
     },
 
   },
+  setup() {
+    const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
-  setup(props) {
-    const { configuration, attributes } = useConfigurationWithClassesList<TRichSelectOptions>(TRichSelectConfig, TRichSelectClassesKeys);
+    // const activeDate = ref();
 
     // const { localValue, clearValue } = useVModel(props, 'modelValue');
 

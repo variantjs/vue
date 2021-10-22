@@ -1,7 +1,6 @@
 <template>
   <button
     type="button"
-    data-rich-select-focusable
     :class="className"
   >
     <slot name="clearButton">
@@ -16,7 +15,7 @@ import CloseIcon from '../../icons/CloseIcon.vue';
 import useInjectsClassesListClass from '../../use/useInjectsClassesListClass';
 
 export default defineComponent({
-  name: 'RichSelectClearButton',
+  name: 'DatepickerClearButton',
   components: {
     CloseIcon,
   },
