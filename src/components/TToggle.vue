@@ -1,10 +1,10 @@
 <template>
   <button
+    type="button"
     role="checkbox"
-    tabindex="0"
     :aria-checked="isChecked ? 'true' : 'false'"
     :class="classes.wrapper"
-    type="button"
+    :disabled="configuration.disabled"
     @click="toggle"
   >
     <input
@@ -12,6 +12,7 @@
       :value="inputValue"
       type="hidden"
       :name="configuration.name"
+      :disabled="configuration.disabled"
     >
     <span
       aria-hidden="true"
@@ -88,6 +89,10 @@ export default defineComponent({
       type: Boolean,
       default: undefined,
     },
+    disabled: {
+      type: Boolean,
+      default: undefined,
+    },
     checkedPlaceholder: {
       type: String,
       default: undefined,
@@ -109,7 +114,8 @@ export default defineComponent({
     const vm = getCurrentInstance();
 
     const getInitialValue = (): TToggleValue => {
-      const modelValueIsDefined = hasProperty(vm!.vnode.props || {}, 'modelValue');
+      const modelValueIsDefined = hasProperty(vm!.vnode.props!, 'modelValue');
+
       if (modelValueIsDefined) {
         return props.modelValue;
       }
@@ -168,6 +174,7 @@ export default defineComponent({
     watch(localValue, (newValue: TToggleValue) => {
       emit('update:modelValue', newValue);
     });
+
     watch(isChecked, (newIsChecked: boolean) => {
       emit('update:checked', newIsChecked);
     });
@@ -184,26 +191,17 @@ export default defineComponent({
       }
     });
 
-    const isDisabled = computed(() => false);
-
     const classes = computed(() => {
-      if (isDisabled.value) {
+      if (configuration.disabled) {
         return {
-          wrapper: isChecked.value ? configuration.classesList?.wrapperCheckedDisabled : configuration.classesList?.wrapperDisabled,
-          button: configuration.classesList?.buttonChecked,
-        };
-      }
-
-      if (isChecked.value) {
-        return {
-          wrapper: configuration.classesList?.wrapperChecked,
-          button: configuration.classesList?.buttonChecked,
+          wrapper: isChecked.value ? configuration.classesList!.wrapperCheckedDisabled : configuration.classesList!.wrapperDisabled,
+          button: isChecked.value ? configuration.classesList!.buttonChecked : configuration.classesList!.button,
         };
       }
 
       return {
-        wrapper: configuration.classesList?.wrapper,
-        button: configuration.classesList?.button,
+        wrapper: isChecked.value ? configuration.classesList!.wrapperChecked : configuration.classesList!.wrapper,
+        button: isChecked.value ? configuration.classesList!.buttonChecked : configuration.classesList!.button,
       };
     });
 

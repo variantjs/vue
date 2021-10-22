@@ -140,6 +140,14 @@
         unchecked-placeholder="PM"
       />
     </TInputGroup>
+    <TInputGroup
+      label="Disabled "
+      class="mb-4"
+    >
+      <t-toggle
+        disabled
+      />
+    </TInputGroup>
   </t-card>
 </template>
 
