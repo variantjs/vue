@@ -111,7 +111,6 @@
         <input
           v-model="multiple"
           type="checkbox"
-          checked
           value="a"
         >
         <input
