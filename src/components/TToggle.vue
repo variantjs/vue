@@ -114,7 +114,7 @@ export default defineComponent({
     const vm = getCurrentInstance();
 
     const getInitialValue = (): TToggleValue => {
-      const modelValueIsDefined = hasProperty(vm!.vnode.props!, 'modelValue');
+      const modelValueIsDefined = hasProperty(vm!.vnode.props, 'modelValue');
 
       if (modelValueIsDefined) {
         return props.modelValue;
