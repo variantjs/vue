@@ -5,12 +5,15 @@ import TDialog from '@/components/TDialog.vue';
 
 describe('createDialogProgramatically', () => {
   const configuration: VariantJSConfiguration = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let originalMounted: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let component: any;
 
   beforeEach(() => {
     originalMounted = TDialog.mounted;
 
+    // eslint-disable-next-line func-names
     TDialog.mounted = function () {
       component = this;
     };
