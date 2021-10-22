@@ -77,15 +77,17 @@
 
 <script lang="ts">
 import {
-  defineComponent, inject, PropType, Ref,
+  defineComponent, inject, PropType, Ref, defineAsyncComponent,
 } from 'vue';
 import { CSSClass, NormalizedOption, normalizedOptionIsDisabled } from '@variantjs/core';
-import RichSelectOptionsList from './RichSelectOptionsList.vue';
-import CheckmarkIcon from '../../icons/CheckmarkIcon.vue';
 import useInjectsClassesList from '../../use/useInjectsClassesList';
+import CheckmarkIcon from '../../icons/CheckmarkIcon.vue';
 
 export default defineComponent({
   name: 'RichSelectOption',
+  components: {
+    CheckmarkIcon,
+  },
   props: {
     option: {
       type: [Object] as PropType<NormalizedOption>,
@@ -164,10 +166,7 @@ export default defineComponent({
     },
   },
   beforeCreate() {
-    this.$options.components = {
-      RichSelectOptionsList,
-      CheckmarkIcon,
-    };
+    this.$options.components!.RichSelectOptionsList = defineAsyncComponent(() => import('./RichSelectOptionsList.vue'));
   },
   methods: {
     scrollIntoViewIfNeccesary(): void {
