@@ -66,9 +66,11 @@ import CloseIcon from '../icons/CloseIcon.vue';
 import Transitionable from './misc/Transitionable.vue';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TAlert',
   components: {
     CustomIcon,

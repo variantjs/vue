@@ -31,8 +31,10 @@ import {
 import { TRichSelectOptions } from '../../types/components/t-rich-select';
 import useInjectsClassesList from '../../use/useInjectsClassesList';
 import useInjectsConfiguration from '../../use/useInjectsConfiguration';
+import { getGlobalComponentOptions } from '../../utils/getGlobalComponentOptions';
 
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'RichSelectState',
   setup() {
     const options = inject<ComputedRef<TRichSelectOptions>>('options')!;

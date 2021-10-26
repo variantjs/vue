@@ -105,9 +105,11 @@ import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import CloseIcon from '../icons/CloseIcon.vue';
 import useVModel from '../use/useVModel';
 import Transitionable from './misc/Transitionable.vue';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TModal',
   components: {
     CloseIcon,

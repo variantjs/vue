@@ -78,6 +78,7 @@ import { TDropdownOptions } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import Transitionable from './misc/Transitionable.vue';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 export const validDropdownPlacements = [
   'auto',
@@ -99,6 +100,7 @@ export const validDropdownPlacements = [
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TDropdown',
   components: { Transitionable },
   inheritAttrs: false,

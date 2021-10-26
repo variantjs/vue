@@ -273,9 +273,11 @@ import CrossCircleIcon from '../icons/CrossCircleIcon.vue';
 import SolidCrossCircleIcon from '../icons/SolidCrossCircleIcon.vue';
 import LoadingIcon from '../icons/LoadingIcon.vue';
 import CloseIcon from '../icons/CloseIcon.vue';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TDialog',
   components: {
     TModal,

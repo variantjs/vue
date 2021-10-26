@@ -23,9 +23,11 @@ import useMulipleableVModel from '../use/useMulipleableVModel';
 import useMultioptions from '../use/useMultioptions';
 import useConfiguration from '../use/useConfiguration';
 import { getVariantProps } from '../utils/getVariantProps';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TSelect',
   components: {
     TSelectOption,

@@ -63,9 +63,11 @@ import {
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { TToggleOptions, TToggleValue } from '../types/components/t-toggle';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TToggle',
   props: {
     ...getVariantPropsWithClassesList<TToggleOptions, TToggleClassesValidKeys>(),

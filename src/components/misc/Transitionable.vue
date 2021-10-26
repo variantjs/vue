@@ -14,9 +14,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { getGlobalComponentOptions } from '../../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'Transitionable',
   props: {
     classesList: {

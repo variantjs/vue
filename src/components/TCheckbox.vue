@@ -13,9 +13,11 @@ import { TCheckboxOptions, TCheckboxValue } from '../types';
 import { getVariantProps } from '../utils/getVariantProps';
 import useConfiguration from '../use/useConfiguration';
 import useVModel from '../use/useVModel';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TCheckbox',
   props: {
     ...getVariantProps<TCheckboxOptions>(),

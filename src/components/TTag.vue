@@ -15,9 +15,11 @@ import { defineComponent } from 'vue';
 import { TTagOptions } from '../types';
 import useConfiguration from '../use/useConfiguration';
 import { getVariantProps } from '../utils/getVariantProps';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TTag',
   props: {
     ...getVariantProps<TTagOptions>(),

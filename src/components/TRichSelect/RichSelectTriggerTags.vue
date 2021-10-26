@@ -28,8 +28,10 @@ import { NormalizedOption } from '@variantjs/core';
 import { ComputedRef, defineComponent, inject } from 'vue';
 import RichSelectTriggerTagsTag from './RichSelectTriggerTagsTag.vue';
 import useInjectsClassesListClass from '../../use/useInjectsClassesListClass';
+import { getGlobalComponentOptions } from '../../utils/getGlobalComponentOptions';
 
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'RichSelectTriggerTags',
   components: {
     RichSelectTriggerTagsTag,

@@ -10,8 +10,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import useInjectsClassesListClass from '../../use/useInjectsClassesListClass';
+import { getGlobalComponentOptions } from '../../utils/getGlobalComponentOptions';
 
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TextPlaceholder',
   props: {
     classProperty: {

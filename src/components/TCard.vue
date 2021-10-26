@@ -48,9 +48,11 @@ import { defineComponent } from 'vue';
 import { TCardOptions } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TCard',
   props: {
     ...getVariantPropsWithClassesList<TCardOptions, TCardClassesValidKeys>(),

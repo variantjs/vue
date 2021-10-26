@@ -172,9 +172,11 @@ import RichSelectClearButton from './TRichSelect/RichSelectClearButton.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
 import TSelect from './TSelect.vue';
 import { sameWidthModifier } from '../utils/popper';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TRichSelect',
   components: {
     RichSelectTrigger,

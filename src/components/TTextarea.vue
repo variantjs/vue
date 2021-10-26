@@ -17,8 +17,10 @@ import { TTextareaOptions, TTextareaValue } from '../types';
 import { getVariantProps } from '../utils/getVariantProps';
 import useVModel from '../use/useVModel';
 import useConfiguration from '../use/useConfiguration';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TTextarea',
   props: {
     ...getVariantProps<TTextareaOptions>(),

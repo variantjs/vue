@@ -28,8 +28,10 @@ import { defineComponent, PropType } from 'vue';
 import { TButtonOptions, VueRouteAriaCurrentValue, VueRouteRouteLocationRaw } from '../types';
 import useConfiguration from '../use/useConfiguration';
 import { getVariantProps } from '../utils/getVariantProps';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TButton',
   props: {
     ...getVariantProps<TButtonOptions>(),

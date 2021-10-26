@@ -53,8 +53,10 @@ import RichSelectOptionsList from './RichSelectOptionsList.vue';
 import RichSelectSearchInput from './RichSelectSearchInput.vue';
 import RichSelectState from './RichSelectState.vue';
 import useInjectsClassesListClass from '../../use/useInjectsClassesListClass';
+import { getGlobalComponentOptions } from '../../utils/getGlobalComponentOptions';
 
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'RichSelectDropdown',
   components: {
     RichSelectOptionsList,

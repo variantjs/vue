@@ -13,9 +13,11 @@ import { TRadioOptions, TRadioValue } from '../types';
 import useConfiguration from '../use/useConfiguration';
 import useVModel from '../use/useVModel';
 import { getVariantProps } from '../utils/getVariantProps';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TRadio',
   props: {
     ...getVariantProps<TRadioOptions>(),

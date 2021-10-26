@@ -22,9 +22,11 @@
 <script lang="ts">
 import { NormalizedOption } from '@variantjs/core';
 import { defineComponent, PropType } from 'vue';
+import { getGlobalComponentOptions } from '../../utils/getGlobalComponentOptions';
 
 // @vue/component
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TSelectOption',
   props: {
     option: {

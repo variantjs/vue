@@ -17,8 +17,10 @@ import { TInputOptions, TInputValue } from '../types/components/t-input';
 import { getVariantProps } from '../utils/getVariantProps';
 import useVModel from '../use/useVModel';
 import useConfiguration from '../use/useConfiguration';
+import { getGlobalComponentOptions } from '../utils/getGlobalComponentOptions';
 
 export default defineComponent({
+  ...getGlobalComponentOptions(),
   name: 'TInput',
   props: {
     ...getVariantProps<TInputOptions>(),
