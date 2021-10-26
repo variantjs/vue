@@ -1,6 +1,7 @@
 <template>
   <component
     :is="configuration.tagName"
+    :class="configuration.classesList?.wrapper"
     v-bind="attributes"
   >
     <slot :configuration="configuration">
@@ -10,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { TTagConfig } from '@variantjs/core';
+import { TTagConfig, TTagClassesKeys } from '@variantjs/core';
 import { defineComponent } from 'vue';
 import { TTagOptions } from '../types';
 import useConfiguration from '../use/useConfiguration';
@@ -31,7 +32,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { configuration, attributes } = useConfiguration<TTagOptions>(TTagConfig);
+    const { configuration, attributes } = useConfiguration<TTagOptions>(TTagConfig, TTagClassesKeys);
 
     return { configuration, attributes };
   },
