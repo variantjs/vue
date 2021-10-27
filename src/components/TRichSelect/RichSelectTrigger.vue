@@ -79,6 +79,9 @@ import useInjectsConfiguration from '../../use/useInjectsConfiguration';
 
 export default defineComponent({
   name: 'RichSelectTrigger',
+  compatConfig: {
+    MODE: 3,
+  },
   components: {
     RichSelectTriggerTags,
     TextPlaceholder,

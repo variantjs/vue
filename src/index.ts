@@ -19,6 +19,7 @@ import TDropdown from './components/TDropdown.vue';
 import TInputGroup from './components/TInputGroup.vue';
 import TRichSelect from './components/TRichSelect.vue';
 import TTag from './components/TTag.vue';
+import TToggle from './components/TToggle.vue';
 import TModal from './components/TModal.vue';
 
 // Import uses
@@ -50,7 +51,7 @@ export {
   TInputGroup,
   TRichSelect,
 
-  // Single tag componets
+  // Single tag components
   TTag,
 
   // Components
@@ -58,6 +59,7 @@ export {
   TDropdown,
   TAlert,
   TModal,
+  TToggle,
 
   // Installer
   plugin as variantJS,

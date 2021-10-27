@@ -109,6 +109,9 @@ import Transitionable from './misc/Transitionable.vue';
 // @vue/component
 export default defineComponent({
   name: 'TModal',
+  compatConfig: {
+    MODE: 3,
+  },
   components: {
     CloseIcon,
     Transitionable,

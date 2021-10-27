@@ -176,6 +176,9 @@ import { sameWidthModifier } from '../utils/popper';
 // @vue/component
 export default defineComponent({
   name: 'TRichSelect',
+  compatConfig: {
+    MODE: 3,
+  },
   components: {
     RichSelectTrigger,
     RichSelectDropdown,

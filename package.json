@@ -1,9 +1,10 @@
 {
   "name": "@variantjs/vue",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Vue VariantJS: Fully configurable Vue 3 components styled with TailwindCSS",
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "src/**/*"
   ],
   "types": "./dist/index.d.ts",
   "main": "./dist/index.umd.js",
@@ -92,6 +93,6 @@
     }
   },
   "dependencies": {
-    "@variantjs/core": "^0.0.67"
+    "@variantjs/core": "^0.0.72"
   }
 }

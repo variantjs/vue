@@ -67,6 +67,9 @@ import { TToggleOptions, TToggleValue } from '../types/components/t-toggle';
 // @vue/component
 export default defineComponent({
   name: 'TToggle',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     ...getVariantPropsWithClassesList<TToggleOptions, TToggleClassesValidKeys>(),
     name: {

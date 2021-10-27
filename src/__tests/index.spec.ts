@@ -16,6 +16,7 @@ describe('main file', () => {
       'TDropdown',
       'TAlert',
       'TModal',
+      'TToggle',
       'variantJS',
       'Emitter',
       'getVariantProps',

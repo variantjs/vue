@@ -68,12 +68,14 @@ import {
   debounce,
   elementIsTargetOrTargetChild,
   getFocusableElements,
-  isTouchOnlyDevice,
+  isTouchOnlyDevice as getIsTouch,
   throttle,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   DebouncedFn,
 } from '@variantjs/core';
-import { defineComponent, PropType } from 'vue';
+import {
+  defineComponent, PropType, onMounted, ref,
+} from 'vue';
 import { TDropdownOptions } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
@@ -100,6 +102,9 @@ export const validDropdownPlacements = [
 // @vue/component
 export default defineComponent({
   name: 'TDropdown',
+  compatConfig: {
+    MODE: 3,
+  },
   components: { Transitionable },
   inheritAttrs: false,
   props: {
@@ -179,11 +184,16 @@ export default defineComponent({
   setup() {
     const { configuration, attributes } = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, TDropdownClassesKeys);
 
-    return { configuration, attributes };
+    const isTouchOnlyDevice = ref<boolean>(false);
+
+    onMounted(() => {
+      isTouchOnlyDevice.value = getIsTouch();
+    });
+
+    return { configuration, attributes, isTouchOnlyDevice };
   },
   data({ configuration }) {
     return {
-      isTouchOnlyDevice: isTouchOnlyDevice(),
       shown: (configuration as unknown as TDropdownOptions).show,
       // Disables the animation while the dropdown is being shown
       initAsShow: (configuration as unknown as TDropdownOptions).show,

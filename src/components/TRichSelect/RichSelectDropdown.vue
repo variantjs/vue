@@ -56,6 +56,9 @@ import useInjectsClassesListClass from '../../use/useInjectsClassesListClass';
 
 export default defineComponent({
   name: 'RichSelectDropdown',
+  compatConfig: {
+    MODE: 3,
+  },
   components: {
     RichSelectOptionsList,
     RichSelectSearchInput,

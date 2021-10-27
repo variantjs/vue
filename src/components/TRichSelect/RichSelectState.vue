@@ -34,6 +34,9 @@ import useInjectsConfiguration from '../../use/useInjectsConfiguration';
 
 export default defineComponent({
   name: 'RichSelectState',
+  compatConfig: {
+    MODE: 3,
+  },
   setup() {
     const options = inject<ComputedRef<TRichSelectOptions>>('options')!;
     const fetchingOptions = inject<Ref<boolean>>('fetchingOptions')!;
