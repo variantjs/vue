@@ -6,7 +6,7 @@ import typescript from '@rollup/plugin-typescript'
 export default defineConfig({
   plugins: [vue()],
   build: {
-    minify: true,
+    minify: false,
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
