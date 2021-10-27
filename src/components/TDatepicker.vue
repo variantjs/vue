@@ -127,6 +127,8 @@
 import {
   defineComponent,
   PropType,
+  ref,
+  provide,
 } from 'vue';
 
 import {
@@ -140,7 +142,7 @@ import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import {
-  TDatepickerOptions, TSelectValue,
+  TDatepickerOptions, TDatepickerValue,
 } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
@@ -156,8 +158,12 @@ export default defineComponent({
   props: {
     ...getVariantPropsWithClassesList<TDatepickerOptions, TDatepickerClassesValidKeys>(),
     modelValue: {
-      type: [Date, String, Number, Array] as PropType<TSelectValue>,
+      type: [Date, String, Number, Array] as PropType<TDatepickerValue>,
       default: undefined,
+    },
+    weekStart: {
+      type: Number,
+      default: 0,
     },
     dropdownPlacement: {
       type: String as PropType<Placement>,
@@ -185,9 +191,14 @@ export default defineComponent({
   setup() {
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
-    // const activeDate = ref();
+    const activeDate = ref<Date>(new Date());
+    // const selectedDate = ref<TDatepickerValue>();
 
     // const { localValue, clearValue } = useVModel(props, 'modelValue');
+
+    provide('activeDate', activeDate);
+
+    provide('configuration', configuration);
 
     return {
       configuration,

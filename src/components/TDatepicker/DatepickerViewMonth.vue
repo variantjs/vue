@@ -10,9 +10,13 @@
       <span class="flex items-center justify-center w-8 h-8 text-xs text-gray-500 uppercase">Sat</span>
     </div>
     <div class="grid grid-cols-7">
-      <DatepickerViewMonthDay />
+      <datepicker-view-month-day
+        v-for="day in days"
+        :key="day.toTimeString()"
+        :day="day"
+      />
 
-      <span class="flex items-center flex-shrink-0 w-full h-8"><button
+      <!-- <span class="flex items-center flex-shrink-0 w-full h-8"><button
         aria-label="September 27, 2021"
         data-date="2021-09-27"
         type="button"
@@ -259,13 +263,18 @@
         type="button"
         tabindex="-1"
         class="w-8 h-8 mx-auto text-sm text-gray-400 rounded-full hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
-      >6</button></span>
+      >6</button></span> -->
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+
+import { visibleDaysInMonthView } from '@variantjs/core';
+import {
+  defineComponent, inject, Ref, computed,
+} from 'vue';
+import { TDatepickerOptions } from '../../types/components/t-datepicker';
 import DatepickerViewMonthDay from './DatepickerViewMonthDay.vue';
 
 export default defineComponent({
@@ -273,6 +282,19 @@ export default defineComponent({
   components: {
     DatepickerViewMonthDay,
   },
+  setup() {
+    const activeDate = inject<Ref<Date>>('activeDate')!;
+    const configuration = inject<TDatepickerOptions>('configuration')!;
 
+    // @TODO: the month is dynamic
+    const activeMonth = new Date();
+
+    // @TODO add this as a prop
+    const weekStart = 0;
+
+    const days = computed<Date[]>(() => visibleDaysInMonthView(activeDate.value, weekStart));
+
+    return { days, configuration };
+  },
 });
 </script>
