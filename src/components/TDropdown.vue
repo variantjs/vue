@@ -102,6 +102,9 @@ export const validDropdownPlacements = [
 // @vue/component
 export default defineComponent({
   name: 'TDropdown',
+  compatConfig: {
+    MODE: 3,
+  },
   components: { Transitionable },
   inheritAttrs: false,
   props: {

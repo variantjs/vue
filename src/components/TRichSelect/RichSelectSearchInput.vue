@@ -24,6 +24,9 @@ import useInjectsConfiguration from '../../use/useInjectsConfiguration';
 
 export default defineComponent({
   name: 'RichSelectSearchInput',
+  compatConfig: {
+    MODE: 3,
+  },
   setup() {
     const search = ref<HTMLInputElement>();
 

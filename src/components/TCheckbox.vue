@@ -17,6 +17,9 @@ import useVModel from '../use/useVModel';
 // @vue/component
 export default defineComponent({
   name: 'TCheckbox',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     ...getVariantProps<TCheckboxOptions>(),
     modelValue: {

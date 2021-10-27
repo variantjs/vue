@@ -27,6 +27,9 @@ import { getVariantProps } from '../utils/getVariantProps';
 // @vue/component
 export default defineComponent({
   name: 'TSelect',
+  compatConfig: {
+    MODE: 3,
+  },
   components: {
     TSelectOption,
   },

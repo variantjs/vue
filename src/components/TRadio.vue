@@ -17,6 +17,9 @@ import { getVariantProps } from '../utils/getVariantProps';
 // @vue/component
 export default defineComponent({
   name: 'TRadio',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     ...getVariantProps<TRadioOptions>(),
     modelValue: {

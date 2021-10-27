@@ -17,6 +17,9 @@ import useInjectsClassesListClass from '../../use/useInjectsClassesListClass';
 
 export default defineComponent({
   name: 'RichSelectClearButton',
+  compatConfig: {
+    MODE: 3,
+  },
   components: {
     CloseIcon,
   },

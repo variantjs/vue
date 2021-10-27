@@ -31,6 +31,9 @@ import { getVariantProps } from '../utils/getVariantProps';
 
 export default defineComponent({
   name: 'TButton',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     ...getVariantProps<TButtonOptions>(),
     tagName: {

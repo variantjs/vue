@@ -20,6 +20,9 @@ import useConfiguration from '../use/useConfiguration';
 
 export default defineComponent({
   name: 'TTextarea',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     ...getVariantProps<TTextareaOptions>(),
     modelValue: {

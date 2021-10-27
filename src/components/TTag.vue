@@ -19,6 +19,9 @@ import { getVariantProps } from '../utils/getVariantProps';
 // @vue/component
 export default defineComponent({
   name: 'TTag',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     ...getVariantProps<TTagOptions>(),
     tagName: {
