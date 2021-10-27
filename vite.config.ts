@@ -9,6 +9,7 @@ export default defineConfig({
     minify: true,
     sourcemap: true,
     lib: {
+      formats: ['cjs', 'umd'],
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'VariantJS',
       fileName: (format) => `index.${format}.js`
