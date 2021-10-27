@@ -33,6 +33,9 @@ import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 // @vue/component
 export default defineComponent({
   name: 'TInputGroup',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     ...getVariantPropsWithClassesList<TInputGroupOptions, TInputGroupClassesValidKeys>(),
     label: {

@@ -52,6 +52,9 @@ import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 // @vue/component
 export default defineComponent({
   name: 'TCard',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     ...getVariantPropsWithClassesList<TCardOptions, TCardClassesValidKeys>(),
     tagName: {

@@ -277,6 +277,9 @@ import CloseIcon from '../icons/CloseIcon.vue';
 // @vue/component
 export default defineComponent({
   name: 'TDialog',
+  compatConfig: {
+    MODE: 3,
+  },
   components: {
     TModal,
     CloseIcon,

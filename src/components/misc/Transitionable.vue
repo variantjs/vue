@@ -18,6 +18,9 @@ import { defineComponent } from 'vue';
 // @vue/component
 export default defineComponent({
   name: 'Transitionable',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     classesList: {
       type: Object,

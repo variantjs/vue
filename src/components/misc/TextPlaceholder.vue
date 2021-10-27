@@ -13,6 +13,9 @@ import useInjectsClassesListClass from '../../use/useInjectsClassesListClass';
 
 export default defineComponent({
   name: 'TextPlaceholder',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     classProperty: {
       type: String,

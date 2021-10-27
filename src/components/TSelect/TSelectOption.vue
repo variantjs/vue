@@ -26,6 +26,9 @@ import { defineComponent, PropType } from 'vue';
 // @vue/component
 export default defineComponent({
   name: 'TSelectOption',
+  compatConfig: {
+    MODE: 3,
+  },
   props: {
     option: {
       type: [Object] as PropType<NormalizedOption>,

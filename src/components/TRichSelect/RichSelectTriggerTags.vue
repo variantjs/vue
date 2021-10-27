@@ -31,6 +31,9 @@ import useInjectsClassesListClass from '../../use/useInjectsClassesListClass';
 
 export default defineComponent({
   name: 'RichSelectTriggerTags',
+  compatConfig: {
+    MODE: 3,
+  },
   components: {
     RichSelectTriggerTagsTag,
   },

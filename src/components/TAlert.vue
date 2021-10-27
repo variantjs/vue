@@ -70,6 +70,9 @@ import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 // @vue/component
 export default defineComponent({
   name: 'TAlert',
+  compatConfig: {
+    MODE: 3,
+  },
   components: {
     CustomIcon,
     CloseIcon,

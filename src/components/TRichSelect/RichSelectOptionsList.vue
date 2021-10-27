@@ -53,6 +53,9 @@ import useInjectsClassesList from '../../use/useInjectsClassesList';
 
 export default defineComponent({
   name: 'RichSelectOptionsList',
+  compatConfig: {
+    MODE: 3,
+  },
   components: {
     RichSelectOption,
   },
