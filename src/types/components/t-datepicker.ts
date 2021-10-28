@@ -1,5 +1,5 @@
 import {
-  Data, TDatepickerClassesValidKeys, WithVariantPropsAndClassesList,
+  Data, DateConditions, TDatepickerClassesValidKeys, WithVariantPropsAndClassesList,
 } from '@variantjs/core';
 import { HTMLAttributes } from 'vue';
 import { Placement, Options } from '@popperjs/core';
@@ -13,4 +13,7 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   weekStart?: number,
   dropdownPlacement?: Placement,
   dropdownPopperOptions?: Options,
+  monthsPerView?: number,
+  range?: boolean,
+  highlightDates: DateConditions,
 } & HTMLAttributes & Data, TDatepickerClassesValidKeys>;

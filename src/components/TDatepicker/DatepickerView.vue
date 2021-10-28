@@ -1,7 +1,8 @@
 <template>
   <div class="w-64">
     <datepicker-view-controls />
-    <datepicker-view-month />
+
+    <datepicker-view-month :month="month" />
   </div>
 </template>
 
@@ -15,6 +16,12 @@ export default defineComponent({
   components: {
     DatepickerViewControls,
     DatepickerViewMonth,
+  },
+  props: {
+    month: {
+      type: Date,
+      required: true,
+    },
   },
 });
 </script>

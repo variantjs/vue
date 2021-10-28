@@ -136,6 +136,7 @@ import {
   TDatepickerClassesValidKeys,
   TDatepickerConfig,
   TDatepickerClassesKeys,
+  DateConditions,
 
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
@@ -165,6 +166,18 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    monthsPerView: {
+      type: Number,
+      default: 1,
+    },
+    range: {
+      type: Boolean,
+      default: false,
+    },
+    highlightDates: {
+      type: [Date, Array, Function, String, Number] as PropType<DateConditions>,
+      default: undefined,
+    },
     dropdownPlacement: {
       type: String as PropType<Placement>,
       default: undefined,
@@ -192,11 +205,18 @@ export default defineComponent({
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
     const activeDate = ref<Date>(new Date());
-    // const selectedDate = ref<TDatepickerValue>();
+    // @TODO: Value comes from the model
+    const selectedDate = ref<Date | Date[]>(new Date());
+    // The active date is usually hidden but shown when navigating with the keyboard
+    const showActiveDate = ref<boolean>(false);
 
     // const { localValue, clearValue } = useVModel(props, 'modelValue');
 
     provide('activeDate', activeDate);
+
+    provide('showActiveDate', showActiveDate);
+
+    provide('selectedDate', selectedDate);
 
     provide('configuration', configuration);
 

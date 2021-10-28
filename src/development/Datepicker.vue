@@ -6,6 +6,18 @@
     >
       <t-datepicker />
     </TInputGroup>
+    <!-- <TInputGroup
+      label="Range"
+      class="mb-4"
+    >
+      <t-datepicker
+        range
+        :model-value="[
+          new Date(2020, 11, 11),
+          new Date(2020, 11, 15),
+        ]"
+      />
+    </TInputGroup> -->
   </t-card>
 </template>
 

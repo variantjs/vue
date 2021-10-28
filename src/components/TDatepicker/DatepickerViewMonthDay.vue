@@ -13,7 +13,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, computed } from 'vue';
+import { dateIsPartOfTheRange, isSameDay } from '@variantjs/core';
+import {
+  defineComponent, inject, computed, Ref,
+} from 'vue';
 import { TDatepickerOptions } from '../../types/components/t-datepicker';
 
 export default defineComponent({
@@ -23,42 +26,101 @@ export default defineComponent({
       type: Date,
       required: true,
     },
+    month: {
+      type: Date,
+      required: true,
+    },
   },
-  setup() {
+  setup(props) {
     const configuration = inject<TDatepickerOptions>('configuration')!;
+    const showActiveDate = inject<Ref<boolean>>('showActiveDate')!;
+    const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
+    const activeDate = inject<Ref<Date>>('activeDate')!;
+
+    const isForAnotherMonth = computed(() => props.day.getFullYear() !== props.month.getFullYear()
+        || props.day.getMonth() !== props.month.getMonth());
+
+    const isFirstDayOfRange = computed<boolean>(() => {
+      if (!configuration.range! || !Array.isArray(selectedDate.value)) {
+        return false;
+      }
+      const [from] = selectedDate.value;
+      return from && isSameDay(from, props.day);
+    });
+
+    const isLastDayOfRange = computed<boolean>(() => {
+      if (!configuration.range! || !Array.isArray(selectedDate.value)) {
+        return false;
+      }
+      const [, to] = selectedDate.value;
+      return to && isSameDay(to, props.day);
+    });
+
+    const isInRange = computed<boolean>(() => {
+      if (!configuration.range! || !Array.isArray(selectedDate.value)) {
+        return false;
+      }
+      const [from, to] = selectedDate.value;
+      return from && to && dateIsPartOfTheRange(props.day, from, to);
+    });
+
+    const isSelected = computed<boolean>(() => {
+      if (Array.isArray(selectedDate.value)) {
+        return selectedDate.value.some((date) => isSameDay(date, props.day));
+      }
+
+      return isSameDay(selectedDate.value, props.day);
+    });
+    // const isHighlighted = computed<boolean>(() => {
+    //   if (Array.isArray(selectedDate.value)) {
+    //     return selectedDate.value.some((date) => isSameDay(date, props.day));
+    //   }
+
+    //   return isSameDay(selectedDate.value, props.day);
+    // });
+
+    // isHighlighted(): boolean {
+    //   const day = this.getDay();
+    //   const highlightDates: DateConditions = this.highlightDates as DateConditions;
+    //   const dateParser: DateParser = this.parse as DateParser;
+
+    //   return dayIsPartOfTheConditions(day, highlightDates, dateParser, this.dateFormat);
+    // },
+
+    const isActive = computed<boolean>(() => isSameDay(activeDate.value, props.day));
 
     const buttonClass = computed(() => {
-      if (this.isForAnotherMonth) {
+      if (isForAnotherMonth.value) {
         return configuration.classesList?.otherMonthDay;
       }
 
-      if (this.isFirstDayOfRange) {
+      if (isFirstDayOfRange.value) {
         return configuration.classesList?.inRangeFirstDay;
       }
 
-      if (this.isLastDayOfRange) {
+      if (isLastDayOfRange.value) {
         return configuration.classesList?.inRangeLastDay;
       }
 
-      if (this.isInRange) {
+      if (isInRange.value) {
         return configuration.classesList?.inRangeDay;
       }
 
-      if (this.isSelected) {
+      if (isSelected.value) {
         return configuration.classesList?.selectedDay;
       }
 
-      if (this.isActive && this.showActiveDate) {
+      if (isActive.value && showActiveDate.value) {
         return configuration.classesList?.activeDay;
       }
 
-      if (this.isHighlighted) {
-        return configuration.classesList?.highlightedDay;
-      }
+      // if (this.isHighlighted) {
+      //   return configuration.classesList?.highlightedDay;
+      // }
 
-      if (this.isToday) {
-        return configuration.classesList?.today;
-      }
+      // if (this.isToday) {
+      //   return configuration.classesList?.today;
+      // }
 
       return configuration.classesList?.day;
     });
