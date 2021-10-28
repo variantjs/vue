@@ -129,6 +129,7 @@ import {
   PropType,
   ref,
   provide,
+  computed,
 } from 'vue';
 
 import {
@@ -137,7 +138,12 @@ import {
   TDatepickerConfig,
   TDatepickerClassesKeys,
   DateConditions,
-
+  DateFormatter,
+  DateParser,
+  buildDateParser,
+  DateLocale,
+  buildDateFormatter,
+  dateEnglishLocale,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -183,6 +189,18 @@ export default defineComponent({
       default: undefined,
       validator: (value: string):boolean => validDropdownPlacements.includes(value),
     },
+    dateFormatter: {
+      type: Function as PropType<DateFormatter>,
+      default: undefined,
+    },
+    dateParser: {
+      type: Function as PropType<DateParser>,
+      default: undefined,
+    },
+    locale: {
+      type: Object as PropType<DateLocale>,
+      default: undefined,
+    },
     dropdownPopperOptions: {
       type: Object as PropType<Options>,
       default: (): Options => ({
@@ -204,6 +222,9 @@ export default defineComponent({
   setup() {
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
+    const dateParser = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
+    const dateFormatter = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
+
     const activeDate = ref<Date>(new Date());
     // @TODO: Value comes from the model
     const selectedDate = ref<Date | Date[]>(new Date());
@@ -219,6 +240,10 @@ export default defineComponent({
     provide('selectedDate', selectedDate);
 
     provide('configuration', configuration);
+
+    provide('dateParser', dateParser);
+
+    provide('dateFormatter', dateFormatter);
 
     return {
       configuration,
