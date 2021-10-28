@@ -13,7 +13,9 @@
 </template>
 
 <script lang="ts">
-import { dateIsPartOfTheRange, isSameDay } from '@variantjs/core';
+import {
+  dateIsPartOfTheRange, DateParser, dayIsPartOfTheConditions, isSameDay,
+} from '@variantjs/core';
 import {
   defineComponent, inject, computed, Ref,
 } from 'vue';
@@ -36,6 +38,7 @@ export default defineComponent({
     const showActiveDate = inject<Ref<boolean>>('showActiveDate')!;
     const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
     const activeDate = inject<Ref<Date>>('activeDate')!;
+    const dateParser = inject<Ref<DateParser>>('dateParser')!;
 
     const isForAnotherMonth = computed(() => props.day.getFullYear() !== props.month.getFullYear()
         || props.day.getMonth() !== props.month.getMonth());
@@ -71,21 +74,16 @@ export default defineComponent({
 
       return isSameDay(selectedDate.value, props.day);
     });
-    // const isHighlighted = computed<boolean>(() => {
-    //   if (Array.isArray(selectedDate.value)) {
-    //     return selectedDate.value.some((date) => isSameDay(date, props.day));
-    //   }
 
-    //   return isSameDay(selectedDate.value, props.day);
-    // });
+    const isHighlighted = computed<boolean>(() => {
+      if (configuration.highlightDates === undefined) {
+        return false;
+      }
 
-    // isHighlighted(): boolean {
-    //   const day = this.getDay();
-    //   const highlightDates: DateConditions = this.highlightDates as DateConditions;
-    //   const dateParser: DateParser = this.parse as DateParser;
+      return dayIsPartOfTheConditions(props.day, configuration.highlightDates, dateParser.value, configuration.dateFormat);
+    });
 
-    //   return dayIsPartOfTheConditions(day, highlightDates, dateParser, this.dateFormat);
-    // },
+    const isToday = computed<boolean>(() => isSameDay(props.day, new Date()));
 
     const isActive = computed<boolean>(() => isSameDay(activeDate.value, props.day));
 
@@ -114,13 +112,13 @@ export default defineComponent({
         return configuration.classesList?.activeDay;
       }
 
-      // if (this.isHighlighted) {
-      //   return configuration.classesList?.highlightedDay;
-      // }
+      if (isHighlighted.value) {
+        return configuration.classesList?.highlightedDay;
+      }
 
-      // if (this.isToday) {
-      //   return configuration.classesList?.today;
-      // }
+      if (isToday.value) {
+        return configuration.classesList?.today;
+      }
 
       return configuration.classesList?.day;
     });

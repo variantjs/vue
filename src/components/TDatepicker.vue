@@ -168,6 +168,14 @@ export default defineComponent({
       type: [Date, String, Number, Array] as PropType<TDatepickerValue>,
       default: undefined,
     },
+    dateFormat: {
+      type: String,
+      default: 'Y-m-d',
+    },
+    userFormat: {
+      type: String,
+      default: 'F j, Y',
+    },
     weekStart: {
       type: Number,
       default: 0,

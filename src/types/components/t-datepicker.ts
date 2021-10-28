@@ -10,6 +10,8 @@ export type TDatepickerValue = TDatepickerSingleValue | Array<TDatepickerSingleV
 
 export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   modelValue?: TDatepickerValue,
+  dateFormat?: string,
+  userFormat?: string,
   weekStart?: number,
   dropdownPlacement?: Placement,
   dropdownPopperOptions?: Options,
