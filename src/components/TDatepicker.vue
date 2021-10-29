@@ -144,6 +144,7 @@ import {
   DateLocale,
   buildDateFormatter,
   dateEnglishLocale,
+  DateValue,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -154,6 +155,7 @@ import {
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
 import { sameWidthModifier } from '../utils/popper';
+import { TDatepickerSingleValue } from '../types/components/t-datepicker';
 
 // @vue/component
 export default defineComponent({
@@ -168,6 +170,14 @@ export default defineComponent({
       type: [Date, String, Number, Array] as PropType<TDatepickerValue>,
       default: undefined,
     },
+    initialDate: {
+      type: [Date, String, Number, Array] as PropType<TDatepickerValue>,
+      default: undefined,
+    },
+    initialTime: {
+      type: [Date, String, Number, Array] as PropType<TDatepickerSingleValue>,
+      default: undefined,
+    },
     dateFormat: {
       type: String,
       default: 'Y-m-d',
@@ -179,6 +189,10 @@ export default defineComponent({
     weekStart: {
       type: Number,
       default: 0,
+    },
+    amPm: {
+      type: Boolean,
+      default: false,
     },
     monthsPerView: {
       type: Number,
@@ -239,27 +253,50 @@ export default defineComponent({
     const formatDate = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
 
     const getInitialSelectedDate = (): Date | Date[] | undefined => {
-      let initialDate: Date | undefined | Date[] = configuration.multiple || configuration.range ? [] : undefined;
+      let selectedDate: Date | undefined | Date[] = configuration.multiple || configuration.range ? [] : undefined;
 
       if (Array.isArray(props.modelValue)) {
-        initialDate = (props.modelValue)
+        selectedDate = (props.modelValue)
           .map((value) => parseDate.value(value, configuration.dateFormat))
           .filter((value) => value !== undefined) as Date[];
       } else {
-        initialDate = parseDate.value(props.modelValue, configuration.dateFormat) || initialDate;
+        selectedDate = parseDate.value(props.modelValue, configuration.dateFormat) || selectedDate;
       }
 
-      return initialDate;
+      return selectedDate;
     };
 
-    // @TODO: Value comes from the model
+    const getInitialActiveDate = (selectedDate: Date | Date[] | undefined): Date => {
+      let activeDate: Date = new Date();
+      if (Array.isArray(selectedDate)) {
+        if (selectedDate.length > 0) {
+          activeDate = selectedDate[selectedDate.length - 1];
+        }
+      } else if (selectedDate instanceof Date) {
+        activeDate = selectedDate;
+      } else {
+        activeDate = parseDate.value(selectedDate, configuration.dateFormat) || new Date();
+      }
+
+      if (configuration.initialTime) {
+        const parsedDateWithTime = parseDate.value(configuration.initialTime, configuration.amPm ? 'G:i:S K' : 'H:i:S');
+
+        if (parsedDateWithTime) {
+          activeDate.setHours(parsedDateWithTime.getHours());
+          activeDate.setMinutes(parsedDateWithTime.getMinutes());
+          activeDate.setSeconds(parsedDateWithTime.getSeconds());
+        }
+      }
+
+      return activeDate;
+    };
+
     const selectedDate = ref<Date | Date[] | undefined>(getInitialSelectedDate());
 
-    const activeDate = ref<Date>(new Date());
+    const activeDate = ref<Date>(getInitialActiveDate(selectedDate.value));
+
     // The active date is usually hidden but shown when navigating with the keyboard
     const showActiveDate = ref<boolean>(false);
-
-    // const { localValue, clearValue } = useVModel(props, 'modelValue');
 
     provide('activeDate', activeDate);
 
