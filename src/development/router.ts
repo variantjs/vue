@@ -11,6 +11,7 @@ import Modal from './Modal.vue';
 import Dialog from './Dialog.vue';
 import Checkbox from './Check.vue';
 import Theme from './Theme.vue';
+import RichSelect from './RichSelect.vue';
 import Attributes from './Attributes.vue';
 
 const routes = [
@@ -25,6 +26,7 @@ const routes = [
   { path: '/theme', component: Theme },
   { path: '/attributes', component: Attributes },
   { path: '/checkbox', component: Checkbox },
+  { path: '/rich-select', component: RichSelect },
 ];
 
 const router = createRouter({

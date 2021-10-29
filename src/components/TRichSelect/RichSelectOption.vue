@@ -169,6 +169,7 @@ export default defineComponent({
     },
   },
   beforeCreate() {
+    /* istanbul ignore next */
     this.$options.components!.RichSelectOptionsList = defineAsyncComponent(() => import('./RichSelectOptionsList.vue'));
   },
   methods: {

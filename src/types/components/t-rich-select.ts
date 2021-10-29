@@ -29,6 +29,7 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   closeOnSelect?: boolean,
   selectOnClose?: boolean,
   clearable?: boolean,
+  disabled?: boolean,
   placeholder?: string,
   searchBoxPlaceholder?: string,
   noResultsText?: string,
