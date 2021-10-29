@@ -15,6 +15,7 @@
 
     <t-dropdown
       ref="dropdownComponent"
+      :disabled="configuration.disabled"
       :classes="dropdownClasses"
       :fixed-classes="undefined"
       :toggle-on-focus="false"
@@ -205,11 +206,15 @@ export default defineComponent({
       default: true,
     },
     multiple: {
-      type: Boolean as PropType<boolean>,
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
       default: false,
     },
     tags: {
-      type: Boolean as PropType<boolean>,
+      type: Boolean,
       default: false,
     },
     placeholder: {
@@ -640,7 +645,8 @@ export default defineComponent({
     },
     showClearButton(): boolean {
       return this.hasSelectedOption
-        && this.configuration.clearable === true;
+        && this.configuration.clearable === true
+        && this.configuration.disabled !== true;
     },
   },
   watch: {
