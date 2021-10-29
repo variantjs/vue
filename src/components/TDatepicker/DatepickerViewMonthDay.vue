@@ -75,7 +75,12 @@ export default defineComponent({
       return isSameDay(selectedDate.value, props.day);
     });
 
-    const isHighlighted = computed<boolean>(() => dayIsPartOfTheConditions(props.day, configuration.highlightDates, parseDate.value, configuration.dateFormat));
+    const isHighlighted = computed<boolean>(() => dayIsPartOfTheConditions(
+      props.day,
+      configuration.highlightDates,
+      parseDate.value,
+      configuration.dateFormat,
+    ));
 
     const isToday = computed<boolean>(() => isSameDay(props.day, new Date()));
 
