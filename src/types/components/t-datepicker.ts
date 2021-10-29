@@ -1,10 +1,10 @@
 import {
-  Data, DateConditions, DateFormatter, DateLocale, DateParser, TDatepickerClassesValidKeys, WithVariantPropsAndClassesList,
+  Data, DateConditions, DateFormatter, DateLocale, DateParser, DateValue, TDatepickerClassesValidKeys, WithVariantPropsAndClassesList,
 } from '@variantjs/core';
 import { HTMLAttributes } from 'vue';
 import { Placement, Options } from '@popperjs/core';
 
-type TDatepickerSingleValue = Date | string | number | undefined;
+type TDatepickerSingleValue = DateValue | undefined | null;
 
 export type TDatepickerValue = TDatepickerSingleValue | Array<TDatepickerSingleValue>;
 
@@ -16,6 +16,7 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   dropdownPlacement?: Placement,
   dropdownPopperOptions?: Options,
   monthsPerView?: number,
+  multiple?: boolean,
   range?: boolean,
   highlightDates?: DateConditions,
   dateParser?: DateParser,

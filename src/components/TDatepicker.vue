@@ -184,6 +184,10 @@ export default defineComponent({
       type: Number,
       default: 1,
     },
+    multiple: {
+      type: Boolean,
+      default: false,
+    },
     range: {
       type: Boolean,
       default: false,
@@ -227,15 +231,31 @@ export default defineComponent({
     },
 
   },
-  setup() {
+  setup(props) {
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
-    const dateParser = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
-    const dateFormatter = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
+    const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
+
+    const formatDate = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
+
+    const getInitialSelectedDate = (): Date | Date[] | undefined => {
+      let initialDate: Date | undefined | Date[] = configuration.multiple || configuration.range ? [] : undefined;
+
+      if (Array.isArray(props.modelValue)) {
+        initialDate = (props.modelValue)
+          .map((value) => parseDate.value(value, configuration.dateFormat))
+          .filter((value) => value !== undefined) as Date[];
+      } else {
+        initialDate = parseDate.value(props.modelValue, configuration.dateFormat) || initialDate;
+      }
+
+      return initialDate;
+    };
+
+    // @TODO: Value comes from the model
+    const selectedDate = ref<Date | Date[] | undefined>(getInitialSelectedDate());
 
     const activeDate = ref<Date>(new Date());
-    // @TODO: Value comes from the model
-    const selectedDate = ref<Date | Date[]>(new Date());
     // The active date is usually hidden but shown when navigating with the keyboard
     const showActiveDate = ref<boolean>(false);
 
@@ -249,9 +269,9 @@ export default defineComponent({
 
     provide('configuration', configuration);
 
-    provide('dateParser', dateParser);
+    provide('parseDate', parseDate);
 
-    provide('dateFormatter', dateFormatter);
+    provide('formatDate', formatDate);
 
     return {
       configuration,

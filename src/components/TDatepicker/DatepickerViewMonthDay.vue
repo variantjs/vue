@@ -38,7 +38,7 @@ export default defineComponent({
     const showActiveDate = inject<Ref<boolean>>('showActiveDate')!;
     const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
     const activeDate = inject<Ref<Date>>('activeDate')!;
-    const dateParser = inject<Ref<DateParser>>('dateParser')!;
+    const parseDate = inject<Ref<DateParser>>('parseDate')!;
 
     const isForAnotherMonth = computed(() => props.day.getFullYear() !== props.month.getFullYear()
         || props.day.getMonth() !== props.month.getMonth());
@@ -75,13 +75,7 @@ export default defineComponent({
       return isSameDay(selectedDate.value, props.day);
     });
 
-    const isHighlighted = computed<boolean>(() => {
-      if (configuration.highlightDates === undefined) {
-        return false;
-      }
-
-      return dayIsPartOfTheConditions(props.day, configuration.highlightDates, dateParser.value, configuration.dateFormat);
-    });
+    const isHighlighted = computed<boolean>(() => dayIsPartOfTheConditions(props.day, configuration.highlightDates, parseDate.value, configuration.dateFormat));
 
     const isToday = computed<boolean>(() => isSameDay(props.day, new Date()));
 
