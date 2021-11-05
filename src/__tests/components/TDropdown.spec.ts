@@ -871,7 +871,13 @@ describe('TDropdown.vue', () => {
   });
 
   it('emits `update:show` when show property is updated', async () => {
-    const wrapper = mount(TDropdown);
+    const wrapper = mount(TDropdown, {
+      global: {
+        stubs: {
+          transition: false,
+        },
+      },
+    });
 
     wrapper.vm.doShow();
 
@@ -887,7 +893,9 @@ describe('TDropdown.vue', () => {
 
     wrapper.vm.doHide();
 
-    await wrapper.vm.$nextTick();
+    await new Promise((resolve) => {
+      setTimeout(resolve, 50);
+    });
 
     // assert event has been emitted
     expect(wrapper.emitted()['update:show']).toBeTruthy();
