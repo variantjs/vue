@@ -22,6 +22,9 @@ import TTag from './components/TTag.vue';
 import TToggle from './components/TToggle.vue';
 import TModal from './components/TModal.vue';
 
+// Import icons
+import LoadingIcon from './icons/LoadingIcon.vue';
+
 // Import uses
 import useActivableOption from './use/useActivableOption';
 import useConfiguration from './use/useConfiguration';
@@ -65,7 +68,12 @@ export {
   plugin as variantJS,
 };
 
-// // Export utils
+// Export icons
+export {
+  LoadingIcon,
+};
+
+// Export utils
 export {
   Emitter,
   getVariantProps,
