@@ -8,6 +8,14 @@
         placeholder="Disabled"
         disabled
       />
+
+      <p>Clear search on close</p>
+      <t-rich-select
+        v-model="selected"
+        :options="options"
+        :hide-search-box="false"
+        :clear-search-on-close="true"
+      />
     </div>
   </t-card>
 </template>

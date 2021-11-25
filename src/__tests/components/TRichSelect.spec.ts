@@ -1827,4 +1827,30 @@ describe('TRichSelect.vue', () => {
       expect(wrapper.vm.showSearchInput).toBe(true);
     });
   });
+
+  describe('clear search query', () => {
+    it('doesnt clears the search when the dropdown closes by default', async () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      wrapper.vm.searchQuery = 'search query';
+
+      wrapper.vm.hiddenHandler();
+
+      expect(wrapper.vm.searchQuery).toBe('search query');
+    });
+
+    it('clears the search when the dropdown closes and when `clearSearchOnClose` option is set', async () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          clearSearchOnClose: true,
+        },
+      });
+
+      wrapper.vm.searchQuery = 'search query';
+
+      wrapper.vm.hiddenHandler();
+
+      expect(wrapper.vm.searchQuery).toBeUndefined();
+    });
+  });
 });
