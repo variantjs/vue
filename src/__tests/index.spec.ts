@@ -18,6 +18,7 @@ describe('main file', () => {
       'TModal',
       'TToggle',
       'variantJS',
+      'LoadingIcon',
       'Emitter',
       'getVariantProps',
       'getVariantPropsWithClassesList',
