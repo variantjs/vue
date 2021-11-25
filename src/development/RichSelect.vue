@@ -31,7 +31,7 @@
       class="mb-4"
     >
       <t-rich-select
-        v-model="preselectedOption"
+        v-model="preselectedOption2"
         :options="dynamicSet"
         :fetch-options="fetchOptions"
         :minimum-input-length="3"
@@ -80,6 +80,7 @@ export default defineComponent({
       ],
       dynamicSet: [] as Record<string, unknown>[],
       preselectedOption: 'tt0133093',
+      preselectedOption2: 'tt0133093',
       selected: 'A' as string | null,
       newOption: '',
       selectedUser: null,

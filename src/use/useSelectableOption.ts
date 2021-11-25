@@ -29,16 +29,33 @@ export default function useSelectableOption(
     return isEqual(localValue.value, option.value);
   };
 
-  const getSelectedOption = (): SelectedOption => {
-    if (multiple.value === true) {
-      if (!Array.isArray(localValue.value)) {
-        return [];
-      }
+  const getSelectedOption = (currentSelectedOption?: SelectedOption): SelectedOption => {
+    let allOptions: NormalizedOption[] = options.value;
 
-      return options.value.filter((option) => optionIsSelected(option));
+    // If the option is part of the current selected option is desired to use
+    // those option since its possible that the options is not in the list
+    // For example: an option that was selected from an ajax list but was removed
+    if (Array.isArray(currentSelectedOption)) {
+      allOptions = allOptions
+        // Remove the options that are also on the current selected option list
+        .filter((option) => currentSelectedOption.some((selectedOption) => isEqual(selectedOption.value, option.value)))
+        // Concat the current selected option list
+        .concat(currentSelectedOption);
+    } else if (currentSelectedOption !== undefined) {
+      allOptions = allOptions
+        .filter((option) => isEqual(currentSelectedOption.value, option.value))
+        .concat([currentSelectedOption]);
     }
 
-    return options.value.find((option) => optionIsSelected(option));
+    if (multiple.value === true) {
+      if (Array.isArray(localValue.value)) {
+        return allOptions.filter((option) => optionIsSelected(option));
+      }
+
+      return [];
+    }
+
+    return allOptions.find((option) => optionIsSelected(option));
   };
 
   const selectedOption = ref<SelectedOption>(getSelectedOption());
@@ -80,24 +97,8 @@ export default function useSelectableOption(
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  watch(localValue, (newValue: any) => {
-    if (multiple.value === true) {
-      if (!Array.isArray(newValue)) {
-        selectedOption.value = [];
-      } else {
-        selectedOption.value = newValue.map((value) => {
-          if (Array.isArray(selectedOption.value)) {
-            return selectedOption.value.find((option) => isEqual(option.value, value))
-              || options.value.find((option) => isEqual(value, option.value));
-          }
-
-          return options.value.find((option) => isEqual(value, option.value));
-        }).filter((option: NormalizedOption | undefined) => option !== undefined) as NormalizedOption[];
-      }
-    } else if (!isEqual(selectedOption.value, newValue)) {
-      selectedOption.value = options.value.find((option) => isEqual(newValue, option.value));
-    }
+  watch([options, localValue], () => {
+    selectedOption.value = getSelectedOption(selectedOption.value);
   });
 
   const hasSelectedOption = computed((): boolean => {
