@@ -282,6 +282,10 @@ export default defineComponent({
       }
     },
     onHidden(): void {
+      this.$emit('hidden');
+
+      this.$emit('update:show', false);
+
       if (this.isTouchOnlyDevice) {
         window.removeEventListener('touchstart', this.touchstartHandler);
       } else {
@@ -311,10 +315,6 @@ export default defineComponent({
       this.focusableElements = [];
     },
     dropdownAfterLeave(): void {
-      this.$emit('hidden');
-
-      this.$emit('update:show', false);
-
       this.getDropdownElement().style.removeProperty('visibility');
     },
     async adjustPopper(): Promise<void> {
