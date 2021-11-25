@@ -1826,38 +1826,31 @@ describe('TRichSelect.vue', () => {
 
       expect(wrapper.vm.showSearchInput).toBe(true);
     });
+  });
+
+  describe('clear search query', () => {
+    it('doesnt clears the search when the dropdown closes by default', async () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      wrapper.vm.searchQuery = 'search query';
+
+      wrapper.vm.hiddenHandler();
+
+      expect(wrapper.vm.searchQuery).toBe('search query');
+    });
 
     it('clears the search when the dropdown closes and when `clearSearchOnClose` option is set', async () => {
-      const options = [1, 2];
       const wrapper = shallowMount(TRichSelect, {
         props: {
-          options,
-          modelValue: 1,
-          closeOnSelect: true,
-          hideSearchBox: false,
           clearSearchOnClose: true,
         },
-        global: {
-          stubs: {
-            TDropdown: TDropdownComponentMock,
-          },
-        },
       });
 
-      wrapper.vm.shown = true;
+      wrapper.vm.searchQuery = 'search query';
 
-      wrapper.vm.searchQuery = 'test';
+      wrapper.vm.hiddenHandler();
 
-      await wrapper.vm.$nextTick();
-
-      await wrapper.setProps({
-        modelValue: 2,
-      });
-
-      expect(dropdownDoHideMock).toHaveBeenCalled();
-
-      expect(wrapper.vm.searchQuery.value).toBe(undefined);
-      expect(1).toBe(2);
+      expect(wrapper.vm.searchQuery).toBeUndefined();
     });
   });
 });
