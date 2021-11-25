@@ -21,6 +21,7 @@ import TRichSelect from './components/TRichSelect.vue';
 import TTag from './components/TTag.vue';
 import TToggle from './components/TToggle.vue';
 import TModal from './components/TModal.vue';
+import TDialog from './components/TDialog.vue';
 
 // Import icons
 import LoadingIcon from './icons/LoadingIcon.vue';
@@ -62,6 +63,7 @@ export {
   TDropdown,
   TAlert,
   TModal,
+  TDialog,
   TToggle,
 
   // Installer

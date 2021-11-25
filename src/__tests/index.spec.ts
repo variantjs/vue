@@ -1,7 +1,7 @@
 import * as library from '../index';
 
 describe('main file', () => {
-  it('provides all the data needed', () => {
+  it('provides all the needed data', () => {
     expect(Object.keys(library)).toEqual([
       'TInput',
       'TButton',
@@ -16,6 +16,7 @@ describe('main file', () => {
       'TDropdown',
       'TAlert',
       'TModal',
+      'TDialog',
       'TToggle',
       'variantJS',
       'LoadingIcon',
