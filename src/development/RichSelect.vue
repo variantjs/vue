@@ -39,6 +39,18 @@
         text-attribute="Title"
       />
     </t-input-group>
+
+    <t-input-group
+      label="Clear search on close"
+      class="mb-4"
+    >
+      <t-rich-select
+        v-model="selected"
+        :options="options"
+        :hide-search-box="false"
+        :clear-search-on-close="true"
+      />
+    </t-input-group>
   </t-card>
 </template>
 
