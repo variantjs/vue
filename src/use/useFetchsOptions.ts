@@ -17,7 +17,7 @@ export default function useFetchsOptions(
   normalize: Ref<boolean>,
   searchQuery: Ref<string | undefined>,
   fetchFn: Ref<FetchOptionsFn | undefined>,
-  prefetchFn: ComputedRef<boolean | PreFetchOptionsFn>,
+  prefetchFn: Ref<boolean | PreFetchOptionsFn>,
   fetchDelay: Ref<number | undefined>,
   fetchMinimumInputLength: Ref<number | undefined>,
   fetchMinimumInputLengthText: Ref<MinimumInputLengthTextProp>,
