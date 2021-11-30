@@ -1,28 +1,63 @@
 <template>
   <t-card header="RichSelect">
-    <div class="grid grid-cols-1 gap-6">
-      <p>Disabled rich select</p>
+    <t-input-group
+      label="Disabled rich select"
+      class="mb-4"
+    >
       <t-rich-select
         v-model="selected"
         :options="options"
         placeholder="Disabled"
         disabled
       />
+    </t-input-group>
 
-      <p>Clear search on close</p>
+    <t-input-group
+      label="Preselect option with an inital set"
+      class="mb-4"
+    >
+      <t-rich-select
+        v-model="preselectedOption"
+        :options="initialSet"
+        :fetch-options="fetchOptions"
+        :minimum-input-length="3"
+        value-attribute="imdbID"
+        text-attribute="Title"
+      />
+    </t-input-group>
+
+    <t-input-group
+      label="Select the option if the options change dinamically"
+      class="mb-4"
+    >
+      <t-rich-select
+        v-model="preselectedOption2"
+        :options="dynamicSet"
+        :fetch-options="fetchOptions"
+        :minimum-input-length="3"
+        value-attribute="imdbID"
+        text-attribute="Title"
+      />
+    </t-input-group>
+
+    <t-input-group
+      label="Clear search on close"
+      class="mb-4"
+    >
       <t-rich-select
         v-model="selected"
         :options="options"
         :hide-search-box="false"
         :clear-search-on-close="true"
       />
-    </div>
+    </t-input-group>
   </t-card>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import TRichSelect from '../components/TRichSelect.vue';
+import TInputGroup from '../components/TInputGroup.vue';
 import TCard from '../components/TCard.vue';
 
 const fetchOptions = (query?: string, nextPage?: number) => {
@@ -41,10 +76,23 @@ export default defineComponent({
   components: {
     TCard,
     TRichSelect,
+    TInputGroup,
   },
   data() {
     return {
       fetchOptions,
+      initialSet: [
+        {
+          Title: 'The Matrix',
+          Year: '1999',
+          imdbID: 'tt0133093',
+          Type: 'movie',
+          Poster: 'https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg',
+        },
+      ],
+      dynamicSet: [] as Record<string, unknown>[],
+      preselectedOption: 'tt0133093',
+      preselectedOption2: 'tt0133093',
       selected: 'A' as string | null,
       newOption: '',
       selectedUser: null,
@@ -74,6 +122,20 @@ export default defineComponent({
       ],
       // options: ['Blue', 'Red', 'Yellow', 'Green'],
     };
+  },
+
+  mounted() {
+    setTimeout(() => {
+      this.dynamicSet = [
+        {
+          Title: 'The Matrix',
+          Year: '1999',
+          imdbID: 'tt0133093',
+          Type: 'movie',
+          Poster: 'https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg',
+        },
+      ];
+    }, 2000);
   },
 });
 </script>

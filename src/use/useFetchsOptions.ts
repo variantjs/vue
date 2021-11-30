@@ -38,13 +38,15 @@ export default function useFetchsOptions(
 
   const fetchedOptions = ref<NormalizedOptions>(getNormalizedOptions(options.value || []));
 
+  watch(options, () => {
+    fetchedOptions.value = getNormalizedOptions(options.value || []);
+  });
+
   const optionsWereFetched = ref<boolean>(false);
 
   const normalizedOptions = computed<NormalizedOptions>(() => {
     if (typeof fetchFn.value !== 'function') {
-      const normalized = normalize.value
-        ? normalizeOptions(options.value, textAttribute.value, valueAttribute.value)
-        : options.value as NormalizedOptions;
+      const normalized = getNormalizedOptions(options.value || []);
 
       if (searchQuery.value) {
         return filterOptions(normalized, searchQuery.value);
