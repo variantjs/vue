@@ -1628,6 +1628,16 @@ describe('TRichSelect.vue', () => {
       expect(prefetchOptionsSpy).toHaveBeenCalled();
     });
 
+    it('fetch the options when prefetchOptions option is set as a function', () => {
+      shallowMount(TRichSelect, {
+        props: {
+          prefetchOptions: () => Promise.resolve([]),
+        } as any,
+      });
+
+      expect(prefetchOptionsSpy).toHaveBeenCalled();
+    });
+
     it('doesnt prefetchs the options when prefetchOptions option is set if no fetch function', () => {
       shallowMount(TRichSelect, {
         props: {
