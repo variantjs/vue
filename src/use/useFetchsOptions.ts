@@ -4,19 +4,25 @@ import {
 import {
   computed, Ref, ref, ComputedRef, getCurrentInstance, watch,
 } from 'vue';
-import { FetchedOptions, FetchOptionsFn, MinimumInputLengthTextProp } from '../types';
+import {
+  FetchedOptions, FetchOptionsFn, MinimumInputLengthTextProp, PreFetchOptionsFn,
+} from '../types';
 
 export default function useFetchsOptions(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  localValue: Ref<any>,
   options: Ref<InputOptions | undefined>,
   textAttribute: Ref<string | undefined>,
   valueAttribute: Ref<string | undefined>,
   normalize: Ref<boolean>,
   searchQuery: Ref<string | undefined>,
   fetchFn: Ref<FetchOptionsFn | undefined>,
+  prefetchFn: ComputedRef<boolean | PreFetchOptionsFn>,
   fetchDelay: Ref<number | undefined>,
   fetchMinimumInputLength: Ref<number | undefined>,
   fetchMinimumInputLengthText: Ref<MinimumInputLengthTextProp>,
 ): {
+
     normalizedOptions: ComputedRef<NormalizedOptions>
     flattenedOptions: ComputedRef<NormalizedOption[]>
     fetchsOptions: ComputedRef<boolean>,
@@ -27,6 +33,7 @@ export default function useFetchsOptions(
     fetchedOptionsHaveMorePages: Ref<boolean>,
     optionsWereFetched: Ref<boolean>,
     fetchOptions: () => void,
+    prefetchOptions: () => void,
     fetchMoreOptions: () => void,
     fetchOptionsCancel: () => void,
   } {
@@ -167,6 +174,33 @@ export default function useFetchsOptions(
     return fetchMinimumInputLengthText.value(fetchMinimumInputLength.value!, searchQuery.value);
   });
 
+  const prefetchOptions = (): void => {
+    if (typeof prefetchFn.value !== 'function') {
+      fetchOptions();
+      return;
+    }
+
+    fetchingOptions.value = true;
+
+    prefetchFn.value!(localValue.value)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .then((results: InputOptions | any) => {
+        if (!Array.isArray(results) && results !== undefined && typeof results !== 'object') {
+          throw new Error(`Response must be an array or object, got ${typeof results}`);
+        }
+
+        fetchedOptions.value = getNormalizedOptions(results);
+
+        optionsWereFetched.value = true;
+
+        emit('fetch-options-success', results);
+      }).catch((error) => {
+        emit('fetch-options-error', error);
+      }).then(() => {
+        fetchingOptions.value = false;
+      });
+  };
+
   return {
     normalizedOptions,
     flattenedOptions,
@@ -178,6 +212,7 @@ export default function useFetchsOptions(
     fetchedOptionsHaveMorePages,
     optionsWereFetched,
     fetchOptions,
+    prefetchOptions,
     fetchMoreOptions,
     fetchOptionsCancel,
   };

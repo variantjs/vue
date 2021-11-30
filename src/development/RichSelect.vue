@@ -41,6 +41,20 @@
     </t-input-group>
 
     <t-input-group
+      label="Prefetch options"
+      class="mb-4"
+    >
+      <t-rich-select
+        v-model="preselectedOption3"
+        :fetch-options="fetchOptions"
+        :minimum-input-length="3"
+        value-attribute="imdbID"
+        text-attribute="Title"
+        :prefetch-options="prefetchOptions"
+      />
+    </t-input-group>
+
+    <t-input-group
       label="Clear search on close"
       class="mb-4"
     >
@@ -59,6 +73,7 @@ import { defineComponent } from 'vue';
 import TRichSelect from '../components/TRichSelect.vue';
 import TInputGroup from '../components/TInputGroup.vue';
 import TCard from '../components/TCard.vue';
+import { PreFetchOptionsFn } from '../types';
 
 const fetchOptions = (query?: string, nextPage?: number) => {
   const url = `https://www.omdbapi.com/?apikey=e1b3617e&s=${query}&page=${nextPage || 1}`;
@@ -71,6 +86,14 @@ const fetchOptions = (query?: string, nextPage?: number) => {
     }));
 };
 
+const prefetchOptions: PreFetchOptionsFn = (currentValue: any) => {
+  const url = `https://www.omdbapi.com/?apikey=e1b3617e&i=${currentValue}`;
+
+  return fetch(url)
+    .then((response) => response.json())
+    .then((data) => [data]);
+};
+
 export default defineComponent({
   name: 'RichSelect',
   components: {
@@ -81,6 +104,7 @@ export default defineComponent({
   data() {
     return {
       fetchOptions,
+      prefetchOptions,
       initialSet: [
         {
           Title: 'The Matrix',
@@ -93,6 +117,7 @@ export default defineComponent({
       dynamicSet: [] as Record<string, unknown>[],
       preselectedOption: 'tt0133093',
       preselectedOption2: 'tt0133093',
+      preselectedOption3: 'tt0133093',
       selected: 'A' as string | null,
       newOption: '',
       selectedUser: null,

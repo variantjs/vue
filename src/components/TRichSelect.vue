@@ -160,6 +160,7 @@ import useSelectableOption from '../use/useSelectableOption';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import {
   FetchOptionsFn,
+  PreFetchOptionsFn,
   MinimumInputLengthTextProp,
   TRichSelectOptions,
   TSelectValue,
@@ -316,7 +317,7 @@ export default defineComponent({
       default: undefined,
     },
     prefetchOptions: {
-      type: Boolean,
+      type: [Function, Boolean] as PropType<PreFetchOptionsFn | boolean>,
       default: false,
     },
     delay: {
@@ -376,17 +377,20 @@ export default defineComponent({
       fetchingOptions,
       fetchingMoreOptions,
       fetchOptions: doFetchOptions,
+      prefetchOptions: doPrefetchOptions,
       fetchMoreOptions,
       optionsWereFetched,
       fetchedOptionsHaveMorePages,
       fetchOptionsCancel,
     } = useFetchsOptions(
+      localValue,
       computed(() => configuration.options as InputOptions | undefined),
       computed(() => configuration.textAttribute),
       computed(() => configuration.valueAttribute),
       computed(() => configuration.normalizeOptions!),
       searchQuery,
       computed(() => configuration.fetchOptions),
+      computed(() => configuration.prefetchOptions!),
       computed(() => configuration.delay),
       computed(() => configuration.minimumInputLength),
       computed(() => configuration.minimumInputLengthText!),
@@ -636,6 +640,7 @@ export default defineComponent({
       selectOptionFromActiveOption,
       clearValue,
       doFetchOptions,
+      doPrefetchOptions,
       adjustDropdown,
       fetchOptionsCancel,
       fetchsOptions,
@@ -654,6 +659,13 @@ export default defineComponent({
         && !this.optionsWereFetched
         && !this.needsMoreCharsToFetch
       );
+    },
+    canPreFetchOptions(): boolean {
+      if (typeof this.configuration.prefetchOptions === 'function') {
+        return !this.optionsWereFetched;
+      }
+
+      return this.canFetchOptions;
     },
     dropdownClasses(): CSSRawClassesList {
       const {
@@ -692,8 +704,8 @@ export default defineComponent({
     },
   },
   created() {
-    if (this.configuration.prefetchOptions && this.canFetchOptions) {
-      this.doFetchOptions();
+    if (this.configuration.prefetchOptions && this.canPreFetchOptions) {
+      this.doPrefetchOptions();
     }
   },
   beforeUnmount() {

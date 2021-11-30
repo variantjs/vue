@@ -13,8 +13,11 @@ type FetchedOptions = Promise<{
 type FetchOptionsFn = (query?: string, nextPage?: number) => FetchedOptions;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+type PreFetchOptionsFn = (currentValue?: any) => Promise<InputOptions>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PromiseRejectFn = ((reason?: any) => void);
 
 export {
-  Truthy, IconProp, FetchOptionsFn, FetchedOptions, PromiseRejectFn,
+  Truthy, IconProp, FetchOptionsFn, FetchedOptions, PromiseRejectFn, PreFetchOptionsFn,
 };
