@@ -38,12 +38,14 @@ export default function useSelectableOption(
     if (Array.isArray(currentSelectedOption)) {
       allOptions = allOptions
         // Remove the options that are also on the current selected option list
-        .filter((option) => currentSelectedOption.some((selectedOption) => isEqual(selectedOption.value, option.value)))
+        .filter((option) => !currentSelectedOption.some((selectedOption) => isEqual(selectedOption.value, option.value)))
         // Concat the current selected option list
         .concat(currentSelectedOption);
     } else if (currentSelectedOption !== undefined) {
       allOptions = allOptions
-        .filter((option) => isEqual(currentSelectedOption.value, option.value))
+        // Remove the selected option if already exists in the list so it
+        // can be replaced with the selected option
+        .filter((option) => !isEqual(currentSelectedOption.value, option.value))
         .concat([currentSelectedOption]);
     }
 
