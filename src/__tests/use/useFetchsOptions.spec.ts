@@ -5,7 +5,7 @@ import useFetchsOptions from '../../use/useFetchsOptions';
 import { useSetup } from './useSetup';
 
 describe('useFetchsOptions', () => {
-  const options = ref(['A', 'B']);
+  const options = ref<string[] | undefined>(['A', 'B']);
   const textAttribute = ref<string | undefined>(undefined);
   const valueAttribute = ref<string | undefined>(undefined);
   const normalize = ref<boolean>(true);
@@ -46,6 +46,26 @@ describe('useFetchsOptions', () => {
           { raw: 'A', text: 'A', value: 'A' },
           { raw: 'B', text: 'B', value: 'B' },
         ]);
+      });
+    });
+
+    it('returns empty array of normalized options if options became undefined', () => {
+      useSetup(() => {
+        const { normalizedOptions } = useFetchsOptions(
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        options.value = undefined;
+
+        expect(normalizedOptions.value).toEqual([]);
       });
     });
 
