@@ -52,7 +52,7 @@ export default function useFetchsOptions(
   const optionsWereFetched = ref<boolean>(false);
 
   const normalizedOptions = computed<NormalizedOptions>(() => {
-    if (typeof fetchFn.value !== 'function') {
+    if (typeof fetchFn.value !== 'function' && typeof prefetchFn.value !== 'function') {
       const normalized = getNormalizedOptions(options.value || []);
 
       if (searchQuery.value) {

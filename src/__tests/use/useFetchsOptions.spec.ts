@@ -1173,4 +1173,262 @@ describe('useFetchsOptions', () => {
       });
     });
   });
+
+  describe('with prefetch function', () => {
+    beforeEach(() => {
+      options.value = [];
+      prefetchFn.value = () => new Promise((resolve) => resolve(
+        ['A', 'B'],
+      ));
+    });
+
+    it('should emit an error event if the results are in an invalid format', () => {
+      prefetchFn.value = () => new Promise((resolve) => {
+        resolve('wrong' as any);
+      });
+
+      useSetup(() => {
+        const { prefetchOptions } = useFetchsOptions(
+          localValue,
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          prefetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        prefetchOptions();
+      }, {}, {
+        onFetchOptionsError: (error: any) => {
+          expect(error).toBeInstanceOf(Error);
+          expect(error.toString()).toBe('Error: Response must be an array or object, got string');
+        },
+      });
+    });
+
+    it('returns normalized options', () => {
+      useSetup(async () => {
+        const { normalizedOptions, prefetchOptions } = useFetchsOptions(
+          localValue,
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          prefetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        expect(normalizedOptions.value).toEqual([]);
+
+        prefetchOptions();
+
+        await nextTick();
+
+        expect(normalizedOptions.value).toEqual([
+          { raw: 'A', text: 'A', value: 'A' },
+          { raw: 'B', text: 'B', value: 'B' },
+        ]);
+      });
+    });
+
+    it('determines that is fetching options if promise is busy', () => {
+      useSetup(async () => {
+        jest.useFakeTimers();
+
+        prefetchFn.value = () => new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(['A', 'B']);
+          }, 10);
+        });
+
+        const { fetchingOptions, prefetchOptions } = useFetchsOptions(
+          localValue,
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          prefetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        expect(fetchingOptions.value).toBe(false);
+
+        prefetchOptions();
+        await nextTick();
+        expect(fetchingOptions.value).toBe(true);
+
+        jest.advanceTimersByTime(9);
+        await nextTick();
+        expect(fetchingOptions.value).toBe(true);
+
+        jest.advanceTimersByTime(1);
+        await nextTick();
+        expect(fetchingOptions.value).toBe(false);
+
+        jest.useRealTimers();
+      });
+    });
+
+    it('determines if the options were fetched', () => {
+      useSetup(async () => {
+        prefetchFn.value = () => new Promise((resolve) => {
+          resolve(['A', 'B']);
+        });
+
+        const { optionsWereFetched, prefetchOptions } = useFetchsOptions(
+          localValue,
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          prefetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        expect(optionsWereFetched.value).toBe(false);
+
+        prefetchOptions();
+
+        await nextTick();
+
+        expect(optionsWereFetched.value).toBe(true);
+      });
+    });
+
+    it('doesnt resets the optionsWereFetched flag if no fetchFn', () => {
+      useSetup(() => {
+        prefetchFn.value = false;
+
+        const { optionsWereFetched, prefetchOptions } = useFetchsOptions(
+          localValue,
+          options,
+          textAttribute,
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          prefetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+        expect(optionsWereFetched.value).toBe(false);
+
+        prefetchOptions();
+
+        expect(optionsWereFetched.value).toBe(false);
+      });
+    });
+
+    it('accepts a custom `textAttribute`', () => {
+      useSetup(async () => {
+        prefetchFn.value = () => new Promise((resolve) => resolve([
+          { label: 'Letter A', value: 'A' },
+          { label: 'Letter B', value: 'B' },
+        ]));
+
+        const { normalizedOptions, prefetchOptions } = useFetchsOptions(
+          localValue,
+          options,
+          ref('label'),
+          valueAttribute,
+          normalize,
+          searchQuery,
+          fetchFn,
+          prefetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        expect(normalizedOptions.value).toEqual([]);
+
+        prefetchOptions();
+
+        await nextTick();
+
+        expect(normalizedOptions.value).toEqual([
+          { raw: { label: 'Letter A', value: 'A' }, text: 'Letter A', value: 'A' },
+          { raw: { label: 'Letter B', value: 'B' }, text: 'Letter B', value: 'B' },
+        ]);
+      });
+    });
+
+    it('accepts a custom `valueAttribute`', () => {
+      useSetup(async () => {
+        prefetchFn.value = () => new Promise((resolve) => resolve([
+          { text: 'A', identifier: 'a' },
+          { text: 'B', identifier: 'b' },
+        ]));
+
+        const { normalizedOptions, prefetchOptions } = useFetchsOptions(
+          localValue,
+          options,
+          textAttribute,
+          ref('identifier'),
+          normalize,
+          searchQuery,
+          fetchFn,
+          prefetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        expect(normalizedOptions.value).toEqual([]);
+
+        prefetchOptions();
+
+        await nextTick();
+
+        expect(normalizedOptions.value).toEqual([
+          { raw: { text: 'A', identifier: 'a' }, text: 'A', value: 'a' },
+          { raw: { text: 'B', identifier: 'b' }, text: 'B', value: 'b' },
+        ]);
+      });
+    });
+
+    it('doesnt normalize the options if normalize is `false`', () => {
+      useSetup(async () => {
+        const { normalizedOptions, prefetchOptions } = useFetchsOptions(
+          localValue,
+          options,
+          textAttribute,
+          valueAttribute,
+          ref(false),
+          searchQuery,
+          fetchFn,
+          prefetchFn,
+          fetchDelay,
+          fetchMinimumInputLength,
+          fetchMinimumInputLengthText,
+        );
+
+        expect(normalizedOptions.value).toEqual([]);
+
+        prefetchOptions();
+
+        await nextTick();
+
+        expect(normalizedOptions.value).toEqual(options.value);
+      });
+    });
+  });
 });
