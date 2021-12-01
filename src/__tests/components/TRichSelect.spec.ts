@@ -1527,26 +1527,6 @@ describe('TRichSelect.vue', () => {
   });
 
   describe('fetch options', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let fetchOptionsSpy: any;
-    const originalCreatedMethod = TRichSelect.created!;
-
-    beforeEach(() => {
-      // eslint-disable-next-line func-names
-      TRichSelect.created = function () {
-        // this.$.setupState.doFetchOptions =
-        fetchOptionsSpy = jest.spyOn(this.$.setupState, 'doFetchOptions');
-
-        originalCreatedMethod.call(this);
-      };
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
-
-      TRichSelect.created = originalCreatedMethod;
-    });
-
     it('emits a `fetch-options-success` event with the response', async () => {
       const response = {
         results: [1, 2],
