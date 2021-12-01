@@ -1527,26 +1527,6 @@ describe('TRichSelect.vue', () => {
   });
 
   describe('fetch options', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let fetchOptionsSpy: any;
-    const originalCreatedMethod = TRichSelect.created!;
-
-    beforeEach(() => {
-      // eslint-disable-next-line func-names
-      TRichSelect.created = function () {
-        // this.$.setupState.doFetchOptions =
-        fetchOptionsSpy = jest.spyOn(this.$.setupState, 'doFetchOptions');
-
-        originalCreatedMethod.call(this);
-      };
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
-
-      TRichSelect.created = originalCreatedMethod;
-    });
-
     it('emits a `fetch-options-success` event with the response', async () => {
       const response = {
         results: [1, 2],
@@ -1594,6 +1574,28 @@ describe('TRichSelect.vue', () => {
 
       expect(wrapper.emitted('fetch-options-error')).toEqual([[error]]);
     });
+  });
+
+  describe('prefetch options', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let prefetchOptionsSpy: any;
+    const originalCreatedMethod = TRichSelect.created!;
+
+    beforeEach(() => {
+      // eslint-disable-next-line func-names
+      TRichSelect.created = function () {
+        // this.$.setupState.doFetchOptions =
+        prefetchOptionsSpy = jest.spyOn(this.$.setupState, 'doPrefetchOptions');
+
+        originalCreatedMethod.call(this);
+      };
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+
+      TRichSelect.created = originalCreatedMethod;
+    });
 
     it('fetch the options when prefetchOptions option is set', () => {
       shallowMount(TRichSelect, {
@@ -1603,17 +1605,27 @@ describe('TRichSelect.vue', () => {
         } as any,
       });
 
-      expect(fetchOptionsSpy).toHaveBeenCalled();
+      expect(prefetchOptionsSpy).toHaveBeenCalled();
     });
 
-    it('doesnt the options when prefetchOptions option is set if no fetch function', () => {
+    it('fetch the options when prefetchOptions option is set as a function', () => {
+      shallowMount(TRichSelect, {
+        props: {
+          prefetchOptions: () => Promise.resolve([]),
+        } as any,
+      });
+
+      expect(prefetchOptionsSpy).toHaveBeenCalled();
+    });
+
+    it('doesnt prefetchs the options when prefetchOptions option is set if no fetch function', () => {
       shallowMount(TRichSelect, {
         props: {
           prefetchOptions: true,
         },
       });
 
-      expect(fetchOptionsSpy).not.toHaveBeenCalled();
+      expect(prefetchOptionsSpy).not.toHaveBeenCalled();
     });
 
     it('doesnt fetch the options when prefetchOptions option is not set', () => {
@@ -1624,7 +1636,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(fetchOptionsSpy).not.toHaveBeenCalled();
+      expect(prefetchOptionsSpy).not.toHaveBeenCalled();
     });
   });
 

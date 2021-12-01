@@ -4,7 +4,7 @@ import {
 import { HTMLAttributes } from 'vue';
 import { Placement, Options } from '@popperjs/core';
 import { TSelectValue } from './t-select';
-import { FetchOptionsFn } from '../misc';
+import { FetchOptionsFn, PreFetchOptionsFn } from '../misc';
 
 export type MinimumInputLengthTextProp = ((minimumInputLength: number, query?: string) => string) | string;
 
@@ -19,7 +19,7 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   textAttribute?: string,
   delay?: number,
   fetchOptions?: FetchOptionsFn,
-  prefetchOptions?: boolean,
+  prefetchOptions?: boolean | PreFetchOptionsFn,
   minimumInputLength?: number,
   minimumInputLengthText?: MinimumInputLengthTextProp,
   minimumResultsForSearch?: number,
