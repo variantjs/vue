@@ -25,6 +25,8 @@
       :placement="configuration.dropdownPlacement"
       :tag-name="usesTags ? 'div' : 'button'"
       :tabindex="usesTags && !hasSelectedOption ? 0 : undefined"
+      :teleport="configuration.teleport"
+      :teleport-to="configuration.teleportTo"
       data-rich-select-focusable
       @mouseover="$emit('mouseover', $event)"
       @mouseleave="$emit('mouseleave', $event)"
@@ -335,6 +337,14 @@ export default defineComponent({
     },
     minimumResultsForSearch: {
       type: Number,
+      default: undefined,
+    },
+    teleport: {
+      type: Boolean,
+      default: undefined,
+    },
+    teleportTo: {
+      type: [String, Object] as PropType<string | HTMLElement>,
       default: undefined,
     },
   },
