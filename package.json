@@ -71,7 +71,7 @@
     "ts-vue-plugin": "^0.1.3",
     "typescript": "^4.5.4",
     "vite": "^2.7.7",
-    "vue": "^3.1.1",
+    "vue": "^3.2.6",
     "vue-jest": "^5.0.0-alpha.10",
     "vue-loader": "^16.7.0",
     "vue-router": "4",
@@ -80,7 +80,7 @@
   "peerDependencies": {
     "@popperjs/core": "^2.11.0",
     "body-scroll-lock": "^4.0.0-beta.0",
-    "vue": "^3.1.1"
+    "vue": "^3.2.6"
   },
   "release-it": {
     "hooks": {
