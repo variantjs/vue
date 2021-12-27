@@ -24,7 +24,8 @@
   ],
   "rules": {
     "max-len": "off",
-    // "import/no-cycle": "off",
+    "import/extensions": "off",
+    "import/prefer-default-export": "off",
     "import/no-extraneous-dependencies": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "tree-shaking/no-side-effects-in-initialization": 2

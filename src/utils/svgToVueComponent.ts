@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { Data } from '@variantjs/core';
 import { h, VNode, VNodeProps } from 'vue';
 

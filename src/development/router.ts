@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 import Home from './Home.vue';
