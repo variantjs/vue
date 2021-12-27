@@ -65,6 +65,17 @@
         :clear-search-on-close="true"
       />
     </t-input-group>
+
+    <t-input-group
+      label="With teleport"
+      class="mb-4"
+    >
+      <t-rich-select
+        v-model="selected"
+        :options="options"
+        :teleport="true"
+      />
+    </t-input-group>
   </t-card>
 </template>
 
