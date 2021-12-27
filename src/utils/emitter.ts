@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable import/prefer-default-export */
 import { EmitterEvents, EmitterFunction, EmitterInterface } from '../types';
 
 export class Emitter implements EmitterInterface {
+  /* eslint-disable tree-shaking/no-side-effects-in-initialization */
   private events: EmitterEvents = {};
 
   on(name: keyof EmitterEvents, callback: EmitterFunction): void {

@@ -266,7 +266,7 @@
         :click-to-close="false"
       >
         <template #default="{ hide }">
-          <t-button @click="hide">
+          <t-button @click="() => hide()">
             Close this
           </t-button>
         </template>
@@ -291,7 +291,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, provide } from 'vue';
+import { defineComponent } from 'vue';
 
 import { Data, DialogIcon, DialogType } from '@variantjs/core';
 import TCheckbox from '../components/TCheckbox.vue';

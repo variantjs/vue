@@ -61,6 +61,43 @@ describe('RichSelectTrigger', () => {
     expect(wrapper.find('selector-icon-stub').exists()).toBe(true);
   });
 
+  it('will show the selector icon if is disabled', () => {
+    const wrapper = shallowMount(RichSelectTrigger, {
+      global: {
+        provide: {
+          ...global.provide,
+          configuration: {
+            disabled: true,
+          },
+        },
+      },
+    });
+
+    expect(wrapper.vm.showSelectorIcon).toBe(true);
+    expect(wrapper.find('selector-icon-stub').exists()).toBe(true);
+  });
+
+  it('will show the selector icon if is disabled and have a selected option', () => {
+    const wrapper = shallowMount(RichSelectTrigger, {
+      global: {
+        provide: {
+          ...global.provide,
+          configuration: {
+            disabled: true,
+          },
+          selectedOption: computed<NormalizedOption | undefined>(() => ({
+            value: 'foo',
+            text: 'Foo Bar',
+          })),
+          hasSelectedOption: ref(true),
+        },
+      },
+    });
+
+    expect(wrapper.vm.showSelectorIcon).toBe(true);
+    expect(wrapper.find('selector-icon-stub').exists()).toBe(true);
+  });
+
   it('will  show the selector icon if clearable and doesnt have selected option', () => {
     const wrapper = shallowMount(RichSelectTrigger, {
       global: {

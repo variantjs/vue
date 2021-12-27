@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NormalizedOption, normalizeOptions } from '@variantjs/core';
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import TRichSelect from '../../components/TRichSelect.vue';
-import { componentHasAttributeWithInlineHandlerAndParameter, componentHasAttributeWithValue, getChildComponentNameByRef } from '../testUtils';
+import {
+  componentHasAttributeWithInlineHandlerAndParameter,
+  componentHasAttributeWithValue,
+  getChildComponentNameByRef,
+} from '../testUtils';
 
 describe('TRichSelect.vue', () => {
   const focusDropdownTriggerMock = jest.fn();
@@ -146,14 +150,21 @@ describe('TRichSelect.vue', () => {
   it('has default dropdownPopperOptions', () => {
     const wrapper = shallowMount(TRichSelect);
 
-    expect(Object.keys(wrapper.vm.dropdownPopperOptions)).toEqual(['placement', 'modifiers', 'strategy', 'onFirstUpdate']);
+    expect(Object.keys(wrapper.vm.dropdownPopperOptions)).toEqual([
+      'placement',
+      'modifiers',
+      'strategy',
+      'onFirstUpdate',
+    ]);
   });
 
   describe('provides the data needed on the child elements', () => {
     it('provides the configuration', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect((wrapper.vm.$ as any).provides.configuration).toEqual((wrapper.vm.$ as any).setupState.configuration);
+      expect((wrapper.vm.$ as any).provides.configuration).toEqual(
+        (wrapper.vm.$ as any).setupState.configuration,
+      );
     });
 
     it('provides the options', () => {
@@ -164,7 +175,9 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect((wrapper.vm.$ as any).provides.options.value).toEqual(normalizeOptions(options));
+      expect((wrapper.vm.$ as any).provides.options.value).toEqual(
+        normalizeOptions(options),
+      );
     });
 
     it('provides the shown state', () => {
@@ -175,14 +188,15 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect((wrapper.vm.$ as any).provides.state).toEqual((wrapper.vm.$ as any).setupState.state);
+      expect((wrapper.vm.$ as any).provides.state).toEqual(
+        (wrapper.vm.$ as any).setupState.state,
+      );
     });
 
     it('provides the `selectedOption` state', () => {
       const options = [1];
       const wrapper = shallowMount(TRichSelect, {
         props: {
-
           options,
           modelValue: 1,
         },
@@ -210,69 +224,93 @@ describe('TRichSelect.vue', () => {
     it('provides the `toggleOption` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect((wrapper.vm.$ as any).provides.toggleOption[0]).toEqual((wrapper.vm.$ as any).setupState.toggleOption);
+      expect((wrapper.vm.$ as any).provides.toggleOption[0]).toEqual(
+        (wrapper.vm.$ as any).setupState.toggleOption,
+      );
     });
 
     it('provides the `optionIsActive` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect((wrapper.vm.$ as any).provides.optionIsActive[0]).toEqual((wrapper.vm.$ as any).setupState.optionIsActive);
+      expect((wrapper.vm.$ as any).provides.optionIsActive[0]).toEqual(
+        (wrapper.vm.$ as any).setupState.optionIsActive,
+      );
     });
 
     it('provides the `setActiveOption` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect((wrapper.vm.$ as any).provides.setActiveOption[0]).toEqual((wrapper.vm.$ as any).setupState.setActiveOption);
+      expect((wrapper.vm.$ as any).provides.setActiveOption[0]).toEqual(
+        (wrapper.vm.$ as any).setupState.setActiveOption,
+      );
     });
 
     it('provides the `dropdownBottomReachedHandler` method', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect((wrapper.vm.$ as any).provides.dropdownBottomReachedHandler[0]).toEqual((wrapper.vm.$ as any).setupState.dropdownBottomReachedHandler);
+      expect(
+        (wrapper.vm.$ as any).provides.dropdownBottomReachedHandler[0],
+      ).toEqual((wrapper.vm.$ as any).setupState.dropdownBottomReachedHandler);
     });
 
     it('provides the `optionIsSelected` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect((wrapper.vm.$ as any).provides.optionIsSelected).toEqual((wrapper.vm.$ as any).setupState.optionIsSelected);
+      expect((wrapper.vm.$ as any).provides.optionIsSelected).toEqual(
+        (wrapper.vm.$ as any).setupState.optionIsSelected,
+      );
     });
 
     it('provides the `keydownDownHandler` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect((wrapper.vm.$ as any).provides.keydownDownHandler).toEqual((wrapper.vm.$ as any).setupState.keydownDownHandler);
+      expect((wrapper.vm.$ as any).provides.keydownDownHandler).toEqual(
+        (wrapper.vm.$ as any).setupState.keydownDownHandler,
+      );
     });
     it('provides the `keydownUpHandler` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect((wrapper.vm.$ as any).provides.keydownUpHandler).toEqual((wrapper.vm.$ as any).setupState.keydownUpHandler);
+      expect((wrapper.vm.$ as any).provides.keydownUpHandler).toEqual(
+        (wrapper.vm.$ as any).setupState.keydownUpHandler,
+      );
     });
 
     it('provides the `keydownEnterHandler` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect((wrapper.vm.$ as any).provides.keydownEnterHandler).toEqual((wrapper.vm.$ as any).setupState.keydownEnterHandler);
+      expect((wrapper.vm.$ as any).provides.keydownEnterHandler).toEqual(
+        (wrapper.vm.$ as any).setupState.keydownEnterHandler,
+      );
     });
 
     it('provides the `keydownEscHandler` method`', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      expect((wrapper.vm.$ as any).provides.keydownEscHandler).toEqual((wrapper.vm.$ as any).setupState.keydownEscHandler);
+      expect((wrapper.vm.$ as any).provides.keydownEscHandler).toEqual(
+        (wrapper.vm.$ as any).setupState.keydownEscHandler,
+      );
     });
 
     it('provides the `showSearchInput` computed property', () => {
       const wrapper = shallowMount(TRichSelect);
-      expect((wrapper.vm.$ as any).provides.showSearchInput.value).toEqual((wrapper.vm.$ as any).setupState.showSearchInput);
+      expect((wrapper.vm.$ as any).provides.showSearchInput.value).toEqual(
+        (wrapper.vm.$ as any).setupState.showSearchInput,
+      );
     });
 
     it('provides the `needsMoreCharsMessage` computed property', () => {
       const wrapper = shallowMount(TRichSelect);
-      expect((wrapper.vm.$ as any).provides.needsMoreCharsMessage.value).toEqual('Please enter undefined or more characters');
+      expect(
+        (wrapper.vm.$ as any).provides.needsMoreCharsMessage.value,
+      ).toEqual('Please enter undefined or more characters');
     });
 
     it('provides the `searchQuery` ref', () => {
       const wrapper = shallowMount(TRichSelect);
-      expect((wrapper.vm.$ as any).provides.searchQuery.value).toEqual((wrapper.vm.$ as any).setupState.searchQuery);
+      expect((wrapper.vm.$ as any).provides.searchQuery.value).toEqual(
+        (wrapper.vm.$ as any).setupState.searchQuery,
+      );
     });
 
     it('provides the `fetchingOptions` ref', () => {
@@ -282,7 +320,9 @@ describe('TRichSelect.vue', () => {
 
     it('provides the `fetchingMoreOptions` ref', () => {
       const wrapper = shallowMount(TRichSelect);
-      expect((wrapper.vm.$ as any).provides.fetchingMoreOptions.value).toBe(false);
+      expect((wrapper.vm.$ as any).provides.fetchingMoreOptions.value).toBe(
+        false,
+      );
     });
 
     it('provides the `usesTags` ref', () => {
@@ -332,7 +372,9 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect((wrapper.vm.$refs.dropdownComponent as any).tagName).toBe('button');
+      expect((wrapper.vm.$refs.dropdownComponent as any).tagName).toBe(
+        'button',
+      );
     });
 
     it('uses a div for the dropdown trigger if uses tags', () => {
@@ -375,7 +417,9 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect((wrapper.vm.$ as any).provides.selectedOption.value).toBeUndefined();
+      expect(
+        (wrapper.vm.$ as any).provides.selectedOption.value,
+      ).toBeUndefined();
     });
 
     it('updates the selectedOption within the v-model ', async () => {
@@ -415,7 +459,9 @@ describe('TRichSelect.vue', () => {
         modelValue: null,
       });
 
-      expect((wrapper.vm.$ as any).provides.selectedOption.value).toBeUndefined();
+      expect(
+        (wrapper.vm.$ as any).provides.selectedOption.value,
+      ).toBeUndefined();
     });
   });
 
@@ -496,7 +542,9 @@ describe('TRichSelect.vue', () => {
       });
 
       expect(wrapper.vm.$refs.clearButton).toBeDefined();
-      expect(getChildComponentNameByRef(wrapper, 'clearButton')).toEqual('RichSelectClearButton');
+      expect(getChildComponentNameByRef(wrapper, 'clearButton')).toEqual(
+        'RichSelectClearButton',
+      );
     });
 
     it('hides the clearButton if showClearButton is `false`', () => {
@@ -520,7 +568,13 @@ describe('TRichSelect.vue', () => {
 
       const component = wrapper.vm.$refs.clearButton;
 
-      expect(componentHasAttributeWithValue(component, 'onClick', wrapper.vm.clearValue)).toBe(true);
+      expect(
+        componentHasAttributeWithValue(
+          component,
+          'onClick',
+          wrapper.vm.clearValue,
+        ),
+      ).toBe(true);
     });
   });
 
@@ -534,12 +588,21 @@ describe('TRichSelect.vue', () => {
       ['onFocus', 'focusHandler'],
       ['onMousedown', 'mousedownHandler'],
       ['onBlurOnChild', 'blurOnChildHandler'],
-    ])('has the `%s` event handler pointing to `%s`', (eventName, eventHandlerName) => {
-      const wrapper = shallowMount(TRichSelect);
-      const component = wrapper.vm.$refs.dropdownComponent as any;
+    ])(
+      'has the `%s` event handler pointing to `%s`',
+      (eventName, eventHandlerName) => {
+        const wrapper = shallowMount(TRichSelect);
+        const component = wrapper.vm.$refs.dropdownComponent as any;
 
-      expect(componentHasAttributeWithValue(component, eventName, (wrapper.vm as any)[eventHandlerName])).toBe(true);
-    });
+        expect(
+          componentHasAttributeWithValue(
+            component,
+            eventName,
+            (wrapper.vm as any)[eventHandlerName],
+          ),
+        ).toBe(true);
+      },
+    );
 
     it('hides the dropdown with blurHandler', () => {
       const wrapper = shallowMount(TRichSelect, {
@@ -797,7 +860,10 @@ describe('TRichSelect.vue', () => {
         target.setAttribute('data-rich-select-focusable', 'true');
         const focusSpy = jest.spyOn(target, 'focus');
 
-        wrapper.vm.blurOnChildHandler({ target, relatedTarget } as unknown as FocusEvent);
+        wrapper.vm.blurOnChildHandler({
+          target,
+          relatedTarget,
+        } as unknown as FocusEvent);
         expect(focusSpy).toHaveBeenCalled();
         expect(wrapper.vm.shown).toBe(true);
       });
@@ -814,7 +880,10 @@ describe('TRichSelect.vue', () => {
 
         const focusSpy = jest.spyOn(target, 'focus');
 
-        wrapper.vm.blurOnChildHandler({ target, relatedTarget } as unknown as FocusEvent);
+        wrapper.vm.blurOnChildHandler({
+          target,
+          relatedTarget,
+        } as unknown as FocusEvent);
         expect(focusSpy).not.toHaveBeenCalled();
         expect(wrapper.vm.shown).toBe(true);
       });
@@ -828,7 +897,10 @@ describe('TRichSelect.vue', () => {
 
         const focusSpy = jest.spyOn(target, 'focus');
 
-        wrapper.vm.blurOnChildHandler({ target, relatedTarget: undefined } as unknown as FocusEvent);
+        wrapper.vm.blurOnChildHandler({
+          target,
+          relatedTarget: undefined,
+        } as unknown as FocusEvent);
         expect(focusSpy).not.toHaveBeenCalled();
         expect(wrapper.vm.shown).toBe(true);
       });
@@ -857,7 +929,10 @@ describe('TRichSelect.vue', () => {
     describe('beforeShowHandler', () => {
       it('sets active option when is about to show the dropdown', () => {
         const wrapper = shallowMount(TRichSelect);
-        const initActiveOptionSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'initActiveOption');
+        const initActiveOptionSpy = jest.spyOn(
+          (wrapper.vm.$ as any).setupState,
+          'initActiveOption',
+        );
         wrapper.vm.beforeShowHandler();
         expect(initActiveOptionSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-show');
@@ -875,9 +950,16 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        wrapper.vm.activeOption = { value: 2, text: 2, raw: 2 } as NormalizedOption;
+        wrapper.vm.activeOption = {
+          value: 2,
+          text: 2,
+          raw: 2,
+        } as NormalizedOption;
 
-        const selectOptionFromActiveOptionSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'selectOptionFromActiveOption');
+        const selectOptionFromActiveOptionSpy = jest.spyOn(
+          (wrapper.vm.$ as any).setupState,
+          'selectOptionFromActiveOption',
+        );
         wrapper.vm.beforeHideHandler();
         expect(selectOptionFromActiveOptionSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-hide');
@@ -895,7 +977,10 @@ describe('TRichSelect.vue', () => {
 
         wrapper.vm.activeOption = null;
 
-        const selectOptionFromActiveOptionSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'selectOptionFromActiveOption');
+        const selectOptionFromActiveOptionSpy = jest.spyOn(
+          (wrapper.vm.$ as any).setupState,
+          'selectOptionFromActiveOption',
+        );
         wrapper.vm.beforeHideHandler();
         expect(selectOptionFromActiveOptionSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-hide');
@@ -911,9 +996,16 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        wrapper.vm.activeOption = { value: 2, text: 2, raw: 2 } as NormalizedOption;
+        wrapper.vm.activeOption = {
+          value: 2,
+          text: 2,
+          raw: 2,
+        } as NormalizedOption;
 
-        const selectOptionFromActiveOptionSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'selectOptionFromActiveOption');
+        const selectOptionFromActiveOptionSpy = jest.spyOn(
+          (wrapper.vm.$ as any).setupState,
+          'selectOptionFromActiveOption',
+        );
         wrapper.vm.beforeHideHandler();
         expect(selectOptionFromActiveOptionSpy).not.toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-hide');
@@ -929,9 +1021,16 @@ describe('TRichSelect.vue', () => {
           },
         });
 
-        wrapper.vm.activeOption = { value: 2, text: 2, raw: 2 } as NormalizedOption;
+        wrapper.vm.activeOption = {
+          value: 2,
+          text: 2,
+          raw: 2,
+        } as NormalizedOption;
 
-        const selectOptionFromActiveOptionSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'selectOptionFromActiveOption');
+        const selectOptionFromActiveOptionSpy = jest.spyOn(
+          (wrapper.vm.$ as any).setupState,
+          'selectOptionFromActiveOption',
+        );
         wrapper.vm.beforeHideHandler();
         expect(selectOptionFromActiveOptionSpy).not.toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('before-hide');
@@ -974,22 +1073,28 @@ describe('TRichSelect.vue', () => {
       const wrapper = shallowMount(TRichSelect);
       const component = wrapper.vm.$refs.dropdownComponent as any;
 
-      expect(componentHasAttributeWithInlineHandlerAndParameter(component, eventName, parameterName)).toBe(true);
+      expect(
+        componentHasAttributeWithInlineHandlerAndParameter(
+          component,
+          eventName,
+          parameterName,
+        ),
+      ).toBe(true);
     });
 
-    it.each([
-      'mouseover',
-      'mouseleave',
-    ])('re-emits dropdown events', (eventName) => {
-      const wrapper = shallowMount(TRichSelect);
-      const component = wrapper.vm.$refs.dropdownComponent as any;
+    it.each(['mouseover', 'mouseleave'])(
+      're-emits dropdown events',
+      (eventName) => {
+        const wrapper = shallowMount(TRichSelect);
+        const component = wrapper.vm.$refs.dropdownComponent as any;
 
-      const event = new MouseEvent(eventName);
-      component.$el.dispatchEvent(event);
+        const event = new MouseEvent(eventName);
+        component.$el.dispatchEvent(event);
 
-      expect(wrapper.emitted()).toHaveProperty(eventName);
-      expect(wrapper.emitted()[eventName][0]).toEqual([event]);
-    });
+        expect(wrapper.emitted()).toHaveProperty(eventName);
+        expect(wrapper.emitted()[eventName][0]).toEqual([event]);
+      },
+    );
 
     it('re-emits dropdown touchstart event', () => {
       const wrapper = shallowMount(TRichSelect);
@@ -1110,7 +1215,6 @@ describe('TRichSelect.vue', () => {
           props: {
             options,
           },
-
         });
 
         wrapper.vm.shown = true;
@@ -1273,7 +1377,11 @@ describe('TRichSelect.vue', () => {
           },
         });
         wrapper.vm.shown = true;
-        wrapper.vm.activeOption = { value: 3, text: 3, raw: 3 } as NormalizedOption;
+        wrapper.vm.activeOption = {
+          value: 3,
+          text: 3,
+          raw: 3,
+        } as NormalizedOption;
 
         const dropdownComponent = wrapper.vm.$refs.dropdownComponent as any;
 
@@ -1286,7 +1394,11 @@ describe('TRichSelect.vue', () => {
         dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
-        expect(wrapper.vm.activeOption).toEqual({ value: 2, text: 2, raw: 2 } as NormalizedOption);
+        expect(wrapper.vm.activeOption).toEqual({
+          value: 2,
+          text: 2,
+          raw: 2,
+        } as NormalizedOption);
         expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
@@ -1343,7 +1455,11 @@ describe('TRichSelect.vue', () => {
         dropdownComponent.$el.dispatchEvent(event);
 
         expect(wrapper.vm.shown).toBe(true);
-        expect(wrapper.vm.activeOption).toEqual({ value: 2, text: 2, raw: 2 } as NormalizedOption);
+        expect(wrapper.vm.activeOption).toEqual({
+          value: 2,
+          text: 2,
+          raw: 2,
+        } as NormalizedOption);
         expect(preventDefaultSpy).toHaveBeenCalled();
         expect(wrapper.emitted()).toHaveProperty('keydown');
         expect(wrapper.emitted().keydown[0]).toEqual([event]);
@@ -1527,26 +1643,6 @@ describe('TRichSelect.vue', () => {
   });
 
   describe('fetch options', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let fetchOptionsSpy: any;
-    const originalCreatedMethod = TRichSelect.created!;
-
-    beforeEach(() => {
-      // eslint-disable-next-line func-names
-      TRichSelect.created = function () {
-        // this.$.setupState.doFetchOptions =
-        fetchOptionsSpy = jest.spyOn(this.$.setupState, 'doFetchOptions');
-
-        originalCreatedMethod.call(this);
-      };
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
-
-      TRichSelect.created = originalCreatedMethod;
-    });
-
     it('emits a `fetch-options-success` event with the response', async () => {
       const response = {
         results: [1, 2],
@@ -1594,6 +1690,28 @@ describe('TRichSelect.vue', () => {
 
       expect(wrapper.emitted('fetch-options-error')).toEqual([[error]]);
     });
+  });
+
+  describe('prefetch options', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let prefetchOptionsSpy: any;
+    const originalCreatedMethod = TRichSelect.created!;
+
+    beforeEach(() => {
+      // eslint-disable-next-line func-names
+      TRichSelect.created = function () {
+        // this.$.setupState.doFetchOptions =
+        prefetchOptionsSpy = jest.spyOn(this.$.setupState, 'doPrefetchOptions');
+
+        originalCreatedMethod.call(this);
+      };
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+
+      TRichSelect.created = originalCreatedMethod;
+    });
 
     it('fetch the options when prefetchOptions option is set', () => {
       shallowMount(TRichSelect, {
@@ -1603,17 +1721,27 @@ describe('TRichSelect.vue', () => {
         } as any,
       });
 
-      expect(fetchOptionsSpy).toHaveBeenCalled();
+      expect(prefetchOptionsSpy).toHaveBeenCalled();
     });
 
-    it('doesnt the options when prefetchOptions option is set if no fetch function', () => {
+    it('fetch the options when prefetchOptions option is set as a function', () => {
+      shallowMount(TRichSelect, {
+        props: {
+          prefetchOptions: () => Promise.resolve([]),
+        } as any,
+      });
+
+      expect(prefetchOptionsSpy).toHaveBeenCalled();
+    });
+
+    it('doesnt prefetchs the options when prefetchOptions option is set if no fetch function', () => {
       shallowMount(TRichSelect, {
         props: {
           prefetchOptions: true,
         },
       });
 
-      expect(fetchOptionsSpy).not.toHaveBeenCalled();
+      expect(prefetchOptionsSpy).not.toHaveBeenCalled();
     });
 
     it('doesnt fetch the options when prefetchOptions option is not set', () => {
@@ -1624,7 +1752,7 @@ describe('TRichSelect.vue', () => {
         },
       });
 
-      expect(fetchOptionsSpy).not.toHaveBeenCalled();
+      expect(prefetchOptionsSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -1765,7 +1893,10 @@ describe('TRichSelect.vue', () => {
     it('calls the fetchOptionsCancel method when component unmonted', () => {
       const wrapper = shallowMount(TRichSelect);
 
-      const cancelSpy = jest.spyOn((wrapper.vm.$ as any).setupState, 'fetchOptionsCancel');
+      const cancelSpy = jest.spyOn(
+        (wrapper.vm.$ as any).setupState,
+        'fetchOptionsCancel',
+      );
 
       wrapper.unmount();
 
@@ -1826,5 +1957,47 @@ describe('TRichSelect.vue', () => {
 
       expect(wrapper.vm.showSearchInput).toBe(true);
     });
+  });
+
+  describe('clear search query', () => {
+    it('doesnt clears the search when the dropdown closes by default', async () => {
+      const wrapper = shallowMount(TRichSelect);
+
+      wrapper.vm.searchQuery = 'search query';
+
+      wrapper.vm.hiddenHandler();
+
+      expect(wrapper.vm.searchQuery).toBe('search query');
+    });
+
+    it('clears the search when the dropdown closes and when `clearSearchOnClose` option is set', async () => {
+      const wrapper = shallowMount(TRichSelect, {
+        props: {
+          clearSearchOnClose: true,
+        },
+      });
+
+      wrapper.vm.searchQuery = 'search query';
+
+      wrapper.vm.hiddenHandler();
+
+      expect(wrapper.vm.searchQuery).toBeUndefined();
+    });
+  });
+
+  it('teleports the dropdown to the body if teleport option is set', async () => {
+    const wrapper = mount(TRichSelect, {
+      props: {
+        teleport: true,
+      },
+    });
+
+    wrapper.vm.toggleDropdown();
+
+    await wrapper.vm.$nextTick();
+
+    await wrapper.vm.$nextTick();
+
+    expect(document.body.children[0].textContent).toBe('No options found');
   });
 });

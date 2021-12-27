@@ -1,15 +1,8 @@
 module.exports = {
-  purge: false,
-  darkMode: false, // or 'media' or 'class'
-  theme: {
-    extend: {},
-  },
-  variants: {
-    extend: {
-      opacity: ['disabled'],
-      cursor: ['disabled'],
-    },
-  },
+  content: [
+    './src/development/**/*.{html,js,vue,ts}',
+    './node_modules/@variantjs/core/src/config/**/*.ts'
+  ],
   plugins: [
     require('@tailwindcss/forms'),
   ],

@@ -55,7 +55,7 @@ export default defineComponent({
   },
   data() {
     return {
-      model: undefined,
+      model: '',
     };
   },
 

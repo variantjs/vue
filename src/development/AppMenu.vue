@@ -24,6 +24,9 @@
     <t-button to="/alert">
       Alert
     </t-button>
+    <t-button to="/rich-select">
+      Rich Select
+    </t-button>
     <t-button to="/modal">
       Modal
     </t-button>

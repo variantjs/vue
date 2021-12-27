@@ -4,3 +4,4 @@ dist
 dist-ssr
 coverage
 *.local
+yarn-error.log

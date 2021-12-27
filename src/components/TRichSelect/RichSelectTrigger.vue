@@ -141,7 +141,7 @@ export default defineComponent({
         return true;
       }
 
-      return !this.hasSelectedOption;
+      return !this.hasSelectedOption || this.configuration.disabled === true;
     },
   },
 });

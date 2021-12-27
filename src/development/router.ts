@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 import Home from './Home.vue';
@@ -12,6 +11,7 @@ import Dialog from './Dialog.vue';
 import Checkbox from './Check.vue';
 import Datepicker from './Datepicker.vue';
 import Theme from './Theme.vue';
+import RichSelect from './RichSelect.vue';
 import Attributes from './Attributes.vue';
 
 const routes = [
@@ -27,6 +27,7 @@ const routes = [
   { path: '/attributes', component: Attributes },
   { path: '/checkbox', component: Checkbox },
   { path: '/datepicker', component: Datepicker },
+  { path: '/rich-select', component: RichSelect },
 ];
 
 const router = createRouter({

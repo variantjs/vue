@@ -137,8 +137,8 @@ describe('TAlert.vue', () => {
   it('doesnt clear the timeout if not defined', async () => {
     jest.useFakeTimers();
 
-    const timeoutSpy = spyOn(window, 'setTimeout');
-    const clearTimeoutSpy = spyOn(window, 'clearTimeout');
+    const timeoutSpy = jest.spyOn(window, 'setTimeout');
+    const clearTimeoutSpy = jest.spyOn(window, 'clearTimeout');
 
     const wrapper = mount(TAlert);
 
@@ -146,6 +146,9 @@ describe('TAlert.vue', () => {
 
     expect(timeoutSpy).not.toHaveBeenCalled();
     expect(clearTimeoutSpy).not.toHaveBeenCalled();
+
+    clearTimeoutSpy.mockRestore();
+    timeoutSpy.mockRestore();
   });
 
   it('clears the `timeout` when the element is unmounted', async () => {
@@ -171,7 +174,7 @@ describe('TAlert.vue', () => {
   });
 
   it('clears the `timeout` when the element is hidden manually', async () => {
-    const clearTimeoutSpy = spyOn(window, 'clearTimeout');
+    const clearTimeoutSpy = jest.spyOn(window, 'clearTimeout');
 
     const wrapper = mount(TAlert, {
       props: {
@@ -182,6 +185,8 @@ describe('TAlert.vue', () => {
     wrapper.vm.doHide();
 
     expect(clearTimeoutSpy).toHaveBeenCalled();
+
+    clearTimeoutSpy.mockRestore();
   });
 
   it('accepts a custom `closeIcon``', async () => {
