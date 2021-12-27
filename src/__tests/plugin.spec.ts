@@ -16,7 +16,7 @@ describe('plugin installer', () => {
 
     app.use(variantJS, configuration);
 
-    const component = app.component('Example', {});
+    const component = app.component('ExampleComponent', {});
 
     // eslint-disable-next-line no-underscore-dangle
     expect(component._context.provides.configuration).toEqual(configuration);
@@ -27,7 +27,7 @@ describe('plugin installer', () => {
 
     app.use(variantJS);
 
-    const component = app.component('Example', {});
+    const component = app.component('ExampleComponent', {});
 
     // eslint-disable-next-line no-underscore-dangle
     expect(component._context.provides.configuration).toEqual({});
