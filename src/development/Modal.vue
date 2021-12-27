@@ -122,7 +122,7 @@
         hide-close-button
       >
         <template #default="{ hide }">
-          <t-button @click="hide">
+          <t-button @click="() => hide()">
             Close this
           </t-button>
         </template>
