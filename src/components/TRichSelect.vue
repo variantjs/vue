@@ -349,6 +349,8 @@ export default defineComponent({
     },
   },
   emits: {
+    change: (e: CustomEvent) => e instanceof CustomEvent,
+    input: (e: CustomEvent) => e instanceof CustomEvent,
     keydown: (e: KeyboardEvent) => e instanceof KeyboardEvent,
     focus: (e: FocusEvent) => e instanceof FocusEvent,
     blur: (e: FocusEvent) => e instanceof FocusEvent,
@@ -723,6 +725,14 @@ export default defineComponent({
   },
   methods: {
     onOptionSelected(): void {
+      this.$emit('input', new CustomEvent('input', {
+        detail: this.localValue,
+      }));
+      
+      this.$emit('change', new CustomEvent('change', {
+        detail: this.localValue,
+      }));
+
       if (this.shown === false) {
         return;
       }
