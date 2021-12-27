@@ -341,11 +341,11 @@ export default defineComponent({
     },
     teleport: {
       type: Boolean,
-      default: undefined,
+      default: false,
     },
     teleportTo: {
       type: [String, Object] as PropType<string | HTMLElement>,
-      default: undefined,
+      default: 'body',
     },
   },
   emits: {
