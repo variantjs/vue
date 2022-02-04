@@ -19,9 +19,9 @@
       :fixed-classes="undefined"
       :popper-options="configuration.dropdownPopperOptions"
       :placement="configuration.dropdownPlacement"
-      show
       tag-name="input"
       type="text"
+      class="border border-gray-300"
     >
       <datepicker-dropdown />
       <!-- :classes="dropdownClasses"
@@ -145,6 +145,8 @@ import {
   buildDateFormatter,
   dateEnglishLocale,
   DateValue,
+  isSameDay,
+  diffInDays,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -246,6 +248,11 @@ export default defineComponent({
 
   },
   setup(props) {
+    // @TODOS:
+    // - Reinitialize the range after the dropdown is closed
+    // - Range and multiple: Consider selected dates outside of the view
+    // - Disabled dates shouldn't be selectable and needs his own styling (`DatepickerViewMonthDay`)
+    
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
@@ -268,6 +275,7 @@ export default defineComponent({
 
     const getInitialActiveDate = (selectedDate: Date | Date[] | undefined): Date => {
       let activeDate: Date = new Date();
+
       if (Array.isArray(selectedDate)) {
         if (selectedDate.length > 0) {
           activeDate = selectedDate[selectedDate.length - 1];
@@ -298,6 +306,51 @@ export default defineComponent({
     // The active date is usually hidden but shown when navigating with the keyboard
     const showActiveDate = ref<boolean>(false);
 
+    const selectDay = (day: Date) => {
+      // If we are using multiple or range means that the day consists of an array
+      // of dates
+      if (configuration.multiple || configuration.range) {
+        // If not array or is empty initialize it with with the selected date
+        if (!Array.isArray(selectedDate.value) || selectedDate.value.length === 0) {
+          selectedDate.value = [day];
+          return;
+        }
+
+        // The ranges consists in a tuple of dates, we should fill the first 
+        // or the second element depending of the current state of the selection
+        if (configuration.range) {
+          // If the new day is before than the first element of the range we need
+          // to reinitialize the range
+          if (diffInDays(selectedDate.value[0], day) < 0) {
+            selectedDate.value = [day];
+            return;
+          }
+
+          // If the range is already full we are going to replace the second date
+          if (selectedDate.value.length === 2) {
+            selectedDate.value[1] = day;
+            return;
+          }
+            
+          // Otherwise just add the new day to the range
+          selectedDate.value.push(day);
+          return;
+        }
+
+        if (configuration.multiple) {
+          if (selectedDate.value.includes(day)) {
+            selectedDate.value = selectedDate.value.filter((date) => ! isSameDay(date, day));
+            return;
+          }
+
+          selectedDate.value.push(day);
+          return;
+        }
+      }
+
+      selectedDate.value = day;
+    };
+
     provide('activeDate', activeDate);
 
     provide('showActiveDate', showActiveDate);
@@ -309,6 +362,8 @@ export default defineComponent({
     provide('parseDate', parseDate);
 
     provide('formatDate', formatDate);
+    
+    provide('selectDay', selectDay);
 
     return {
       configuration,

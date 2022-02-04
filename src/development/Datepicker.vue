@@ -12,10 +12,15 @@
     >
       <t-datepicker
         range
-        :model-value="[
-          new Date(2021, 9, 11),
-          new Date(2021, 9, 15),
-        ]"
+      />
+    </TInputGroup>
+
+    <TInputGroup
+      label="Multiple"
+      class="mb-4"
+    >
+      <t-datepicker
+        multiple
       />
     </TInputGroup>
   </t-card>

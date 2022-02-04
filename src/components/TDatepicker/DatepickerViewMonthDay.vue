@@ -6,6 +6,7 @@
       type="button"
       tabindex="-1"
       :class="buttonClass"
+      @click="daySelectedHandler"
     >
       {{ day.getDate() }}
     </button>
@@ -39,6 +40,8 @@ export default defineComponent({
     const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
     const activeDate = inject<Ref<Date>>('activeDate')!;
     const parseDate = inject<Ref<DateParser>>('parseDate')!;
+    // @TODO: Fix class
+    const selectDay = inject<(day: Date) => void>('selectDay')!;
 
     const isForAnotherMonth = computed(() => props.day.getFullYear() !== props.month.getFullYear()
         || props.day.getMonth() !== props.month.getMonth());
@@ -122,7 +125,12 @@ export default defineComponent({
       return configuration.classesList?.day;
     });
 
-    return { configuration, buttonClass };
+    const daySelectedHandler = ()  => {
+      // @TODO: Consider disabled days      
+      selectDay(props.day);
+    };
+
+    return { configuration, buttonClass, daySelectedHandler };
   },
 });
 </script>
