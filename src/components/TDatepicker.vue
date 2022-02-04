@@ -23,6 +23,11 @@
       type="text"
       class="border border-gray-300"
       @blur-on-child="blurOnChildHandler"
+
+      @keydown.down="keyboardNavigationHandler"
+      @keydown.up="keyboardNavigationHandler"
+      @keydown.left="keyboardNavigationHandler"
+      @keydown.right="keyboardNavigationHandler"
     >
       <datepicker-dropdown />
       <!-- :classes="dropdownClasses"
@@ -147,6 +152,9 @@ import {
   dateEnglishLocale,
   isSameDay,
   diffInDays,
+  addYears,
+  addMonths,
+  addDays,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -156,7 +164,7 @@ import {
 } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
-import { TDatepickerSingleValue } from '../types/components/t-datepicker';
+import { TDatepickerSingleValue, TDatepickerView } from '../types/components/t-datepicker';
 
 // @vue/component
 export default defineComponent({
@@ -243,7 +251,10 @@ export default defineComponent({
         ],
       } as Options),
     },
-
+    initialView: {
+      type: String as PropType<TDatepickerView>,
+      default: TDatepickerView.Day,
+    },
   },
   setup(props) {
     // @TODOS:
@@ -254,12 +265,15 @@ export default defineComponent({
     // - Add toggle-on options from the configuration as the dropdown
     // - In general check which dropdown options/events are usable
     // - Add selectOnClose, closeOnSelected and see if something from the rich select can be used
+    // - Show active date should be reset in some cases TBD
 
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
 
     const formatDate = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
+
+    const currentView = ref<TDatepickerView>(configuration.initialView!);
 
     const getInitialSelectedDate = (): Date | Date[] | undefined => {
       let selectedDate: Date | undefined | Date[] = configuration.multiple || configuration.range ? [] : undefined;
@@ -363,6 +377,68 @@ export default defineComponent({
       target.focus();
     };
 
+    const keyboardNavigationHandler = (e: KeyboardEvent) => {
+      const keyCode = e.key;
+
+      enum NavitationKeyCodes {
+        ArrowLeft = 'ArrowDown',
+        ArrowUp = 'ArrowUp',
+        ArrowRight = 'ArrowLeft',
+        ArrowDown = 'ArrowRight',
+      }
+      
+      const days: {
+        [key2 in TDatepickerView]: {
+          [key in NavitationKeyCodes]: number  
+        }
+      } = {
+        // @TODO
+        year: {
+          ArrowUp: 1,
+          ArrowRight: 1,
+          ArrowDown: 1,
+          ArrowLeft: 1,
+        },
+        // @TODO
+        month: {
+          ArrowUp: 1,
+          ArrowRight: 1,
+          ArrowDown: 1,
+          ArrowLeft: 1,
+        },
+        day: {
+          ArrowUp: -7,
+          ArrowRight: 1,
+          ArrowDown: 7,
+          ArrowLeft: -1,
+        },
+      };
+
+      if (! (keyCode in NavitationKeyCodes)) {
+        return;
+      }
+
+      e.preventDefault();
+
+      const daysPerView = days[currentView.value][keyCode as NavitationKeyCodes];
+
+      // Depending of the view (year view, month view or day views the amount of days is different)
+      if (currentView.value === 'year') {
+        // @TODO: test considering the case when the year is not a leap year
+        activeDate.value = addYears(activeDate.value, daysPerView);
+      } else if (currentView.value === 'month') {
+        // @TODO: test considering the case when the month is not a leap month
+        activeDate.value = addMonths(activeDate.value, daysPerView);
+      } else if (currentView.value === 'day') {
+        // One week is the day below the current one
+        activeDate.value = addDays(activeDate.value, daysPerView);
+      }
+
+      showActiveDate.value = true;
+    };
+
+
+
     provide('activeDate', activeDate);
 
     provide('showActiveDate', showActiveDate);
@@ -381,6 +457,7 @@ export default defineComponent({
       configuration,
       attributes,
       blurOnChildHandler,
+      keyboardNavigationHandler,
     };
   },
 

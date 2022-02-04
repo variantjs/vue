@@ -8,6 +8,12 @@ export type TDatepickerSingleValue = DateValue | undefined | null;
 
 export type TDatepickerValue = TDatepickerSingleValue | Array<TDatepickerSingleValue>;
 
+export enum TDatepickerView {
+  Day = 'day',
+  Month = 'month',
+  Year = 'year',
+}
+
 export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   modelValue?: TDatepickerValue,
   initialDate?: TDatepickerValue,
@@ -25,4 +31,5 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   dateParser?: DateParser,
   dateFormatter?: DateFormatter,
   locale?: DateLocale,
+  initialView?: TDatepickerView
 } & HTMLAttributes & Data, TDatepickerClassesValidKeys>;
