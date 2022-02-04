@@ -22,6 +22,7 @@
       tag-name="input"
       type="text"
       class="border border-gray-300"
+      @blur-on-child="blurOnChildHandler"
     >
       <datepicker-dropdown />
       <!-- :classes="dropdownClasses"
@@ -144,7 +145,6 @@ import {
   DateLocale,
   buildDateFormatter,
   dateEnglishLocale,
-  DateValue,
   isSameDay,
   diffInDays,
 } from '@variantjs/core';
@@ -156,7 +156,6 @@ import {
 } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
-import { sameWidthModifier } from '../utils/popper';
 import { TDatepickerSingleValue } from '../types/components/t-datepicker';
 
 // @vue/component
@@ -241,7 +240,6 @@ export default defineComponent({
               offset: [0, 8],
             },
           },
-          sameWidthModifier,
         ],
       } as Options),
     },
@@ -252,7 +250,10 @@ export default defineComponent({
     // - Reinitialize the range after the dropdown is closed
     // - Range and multiple: Consider selected dates outside of the view
     // - Disabled dates shouldn't be selectable and needs his own styling (`DatepickerViewMonthDay`)
-    
+    // - Add teleport options
+    // - Add toggle-on options from the configuration as the dropdown
+    // - In general check which dropdown options/events are usable
+
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
@@ -351,6 +352,12 @@ export default defineComponent({
       selectedDate.value = day;
     };
 
+    const blurOnChildHandler = (e: Event) => {
+      const target = e.target as HTMLButtonElement | HTMLInputElement;
+
+      target.focus();
+    };
+
     provide('activeDate', activeDate);
 
     provide('showActiveDate', showActiveDate);
@@ -368,6 +375,7 @@ export default defineComponent({
     return {
       configuration,
       attributes,
+      blurOnChildHandler,
     };
   },
 
