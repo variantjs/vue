@@ -7,11 +7,13 @@
     :class="configuration.classesList?.trigger"
     :disabled="configuration.disabled"
     v-bind="{...attributes, ...$attrs}"
-    @click="clickHandler"
     @focus="focusHandler"
     @blur="blurHandler"
     @mouseover="mouseoverHandler"
     @mouseleave="mouseleaveHandler"
+    @mousedown="clickHandler"
+    @keydown.enter="clickHandler"
+    @keydown.space="clickHandler"
   >
     <slot
       :configuration="configuration"
@@ -199,7 +201,8 @@ export default defineComponent({
       initAsShow: (configuration as unknown as TDropdownOptions).show,
       hideTimeout: null as ReturnType<typeof setTimeout> | null,
       focusableElements: [] as Array<HTMLElement>,
-      throttledToggle: null as null | (() => void),
+      throttledShow: null as null | (() => void),
+      throttledHide: null as null | (() => void),
       adjustingPopper: false,
       popperIsAdjusted: false,
       popperAdjusterListener: null as null | DebouncedFn,
@@ -249,7 +252,8 @@ export default defineComponent({
     }
   },
   created() {
-    this.throttledToggle = throttle(this.doToggle, 200);
+    this.throttledShow = throttle(this.doShow, 200);
+    this.throttledHide = throttle(this.doHide, 200);
 
     this.popperAdjusterListener = debounce(() => {
       this.popperIsAdjusted = false;
@@ -403,6 +407,13 @@ export default defineComponent({
       const { trigger } = this.$refs;
       return trigger as HTMLButtonElement;
     },
+    throttledToggle(): void {
+      if (!this.shown) {
+        this.throttledShow!();
+      } else {
+        this.throttledHide!();
+      }
+    },
     doToggle(): void {
       if (!this.shown) {
         this.doShow();
@@ -440,7 +451,7 @@ export default defineComponent({
       if (this.configuration.toggleOnClick) {
         this.throttledToggle!();
       } else if (this.shouldShowWhenClicked) {
-        this.doShow();
+        this.throttledShow!();
       }
     },
     focusHandler(e: FocusEvent): void {
@@ -451,7 +462,7 @@ export default defineComponent({
       }
 
       if (this.configuration.toggleOnFocus) {
-        this.throttledToggle!();
+        this.throttledShow!();
       }
     },
     blurHandler(e: FocusEvent): void {
@@ -468,7 +479,7 @@ export default defineComponent({
       }
 
       if (this.configuration.toggleOnFocus && !isChild) {
-        this.doHide();
+        this.throttledHide!();
       }
     },
     targetIsChild(target: EventTarget | null): boolean {
