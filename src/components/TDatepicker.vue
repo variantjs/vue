@@ -253,6 +253,7 @@ export default defineComponent({
     // - Add teleport options
     // - Add toggle-on options from the configuration as the dropdown
     // - In general check which dropdown options/events are usable
+    // - Add selectOnClose, closeOnSelected and see if something from the rich select can be used
 
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
@@ -352,6 +353,10 @@ export default defineComponent({
       selectedDate.value = day;
     };
 
+    // If the date field is blurred (date clicked for example) we should focus
+    // the field again
+    // @TODO: Consider the case when other elements should keep the focus
+    // like the eventual time picker
     const blurOnChildHandler = (e: Event) => {
       const target = e.target as HTMLButtonElement | HTMLInputElement;
 
