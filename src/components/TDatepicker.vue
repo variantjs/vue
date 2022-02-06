@@ -22,12 +22,16 @@
       tag-name="input"
       type="text"
       class="border border-gray-300"
-      @blur-on-child="blurOnChildHandler"
+      :toggle-on-click="false"
 
+      @blur-on-child="blurOnChildHandler"
+      
       @keydown.down="keyboardNavigationHandler"
       @keydown.up="keyboardNavigationHandler"
       @keydown.left="keyboardNavigationHandler"
       @keydown.right="keyboardNavigationHandler"
+
+      @keydown.enter="enterHandler"
     >
       <datepicker-dropdown />
       <!-- :classes="dropdownClasses"
@@ -266,6 +270,7 @@ export default defineComponent({
     // - In general check which dropdown options/events are usable
     // - Add selectOnClose, closeOnSelected and see if something from the rich select can be used
     // - Show active date should be reset in some cases TBD
+    // - Toggle datepicker on enter accoridng to props (since its overriding the dropdown option)
 
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
@@ -365,6 +370,8 @@ export default defineComponent({
       }
 
       selectedDate.value = day;
+
+      showActiveDate.value = false;
     };
 
     // If the date field is blurred (date clicked for example) we should focus
@@ -378,7 +385,7 @@ export default defineComponent({
     };
 
     const keyboardNavigationHandler = (e: KeyboardEvent) => {
-      const keyCode = e.key;
+      const keyCode = e.key as NavitationKeyCodes;
 
       enum NavitationKeyCodes {
         ArrowLeft = 'ArrowDown',
@@ -388,8 +395,8 @@ export default defineComponent({
       }
       
       const days: {
-        [key2 in TDatepickerView]: {
-          [key in NavitationKeyCodes]: number  
+        [key in TDatepickerView]: {
+          [key2 in NavitationKeyCodes]: number  
         }
       } = {
         // @TODO
@@ -413,14 +420,10 @@ export default defineComponent({
           ArrowLeft: -1,
         },
       };
-
-      if (! (keyCode in NavitationKeyCodes)) {
-        return;
-      }
-
+      
       e.preventDefault();
 
-      const daysPerView = days[currentView.value][keyCode as NavitationKeyCodes];
+      const daysPerView = days[currentView.value][keyCode];
 
       // Depending of the view (year view, month view or day views the amount of days is different)
       if (currentView.value === 'year') {
@@ -437,7 +440,11 @@ export default defineComponent({
       showActiveDate.value = true;
     };
 
+    const selectActiveDate = () => {
+      selectDay(activeDate.value);
+    };
 
+    const enterHandler = () => selectActiveDate();
 
     provide('activeDate', activeDate);
 
@@ -457,6 +464,7 @@ export default defineComponent({
       configuration,
       attributes,
       blurOnChildHandler,
+      enterHandler,
       keyboardNavigationHandler,
     };
   },
