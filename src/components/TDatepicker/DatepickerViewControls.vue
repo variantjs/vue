@@ -6,23 +6,41 @@
       tabindex="-1"
       @click="toggleView"
     >
-      <span
-        class=""
-        v-text="monthName"
-      />
-      
-      <span
-        class="ml-1 text-gray-500"
-        v-text="year"
-      />
-      
-      <svg
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        class="flex-shrink-0 w-5 h-5 text-gray-400 fill-current"
-      ><polygon points="12.9497475 10.7071068 13.6568542 10 8 4.34314575 6.58578644 5.75735931 10.8284271 10 6.58578644 14.2426407 8 15.6568542 12.9497475 10.7071068" /></svg>
+      <template v-if="isMonthView || isYearView">
+        <span
+          v-if="isMonthView"
+          class=""
+          v-text="monthName"
+        />
+        
+        <span
+          class="ml-1 text-gray-500"
+          v-text="year"
+        />
+        
+        <svg
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          class="flex-shrink-0 w-5 h-5 text-gray-400 fill-current"
+        ><polygon points="12.9497475 10.7071068 13.6568542 10 8 4.34314575 6.58578644 5.75735931 10.8284271 10 6.58578644 14.2426407 8 15.6568542 12.9497475 10.7071068" /></svg>
+      </template>
+
+      <template v-else>
+        <svg
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          class="flex-shrink-0 h-5 w-5 fill-current text-gray-400"
+        ><polygon points="7.05025253 9.29289322 6.34314575 10 12 15.6568542 13.4142136 14.2426407 9.17157288 10 13.4142136 5.75735931 12 4.34314575" /></svg>
+        
+        <span
+          class="ml-1 text-gray-500"
+          v-text="`${yearsRange[0]} - ${yearsRange[1]}`"
+        />
+      </template>
     </button>
+    
     <button
       aria-label="Prev Year"
       type="button"
@@ -79,17 +97,27 @@ export default defineComponent({
     const monthName = computed<string>(() => formatDate.value(activeDate.value, 'F')) ;
     const year = computed<string>(() => formatDate.value(activeDate.value, 'Y')) ;
 
+    const isMonthView = computed<boolean>(() => currentView.value === TDatepickerView.Day);
+    const isYearView = computed<boolean>(() => currentView.value === TDatepickerView.Month);
+    
+    const yearsRange = computed<[number, number]>(() => {
+      const currentYear = activeDate.value.getFullYear();
+      const from = currentYear - (currentYear % 12);
+      const to = from + 11;
+      return [from, to];
+    });
+
     const toggleView = () => {
-      if (currentView.value === TDatepickerView.Day) {
+      if (isMonthView.value) {
         setCurrentView(TDatepickerView.Month);
-      } else if (currentView.value === TDatepickerView.Month) {
+      } else if (isYearView.value) {
         setCurrentView(TDatepickerView.Year);
       } else {
         setCurrentView(TDatepickerView.Day);
       }
     };
 
-    return { monthName, year, toggleView };
+    return { monthName, year, toggleView, isMonthView, isYearView, yearsRange };
   },
 });
 </script>

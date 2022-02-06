@@ -272,6 +272,9 @@ export default defineComponent({
     // - Show active date should be reset in some cases TBD
     // - Toggle datepicker on enter accoridng to props (since its overriding the dropdown option)
     // - Check aria labels on buttons 
+    // - Replace svg icons with icon component
+    // @IMMEDIATE TODO:
+    // - active & selected styling in view items for year and multiple years
 
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
