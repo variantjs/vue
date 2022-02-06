@@ -9,10 +9,7 @@
 
     <datepicker-view-year v-else-if="isYearView" />
 
-    <datepicker-view-month
-      v-else-if="isMultipleYearsView"
-      :month="month"
-    />
+    <DatepickerViewMultipleYears v-else-if="isMultipleYearsView" />
   </div>
 </template>
 
@@ -22,6 +19,7 @@ import { TDatepickerView } from '../../types/components/t-datepicker';
 import DatepickerViewControls from './DatepickerViewControls.vue';
 import DatepickerViewMonth from './DatepickerViewMonth.vue';
 import DatepickerViewYear from './DatepickerViewYear.vue';
+import DatepickerViewMultipleYears from './DatepickerViewMultipleYears.vue';
 
 export default defineComponent({
   name: 'DatepickerView',
@@ -29,6 +27,7 @@ export default defineComponent({
     DatepickerViewControls,
     DatepickerViewMonth,
     DatepickerViewYear,
+    DatepickerViewMultipleYears,
   },
   props: {
     month: {
