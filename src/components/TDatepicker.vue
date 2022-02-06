@@ -271,6 +271,7 @@ export default defineComponent({
     // - Add selectOnClose, closeOnSelected and see if something from the rich select can be used
     // - Show active date should be reset in some cases TBD
     // - Toggle datepicker on enter accoridng to props (since its overriding the dropdown option)
+    // - Check aria labels on buttons 
 
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
@@ -279,6 +280,10 @@ export default defineComponent({
     const formatDate = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
 
     const currentView = ref<TDatepickerView>(configuration.initialView!);
+
+    const setCurrentView = (view: TDatepickerView) => {
+      currentView.value = view;
+    };
 
     const getInitialSelectedDate = (): Date | Date[] | undefined => {
       let selectedDate: Date | undefined | Date[] = configuration.multiple || configuration.range ? [] : undefined;
@@ -399,19 +404,17 @@ export default defineComponent({
           [key2 in NavitationKeyCodes]: number  
         }
       } = {
-        // @TODO
         year: {
-          ArrowUp: 1,
+          ArrowUp: -4,
           ArrowRight: 1,
-          ArrowDown: 1,
-          ArrowLeft: 1,
+          ArrowDown: 4,
+          ArrowLeft: -1,
         },
-        // @TODO
         month: {
-          ArrowUp: 1,
+          ArrowUp: -4,
           ArrowRight: 1,
-          ArrowDown: 1,
-          ArrowLeft: 1,
+          ArrowDown: 4,
+          ArrowLeft: -1,
         },
         day: {
           ArrowUp: -7,
@@ -459,6 +462,10 @@ export default defineComponent({
     provide('formatDate', formatDate);
     
     provide('selectDay', selectDay);
+    
+    provide('setCurrentView', setCurrentView);
+    
+    provide('currentView', currentView);
 
     return {
       configuration,
