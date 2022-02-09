@@ -1,24 +1,25 @@
 <template>
   <div :class="configuration.classesList?.calendarDaysDayWrapper">
     <button
-      aria-label="September 26, 2021"
-      data-date="2021-09-26"
+      :aria-label="ariaLabel"
+      :data-date="dataDate"
       type="button"
       tabindex="-1"
       :class="buttonClass"
       @click="daySelectedHandler"
     >
-      {{ day.getDate() }}
+      {{ dayLabel }}
     </button>
   </div>
 </template>
 
 <script lang="ts">
 import {
+  DateFormatter,
   dateIsPartOfTheRange, DateParser, dayIsPartOfTheConditions, isSameDay,
 } from '@variantjs/core';
 import {
-  defineComponent, inject, computed, Ref,
+  defineComponent, inject, computed, Ref, ComputedRef,
 } from 'vue';
 import { TDatepickerOptions } from '../../types/components/t-datepicker';
 
@@ -40,8 +41,12 @@ export default defineComponent({
     const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
     const activeDate = inject<Ref<Date>>('activeDate')!;
     const parseDate = inject<Ref<DateParser>>('parseDate')!;
-    // @TODO: Fix class
     const selectDay = inject<(day: Date) => void>('selectDay')!;
+    const formatDate = inject<ComputedRef<DateFormatter>>('formatDate')!;
+
+    const ariaLabel = formatDate.value(props.day, 'F d, Y');
+    const dataDate = formatDate.value(props.day, 'Y-m-d');
+    const dayLabel = formatDate.value(props.day, 'j');
 
     const isForAnotherMonth = computed(() => props.day.getFullYear() !== props.month.getFullYear()
         || props.day.getMonth() !== props.month.getMonth());
@@ -130,7 +135,7 @@ export default defineComponent({
       selectDay(props.day);
     };
 
-    return { configuration, buttonClass, daySelectedHandler };
+    return { configuration, buttonClass, daySelectedHandler, ariaLabel, dataDate, dayLabel };
   },
 });
 </script>
