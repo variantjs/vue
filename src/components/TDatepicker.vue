@@ -179,7 +179,7 @@ export default defineComponent({
       default: TDatepickerView.Day,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     // @TODOS:
     // - Reinitialize the range after the dropdown is closed
     // - Range and multiple: Consider selected dates outside of the view
@@ -306,7 +306,17 @@ export default defineComponent({
     };
 
     const selectDay = (day: Date) => {
-      selectedDate.value = getNewSelectedDate(day);
+      const date = getNewSelectedDate(day);
+
+      emit('input', new CustomEvent('input', {
+        detail: date,
+      }));
+      
+      emit('change', new CustomEvent('change', {
+        detail: date,
+      }));
+
+      emit('update:modelValue', date);
 
       setActiveDate(day);
     };

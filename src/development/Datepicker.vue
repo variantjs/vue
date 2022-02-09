@@ -4,7 +4,11 @@
       label="Default Datepicker"
       class="mb-4"
     >
-      <t-datepicker v-model="date" />
+      <t-datepicker
+        v-model="date"
+        @change="dateChange"
+        @input="dateInput"
+      />
 
       <p class="space-x-2 flex items-center mt-2 text-sm">
         <span>Value:</span>
@@ -51,6 +55,14 @@ export default defineComponent({
     return {
       date: new Date(),
     };
+  },
+  methods: {
+    dateChange(date: Date) {
+      console.log('Datepicker: dateChange', date);
+    },
+    dateInput(date: Date) {
+      console.log('Datepicker: dateInput', date);
+    },
   },
 
 });
