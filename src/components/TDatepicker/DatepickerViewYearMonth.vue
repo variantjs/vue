@@ -28,7 +28,6 @@ export default defineComponent({
     const formatDate = inject<ComputedRef<DateFormatter>>('formatDate')!;
     const activeDate = inject<Ref<Date>>('activeDate')!;
     const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
-    const showActiveDate = inject<Ref<boolean>>('showActiveDate')!;
     const selectMonth = inject<(day: Date) => void>('selectMonth')!;
 
     const ariaLabel = formatDate.value(props.month, 'F, Y');
@@ -50,7 +49,7 @@ export default defineComponent({
         return configuration.classesList?.selectedMonth;
       }
 
-      if (isActive.value && showActiveDate.value) {
+      if (isActive.value) {
         return configuration.classesList?.activeMonth;
       }
 

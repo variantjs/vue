@@ -283,6 +283,9 @@ export default defineComponent({
 
     const currentView = ref<TDatepickerView>(configuration.initialView!);
 
+    // The active date is usually hidden but shown when navigating with the keyboard
+    const showActiveDate = ref<boolean>(false);
+
     const setCurrentView = (view: TDatepickerView) => {
       currentView.value = view;
     };
@@ -330,9 +333,6 @@ export default defineComponent({
     const selectedDate = ref<Date | Date[] | undefined>(getInitialSelectedDate());
 
     const activeDate = ref<Date>(getInitialActiveDate(selectedDate.value));
-
-    // The active date is usually hidden but shown when navigating with the keyboard
-    const showActiveDate = ref<boolean>(false);
 
     const setActiveDate = (date: Date) => {
       activeDate.value = date;
