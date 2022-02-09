@@ -4,7 +4,15 @@
       label="Default Datepicker"
       class="mb-4"
     >
-      <t-datepicker />
+      <t-datepicker v-model="date" />
+
+      <p class="space-x-2 flex items-center mt-2 text-sm">
+        <span>Value:</span>
+        <span
+          class="bg-gray-200 text-gray-800 text-xs font-mono rounded py-1 px-2"
+          v-text="date"
+        />
+      </p>
     </TInputGroup>
     <TInputGroup
       label="Range"
@@ -41,7 +49,7 @@ export default defineComponent({
   },
   data() {
     return {
-
+      date: new Date(),
     };
   },
 

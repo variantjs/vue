@@ -265,16 +265,13 @@ export default defineComponent({
       }
     };
 
-    const selectDay = (day: Date) => {
-      setActiveDate(day);
-
+    const getNewSelectedDate = (day: Date): Date | Date[] => {
       // If we are using multiple or range means that the day consists of an array
       // of dates
       if (configuration.multiple || configuration.range) {
         // If not array or is empty initialize it with with the selected date
         if (!Array.isArray(selectedDate.value) || selectedDate.value.length === 0) {
-          selectedDate.value = [day];
-          return;
+          return [day];
         }
 
         // The ranges consists in a tuple of dates, we should fill the first 
@@ -283,33 +280,35 @@ export default defineComponent({
           // If the new day is before than the first element of the range we need
           // to reinitialize the range
           if (diffInDays(selectedDate.value[0], day) < 0) {
-            selectedDate.value = [day];
-            return;
+            return [day];
           }
 
           // If the range is already full we are going to replace the second date
           if (selectedDate.value.length === 2) {
-            selectedDate.value[1] = day;
-            return;
+            return [selectedDate.value[0], day];
           }
             
           // Otherwise just add the new day to the range
-          selectedDate.value.push(day);
-          return;
+          return [...selectedDate.value, day];
         }
 
         if (configuration.multiple) {
-          if (selectedDate.value.includes(day)) {
-            selectedDate.value = selectedDate.value.filter((date) => ! isSameDay(date, day));
-            return;
+          // If already selected, remove it
+          if (selectedDate.value.some(date => isSameDay(date, day))) {
+            return selectedDate.value.filter((date) => ! isSameDay(date, day));
           }
 
-          selectedDate.value.push(day);
-          return;
+          return [...selectedDate.value, day];
         }
       }
 
-      selectedDate.value = day;
+      return day;
+    };
+
+    const selectDay = (day: Date) => {
+      selectedDate.value = getNewSelectedDate(day);
+
+      setActiveDate(day);
     };
 
     // Note about `selectMonth` and `selectYear` methods:
@@ -324,6 +323,12 @@ export default defineComponent({
     const selectYear = (year: Date) => {
       setActiveDate(year);
     };
+
+    const selectActiveDate = () => {
+      selectDay(activeDate.value);
+    };
+
+    const enterHandler = () => selectActiveDate();
 
     // If the date field is blurred (date clicked for example) we should focus
     // the field again
@@ -385,12 +390,6 @@ export default defineComponent({
 
       showActiveDate.value = true;
     };
-
-    const selectActiveDate = () => {
-      selectDay(activeDate.value);
-    };
-
-    const enterHandler = () => selectActiveDate();
 
     provide('activeDate', activeDate);
 
