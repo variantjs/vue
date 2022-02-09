@@ -5,6 +5,7 @@
     type="button"
     tabindex="-1"
     :class="buttonClass"
+    @click="monthSelectedHandler"
     v-text="monthLabel"
   />
 </template>
@@ -28,6 +29,7 @@ export default defineComponent({
     const activeDate = inject<Ref<Date>>('activeDate')!;
     const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
     const showActiveDate = inject<Ref<boolean>>('showActiveDate')!;
+    const selectMonth = inject<(day: Date) => void>('selectMonth')!;
 
     const ariaLabel = formatDate.value(props.month, 'F, Y');
     const dataDate = formatDate.value(props.month, 'Y-m');
@@ -55,9 +57,11 @@ export default defineComponent({
       return configuration.classesList?.month;
     });
 
-    console.log(buttonClass.value);
+    const monthSelectedHandler = ()  => {
+      selectMonth(props.month);
+    };
 
-    return { ariaLabel, dataDate, monthLabel, buttonClass };
+    return { ariaLabel, dataDate, monthLabel, buttonClass, monthSelectedHandler };
   },
 });
 </script>

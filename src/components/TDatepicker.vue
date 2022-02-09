@@ -273,9 +273,8 @@ export default defineComponent({
     // - Toggle datepicker on enter accoridng to props (since its overriding the dropdown option)
     // - Check aria labels on buttons 
     // - Replace svg icons with icon component
-    // @IMMEDIATE TODO:
-    // - active & selected styling in view items for year and multiple years
-
+    // - When changing the active date we should reset the active view after closing the dropdown
+    
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
@@ -335,9 +334,20 @@ export default defineComponent({
     // The active date is usually hidden but shown when navigating with the keyboard
     const showActiveDate = ref<boolean>(false);
 
-    const selectDay = (day: Date) => {
-      activeDate.value = day;
+    const setActiveDate = (date: Date) => {
+      activeDate.value = date;
+      
       showActiveDate.value = false;
+
+      if (currentView.value === TDatepickerView.Year) {
+        setCurrentView(TDatepickerView.Month);
+      } else if (currentView.value === TDatepickerView.Month) {
+        setCurrentView(TDatepickerView.Day);
+      }
+    };
+
+    const selectDay = (day: Date) => {
+      setActiveDate(day);
 
       // If we are using multiple or range means that the day consists of an array
       // of dates
@@ -381,6 +391,19 @@ export default defineComponent({
       }
 
       selectedDate.value = day;
+    };
+
+    // Note about `selectMonth` and `selectYear` methods:
+    // In most cases selecting a month or year only changes the active date which
+    // means it doesnt trigger an input event (since day still needs to be selected).
+    // In the future we may consider allowing the user to select only month and/or
+    // year which means we should also handle the input event
+    const selectMonth = (month: Date) => {
+      setActiveDate(month);
+    };
+
+    const selectYear = (year: Date) => {
+      setActiveDate(year);
     };
 
     // If the date field is blurred (date clicked for example) we should focus
@@ -433,14 +456,11 @@ export default defineComponent({
       const daysPerView = days[currentView.value][keyCode];
 
       // Depending of the view (year view, month view or day views the amount of days is different)
-      if (currentView.value === 'year') {
-        // @TODO: test considering the case when the year is not a leap year
+      if (currentView.value === TDatepickerView.Year) {
         activeDate.value = addYears(activeDate.value, daysPerView);
-      } else if (currentView.value === 'month') {
-        // @TODO: test considering the case when the month is not a leap month
+      } else if (currentView.value === TDatepickerView.Month) {
         activeDate.value = addMonths(activeDate.value, daysPerView);
-      } else if (currentView.value === 'day') {
-        // One week is the day below the current one
+      } else if (currentView.value === TDatepickerView.Day) {
         activeDate.value = addDays(activeDate.value, daysPerView);
       }
 
@@ -466,6 +486,10 @@ export default defineComponent({
     provide('formatDate', formatDate);
     
     provide('selectDay', selectDay);
+    
+    provide('selectMonth', selectMonth);
+    
+    provide('selectYear', selectYear);
     
     provide('setCurrentView', setCurrentView);
     
