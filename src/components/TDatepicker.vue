@@ -336,6 +336,9 @@ export default defineComponent({
     const showActiveDate = ref<boolean>(false);
 
     const selectDay = (day: Date) => {
+      activeDate.value = day;
+      showActiveDate.value = false;
+
       // If we are using multiple or range means that the day consists of an array
       // of dates
       if (configuration.multiple || configuration.range) {
@@ -378,8 +381,6 @@ export default defineComponent({
       }
 
       selectedDate.value = day;
-
-      showActiveDate.value = false;
     };
 
     // If the date field is blurred (date clicked for example) we should focus
