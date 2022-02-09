@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { range, clone } from '@variantjs/core';
+import { range, addMonths } from '@variantjs/core';
 import {
   defineComponent, inject, Ref,
 } from 'vue';
@@ -25,11 +25,14 @@ export default defineComponent({
   setup() {
     const activeDate = inject<Ref<Date>>('activeDate')!;
 
-    const months: Date[] = range(0, 11).map((monthIndex) => {
-      const month = clone(activeDate.value);
-      month.setMonth(monthIndex);
-      return month;
-    });
+    // The `addMonths` function ensures it uses an equivalent month day in case
+    // it have different days, for example: If the active date is `2019-01-31` 
+    // (last day of january) the next month day will be `2019-02-28` (last day
+    // of february).
+    const months: Date[] = range(
+      activeDate.value.getMonth() * -1,
+      11 - activeDate.value.getMonth(),
+    ).map((monthDiff) => addMonths(activeDate.value, monthDiff));
 
     return { months };
   },

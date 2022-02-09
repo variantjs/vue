@@ -4,14 +4,15 @@
     :data-date="dataDate"
     type="button"
     tabindex="-1"
-    class="text-sm rounded w-full h-12 mx-auto hover:bg-blue-100"
+    :class="buttonClass"
     v-text="monthLabel"
   />
 </template>
 
 <script lang="ts">
-import { DateFormatter } from '@variantjs/core';
-import { ComputedRef, defineComponent, inject } from 'vue';
+import { DateFormatter, isSameMonth } from '@variantjs/core';
+import { ComputedRef, defineComponent, inject, computed, Ref } from 'vue';
+import { TDatepickerOptions } from '../..';
 
 export default defineComponent({
   name: 'DatepickerViewYearMonth',
@@ -22,13 +23,41 @@ export default defineComponent({
     },
   },
   setup(props) { 
+    const configuration = inject<TDatepickerOptions>('configuration')!;
     const formatDate = inject<ComputedRef<DateFormatter>>('formatDate')!;
+    const activeDate = inject<Ref<Date>>('activeDate')!;
+    const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
+    const showActiveDate = inject<Ref<boolean>>('showActiveDate')!;
 
     const ariaLabel = formatDate.value(props.month, 'F, Y');
     const dataDate = formatDate.value(props.month, 'Y-m');
     const monthLabel = formatDate.value(props.month, 'M');
 
-    return { ariaLabel, dataDate, monthLabel };
+    const isSelected = computed<boolean>(() => {
+      if (Array.isArray(selectedDate.value)) {
+        return selectedDate.value.some((date) => isSameMonth(date, props.month));
+      }
+
+      return isSameMonth(selectedDate.value, props.month);
+    });
+
+    const isActive = computed<boolean>(() => isSameMonth(activeDate.value, props.month));
+
+    const buttonClass = computed(() => {
+      if (isSelected.value) {
+        return configuration.classesList?.selectedMonth;
+      }
+
+      if (isActive.value && showActiveDate.value) {
+        return configuration.classesList?.activeMonth;
+      }
+
+      return configuration.classesList?.month;
+    });
+
+    console.log(buttonClass.value);
+
+    return { ariaLabel, dataDate, monthLabel, buttonClass };
   },
 });
 </script>
