@@ -47,7 +47,6 @@ export default defineComponent({
 
     return {
       configuration,
-      shown,
       search,
       searchQuery,
       classesList,
