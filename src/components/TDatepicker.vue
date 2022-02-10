@@ -1,9 +1,9 @@
 <template>
-  <div
+  <!-- <div
     :class="configuration.classesList?.wrapper"
     v-bind="attributes"
-  >
-    <!-- <t-select
+  > -->
+  <!-- <t-select
       v-model="localValue"
       :name="configuration.name"
       style="display: none"
@@ -13,30 +13,33 @@
       :options="flattenedOptions"
     /> -->
 
-    <t-dropdown
-      ref="dropdownComponent"
-      :classes="undefined"
-      :fixed-classes="undefined"
-      :popper-options="configuration.dropdownPopperOptions"
-      :placement="configuration.dropdownPlacement"
-      tag-name="input"
-      type="text"
-      class="border border-gray-300"
-      :toggle-on-click="false"
+  <t-dropdown
+    ref="dropdownComponent"
+    :classes="undefined"
+    :fixed-classes="undefined"
+    :popper-options="configuration.dropdownPopperOptions"
+    :placement="configuration.dropdownPlacement"
+    tag-name="div"
+    :toggle-on-click="false"
+    @blur-on-child="blurOnChildHandler"
+    @keydown.down="keyboardNavigationHandler"
+    @keydown.up="keyboardNavigationHandler"
+    @keydown.left="keyboardNavigationHandler"
+    @keydown.right="keyboardNavigationHandler"
 
-      @blur-on-child="blurOnChildHandler"
+    @keydown.enter="enterHandler"
+  >
+    <template #trigger="{ focusHandler, blurHandler }">
+      <datepicker-trigger
+        @focus="focusHandler"
+        @blur="blurHandler"
+      />
+    </template>
       
-      @keydown.down="keyboardNavigationHandler"
-      @keydown.up="keyboardNavigationHandler"
-      @keydown.left="keyboardNavigationHandler"
-      @keydown.right="keyboardNavigationHandler"
+    <datepicker-dropdown />
+  </t-dropdown>
 
-      @keydown.enter="enterHandler"
-    >
-      <datepicker-dropdown />
-    </t-dropdown>
-
-    <!-- <rich-select-clear-button
+  <!-- <rich-select-clear-button
       v-if="showClearButton"
       ref="clearButton"
       @click="clearValue"
@@ -49,7 +52,7 @@
         />
       </template>
     </rich-select-clear-button> -->
-  </div>
+  <!-- </div> -->
 </template>
 
 <script lang="ts">
@@ -86,6 +89,7 @@ import {
   TDatepickerOptions, TDatepickerValue,
 } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
+import DatepickerTrigger from './TDatepicker/DatepickerTrigger.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
 import { TDatepickerSingleValue, TDatepickerView } from '../types/components/t-datepicker';
 
@@ -94,6 +98,7 @@ export default defineComponent({
   name: 'TDatepicker',
   components: {
     DatepickerDropdown,
+    DatepickerTrigger,
     TDropdown,
   },
   props: {
@@ -258,6 +263,21 @@ export default defineComponent({
     const selectedDate = ref<Date | Date[] | undefined>(getInitialSelectedDate());
 
     const activeDate = ref<Date>(getInitialActiveDate(selectedDate.value));
+    
+    const dateValue = computed<string | string[]>(() => {
+      return Array.isArray(selectedDate.value) 
+        ? selectedDate.value.map((dateItem) => formatDate.value(dateItem, configuration.dateFormat))
+        : formatDate.value(selectedDate.value, configuration.dateFormat);
+    });
+
+    const userDate = computed<string>(() => {
+      return Array.isArray(selectedDate.value) 
+        ? selectedDate.value
+          .map((dateItem) => formatDate.value(dateItem, configuration.userFormat))
+          // @TODO: Date separator comes from the configuration
+          .join(', ')
+        : formatDate.value(selectedDate.value, configuration.userFormat);
+    });
 
     const setActiveDate = (date: Date) => {
       activeDate.value = date;
@@ -311,25 +331,26 @@ export default defineComponent({
       return day;
     };
 
+    const setSelectedDate = (date: Date | Date[] | undefined) => {
+      selectedDate.value = date;
+    };
+
     const selectDay = (day: Date) => {
-      const date = getNewSelectedDate(day);
+      setSelectedDate(getNewSelectedDate(day));
 
       setActiveDate(day);
 
-      const formattedDate: string | string[] = Array.isArray(date) 
-        ? date.map((dateItem) => formatDate.value(dateItem, configuration.dateFormat))
-        : formatDate.value(date, configuration.dateFormat);
-
       const event = new CustomEvent('input', {
         detail: {
-          formattedDate: formattedDate,
-          date: date,
+          value: dateValue.value,
+          formattedDate: userDate.value,
+          date: selectedDate.value,
         },
       });
       
       emit('change', event);
       emit('input', event);
-      emit('update:modelValue', formattedDate);      
+      emit('update:modelValue', dateValue.value);      
     };
 
     // Note about `selectMonth` and `selectYear` methods:
@@ -412,11 +433,16 @@ export default defineComponent({
       showActiveDate.value = true;
     };
 
+
     provide('activeDate', activeDate);
 
     provide('showActiveDate', showActiveDate);
 
     provide('selectedDate', selectedDate);
+    
+    provide('setSelectedDate', setSelectedDate);
+    
+    provide('setActiveDate', setActiveDate);
 
     provide('configuration', configuration);
 
@@ -433,6 +459,8 @@ export default defineComponent({
     provide('setCurrentView', setCurrentView);
     
     provide('currentView', currentView);
+    
+    provide('userDate', userDate);
 
     return {
       configuration,
@@ -440,6 +468,7 @@ export default defineComponent({
       blurOnChildHandler,
       enterHandler,
       keyboardNavigationHandler,
+      
     };
   },
 

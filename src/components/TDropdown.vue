@@ -20,6 +20,8 @@
       :is-show="shown"
       :popper="popper"
       name="trigger"
+      :focus-handler="focusHandler"
+      :blur-handler="blurHandler"
     >
       {{ configuration.text }}
     </slot>
