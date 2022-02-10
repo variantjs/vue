@@ -37,6 +37,8 @@
         :selected-date="selectedDate"
         :formatted-date="formattedDate"
         :user-formatted-date="userFormattedDate"
+        :hide="hide"
+        :show="show"
       >
         <datepicker-trigger
           @focus="focusHandler"
@@ -241,6 +243,7 @@ export default defineComponent({
 
     const dropdownComponent = ref<{
       doHide: () => Promise<void>;
+      doShow: () => Promise<void>;
     } | undefined>(undefined);
 
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
@@ -392,6 +395,10 @@ export default defineComponent({
       await dropdownComponent.value!.doHide();
     };
 
+    const show = async () => {
+      await dropdownComponent.value!.doShow();
+    };
+
     const selectDay = (day: Date) => {
       const newSelectedDate = getNewSelectedDate(day);
 
@@ -540,6 +547,8 @@ export default defineComponent({
       enterHandler,
       keyboardNavigationHandler,
       beforeShowHandler,
+      hide,
+      show,
       formattedDate,
       userFormattedDate,
       selectedDate,
