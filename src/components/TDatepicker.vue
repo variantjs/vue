@@ -179,6 +179,12 @@ export default defineComponent({
       default: TDatepickerView.Day,
     },
   },
+  emits: {
+    change: (e: CustomEvent) => e instanceof CustomEvent,
+    input: (e: CustomEvent) => e instanceof CustomEvent,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    'update:modelValue': (value: string | string[]) => true,
+  },
   setup(props, { emit }) {
     // @TODOS:
     // - Reinitialize the range after the dropdown is closed
@@ -308,17 +314,22 @@ export default defineComponent({
     const selectDay = (day: Date) => {
       const date = getNewSelectedDate(day);
 
-      emit('input', new CustomEvent('input', {
-        detail: date,
-      }));
-      
-      emit('change', new CustomEvent('change', {
-        detail: date,
-      }));
-
-      emit('update:modelValue', date);
-
       setActiveDate(day);
+
+      const formattedDate: string | string[] = Array.isArray(date) 
+        ? date.map((dateItem) => formatDate.value(dateItem, configuration.dateFormat))
+        : formatDate.value(date, configuration.dateFormat);
+
+      const event = new CustomEvent('input', {
+        detail: {
+          formattedDate: formattedDate,
+          date: date,
+        },
+      });
+      
+      emit('change', event);
+      emit('input', event);
+      emit('update:modelValue', formattedDate);      
     };
 
     // Note about `selectMonth` and `selectYear` methods:

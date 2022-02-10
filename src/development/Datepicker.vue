@@ -9,7 +9,7 @@
         @change="dateChange"
         @input="dateInput"
       />
-
+      
       <p class="space-x-2 flex items-center mt-2 text-sm">
         <span>Value:</span>
         <span
@@ -17,6 +17,12 @@
           v-text="date"
         />
       </p>
+    </TInputGroup>
+    <TInputGroup
+      label="VModel Sync"
+      class="mb-4"
+    >
+      <t-datepicker v-model="date" />
     </TInputGroup>
     <TInputGroup
       label="Range"
@@ -45,7 +51,7 @@ import TInputGroup from '../components/TInputGroup.vue';
 import TDatepicker from '../components/TDatepicker.vue';
 
 export default defineComponent({
-  name: 'Datepicker',
+  name: 'DatepickerComponent',
   components: {
     TCard,
     TInputGroup,
@@ -53,15 +59,15 @@ export default defineComponent({
   },
   data() {
     return {
-      date: new Date(),
+      date: '1987-02-18',
     };
   },
   methods: {
-    dateChange(date: Date) {
-      console.log('Datepicker: dateChange', date);
+    dateChange(e: CustomEvent) {
+      console.log('Datepicker: dateChange', e);
     },
-    dateInput(date: Date) {
-      console.log('Datepicker: dateInput', date);
+    dateInput(e: CustomEvent) {
+      console.log('Datepicker: dateInput', e);
     },
   },
 
