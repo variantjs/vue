@@ -41,7 +41,9 @@
         v-model="date"
       >
         <template #trigger="{ focusHandler, blurHandler, formattedDate, userFormattedDate }">
-          <div class="flex items-center space-x-2 border-2 p-3 shadow-inner ">
+          <div
+            class="flex items-center space-x-2 border-2 p-3 shadow-inner "
+          >
             <div class="flex items-center space-x-2">
               <span>Value</span>
               <span
@@ -98,6 +100,19 @@
         multiple
       />
     </TInputGroup>
+
+    <TInputGroup
+      label="Syncs show property"
+      class="mb-4"
+    >
+      <div>
+        <t-checkbox v-model="show" />
+      </div>
+
+      <t-datepicker
+        v-model:show="show"
+      />
+    </TInputGroup>
   </t-card>
 </template>
 
@@ -106,6 +121,7 @@ import { defineComponent } from 'vue';
 import TCard from '../components/TCard.vue';
 import TInputGroup from '../components/TInputGroup.vue';
 import TDatepicker from '../components/TDatepicker.vue';
+import TCheckbox from '../components/TCheckbox.vue';
 
 export default defineComponent({
   name: 'DatepickerComponent',
@@ -113,9 +129,11 @@ export default defineComponent({
     TCard,
     TInputGroup,
     TDatepicker,
+    TCheckbox,
   },
   data() {
     return {
+      show: false,
       date: '1987-02-18',
       customDate: [
         

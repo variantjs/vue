@@ -22,6 +22,7 @@
       name="trigger"
       :focus-handler="focusHandler"
       :blur-handler="blurHandler"
+      :click-handler="clickHandler"
     >
       {{ configuration.text }}
     </slot>
@@ -176,7 +177,7 @@ export default defineComponent({
     focus: (e: FocusEvent) => e instanceof FocusEvent,
     blur: (e: FocusEvent) => e instanceof FocusEvent,
     'blur-on-child': (e: FocusEvent) => e instanceof FocusEvent,
-    click: (e: MouseEvent) => e instanceof MouseEvent,
+    click: (e: MouseEvent | KeyboardEvent) => e instanceof Event,
     mouseover: (e: MouseEvent) => e instanceof MouseEvent,
     mouseleave: (e: MouseEvent) => e instanceof MouseEvent,
     touchstart: (e: TouchEvent) => e instanceof TouchEvent,
@@ -448,7 +449,7 @@ export default defineComponent({
 
       this.onHidden();
     },
-    clickHandler(e: MouseEvent): void {
+    clickHandler(e: MouseEvent | KeyboardEvent): void {
       this.$emit('click', e);
 
       if (this.configuration.toggleOnClick) {

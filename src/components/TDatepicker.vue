@@ -11,21 +11,18 @@
 
   <t-dropdown
     ref="dropdownComponent"
+    v-model:show="shown"
     :classes="undefined"
     :fixed-classes="undefined"
     :popper-options="configuration.dropdownPopperOptions"
     :placement="configuration.dropdownPlacement"
     tag-name="div"
-    :toggle-on-click="configuration.toggleOnClick"
+    :toggle-on-click="false"
     :toggle-on-hover="configuration.toggleOnHover"
     :toggle-on-focus="configuration.toggleOnFocus"
     :hide-on-leave-timeout="configuration.hideOnLeaveTimeout"
+    v-bind="attributes"
     @blur-on-child="blurOnChildHandler"
-    @keydown.down="keyboardNavigationHandler"
-    @keydown.up="keyboardNavigationHandler"
-    @keydown.left="keyboardNavigationHandler"
-    @keydown.right="keyboardNavigationHandler"
-    @keydown.enter="enterHandler"
     @before-show="beforeShowHandler"
   >
     <template #trigger="{ focusHandler, blurHandler }">
@@ -34,15 +31,23 @@
         name="trigger"
         :focus-handler="focusHandler"
         :blur-handler="blurHandler"
+        :click-handler="clickHandler"
         :selected-date="selectedDate"
         :formatted-date="formattedDate"
         :user-formatted-date="userFormattedDate"
-        :hide="hide"
-        :show="show"
+        :hide="doHide"
+        :show="doShow"
       >
         <datepicker-trigger
           @focus="focusHandler"
           @blur="blurHandler"
+          @mousedown="clickHandler"
+          @keydown.enter="clickHandler"
+          @keydown.space="() => configuration.inputType === 'button' ? clickHandler() : undefined"
+          @keydown.down="keyboardNavigationHandler"
+          @keydown.up="keyboardNavigationHandler"
+          @keydown.left="keyboardNavigationHandler"
+          @keydown.right="keyboardNavigationHandler"
         />
       </slot>
     </template>
@@ -72,6 +77,7 @@ import {
   ref,
   provide,
   computed,
+  watch,
 } from 'vue';
 
 import {
@@ -217,12 +223,17 @@ export default defineComponent({
       type: Number,
       default: 250,
     },
+    show: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: {
     change: (e: CustomEvent) => e instanceof CustomEvent,
     input: (e: CustomEvent) => e instanceof CustomEvent,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     'update:modelValue': (value: string | string[]) => true,
+    'update:show': (value: boolean) => typeof value === 'boolean',
   },
   setup(props, { emit }) {
     // @TODOS:
@@ -241,10 +252,7 @@ export default defineComponent({
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
-    const dropdownComponent = ref<{
-      doHide: () => Promise<void>;
-      doShow: () => Promise<void>;
-    } | undefined>(undefined);
+    const shown = ref<boolean>(configuration.show!);
 
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
 
@@ -257,15 +265,15 @@ export default defineComponent({
     // The active date is usually hidden but shown when navigating with the keyboard
     const showActiveDate = ref<boolean>(false);
 
-    const getInitialSelectedDate = (): Date | Date[] | undefined => {
+    const getInitialSelectedDate = (fromDate: TDatepickerValue): Date | Date[] | undefined => {
       let selectedDate: Date | undefined | Date[] = configuration.multiple || configuration.range ? [] : undefined;
 
-      if (Array.isArray(props.modelValue)) {
-        selectedDate = (props.modelValue)
+      if (Array.isArray(fromDate)) {
+        selectedDate = (fromDate)
           .map((value) => parseDate.value(value, configuration.dateFormat))
           .filter((value) => value !== undefined) as Date[];
       } else {
-        selectedDate = parseDate.value(props.modelValue, configuration.dateFormat) || selectedDate;
+        selectedDate = parseDate.value(fromDate, configuration.dateFormat) || selectedDate;
       }
 
       return selectedDate;
@@ -299,9 +307,7 @@ export default defineComponent({
       return activeDate;
     };
 
-    
-
-    const selectedDate = ref<Date | Date[] | undefined>(getInitialSelectedDate());
+    const selectedDate = ref<Date | Date[] | undefined>(getInitialSelectedDate(props.modelValue));
 
     const activeDate = ref<Date>(getInitialActiveDate(selectedDate.value));
 
@@ -328,10 +334,14 @@ export default defineComponent({
     };
 
     const initView = () => {
-      setSelectedDate(getInitialSelectedDate());
       setCurrentView(getInitialView());
       setActiveDate(getInitialActiveDate(selectedDate.value));
     };
+
+    watch(() => props.modelValue, (value: TDatepickerValue) => {
+      setSelectedDate(getInitialSelectedDate(value));
+ 
+    });
     
     const formattedDate = computed<string | string[]>(() => {
       return Array.isArray(selectedDate.value) 
@@ -347,8 +357,6 @@ export default defineComponent({
           .join(configuration.range ? dateRangeSeparator.value : ', ')
         : formatDate.value(selectedDate.value, configuration.userFormat);
     });
-
-   
 
     const getNewSelectedDate = (day: Date): Date | Date[] => {
       // If we are using multiple or range means that the day consists of an array
@@ -391,13 +399,21 @@ export default defineComponent({
     };
 
 
-    const hide = async () => {
-      await dropdownComponent.value!.doHide();
+    const doHide = async () => {
+      shown.value = false;
     };
 
-    const show = async () => {
-      await dropdownComponent.value!.doShow();
+    const doShow = async () => {
+      shown.value = true;
     };
+
+    watch(shown, () => {
+      emit('update:show', shown.value);
+    });
+
+    watch(() => configuration.show, () => {
+      shown.value = configuration.show!;
+    });
 
     const selectDay = (day: Date) => {
       const newSelectedDate = getNewSelectedDate(day);
@@ -423,7 +439,7 @@ export default defineComponent({
       emit('update:modelValue', formattedDate.value);      
 
       if (configuration.closeOnSelect) {
-        hide();
+        doHide();
       }
     };
 
@@ -444,7 +460,13 @@ export default defineComponent({
       selectDay(activeDate.value);
     };
 
-    const enterHandler = () => selectActiveDate();
+    const clickHandler = () => {
+      if (shown.value) {
+        selectActiveDate();
+      } else {
+        doShow();
+      }
+    };
 
     // If the date field is blurred (date clicked for example) we should focus
     // the field again
@@ -457,6 +479,10 @@ export default defineComponent({
     };
 
     const keyboardNavigationHandler = (e: KeyboardEvent) => {
+      if (shown.value === false) {
+        doShow(); 
+      }
+
       const keyCode = e.key as NavitationKeyCodes;
 
       enum NavitationKeyCodes {
@@ -540,15 +566,15 @@ export default defineComponent({
     provide('userFormattedDate', userFormattedDate);
 
     return {
-      dropdownComponent,
       configuration,
       attributes,
       blurOnChildHandler,
-      enterHandler,
+      clickHandler,
       keyboardNavigationHandler,
       beforeShowHandler,
-      hide,
-      show,
+      doHide,
+      doShow,
+      shown,
       formattedDate,
       userFormattedDate,
       selectedDate,
