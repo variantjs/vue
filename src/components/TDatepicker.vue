@@ -1,8 +1,4 @@
 <template>
-  <!-- <div
-    :class="configuration.classesList?.wrapper"
-    v-bind="attributes"
-  > -->
   <!-- <t-select
       v-model="localValue"
       :name="configuration.name"
@@ -64,7 +60,6 @@
         />
       </template>
     </rich-select-clear-button> -->
-  <!-- </div> -->
 </template>
 
 <script lang="ts">
@@ -142,6 +137,10 @@ export default defineComponent({
     amPm: {
       type: Boolean,
       default: false,
+    },
+    inputType: {
+      type: String,
+      default: 'text',
     },
     monthsPerView: {
       type: Number,

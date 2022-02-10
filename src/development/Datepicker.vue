@@ -25,6 +25,15 @@
       <t-datepicker v-model="date" />
     </TInputGroup>
     <TInputGroup
+      label="Button"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        input-type="button"
+      />
+    </TInputGroup>
+    <TInputGroup
       label="Custom Selector"
       class="mb-4"
     >

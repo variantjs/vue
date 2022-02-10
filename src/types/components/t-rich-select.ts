@@ -41,4 +41,5 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   dropdownPopperOptions?: Options,
   teleport?: boolean,
   teleportTo?: string | HTMLElement,
+  inputType?: string,
 } & HTMLAttributes & Data, TRichSelectClassesValidKeys>;
