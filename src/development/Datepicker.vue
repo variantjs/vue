@@ -25,6 +25,44 @@
       <t-datepicker v-model="date" />
     </TInputGroup>
     <TInputGroup
+      label="Custom Selector"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+      >
+        <template #trigger="{ focusHandler, blurHandler }">
+          <div class="flex items-center space-x-2 ">
+            <span
+              class="bg-gray-200 text-gray-800 text-xs font-mono rounded py-1 px-2"
+              v-text="date"
+            />
+
+            <button
+              type="button"
+              @focus="focusHandler"
+              @blur="blurHandler"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </button>
+          </div>
+        </template>
+      </t-datepicker>
+    </TInputGroup>
+    <TInputGroup
       label="Range"
       class="mb-4"
     >
@@ -60,6 +98,9 @@ export default defineComponent({
   data() {
     return {
       date: '1987-02-18',
+      customDate: [
+        
+      ],
     };
   },
   methods: {

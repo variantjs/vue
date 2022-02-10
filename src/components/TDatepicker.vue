@@ -20,20 +20,30 @@
     :popper-options="configuration.dropdownPopperOptions"
     :placement="configuration.dropdownPlacement"
     tag-name="div"
-    :toggle-on-click="false"
+    :toggle-on-click="configuration.toggleOnClick"
+    :toggle-on-hover="configuration.toggleOnHover"
+    :toggle-on-focus="configuration.toggleOnFocus"
+    :hide-on-leave-timeout="configuration.hideOnLeaveTimeout"
     @blur-on-child="blurOnChildHandler"
     @keydown.down="keyboardNavigationHandler"
     @keydown.up="keyboardNavigationHandler"
     @keydown.left="keyboardNavigationHandler"
     @keydown.right="keyboardNavigationHandler"
-
     @keydown.enter="enterHandler"
   >
     <template #trigger="{ focusHandler, blurHandler }">
-      <datepicker-trigger
-        @focus="focusHandler"
-        @blur="blurHandler"
-      />
+      <slot
+        :configuration="configuration"
+        name="trigger"
+        :focus-handler="focusHandler"
+        :blur-handler="blurHandler"
+      >
+        {{ configuration.text }}
+        <datepicker-trigger
+          @focus="focusHandler"
+          @blur="blurHandler"
+        />
+      </slot>
     </template>
       
     <datepicker-dropdown />
@@ -182,6 +192,22 @@ export default defineComponent({
     initialView: {
       type: String as PropType<TDatepickerView>,
       default: TDatepickerView.Day,
+    },
+    toggleOnFocus: {
+      type: Boolean,
+      default: true,
+    },
+    toggleOnClick: {
+      type: Boolean,
+      default: true,
+    },
+    toggleOnHover: {
+      type: Boolean,
+      default: false,
+    },
+    hideOnLeaveTimeout: {
+      type: Number,
+      default: 250,
     },
   },
   emits: {

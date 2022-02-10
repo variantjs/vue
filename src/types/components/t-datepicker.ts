@@ -31,5 +31,9 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   dateParser?: DateParser,
   dateFormatter?: DateFormatter,
   locale?: DateLocale,
-  initialView?: TDatepickerView
+  initialView?: TDatepickerView,
+  toggleOnFocus?: boolean,
+  toggleOnClick?: boolean,
+  toggleOnHover?: boolean,
+  hideOnLeaveTimeout?: number,
 } & HTMLAttributes & Data, TDatepickerClassesValidKeys>;
