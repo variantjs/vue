@@ -37,8 +37,10 @@
         name="trigger"
         :focus-handler="focusHandler"
         :blur-handler="blurHandler"
+        :selected-date="selectedDate"
+        :formatted-date="formattedDate"
+        :user-formatted-date="userFormattedDate"
       >
-        {{ configuration.text }}
         <datepicker-trigger
           @focus="focusHandler"
           @blur="blurHandler"
@@ -290,13 +292,13 @@ export default defineComponent({
 
     const activeDate = ref<Date>(getInitialActiveDate(selectedDate.value));
     
-    const dateValue = computed<string | string[]>(() => {
+    const formattedDate = computed<string | string[]>(() => {
       return Array.isArray(selectedDate.value) 
         ? selectedDate.value.map((dateItem) => formatDate.value(dateItem, configuration.dateFormat))
         : formatDate.value(selectedDate.value, configuration.dateFormat);
     });
 
-    const userDate = computed<string>(() => {
+    const userFormattedDate = computed<string>(() => {
       return Array.isArray(selectedDate.value) 
         ? selectedDate.value
           .map((dateItem) => formatDate.value(dateItem, configuration.userFormat))
@@ -368,15 +370,15 @@ export default defineComponent({
 
       const event = new CustomEvent('input', {
         detail: {
-          value: dateValue.value,
-          formattedDate: userDate.value,
+          value: formattedDate.value,
+          formattedDate: userFormattedDate.value,
           date: selectedDate.value,
         },
       });
       
       emit('change', event);
       emit('input', event);
-      emit('update:modelValue', dateValue.value);      
+      emit('update:modelValue', formattedDate.value);      
     };
 
     // Note about `selectMonth` and `selectYear` methods:
@@ -486,7 +488,7 @@ export default defineComponent({
     
     provide('currentView', currentView);
     
-    provide('userDate', userDate);
+    provide('userFormattedDate', userFormattedDate);
 
     return {
       configuration,
@@ -494,7 +496,9 @@ export default defineComponent({
       blurOnChildHandler,
       enterHandler,
       keyboardNavigationHandler,
-      
+      formattedDate,
+      userFormattedDate,
+      selectedDate,
     };
   },
 

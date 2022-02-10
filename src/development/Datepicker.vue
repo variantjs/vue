@@ -31,12 +31,22 @@
       <t-datepicker
         v-model="date"
       >
-        <template #trigger="{ focusHandler, blurHandler }">
-          <div class="flex items-center space-x-2 ">
-            <span
-              class="bg-gray-200 text-gray-800 text-xs font-mono rounded py-1 px-2"
-              v-text="date"
-            />
+        <template #trigger="{ focusHandler, blurHandler, formattedDate, userFormattedDate }">
+          <div class="flex items-center space-x-2 border-2 p-3 shadow-inner ">
+            <div class="flex items-center space-x-2">
+              <span>Value</span>
+              <span
+                class="bg-gray-200 text-gray-800 text-xs font-mono rounded py-1 px-2"
+                v-text="formattedDate"
+              />
+            </div>
+            <div class="flex items-center space-x-2">
+              <span>Formatted</span>
+              <span
+                class="bg-gray-200 text-gray-800 text-xs font-mono rounded py-1 px-2"
+                v-text="userFormattedDate"
+              />
+            </div>
 
             <button
               type="button"
