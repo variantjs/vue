@@ -222,7 +222,8 @@ export default defineComponent({
       return popperOptions;
     },
     shouldShowWhenClicked(): boolean {
-      return this.isTouchOnlyDevice
+      return !this.shown
+        && this.isTouchOnlyDevice
         && (this.configuration.toggleOnFocus === true || this.configuration.toggleOnHover === true);
     },
   },
@@ -463,7 +464,7 @@ export default defineComponent({
         return;
       }
 
-      if (this.configuration.toggleOnFocus) {
+      if (this.configuration.toggleOnFocus && !this.shown) {
         this.throttledShow!();
       }
     },
@@ -480,7 +481,7 @@ export default defineComponent({
         return;
       }
 
-      if (this.configuration.toggleOnFocus && !isChild) {
+      if (this.shown && this.configuration.toggleOnFocus && !isChild) {
         this.throttledHide!();
       }
     },
@@ -495,7 +496,7 @@ export default defineComponent({
         return;
       }
 
-      if (this.configuration.toggleOnHover) {
+      if (this.configuration.toggleOnHover && !this.shown) {
         this.doShow();
       }
     },
@@ -506,7 +507,7 @@ export default defineComponent({
         return;
       }
 
-      if (this.configuration.toggleOnHover && !this.targetIsChild(e.relatedTarget)) {
+      if (this.shown && this.configuration.toggleOnHover && !this.targetIsChild(e.relatedTarget)) {
         this.hideAfterTimeout();
       }
     },
@@ -517,7 +518,7 @@ export default defineComponent({
         return;
       }
 
-      if (this.configuration.toggleOnFocus || this.configuration.toggleOnHover) {
+      if (this.shown && (this.configuration.toggleOnFocus || this.configuration.toggleOnHover)) {
         this.doHide();
       }
     },
