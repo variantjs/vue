@@ -36,4 +36,5 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   toggleOnClick?: boolean,
   toggleOnHover?: boolean,
   hideOnLeaveTimeout?: number,
+  closeOnSelect?: boolean,
 } & HTMLAttributes & Data, TDatepickerClassesValidKeys>;

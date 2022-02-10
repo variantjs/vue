@@ -26,6 +26,7 @@
     @keydown.left="keyboardNavigationHandler"
     @keydown.right="keyboardNavigationHandler"
     @keydown.enter="enterHandler"
+    @before-show="beforeShowHandler"
   >
     <template #trigger="{ focusHandler, blurHandler }">
       <slot
@@ -210,6 +211,10 @@ export default defineComponent({
       type: Number,
       default: 250,
     },
+    closeOnSelect: {
+      type: Number,
+      default: 250,
+    },
   },
   emits: {
     change: (e: CustomEvent) => e instanceof CustomEvent,
@@ -234,18 +239,20 @@ export default defineComponent({
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
+    const dropdownComponent = ref<{
+      doHide: () => Promise<void>;
+    } | undefined>(undefined);
+
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
 
     const formatDate = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
-
-    const currentView = ref<TDatepickerView>(configuration.initialView!);
+    
+    const dateRangeSeparator = computed<string>(() => {
+      return (configuration.locale || dateEnglishLocale).rangeSeparator || dateEnglishLocale.rangeSeparator;
+    });
 
     // The active date is usually hidden but shown when navigating with the keyboard
     const showActiveDate = ref<boolean>(false);
-
-    const setCurrentView = (view: TDatepickerView) => {
-      currentView.value = view;
-    };
 
     const getInitialSelectedDate = (): Date | Date[] | undefined => {
       let selectedDate: Date | undefined | Date[] = configuration.multiple || configuration.range ? [] : undefined;
@@ -260,6 +267,8 @@ export default defineComponent({
 
       return selectedDate;
     };
+
+    const getInitialView = (): TDatepickerView => configuration.initialView!;
 
     const getInitialActiveDate = (selectedDate: Date | Date[] | undefined): Date => {
       let activeDate: Date = new Date();
@@ -287,24 +296,17 @@ export default defineComponent({
       return activeDate;
     };
 
+    
+
     const selectedDate = ref<Date | Date[] | undefined>(getInitialSelectedDate());
 
     const activeDate = ref<Date>(getInitialActiveDate(selectedDate.value));
-    
-    const formattedDate = computed<string | string[]>(() => {
-      return Array.isArray(selectedDate.value) 
-        ? selectedDate.value.map((dateItem) => formatDate.value(dateItem, configuration.dateFormat))
-        : formatDate.value(selectedDate.value, configuration.dateFormat);
-    });
 
-    const userFormattedDate = computed<string>(() => {
-      return Array.isArray(selectedDate.value) 
-        ? selectedDate.value
-          .map((dateItem) => formatDate.value(dateItem, configuration.userFormat))
-          // @TODO: Date separator comes from the configuration
-          .join(', ')
-        : formatDate.value(selectedDate.value, configuration.userFormat);
-    });
+    const currentView = ref<TDatepickerView>(getInitialView());
+
+    const setCurrentView = (view: TDatepickerView) => {
+      currentView.value = view;
+    };
 
     const setActiveDate = (date: Date) => {
       activeDate.value = date;
@@ -317,6 +319,33 @@ export default defineComponent({
         setCurrentView(TDatepickerView.Day);
       }
     };
+
+    const setSelectedDate = (date: Date | Date[] | undefined) => {
+      selectedDate.value = date;
+    };
+
+    const initView = () => {
+      setSelectedDate(getInitialSelectedDate());
+      setCurrentView(getInitialView());
+      setActiveDate(getInitialActiveDate(selectedDate.value));
+    };
+    
+    const formattedDate = computed<string | string[]>(() => {
+      return Array.isArray(selectedDate.value) 
+        ? selectedDate.value.map((dateItem) => formatDate.value(dateItem, configuration.dateFormat))
+        : formatDate.value(selectedDate.value, configuration.dateFormat);
+    });
+
+    const userFormattedDate = computed<string>(() => {
+      return Array.isArray(selectedDate.value) 
+        ? selectedDate.value
+          .map((dateItem) => formatDate.value(dateItem, configuration.userFormat))
+          // @TODO: Date separator comes from the configuration
+          .join(configuration.range ? dateRangeSeparator.value : ', ')
+        : formatDate.value(selectedDate.value, configuration.userFormat);
+    });
+
+   
 
     const getNewSelectedDate = (day: Date): Date | Date[] => {
       // If we are using multiple or range means that the day consists of an array
@@ -358,26 +387,37 @@ export default defineComponent({
       return day;
     };
 
-    const setSelectedDate = (date: Date | Date[] | undefined) => {
-      selectedDate.value = date;
+
+    const hide = async () => {
+      await dropdownComponent.value!.doHide();
     };
 
     const selectDay = (day: Date) => {
-      setSelectedDate(getNewSelectedDate(day));
+      const newSelectedDate = getNewSelectedDate(day);
 
       setActiveDate(day);
+
+      setSelectedDate(newSelectedDate);
+      
+      if (configuration.range && !(Array.isArray(newSelectedDate) && newSelectedDate.length === 2)) {
+        return;
+      }
 
       const event = new CustomEvent('input', {
         detail: {
           value: formattedDate.value,
           formattedDate: userFormattedDate.value,
-          date: selectedDate.value,
+          date: newSelectedDate,
         },
       });
       
       emit('change', event);
       emit('input', event);
       emit('update:modelValue', formattedDate.value);      
+
+      if (configuration.closeOnSelect) {
+        hide();
+      }
     };
 
     // Note about `selectMonth` and `selectYear` methods:
@@ -460,6 +500,9 @@ export default defineComponent({
       showActiveDate.value = true;
     };
 
+    const beforeShowHandler = () => {
+      initView();
+    };
 
     provide('activeDate', activeDate);
 
@@ -490,11 +533,13 @@ export default defineComponent({
     provide('userFormattedDate', userFormattedDate);
 
     return {
+      dropdownComponent,
       configuration,
       attributes,
       blurOnChildHandler,
       enterHandler,
       keyboardNavigationHandler,
+      beforeShowHandler,
       formattedDate,
       userFormattedDate,
       selectedDate,
