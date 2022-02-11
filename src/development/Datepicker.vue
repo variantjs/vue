@@ -113,6 +113,85 @@
         v-model:show="show"
       />
     </TInputGroup>
+
+    <TInputGroup
+      label="Toggle on focus"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        toggle-on-focus
+        :toggle-on-click="false"
+        :toggle-on-hover="false"
+      />
+    </TInputGroup>
+
+    <TInputGroup
+      label="Toggle on hover"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        toggle-on-hover
+        :toggle-on-click="false"
+        :toggle-on-focus="false"
+      />
+    </TInputGroup>
+    <TInputGroup
+      label="Toggle on click"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        toggle-on-click
+        :toggle-on-focus="false"
+        :toggle-on-hover="false"
+      />
+    </TInputGroup>
+    <TInputGroup
+      label="Toggle on click + focus (default)"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        toggle-on-click
+        toggle-on-focus
+        :toggle-on-hover="false"
+      />
+    </TInputGroup>
+    <TInputGroup
+      label="Toggle on click + focus + hover"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        toggle-on-click
+        toggle-on-focus
+        toggle-on-hover
+      />
+    </TInputGroup>
+    <TInputGroup
+      label="Toggle on focus + hover"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        :toggle-on-click="false"
+        toggle-on-focus
+        toggle-on-hover
+      />
+    </TInputGroup>
+    <TInputGroup
+      label="Toggle on click + hover"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        toggle-on-click
+        :toggle-on-focus="false"
+        toggle-on-hover
+      />
+    </TInputGroup>
   </t-card>
 </template>
 
