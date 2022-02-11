@@ -38,17 +38,21 @@
         :hide="doHide"
         :show="doShow"
       >
-        <datepicker-trigger
+        <input
+          class="block w-full px-3 py-2 text-black placeholder-gray-400 transition duration-100 ease-in-out bg-white border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed text-left"
+          :type="configuration.inputType"
+          :value="userFormattedDate"
+          @input="userInputHandler"
           @focus="focusHandler"
           @blur="blurHandler"
-          @mousedown="clickHandler"
-          @keydown.enter="clickHandler"
-          @keydown.space="() => configuration.inputType === 'button' ? clickHandler() : undefined"
+          @mousedown.stop="clickHandler"
+          @keydown.enter.stop="clickHandler"
+          @keydown.space.stop="(e) => configuration.inputType === 'button' ? clickHandler(e) : undefined"
           @keydown.down="keyboardNavigationHandler"
           @keydown.up="keyboardNavigationHandler"
           @keydown.left="keyboardNavigationHandler"
           @keydown.right="keyboardNavigationHandler"
-        />
+        >
       </slot>
     </template>
       
@@ -105,7 +109,6 @@ import {
   TDatepickerOptions, TDatepickerValue,
 } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
-import DatepickerTrigger from './TDatepicker/DatepickerTrigger.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
 import { TDatepickerSingleValue, TDatepickerView } from '../types/components/t-datepicker';
 
@@ -114,7 +117,6 @@ export default defineComponent({
   name: 'TDatepicker',
   components: {
     DatepickerDropdown,
-    DatepickerTrigger,
     TDropdown,
   },
   props: {
@@ -320,8 +322,6 @@ export default defineComponent({
     const setActiveDate = (date: Date) => {
       activeDate.value = date;
       
-      showActiveDate.value = false;
-
       if (currentView.value === TDatepickerView.Year) {
         setCurrentView(TDatepickerView.Month);
       } else if (currentView.value === TDatepickerView.Month) {
@@ -336,11 +336,11 @@ export default defineComponent({
     const initView = () => {
       setCurrentView(getInitialView());
       setActiveDate(getInitialActiveDate(selectedDate.value));
+      showActiveDate.value = false;
     };
 
     watch(() => props.modelValue, (value: TDatepickerValue) => {
       setSelectedDate(getInitialSelectedDate(value));
- 
     });
     
     const formattedDate = computed<string | string[]>(() => {
@@ -418,6 +418,8 @@ export default defineComponent({
     const selectDay = (day: Date) => {
       const newSelectedDate = getNewSelectedDate(day);
 
+      showActiveDate.value = false;
+     
       setActiveDate(day);
 
       setSelectedDate(newSelectedDate);
@@ -438,7 +440,7 @@ export default defineComponent({
       emit('input', event);
       emit('update:modelValue', formattedDate.value);      
 
-      if (configuration.closeOnSelect) {
+      if (configuration.closeOnSelect && shown.value === true) {
         doHide();
       }
     };
@@ -460,11 +462,23 @@ export default defineComponent({
       selectDay(activeDate.value);
     };
 
-    const clickHandler = () => {
-      if (shown.value) {
+    const clickHandler = (e: KeyboardEvent | MouseEvent) => {
+      const input = e.target as (HTMLInputElement | HTMLButtonElement | undefined);
+
+      if (shown.value === true) {
         selectActiveDate();
-      } else {
-        doShow();
+      } else if (configuration.toggleOnClick) {
+        const parsedDate = input && input.value ? parseDate.value(input.value, configuration.userFormat) : undefined;
+
+        if (parsedDate !== undefined) {
+          setActiveDate(parsedDate);
+
+          selectActiveDate();
+        }
+
+        if (configuration.toggleOnClick) {
+          doShow();
+        }
       }
     };
 
@@ -537,6 +551,19 @@ export default defineComponent({
       initView();
     };
 
+    const userInputHandler = (e: Event) => {
+
+
+      const input = e.target as HTMLInputElement;
+      
+      const parsedDate = parseDate.value(input.value, configuration.userFormat);
+      
+      if (parsedDate !== undefined) {
+        showActiveDate.value = true;
+        setActiveDate(parsedDate);
+      }
+    };
+
     provide('activeDate', activeDate);
 
     provide('showActiveDate', showActiveDate);
@@ -572,6 +599,7 @@ export default defineComponent({
       clickHandler,
       keyboardNavigationHandler,
       beforeShowHandler,
+      userInputHandler,
       doHide,
       doShow,
       shown,
