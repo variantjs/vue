@@ -73,16 +73,16 @@ import {
   debounce,
   elementIsTargetOrTargetChild,
   getFocusableElements,
-  isTouchOnlyDevice as getIsTouch,
   throttle,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   DebouncedFn,
 } from '@variantjs/core';
 import {
-  defineComponent, PropType, onMounted, ref,
+  defineComponent, PropType, 
 } from 'vue';
 import { TDropdownOptions } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
+import useIsTouchOnlyDevice from '../use/useIsTouchOnlyDevice';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import Transitionable from './misc/Transitionable.vue';
 
@@ -189,11 +189,7 @@ export default defineComponent({
   setup() {
     const { configuration, attributes } = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, TDropdownClassesKeys);
 
-    const isTouchOnlyDevice = ref<boolean>(false);
-
-    onMounted(() => {
-      isTouchOnlyDevice.value = getIsTouch();
-    });
+    const isTouchOnlyDevice = useIsTouchOnlyDevice();
 
     return { configuration, attributes, isTouchOnlyDevice };
   },
@@ -238,9 +234,9 @@ export default defineComponent({
     },
     'configuration.show': function configurationShowWatch(show: boolean): void {
       if (show) {
-        this.doShow();
+        this.throttledShow!();
       } else {
-        this.doHide();
+        this.throttledHide!();
       }
     },
   },
@@ -461,10 +457,6 @@ export default defineComponent({
     focusHandler(e: FocusEvent): void {
       this.$emit('focus', e);
 
-      if (this.isTouchOnlyDevice) {
-        return;
-      }
-
       if (this.configuration.toggleOnFocus && !this.shown) {
         this.throttledShow!();
       }
@@ -476,10 +468,6 @@ export default defineComponent({
         this.$emit('blur', e);
       } else {
         this.$emit('blur-on-child', e);
-      }
-
-      if (this.isTouchOnlyDevice) {
-        return;
       }
 
       if (this.shown && this.configuration.toggleOnFocus && !isChild) {
