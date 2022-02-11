@@ -13,7 +13,7 @@
 <script lang="ts">
 import { range, addMonths } from '@variantjs/core';
 import {
-  defineComponent, inject, Ref,
+  defineComponent, inject, Ref, computed,
 } from 'vue';
 import DatepickerViewYearMonth from './DatepickerViewYearMonth.vue';
 
@@ -29,10 +29,10 @@ export default defineComponent({
     // it have different days, for example: If the active date is `2019-01-31` 
     // (last day of january) the next month day will be `2019-02-28` (last day
     // of february).
-    const months: Date[] = range(
+    const months = computed<Date[]>(() => range(
       activeDate.value.getMonth() * -1,
       11 - activeDate.value.getMonth(),
-    ).map((monthDiff) => addMonths(activeDate.value, monthDiff));
+    ).map((monthDiff) => addMonths(activeDate.value, monthDiff)));
 
     return { months };
   },

@@ -101,6 +101,7 @@ import {
   addYears,
   addMonths,
   addDays,
+  dateIsValid,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -320,20 +321,26 @@ export default defineComponent({
     };
 
     const setActiveDate = (date: Date) => {
-      activeDate.value = date;
-      
-      if (currentView.value === TDatepickerView.Year) {
-        setCurrentView(TDatepickerView.Month);
-      } else if (currentView.value === TDatepickerView.Month) {
-        setCurrentView(TDatepickerView.Day);
+      if (!dateIsValid(date)) {
+        return;
       }
+
+      activeDate.value = date;
     };
 
     const setSelectedDate = (date: Date | Date[] | undefined) => {
+      if (Array.isArray(date)) {
+        if (date.some((value) => !dateIsValid(value))) {
+          return;
+        }
+      } else if (!dateIsValid(date)) {
+        return;
+      }
+
       selectedDate.value = date;
     };
 
-    const initView = () => {
+    const initViewData = () => {
       setCurrentView(getInitialView());
       setActiveDate(getInitialActiveDate(selectedDate.value));
       showActiveDate.value = false;
@@ -452,10 +459,14 @@ export default defineComponent({
     // year which means we should also handle the input event
     const selectMonth = (month: Date) => {
       setActiveDate(month);
+
+      setCurrentView(TDatepickerView.Day);
     };
 
     const selectYear = (year: Date) => {
       setActiveDate(year);
+
+      setCurrentView(TDatepickerView.Month);
     };
 
     const selectActiveDate = () => {
@@ -537,23 +548,23 @@ export default defineComponent({
 
       // Depending of the view (year view, month view or day views the amount of days is different)
       if (currentView.value === TDatepickerView.Year) {
-        activeDate.value = addYears(activeDate.value, daysPerView);
+        setActiveDate(addYears(activeDate.value, daysPerView));
       } else if (currentView.value === TDatepickerView.Month) {
-        activeDate.value = addMonths(activeDate.value, daysPerView);
+        setActiveDate(addMonths(activeDate.value, daysPerView));
       } else if (currentView.value === TDatepickerView.Day) {
-        activeDate.value = addDays(activeDate.value, daysPerView);
+        setActiveDate(addDays(activeDate.value, daysPerView));
       }
 
       showActiveDate.value = true;
     };
 
+   
+
     const beforeShowHandler = () => {
-      initView();
+      initViewData();
     };
 
     const userInputHandler = (e: Event) => {
-
-
       const input = e.target as HTMLInputElement;
       
       const parsedDate = parseDate.value(input.value, configuration.userFormat);
@@ -573,7 +584,8 @@ export default defineComponent({
     provide('setSelectedDate', setSelectedDate);
     
     provide('setActiveDate', setActiveDate);
-
+    
+    
     provide('configuration', configuration);
 
     provide('parseDate', parseDate);

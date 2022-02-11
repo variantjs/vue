@@ -28,7 +28,7 @@ export default defineComponent({
     const years = computed<Date[]>(() => {
       const currentYear = activeDate.value.getFullYear();
       const from = currentYear - (currentYear % 12);
-      const to = from + 11;
+      const to = Math.min(9999, from + 11);
 
       return range(from, to).map((rangeYear) => {
         const year = clone(activeDate.value);

@@ -1,8 +1,9 @@
 <template>
   <div class="flex px-3 pt-2">
     <button
+      :aria-label="toggleViewAriaLabel"
       type="button"
-      class="flex inline-flex items-center px-2 py-1 -ml-1 transition duration-100 ease-in-out rounded-full cursor-pointer hover:bg-gray-100"
+      class="inline-flex items-center px-2 py-1 -ml-1 transition duration-100 ease-in-out rounded-full cursor-pointer hover:bg-gray-100"
       tabindex="-1"
       @click="toggleView"
     >
@@ -42,10 +43,11 @@
     </button>
     
     <button
-      aria-label="Prev Year"
+      :aria-label="prevAriaLabel"
       type="button"
       class="inline-flex p-1 ml-auto transition duration-100 ease-in-out rounded-full cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
       tabindex="-1"
+      @click="prevGroupHandler"
     >
       <svg
         fill="none"
@@ -59,11 +61,14 @@
         d="M15 19l-7-7 7-7"
       /></svg>
     </button>
+
+
     <button
-      aria-label="Next Year"
+      :aria-label="nextAriaLabel"
       type="button"
       class="inline-flex p-1 -mr-1 transition duration-100 ease-in-out rounded-full cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
       tabindex="-1"
+      @click="nextGroupHandler"
     >
       <svg
         fill="none"
@@ -81,7 +86,7 @@
 </template>
 
 <script lang="ts">
-import { DateFormatter } from '@variantjs/core';
+import { addMonths, addYears, DateFormatter } from '@variantjs/core';
 import { ComputedRef, defineComponent, inject, Ref, computed } from 'vue';
 import { TDatepickerView } from '../../types/components/t-datepicker';
 
@@ -92,6 +97,7 @@ export default defineComponent({
     const activeDate = inject<Ref<Date>>('activeDate')!;
     const formatDate = inject<ComputedRef<DateFormatter>>('formatDate')!;
     const setCurrentView = inject<(view: TDatepickerView) => void>('setCurrentView')!;
+    const setActiveDate = inject<(date: Date) => void>('setActiveDate')!;
     const currentView = inject<Ref<TDatepickerView>>('currentView')!;
 
     const monthName = computed<string>(() => formatDate.value(activeDate.value, 'F')) ;
@@ -107,6 +113,30 @@ export default defineComponent({
       return [from, to];
     });
 
+    const prevAriaLabel = computed<string>(() => 'Prev Year') ;
+    const nextAriaLabel = computed<string>(() => 'Next Year') ;
+    const toggleViewAriaLabel = computed<string>(() => 'Toggle View') ;
+
+    const nextGroupHandler = () => {
+      if (currentView.value === TDatepickerView.Year) {
+        setActiveDate(addYears(activeDate.value, 12));
+      } else if (currentView.value === TDatepickerView.Month) {
+        setActiveDate(addYears(activeDate.value, 1));
+      } else  {
+        setActiveDate(addMonths(activeDate.value, 1));
+      }
+    };
+
+    const prevGroupHandler = () => {
+      if (currentView.value === TDatepickerView.Year) {
+        setActiveDate(addYears(activeDate.value, -12));
+      } else if (currentView.value === TDatepickerView.Month) {
+        setActiveDate(addYears(activeDate.value, -1));
+      } else {
+        setActiveDate(addMonths(activeDate.value, -1));
+      }
+    };
+
     const toggleView = () => {
       if (isMonthView.value) {
         setCurrentView(TDatepickerView.Month);
@@ -117,7 +147,7 @@ export default defineComponent({
       }
     };
 
-    return { monthName, year, toggleView, isMonthView, isYearView, yearsRange };
+    return { monthName, year, toggleView, isMonthView, isYearView, yearsRange, nextAriaLabel, prevAriaLabel, toggleViewAriaLabel, nextGroupHandler, prevGroupHandler };
   },
 });
 </script>
