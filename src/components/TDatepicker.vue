@@ -243,15 +243,13 @@ export default defineComponent({
     // - Reinitialize the range after the dropdown is closed
     // - Range and multiple: Consider selected dates outside of the view
     // - Disabled dates shouldn't be selectable and needs his own styling (`DatepickerViewMonthDay`)
+    // - Disable "visible" dates in the invalid range < year 0 > year 9999
     // - Add teleport options
-    // - Add toggle-on options from the configuration as the dropdown
     // - In general check which dropdown options/events are usable
     // - Add selectOnClose, closeOnSelected and see if something from the rich select can be used
     // - Show active date should be reset in some cases TBD
-    // - Toggle datepicker on enter accoridng to props (since its overriding the dropdown option)
     // - Check aria labels on buttons 
     // - Replace svg icons with icon component
-    // - When changing the active date we should reset the active view after closing the dropdown
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
