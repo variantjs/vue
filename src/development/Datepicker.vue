@@ -43,6 +43,15 @@
       />
     </TInputGroup>
     <TInputGroup
+      label="Read only"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        readonly
+      />
+    </TInputGroup>
+    <TInputGroup
       label="Custom Selector"
       class="mb-4"
     >

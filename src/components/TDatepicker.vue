@@ -34,6 +34,7 @@
           :name="configuration.userInputName"
           :value="userFormattedDate"
           :disabled="configuration.disabled"
+          :readonly="configuration.readonly"
           v-bind="configuration.userInputAttributes"
           @input="userInputHandler"
           @focus="focusHandler"
@@ -186,6 +187,10 @@ export default defineComponent({
       default: false,
     },
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    readonly: {
       type: Boolean,
       default: false,
     },
