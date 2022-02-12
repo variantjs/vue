@@ -30,15 +30,16 @@
       >
         <input
           class="block w-full px-3 py-2 text-black placeholder-gray-400 transition duration-100 ease-in-out bg-white border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed text-left"
-          v-bind="configuration.inputAttributes"
-          :type="configuration.inputType"
+          :type="configuration.userInputType"
+          :name="configuration.userInputName"
           :value="userFormattedDate"
+          v-bind="configuration.userInputAttributes"
           @input="userInputHandler"
           @focus="focusHandler"
           @blur="blurHandler"
           @mousedown.stop="clickHandler"
           @keydown.enter.stop="clickHandler"
-          @keydown.space.stop="(e) => configuration.inputType === 'button' ? clickHandler(e) : undefined"
+          @keydown.space.stop="(e) => configuration.userInputType === 'button' ? clickHandler(e) : undefined"
           @keydown.down="keyboardNavigationHandler"
           @keydown.up="keyboardNavigationHandler"
           @keydown.left="keyboardNavigationHandler"
@@ -46,10 +47,11 @@
         >
       </slot>
 
-      <datepicker-form-input
+      <component-form-input
         v-if="showFormInput"
         :values="formattedDate"
         :input-attributes="formInputAttributes"
+        :input-name="configuration.name"
       />
         
       <datepicker-dropdown />
@@ -107,7 +109,7 @@ import useConfigurationWithClassesList from '../use/useConfigurationWithClassesL
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { TDatepickerOptions, TDatepickerValue } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
-import DatepickerFormInput from './TDatepicker/DatepickerFormInput.vue';
+import ComponentFormInput from './misc/ComponentFormInput.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
 import { TDatepickerSingleValue, TDatepickerView } from '../types/components/t-datepicker';
 
@@ -117,7 +119,7 @@ export default defineComponent({
   components: {
     DatepickerDropdown,
     TDropdown,
-    DatepickerFormInput,
+    ComponentFormInput,
   },
   props: {
     ...getVariantPropsWithClassesList<TDatepickerOptions, TDatepickerClassesValidKeys>(),
@@ -149,13 +151,21 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    inputType: {
+    userInputName: {
+      type: String,
+      default: undefined,
+    },
+    userInputType: {
       type: String,
       default: 'text',
     },
-    inputAttributes: {
+    userInputAttributes: {
       type: Object as PropType<InputHTMLAttributes & Data>,
       default: () => {},
+    },
+    name: {
+      type: String,
+      default: undefined,
     },
     formInputAttributes: {
       type: Object as PropType<InputHTMLAttributes & Data>,

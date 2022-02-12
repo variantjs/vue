@@ -38,8 +38,10 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   hideOnLeaveTimeout?: number,
   closeOnSelect?: boolean,
   show?: boolean,
-  inputType?: string,
-  inputAttributes?: InputHTMLAttributes & Data,
+  userInputName?: string,
+  userInputType?: string,
+  userInputAttributes?: InputHTMLAttributes & Data,
+  name?: string,
   formInputAttributes?: InputHTMLAttributes & Data,
   showFormInput?: boolean,
 } & HTMLAttributes & Data, TDatepickerClassesValidKeys>;
