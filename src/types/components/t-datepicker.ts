@@ -1,7 +1,7 @@
 import {
   Data, DateConditions, DateFormatter, DateLocale, DateParser, DateValue, TDatepickerClassesValidKeys, WithVariantPropsAndClassesList,
 } from '@variantjs/core';
-import { HTMLAttributes } from 'vue';
+import { HTMLAttributes, InputHTMLAttributes } from 'vue';
 import { Placement, Options } from '@popperjs/core';
 
 export type TDatepickerSingleValue = DateValue | undefined | null;
@@ -39,4 +39,7 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   closeOnSelect?: boolean,
   show?: boolean,
   inputType?: string,
+  inputAttributes?: InputHTMLAttributes & Data,
+  formInputAttributes?: InputHTMLAttributes & Data,
+  showFormInput?: boolean,
 } & HTMLAttributes & Data, TDatepickerClassesValidKeys>;

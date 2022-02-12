@@ -1,14 +1,4 @@
 <template>
-  <!-- <t-select
-      v-model="localValue"
-      :name="configuration.name"
-      style="display: none"
-      :fixed-classes="undefined"
-      :classes="undefined"
-      :multiple="configuration.multiple"
-      :options="flattenedOptions"
-    /> -->
-
   <t-dropdown
     ref="dropdownComponent"
     v-model:show="shown"
@@ -40,6 +30,7 @@
       >
         <input
           class="block w-full px-3 py-2 text-black placeholder-gray-400 transition duration-100 ease-in-out bg-white border border-gray-300 rounded shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed text-left"
+          v-bind="configuration.inputAttributes"
           :type="configuration.inputType"
           :value="userFormattedDate"
           @input="userInputHandler"
@@ -54,9 +45,15 @@
           @keydown.right="keyboardNavigationHandler"
         >
       </slot>
+
+      <datepicker-form-input
+        v-if="showFormInput"
+        :values="formattedDate"
+        :input-attributes="formInputAttributes"
+      />
+        
+      <datepicker-dropdown />
     </template>
-      
-    <datepicker-dropdown />
   </t-dropdown>
 
   <!-- <rich-select-clear-button
@@ -82,6 +79,7 @@ import {
   provide,
   computed,
   watch,
+  InputHTMLAttributes,
 } from 'vue';
 
 import {
@@ -102,14 +100,14 @@ import {
   addMonths,
   addDays,
   dateIsValid,
+  Data,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
-import {
-  TDatepickerOptions, TDatepickerValue,
-} from '../types';
+import { TDatepickerOptions, TDatepickerValue } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
+import DatepickerFormInput from './TDatepicker/DatepickerFormInput.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
 import { TDatepickerSingleValue, TDatepickerView } from '../types/components/t-datepicker';
 
@@ -119,6 +117,7 @@ export default defineComponent({
   components: {
     DatepickerDropdown,
     TDropdown,
+    DatepickerFormInput,
   },
   props: {
     ...getVariantPropsWithClassesList<TDatepickerOptions, TDatepickerClassesValidKeys>(),
@@ -154,6 +153,18 @@ export default defineComponent({
       type: String,
       default: 'text',
     },
+    inputAttributes: {
+      type: Object as PropType<InputHTMLAttributes & Data>,
+      default: () => {},
+    },
+    formInputAttributes: {
+      type: Object as PropType<InputHTMLAttributes & Data>,
+      default: () => {},
+    },
+    showFormInput: {
+      type: Boolean,
+      default: true,
+    },  
     monthsPerView: {
       type: Number,
       default: 1,
@@ -555,8 +566,6 @@ export default defineComponent({
 
       showActiveDate.value = true;
     };
-
-   
 
     const beforeShowHandler = () => {
       initViewData();
