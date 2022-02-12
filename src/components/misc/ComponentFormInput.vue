@@ -3,9 +3,10 @@
     v-for="(item, index) in valueAsArray"
     :key="`${item}-${index}`"
     :name="inputName"
-    v-bind="inputAttributes"
+    :disabled="disabled"
     type="hidden"
     :value="item"
+    v-bind="inputAttributes"
   >
 </template>
 
@@ -25,18 +26,24 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
-    values: {
-      type: [String, Array] as PropType<string | string[]>,
+    // eslint-disable-next-line vue/require-prop-types
+    value: {      
       required: true,
     },
     inputAttributes: {
       type: Object as PropType<InputHTMLAttributes & Data>,
       default: () => {},
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     valueAsArray(): string[] {
-      return Array.isArray(this.values) ? this.values : [this.values];
+      return Array.isArray(this.value)
+        ? this.value.map(v => String(v))
+        : [String(this.value)];
     },
   },
 });

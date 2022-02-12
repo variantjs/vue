@@ -48,9 +48,9 @@
       </slot>
 
       <component-form-input
-        v-if="showFormInput"
-        :values="formattedDate"
-        :input-attributes="formInputAttributes"
+        v-if="configuration.addFormInput"
+        :value="formattedDate"
+        :input-attributes="configuration.formInputAttributes"
         :input-name="configuration.name"
       />
     </template>
@@ -171,7 +171,7 @@ export default defineComponent({
       type: Object as PropType<InputHTMLAttributes & Data>,
       default: () => {},
     },
-    showFormInput: {
+    addFormInput: {
       type: Boolean,
       default: true,
     },  

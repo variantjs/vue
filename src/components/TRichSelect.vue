@@ -3,16 +3,6 @@
     :class="configuration.classesList?.wrapper"
     v-bind="attributes"
   >
-    <t-select
-      v-model="localValue"
-      :name="configuration.name"
-      style="display: none"
-      :fixed-classes="undefined"
-      :classes="undefined"
-      :multiple="configuration.multiple"
-      :options="flattenedOptions"
-    />
-
     <t-dropdown
       ref="dropdownComponent"
       :disabled="configuration.disabled"
@@ -78,6 +68,14 @@
             />
           </template>
         </rich-select-trigger>
+
+        <component-form-input
+          v-if="configuration.addFormInput"
+          :value="localValue"
+          :input-attributes="configuration.formInputAttributes"
+          :disabled="configuration.disabled"
+          :input-name="configuration.name"
+        />
       </template>
 
       <rich-select-dropdown ref="dropdown">
@@ -138,7 +136,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, PropType, provide, ref, computed,
+  defineComponent, PropType, provide, ref, computed, InputHTMLAttributes,
 } from 'vue';
 import {
   InputOptions,
@@ -170,8 +168,8 @@ import {
 import RichSelectTrigger from './TRichSelect/RichSelectTrigger.vue';
 import RichSelectDropdown from './TRichSelect/RichSelectDropdown.vue';
 import RichSelectClearButton from './TRichSelect/RichSelectClearButton.vue';
+import ComponentFormInput from './misc/ComponentFormInput.vue';
 import TDropdown, { validDropdownPlacements } from './TDropdown.vue';
-import TSelect from './TSelect.vue';
 import { sameWidthModifier } from '../utils/popper';
 
 // @vue/component
@@ -184,8 +182,8 @@ export default defineComponent({
     RichSelectTrigger,
     RichSelectDropdown,
     RichSelectClearButton,
+    ComponentFormInput,
     TDropdown,
-    TSelect,
   },
   props: {
     ...getVariantPropsWithClassesList<
@@ -346,6 +344,14 @@ export default defineComponent({
     teleportTo: {
       type: [String, Object] as PropType<string | HTMLElement>,
       default: 'body',
+    },
+    formInputAttributes: {
+      type: Object as PropType<InputHTMLAttributes & Data>,
+      default: () => {},
+    },
+    addFormInput: {
+      type: Boolean,
+      default: true,
     },
   },
   emits: {
