@@ -33,6 +33,7 @@
           :type="configuration.userInputType"
           :name="configuration.userInputName"
           :value="userFormattedDate"
+          :disabled="configuration.disabled"
           v-bind="configuration.userInputAttributes"
           @input="userInputHandler"
           @focus="focusHandler"
@@ -52,6 +53,7 @@
         :value="formattedDate"
         :input-attributes="configuration.formInputAttributes"
         :input-name="configuration.name"
+        :disabled="configuration.disabled"
       />
     </template>
 
@@ -180,6 +182,10 @@ export default defineComponent({
       default: 1,
     },
     multiple: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },

@@ -26,6 +26,7 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   dropdownPopperOptions?: Options,
   monthsPerView?: number,
   multiple?: boolean,
+  disabled?: boolean,
   range?: boolean,
   highlightDates?: DateConditions,
   dateParser?: DateParser,

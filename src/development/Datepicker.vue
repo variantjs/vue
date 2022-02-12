@@ -34,6 +34,15 @@
       />
     </TInputGroup>
     <TInputGroup
+      label="Disabled"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        disabled
+      />
+    </TInputGroup>
+    <TInputGroup
       label="Custom Selector"
       class="mb-4"
     >
