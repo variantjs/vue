@@ -53,9 +53,9 @@
         :input-attributes="formInputAttributes"
         :input-name="configuration.name"
       />
-        
-      <datepicker-dropdown />
     </template>
+
+    <datepicker-dropdown />
   </t-dropdown>
 
   <!-- <rich-select-clear-button
@@ -601,7 +601,6 @@ export default defineComponent({
     provide('setSelectedDate', setSelectedDate);
     
     provide('setActiveDate', setActiveDate);
-    
     
     provide('configuration', configuration);
 
