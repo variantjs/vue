@@ -48,10 +48,10 @@ export default defineComponent({
 
     const days = computed<Date[]>(() => visibleDaysInMonthView(props.month, weekStart));
 
-    const weekDays = range(0, 6).map((index) => {
-      // 1900-01-01 is a Monday
-      return formatDate.value(new Date(1900, 0, index), 'D');
-    });
+    const weekDays = computed<string[]>(
+      () => range(0, 6)
+        .map((index) => formatDate.value(days.value[index], 'D')),
+    );
 
     return { days, configuration, weekDays };
   },

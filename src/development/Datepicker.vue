@@ -25,6 +25,15 @@
       <t-datepicker v-model="date" />
     </TInputGroup>
     <TInputGroup
+      label="Weekstart on Tuesday"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        :week-start="2"
+      />
+    </TInputGroup>
+    <TInputGroup
       label="Button"
       class="mb-4"
     >

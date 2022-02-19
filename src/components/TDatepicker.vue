@@ -2,7 +2,11 @@
   <t-dropdown
     ref="dropdownComponent"
     v-model:show="shown"
-    :classes="undefined"
+    :classes="{
+      // @TODO: add this to the tempalte
+      trigger: undefined,
+      dropdown: 'z-10'
+    }"
     :fixed-classes="undefined"
     :popper-options="configuration.dropdownPopperOptions"
     :placement="configuration.dropdownPlacement"
@@ -108,6 +112,7 @@ import {
   addDays,
   dateIsValid,
   Data,
+  WeekDay,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -149,8 +154,8 @@ export default defineComponent({
       default: 'F j, Y',
     },
     weekStart: {
-      type: Number,
-      default: 0,
+      type: Number as PropType<WeekDay>,
+      default: WeekDay.Sunday,
     },
     amPm: {
       type: Boolean,
@@ -292,6 +297,7 @@ export default defineComponent({
     // - Show active date should be reset in some cases TBD
     // - Check aria labels on buttons 
     // - Replace svg icons with icon component
+    // - Selecting in different view with enter closes the dropdown
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
