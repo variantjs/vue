@@ -43,6 +43,15 @@
       />
     </TInputGroup>
     <TInputGroup
+      label="Multiple months per view + range"
+      class="mb-4"
+    >
+      <t-datepicker
+        range
+        :months-per-view="3"
+      />
+    </TInputGroup>
+    <TInputGroup
       label="Button"
       class="mb-4"
     >
@@ -131,9 +140,7 @@
       label="Range"
       class="mb-4"
     >
-      <t-datepicker
-        range
-      />
+      <t-datepicker range />
     </TInputGroup>
 
     <TInputGroup

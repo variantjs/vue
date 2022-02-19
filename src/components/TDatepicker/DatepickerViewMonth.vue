@@ -23,17 +23,15 @@
 
 import { DateFormatter, range, visibleDaysInMonthView } from '@variantjs/core';
 import {
-  defineComponent, inject, computed, ComputedRef, Ref,
+  defineComponent, inject, computed, ComputedRef,
 } from 'vue';
 import { TDatepickerOptions } from '../../types/components/t-datepicker';
 import DatepickerViewMonthDay from './DatepickerViewMonthDay.vue';
-import DatepickerViewControls from './DatepickerViewControls.vue';
 
 export default defineComponent({
   name: 'DatepickerViewMonth',
   components: {
     DatepickerViewMonthDay,
-    DatepickerViewControls,
   },
   props: {
     month: {

@@ -1,6 +1,11 @@
 <template>
   <div :class="configuration.classesList?.calendarDaysDayWrapper">
+    <span
+      v-if="showEmptyPlaceholder"
+      :class="configuration.classesList?.emptyDay"
+    />
     <button
+      v-else
       :aria-label="ariaLabel"
       :data-date="dataDate"
       type="button"
@@ -135,7 +140,15 @@ export default defineComponent({
       selectDay(props.day);
     };
 
-    return { configuration, buttonClass, daySelectedHandler, ariaLabel, dataDate, dayLabel };
+    const showEmptyPlaceholder =  computed<boolean>(() => {
+      if (!isForAnotherMonth.value) {
+        return false;
+      }
+
+      return ! configuration.showDaysForOtherMonth! || configuration.monthsPerView! > 1;
+    });
+
+    return { configuration, buttonClass, daySelectedHandler, ariaLabel, dataDate, dayLabel, showEmptyPlaceholder };
   },
 });
 </script>

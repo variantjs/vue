@@ -217,6 +217,10 @@ export default defineComponent({
       type: [Date, Array, Function, String, Number] as PropType<DateConditions>,
       default: undefined,
     },
+    showDaysForOtherMonth: {
+      type: Boolean,
+      default: true,
+    },
     dropdownPlacement: {
       type: String as PropType<Placement>,
       default: undefined,
@@ -298,6 +302,7 @@ export default defineComponent({
     // - Check aria labels on buttons 
     // - Replace svg icons with icon component
     // - Selecting in different view with enter closes the dropdown
+    // - Range is being reset when dropdown is opened
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
