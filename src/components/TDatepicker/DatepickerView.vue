@@ -1,6 +1,6 @@
 <template>
   <div class="w-64">
-    <datepicker-view-controls />
+    <datepicker-view-controls :show-controls="first" />
 
     <datepicker-view-month
       v-if="isMonthView"
@@ -34,11 +34,15 @@ export default defineComponent({
       type: Date,
       required: true,
     },
+    first: {
+      type: Boolean,
+      required: true,
+    },
   },
-  setup() {
+  setup(props) {
     const currentView = inject<Ref<TDatepickerView>>('currentView')!;
 
-    const isMonthView = computed<boolean>(() => currentView.value === TDatepickerView.Day);
+    const isMonthView = computed<boolean>(() => currentView.value === TDatepickerView.Day || !props.first);
     const isYearView = computed<boolean>(() => currentView.value === TDatepickerView.Month);
     const isMultipleYearsView = computed<boolean>(() => currentView.value === TDatepickerView.Year);
 

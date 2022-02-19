@@ -34,6 +34,15 @@
       />
     </TInputGroup>
     <TInputGroup
+      label="Multiple months per view"
+      class="mb-4"
+    >
+      <t-datepicker
+        v-model="date"
+        :months-per-view="3"
+      />
+    </TInputGroup>
+    <TInputGroup
       label="Button"
       class="mb-4"
     >
