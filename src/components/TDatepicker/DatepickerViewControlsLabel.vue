@@ -1,8 +1,8 @@
 <template>
   <div class="inline-flex items-center py-1 space-x-1">
-    <template v-if="isMonthView || isYearView">
+    <template v-if="view === 'day' || view === 'month'">
       <span
-        v-if="isMonthView"
+        v-if="view === 'day'"
         class=""
         v-text="monthName"
       />
@@ -13,7 +13,7 @@
       />
 
       <svg
-        v-if="control"
+        v-if="!hideControls"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -28,7 +28,7 @@
 
     <template v-else>
       <svg
-        v-if="control"
+        v-if="!hideControls"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -50,36 +50,39 @@
 
 <script lang="ts">
 import { DateFormatter } from '@variantjs/core';
-import { ComputedRef, defineComponent, inject, Ref, computed } from 'vue';
+import { ComputedRef, defineComponent, inject, computed, PropType } from 'vue';
 import { TDatepickerView } from '../../types/components/t-datepicker';
 
 export default defineComponent({
   name: 'DatepickerViewControlsLabel',
   props: {
-    control: {
+    hideControls: {
       type: Boolean,
       default: false,
     },
+    date: {
+      type: Date,
+      required: true,
+    },
+    view: {
+      type: String as PropType<TDatepickerView>,
+      default: TDatepickerView.Day,
+    },
   },
-  setup() {
-    const activeDate = inject<Ref<Date>>('activeDate')!;
+  setup(props) {
     const formatDate = inject<ComputedRef<DateFormatter>>('formatDate')!;
-    const currentView = inject<Ref<TDatepickerView>>('currentView')!;
-
-    const monthName = computed<string>(() => formatDate.value(activeDate.value, 'F')) ;
-    const year = computed<string>(() => formatDate.value(activeDate.value, 'Y')) ;
-
-    const isMonthView = computed<boolean>(() => currentView.value === TDatepickerView.Day);
-    const isYearView = computed<boolean>(() => currentView.value === TDatepickerView.Month);
     
+    const monthName = computed<string>(() => formatDate.value(props.date, 'F')) ;
+    const year = computed<string>(() => formatDate.value(props.date, 'Y')) ;
+
     const yearsRange = computed<[number, number]>(() => {
-      const currentYear = activeDate.value.getFullYear();
+      const currentYear = props.date.getFullYear();
       const from = currentYear - (currentYear % 12);
       const to = from + 11;
       return [from, to];
     });
 
-    return { monthName, year, isMonthView, isYearView, yearsRange };
+    return { monthName, year, yearsRange };
   },
 });
 </script>

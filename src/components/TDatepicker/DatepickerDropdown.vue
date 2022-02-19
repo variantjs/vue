@@ -2,10 +2,9 @@
   <div class="inline-flex flex-col mt-1 bg-white border rounded">
     <div class="inline-flex flex-wrap ">
       <datepicker-view
-        v-for="(month, index) in activeMonths"
+        v-for="month in visibleMonths"
         :key="month.toISOString"
         :month="month"
-        :first="index === 0"
       />
     </div>
   </div>
@@ -30,11 +29,11 @@ export default defineComponent({
 
     const activeDate = inject<Ref<Date>>('activeDate')!;
 
-    const activeMonths = computed<Date[]>(() => 
-      range(1, monthsPerView)
+    const visibleMonths = computed<Date[]>(() => 
+      range(0, monthsPerView - 1)
         .map((i) => addMonths(activeDate.value, i)));
 
-    return { activeMonths };
+    return { visibleMonths };
   },
 });
 </script>
