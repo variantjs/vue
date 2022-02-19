@@ -36,6 +36,7 @@
           :disabled="configuration.disabled"
           :required="configuration.required"
           :readonly="configuration.readonly"
+          :placeholder="configuration.placeholder"
           v-bind="configuration.userInputAttributes"
           @input="userInputHandler"
           @focus="focusHandler"
@@ -198,6 +199,10 @@ export default defineComponent({
     readonly: {
       type: Boolean,
       default: false,
+    },
+    placeholder: {
+      type: String,
+      default: undefined,
     },
     range: {
       type: Boolean,

@@ -52,6 +52,14 @@
       />
     </TInputGroup>
     <TInputGroup
+      label="Placeholderr"
+      class="mb-4"
+    >
+      <t-datepicker
+        placeholder="Select a date"
+      />
+    </TInputGroup>
+    <TInputGroup
       label="Custom Selector"
       class="mb-4"
     >
