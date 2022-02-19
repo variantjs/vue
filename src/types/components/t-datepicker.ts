@@ -28,6 +28,7 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   multiple?: boolean,
   disabled?: boolean,
   readonly?: boolean,
+  required?: boolean,
   range?: boolean,
   highlightDates?: DateConditions,
   dateParser?: DateParser,
