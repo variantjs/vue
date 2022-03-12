@@ -47,9 +47,18 @@
       class="mb-4"
     >
       <t-datepicker
+        v-model="range2"
         range
         :months-per-view="3"
       />
+      
+      <p class="space-x-2 flex items-center mt-2 text-sm">
+        <span>Value:</span>
+        <span
+          class="bg-gray-200 text-gray-800 text-xs font-mono rounded py-1 px-2"
+          v-text="(range2 || []).join(' - ')"
+        />
+      </p>
     </TInputGroup>
     <TInputGroup
       label="Button"
@@ -140,7 +149,18 @@
       label="Range"
       class="mb-4"
     >
-      <t-datepicker range />
+      <t-datepicker
+        v-model="range"
+        range
+      />
+
+      <p class="space-x-2 flex items-center mt-2 text-sm">
+        <span>Value:</span>
+        <span
+          class="bg-gray-200 text-gray-800 text-xs font-mono rounded py-1 px-2"
+          v-text="(range || []).join(' - ')"
+        />
+      </p>
     </TInputGroup>
 
     <TInputGroup
@@ -268,6 +288,8 @@ export default defineComponent({
       customDate: [
         
       ],
+      range: undefined,
+      range2: undefined,
     };
   },
   methods: {

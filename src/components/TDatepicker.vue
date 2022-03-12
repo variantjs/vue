@@ -303,6 +303,10 @@ export default defineComponent({
     // - Replace svg icons with icon component
     // - Selecting in different view with enter closes the dropdown
     // - Range is being reset when dropdown is opened
+    // - When press enten in month or year views it immediatly closes the dropdown and closed the field 
+    // - when using range and have a single view should highlight the dates out of the month
+    // - when using range and have a multiple view the latest date moves the active date which upadte the first month
+    // - The click handler depnds of shown consider the case when using inline
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
@@ -320,12 +324,14 @@ export default defineComponent({
     const showActiveDate = ref<boolean>(false);
 
     const getInitialSelectedDate = (fromDate: TDatepickerValue): Date | Date[] | undefined => {
+
       let selectedDate: Date | undefined | Date[] = configuration.multiple || configuration.range ? [] : undefined;
 
       if (Array.isArray(fromDate)) {
         selectedDate = (fromDate)
           .map((value) => parseDate.value(value, configuration.dateFormat))
           .filter((value) => value !== undefined) as Date[];
+
       } else {
         selectedDate = parseDate.value(fromDate, configuration.dateFormat) || selectedDate;
       }
@@ -456,7 +462,6 @@ export default defineComponent({
       return day;
     };
 
-
     const doHide = async () => {
       shown.value = false;
     };
@@ -530,17 +535,20 @@ export default defineComponent({
       if (shown.value === true) {
         selectActiveDate();
       } else if (configuration.toggleOnClick) {
-        const parsedDate = input && input.value ? parseDate.value(input.value, configuration.userFormat) : undefined;
+        doShow();
+      }
 
-        if (parsedDate !== undefined) {
-          setActiveDate(parsedDate);
+      if (configuration.multiple || configuration.range) {
+        return;
+      }
 
-          selectActiveDate();
-        }
+      // Will try to set the data by using the user manual input
+      const parsedDate = input && input.value ? parseDate.value(input.value, configuration.userFormat) : undefined;
 
-        if (configuration.toggleOnClick) {
-          doShow();
-        }
+      if (parsedDate !== undefined) {
+        setActiveDate(parsedDate);
+
+        selectActiveDate();
       }
     };
 
