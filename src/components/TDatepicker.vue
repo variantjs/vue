@@ -277,8 +277,8 @@ export default defineComponent({
       default: 250,
     },
     closeOnSelect: {
-      type: Number,
-      default: 250,
+      type: Boolean,
+      default: true,
     },
     show: {
       type: Boolean,
@@ -306,6 +306,10 @@ export default defineComponent({
     // - When press enten in month or year views it immediatly closes the dropdown and closed the field 
     // - when using range and have a multiple view the latest date moves the active date which upadte the first month
     // - The click handler depnds of shown consider the case when using inline
+    // - Consider using an undefined default value for toggling and, in cases like multiple or range keep the modal opened by default
+    // - Once a date is selected if not opening the modal again if you click or press enter
+    // - In multiple add an ok button
+    // - Add a clear button
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
