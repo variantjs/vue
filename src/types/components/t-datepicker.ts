@@ -49,5 +49,7 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   userInputAttributes?: InputHTMLAttributes & Data,
   name?: string,
   formInputAttributes?: InputHTMLAttributes & Data,
-  addFormInput?: boolean,
+  addFormInput?: boolean,  
+  teleport?: boolean,
+  teleportTo?: string | HTMLElement,
 } & HTMLAttributes & Data, TDatepickerClassesValidKeys>;

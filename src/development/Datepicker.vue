@@ -230,6 +230,22 @@
     </TInputGroup>
 
     <TInputGroup
+      label="use Teleport"
+      class="mb-4"
+    >
+      <t-datepicker
+        teleport
+        teleport-to="#teleportHere"
+      />
+
+      <div
+        id="teleportHere"
+        class="bg-blue-100 empty:bg-red-100 p-1 "
+      />
+      <small>^ If turns blue means its working</small>
+    </TInputGroup>
+
+    <TInputGroup
       label="Syncs show property"
       class="mb-4"
     >

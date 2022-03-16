@@ -16,7 +16,9 @@
     :toggle-on-focus="configuration.toggleOnFocus"
     :hide-on-leave-timeout="configuration.hideOnLeaveTimeout"
     v-bind="attributes"
-    @blur-on-child="blurOnChildHandler"    
+    :teleport="configuration.teleport"    
+    :teleport-to="configuration.teleportTo"
+    @blur-on-child="blurOnChildHandler"
     @hidden="hiddenHandler"
     @shown="shownHandler"
     @before-show="beforeShowHandler"
@@ -289,6 +291,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    teleport: {
+      type: Boolean,
+      default: false,
+    },
+    teleportTo: {
+      type: [String, Object] as PropType<string | HTMLElement>,
+      default: 'body',
+    },
   },
   emits: {
     change: (e: CustomEvent) => e instanceof CustomEvent,
@@ -299,7 +309,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // @TODOS:
-    // - Add teleport options
     // - In general check which dropdown options/events are usable
     // - Add selectOnClose, closeOnSelected and see if something from the rich select can be used
     // - Show active date should be reset in some cases TBD
@@ -313,6 +322,7 @@ export default defineComponent({
     // - In multiple add an ok button
     // - Add a clear button
     // - If users type a date and blur it should reset the v-model date
+    // - Inside the dropdown refactor to reuse the dropdown view (recently duplciated with the teleport fix)
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
