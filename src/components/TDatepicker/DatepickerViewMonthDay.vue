@@ -100,10 +100,6 @@ export default defineComponent({
     const isActive = computed<boolean>(() => isSameDay(activeDate.value, props.day));
 
     const buttonClass = computed(() => {
-      if (isForAnotherMonth.value) {
-        return configuration.classesList?.otherMonthDay;
-      }
-
       if (isFirstDayOfRange.value) {
         return configuration.classesList?.inRangeFirstDay;
       }
@@ -130,6 +126,10 @@ export default defineComponent({
 
       if (isToday.value) {
         return configuration.classesList?.today;
+      }
+
+      if (isForAnotherMonth.value) {
+        return configuration.classesList?.otherMonthDay;
       }
 
       return configuration.classesList?.day;

@@ -294,7 +294,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // @TODOS:
-    // - Range and multiple: Consider selected dates outside of the view
     // - Disabled dates shouldn't be selectable and needs his own styling (`DatepickerViewMonthDay`)
     // - Disable "visible" dates in the invalid range < year 0 > year 9999
     // - Add teleport options
@@ -305,7 +304,6 @@ export default defineComponent({
     // - Replace svg icons with icon component
     // - Selecting in different view with enter closes the dropdown
     // - When press enten in month or year views it immediatly closes the dropdown and closed the field 
-    // - when using range and have a single view should highlight the dates out of the month
     // - when using range and have a multiple view the latest date moves the active date which upadte the first month
     // - The click handler depnds of shown consider the case when using inline
     
