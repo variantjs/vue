@@ -299,7 +299,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // @TODOS:
-    // - Disabled dates shouldn't be selectable and needs his own styling (`DatepickerViewMonthDay`)
     // - Add teleport options
     // - In general check which dropdown options/events are usable
     // - Add selectOnClose, closeOnSelected and see if something from the rich select can be used
@@ -500,7 +499,7 @@ export default defineComponent({
         day,
         configuration.disabledDates,
         parseDate.value,
-        configuration.dateFormat,
+        configuration.dateFormat, f,
       );
 
       if (dayIsDisabled) {
