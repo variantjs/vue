@@ -306,9 +306,9 @@ export default defineComponent({
     // - when using range and have a multiple view the latest date moves the active date which upadte the first month
     // - The click handler depnds of shown consider the case when using inline
     // - Consider using an undefined default value for toggling and, in cases like multiple or range keep the modal opened by default
-    // - Once a date is selected if not opening the modal again if you click or press enter
     // - In multiple add an ok button
     // - Add a clear button
+    // - If users type a date and blur it should reset the v-model date
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
@@ -319,6 +319,10 @@ export default defineComponent({
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
 
     const formatDate = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
+
+    const isMultiple = computed<boolean>(() => !! (configuration.multiple || configuration.range));
+    const isDropdownClosed = computed<boolean>(() => shown.value === false);
+    const isDropdownOpened = computed<boolean>(() => !isDropdownClosed.value);
     
     const dateRangeSeparator = computed<string>(() => {
       return (configuration.locale || dateEnglishLocale).rangeSeparator || dateEnglishLocale.rangeSeparator;
@@ -329,7 +333,7 @@ export default defineComponent({
 
     const getInitialSelectedDate = (fromDate: TDatepickerValue): Date | Date[] | undefined => {
 
-      let selectedDate: Date | undefined | Date[] = configuration.multiple || configuration.range ? [] : undefined;
+      let selectedDate: Date | undefined | Date[] = isMultiple.value ? [] : undefined;
 
       if (Array.isArray(fromDate)) {
         selectedDate = (fromDate)
@@ -429,7 +433,7 @@ export default defineComponent({
     const getNewSelectedDate = (day: Date): Date | Date[] => {
       // If we are using multiple or range means that the day consists of an array
       // of dates
-      if (configuration.multiple || configuration.range) {
+      if (isMultiple.value) {
         // If not array or is empty initialize it with with the selected date
         if (!Array.isArray(selectedDate.value) || selectedDate.value.length === 0) {
           return [day];
@@ -511,7 +515,7 @@ export default defineComponent({
       emit('input', event);
       emit('update:modelValue', formattedDate.value);      
 
-      if (configuration.closeOnSelect && shown.value === true) {
+      if (configuration.closeOnSelect && isDropdownOpened.value) {
         doHide();
       }
     };
@@ -540,23 +544,21 @@ export default defineComponent({
     const clickHandler = (e: KeyboardEvent | MouseEvent) => {
       const input = e.target as (HTMLInputElement | HTMLButtonElement | undefined);
 
-      if (shown.value === true) {
+      if (! isMultiple.value && isDropdownClosed.value) {
+        // Will try to set the data by using the user manual input
+        const parsedDate = input && input.value ? parseDate.value(input.value, configuration.userFormat) : undefined;
+
+        if (parsedDate !== undefined) {
+          setActiveDate(parsedDate);
+
+          selectActiveDate();
+        }
+      }
+
+      if (isDropdownOpened.value) {
         selectActiveDate();
       } else if (configuration.toggleOnClick) {
         doShow();
-      }
-
-      if (configuration.multiple || configuration.range) {
-        return;
-      }
-
-      // Will try to set the data by using the user manual input
-      const parsedDate = input && input.value ? parseDate.value(input.value, configuration.userFormat) : undefined;
-
-      if (parsedDate !== undefined) {
-        setActiveDate(parsedDate);
-
-        selectActiveDate();
       }
     };
 
@@ -571,7 +573,7 @@ export default defineComponent({
     };
 
     const keyboardNavigationHandler = (e: KeyboardEvent) => {
-      if (shown.value === false) {
+      if (isDropdownClosed.value) {
         doShow(); 
       }
 
