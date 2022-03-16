@@ -21,7 +21,7 @@
 <script lang="ts">
 import {
   DateFormatter,
-  dateIsPartOfTheRange, DateParser, dayIsPartOfTheConditions, isSameDay,
+  dateIsPartOfTheRange, dateIsValid, DateParser, dayIsPartOfTheConditions, isSameDay,
 } from '@variantjs/core';
 import {
   defineComponent, inject, computed, Ref, ComputedRef,
@@ -141,6 +141,10 @@ export default defineComponent({
     };
 
     const showEmptyPlaceholder =  computed<boolean>(() => {
+      if (!dateIsValid(props.day)) {
+        return true;
+      }
+      
       if (!isForAnotherMonth.value) {
         return false;
       }
