@@ -627,13 +627,11 @@ export default defineComponent({
     };
 
     const beforeShowHandler = () => {
-      console.log('before show');
-      
       initViewData();
     };
 
     const shownHandler = () => {
-      console.log('shown');
+      // TBD
     };
 
     const hiddenHandler = () => {
@@ -645,7 +643,7 @@ export default defineComponent({
     };
 
     const beforeHideHandler = () => {
-      console.log('before hide');
+      // TBD
     };
 
     const userInputHandler = (e: Event) => {
