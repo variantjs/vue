@@ -200,6 +200,36 @@
     </TInputGroup>
 
     <TInputGroup
+      label="Highlight dates"
+      class="mb-4"
+    >
+      <t-datepicker
+        model-value="1987-02-01"
+        :highlight-dates="[
+          (date) => date.getDay() === 1,
+          '1987-02-12',
+          new Date(1987, 1, 25),
+          +(new Date(1987, 1, 27))
+        ]"
+      />
+    </TInputGroup>
+
+    <TInputGroup
+      label="Disable dates"
+      class="mb-4"
+    >
+      <t-datepicker
+        model-value="1987-02-01"
+        :disabled-dates="[
+          (date) => date.getDay() === 1,
+          '1987-02-12',
+          new Date(1987, 1, 25),
+          +(new Date(1987, 1, 27))
+        ]"
+      />
+    </TInputGroup>
+
+    <TInputGroup
       label="Syncs show property"
       class="mb-4"
     >

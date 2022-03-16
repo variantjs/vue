@@ -116,6 +116,7 @@ import {
   dateIsValid,
   Data,
   WeekDay,
+  dayIsPartOfTheConditions,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -217,6 +218,10 @@ export default defineComponent({
       default: false,
     },
     highlightDates: {
+      type: [Date, Array, Function, String, Number] as PropType<DateConditions>,
+      default: undefined,
+    },
+    disabledDates: {
       type: [Date, Array, Function, String, Number] as PropType<DateConditions>,
       default: undefined,
     },
@@ -491,6 +496,17 @@ export default defineComponent({
     });
 
     const selectDay = (day: Date) => {
+      const dayIsDisabled: boolean = dayIsPartOfTheConditions(
+        day,
+        configuration.disabledDates,
+        parseDate.value,
+        configuration.dateFormat,
+      );
+
+      if (dayIsDisabled) {
+        return;
+      }
+      
       const newSelectedDate = getNewSelectedDate(day);
 
       showActiveDate.value = false;
@@ -536,6 +552,7 @@ export default defineComponent({
 
       setCurrentView(TDatepickerView.Month);
     };
+    
 
     const selectActiveDate = () => {
       selectDay(activeDate.value);

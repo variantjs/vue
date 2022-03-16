@@ -11,6 +11,7 @@
       type="button"
       tabindex="-1"
       :class="buttonClass"
+      :disabled="isDisabled"
       @click="daySelectedHandler"
     >
       {{ dayLabel }}
@@ -95,6 +96,13 @@ export default defineComponent({
       configuration.dateFormat,
     ));
 
+    const isDisabled = computed<boolean>(() => dayIsPartOfTheConditions(
+      props.day,
+      configuration.disabledDates,
+      parseDate.value,
+      configuration.dateFormat,
+    ));
+
     const isToday = computed<boolean>(() => isSameDay(props.day, new Date()));
 
     const isActive = computed<boolean>(() => isSameDay(activeDate.value, props.day));
@@ -136,7 +144,6 @@ export default defineComponent({
     });
 
     const daySelectedHandler = ()  => {
-      // @TODO: Consider disabled days      
       selectDay(props.day);
     };
 
@@ -144,7 +151,7 @@ export default defineComponent({
       if (!dateIsValid(props.day)) {
         return true;
       }
-      
+
       if (!isForAnotherMonth.value) {
         return false;
       }
@@ -152,7 +159,7 @@ export default defineComponent({
       return ! configuration.showDaysForOtherMonth! || configuration.monthsPerView! > 1;
     });
 
-    return { configuration, buttonClass, daySelectedHandler, ariaLabel, dataDate, dayLabel, showEmptyPlaceholder };
+    return { configuration, buttonClass, daySelectedHandler, ariaLabel, dataDate, dayLabel, showEmptyPlaceholder, isDisabled };
   },
 });
 </script>
