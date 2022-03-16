@@ -223,6 +223,48 @@
         </template>
       </t-dropdown>
     </TInputGroup>
+
+    <TInputGroup
+      label="use Teleport"
+      class="mb-4"
+    >
+      <t-dropdown
+        text="Teleport to red box"
+        teleport
+        teleport-to="#teleport-here"
+      >
+        <template #default="{ hide }">
+          <div>
+            <button
+              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+              role="menuitem"
+            >
+              Your Profile
+            </button>
+            <button
+              class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+              role="menuitem"
+            >
+              Settings
+            </button>
+
+            <button
+              class="block w-full px-4 py-2 text-sm leading-5 text-red-500 transition duration-150 ease-in-out border-t hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+              @click="hide"
+            >
+              Close me
+            </button>
+          </div>
+        </template>
+      </t-dropdown>
+
+      <p
+        id="teleport-here"
+        class="bg-blue-100 empty:bg-red-100 p-1"
+      />
+      
+      <small>^ If turns blue means its working</small>
+    </TInputGroup>
   </t-card>
 </template>
 

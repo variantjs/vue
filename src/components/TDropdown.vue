@@ -28,10 +28,7 @@
     </slot>
   </component>
 
-  <teleport
-    :to="configuration.teleportTo"
-    :disabled="! configuration.teleport"
-  >
+  <template v-if="!usesTeleport">
     <transitionable
       :enabled="popperIsAdjusted || !initAsShow"
       :classes-list="configuration.classesList"
@@ -59,7 +56,38 @@
         />
       </component>
     </transitionable>
-  </teleport>
+  </template>
+  <template v-else-if="isMounted">
+    <teleport :to="configuration.teleportTo">
+      <transitionable
+        :enabled="popperIsAdjusted || !initAsShow"
+        :classes-list="configuration.classesList"
+        @after-leave="dropdownAfterLeave"
+      >
+        <component
+          :is="dropdownTagName"
+          v-show="shown || adjustingPopper || initAsShow"
+          ref="dropdown"
+          :style="adjustingPopper ? 'opacity:0' : undefined"
+          :class="configuration.classesList?.dropdown"
+          :aria-hidden="!shown"
+          tabindex="-1"
+          v-bind="dropdownAttributes"
+          @blur="blurHandler"
+          @mouseover="mouseoverHandler"
+          @mouseleave="mouseleaveHandler"
+        >
+          <slot
+            :show="doShow"
+            :hide="doHide"
+            :toggle="doToggle"
+            :configuration="configuration"
+            :popper="popper"
+          />
+        </component>
+      </transitionable>
+    </teleport>
+  </template>
 </template>
 
 <script lang="ts">
@@ -195,6 +223,7 @@ export default defineComponent({
   },
   data({ configuration }) {
     return {
+      isMounted: false,
       shown: (configuration as unknown as TDropdownOptions).show,
       // Disables the animation while the dropdown is being shown
       initAsShow: (configuration as unknown as TDropdownOptions).show,
@@ -209,6 +238,9 @@ export default defineComponent({
     };
   },
   computed: {
+    usesTeleport(): boolean {
+      return !! (this.configuration.teleport && this.configuration.teleportTo);
+    },
     fullPopperOptions(): Options {
       const popperOptions = this.configuration.popperOptions as Options;
 
@@ -241,6 +273,8 @@ export default defineComponent({
     },
   },
   mounted() {
+    this.isMounted = true;
+    
     if (this.isTouchOnlyDevice && this.shown) {
       window.addEventListener('touchstart', this.touchstartHandler);
     }
@@ -383,6 +417,11 @@ export default defineComponent({
 
           resolve(popper);
         };
+
+        if (this.configuration.teleportTo && this.configuration.teleport) {
+          console.log(':D2', document.querySelector(this.configuration.teleportTo));
+          console.log(':D3', this.getDropdownElement());
+        }
 
         popper = createPopper(this.getTriggerElement(), this.getDropdownElement(), this.fullPopperOptions);
       });
