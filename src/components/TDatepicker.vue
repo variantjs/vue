@@ -16,8 +16,11 @@
     :toggle-on-focus="configuration.toggleOnFocus"
     :hide-on-leave-timeout="configuration.hideOnLeaveTimeout"
     v-bind="attributes"
-    @blur-on-child="blurOnChildHandler"
+    @blur-on-child="blurOnChildHandler"    
+    @hidden="hiddenHandler"
+    @shown="shownHandler"
     @before-show="beforeShowHandler"
+    @before-hide="beforeHideHandler"
   >
     <template #trigger="{ focusHandler, blurHandler }">
       <slot
@@ -291,7 +294,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // @TODOS:
-    // - Reinitialize the range after the dropdown is closed
     // - Range and multiple: Consider selected dates outside of the view
     // - Disabled dates shouldn't be selectable and needs his own styling (`DatepickerViewMonthDay`)
     // - Disable "visible" dates in the invalid range < year 0 > year 9999
@@ -302,7 +304,6 @@ export default defineComponent({
     // - Check aria labels on buttons 
     // - Replace svg icons with icon component
     // - Selecting in different view with enter closes the dropdown
-    // - Range is being reset when dropdown is opened
     // - When press enten in month or year views it immediatly closes the dropdown and closed the field 
     // - when using range and have a single view should highlight the dates out of the month
     // - when using range and have a multiple view the latest date moves the active date which upadte the first month
@@ -311,6 +312,8 @@ export default defineComponent({
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
     const shown = ref<boolean>(configuration.show!);
+    
+    const resetRange = ref<boolean>(false);
 
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
 
@@ -436,7 +439,11 @@ export default defineComponent({
         if (configuration.range) {
           // If the new day is before than the first element of the range we need
           // to reinitialize the range
-          if (diffInDays(selectedDate.value[0], day) < 0) {
+          if (resetRange.value || diffInDays(selectedDate.value[0], day) < 0) {
+            if (resetRange.value) {
+              resetRange.value = false;
+            }
+
             return [day];
           }
 
@@ -618,7 +625,25 @@ export default defineComponent({
     };
 
     const beforeShowHandler = () => {
+      console.log('before show');
+      
       initViewData();
+    };
+
+    const shownHandler = () => {
+      console.log('shown');
+    };
+
+    const hiddenHandler = () => {
+      // If the range is complete we should start over again when user tries
+      // to update the value
+      if (configuration.range && Array.isArray(selectedDate.value) && selectedDate.value.length === 2) {
+        resetRange.value = true;
+      }      
+    };
+
+    const beforeHideHandler = () => {
+      console.log('before hide');
     };
 
     const userInputHandler = (e: Event) => {
@@ -667,6 +692,9 @@ export default defineComponent({
       clickHandler,
       keyboardNavigationHandler,
       beforeShowHandler,
+      shownHandler,
+      hiddenHandler,
+      beforeHideHandler,
       userInputHandler,
       doHide,
       doShow,
