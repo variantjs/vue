@@ -316,13 +316,13 @@ export default defineComponent({
     // - Replace svg icons with icon component
     // - Selecting in different view with enter closes the dropdown
     // - When press enten in month or year views it immediatly closes the dropdown and closed the field 
-    // - when using range and have a multiple view the latest date moves the active date which upadte the first month
     // - The click handler depnds of shown consider the case when using inline
     // - Consider using an undefined default value for toggling and, in cases like multiple or range keep the modal opened by default
     // - In multiple add an ok button
     // - Add a clear button
     // - If users type a date and blur it should reset the v-model date
     // - Inside the dropdown refactor to reuse the dropdown view (recently duplciated with the teleport fix)
+    // - Not related to this component but passing from the modal page creates a `enableBodyScroll unsuccessful - targetElement must be provided when calling enableBodyScroll on IOS devices`
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
@@ -368,7 +368,7 @@ export default defineComponent({
 
       if (Array.isArray(selectedDate)) {
         if (selectedDate.length > 0) {
-          activeDate = selectedDate[selectedDate.length - 1];
+          activeDate = selectedDate[0];
         }
       } else if (selectedDate instanceof Date) {
         activeDate = selectedDate;
@@ -509,7 +509,7 @@ export default defineComponent({
         day,
         configuration.disabledDates,
         parseDate.value,
-        configuration.dateFormat, f,
+        configuration.dateFormat,
       );
 
       if (dayIsDisabled) {
