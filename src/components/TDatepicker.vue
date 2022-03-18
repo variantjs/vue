@@ -110,8 +110,6 @@ import {
   DateLocale,
   buildDateFormatter,
   dateEnglishLocale,
-  isSameDay,
-  diffInDays,
   addYears,
   addMonths,
   addDays,
@@ -122,6 +120,7 @@ import {
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
+import useSelectedDate from '../use/useSelectedDate';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { TDatepickerOptions, TDatepickerValue } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
@@ -326,14 +325,14 @@ export default defineComponent({
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
-    const shown = ref<boolean>(configuration.show!);
-    
-    const resetRange = ref<boolean>(false);
-
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
 
-    const formatDate = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
+    const { selectedDate, setSelectedDate, getInitialSelectedDate, getSelectDayFromSelection, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
 
+    const shown = ref<boolean>(configuration.show!);
+    
+    const formatDate = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
+    
     const isMultiple = computed<boolean>(() => !! (configuration.multiple || configuration.range));
     const isDropdownClosed = computed<boolean>(() => shown.value === false);
     const isDropdownOpened = computed<boolean>(() => !isDropdownClosed.value);
@@ -345,35 +344,20 @@ export default defineComponent({
     // The active date is usually hidden but shown when navigating with the keyboard
     const showActiveDate = ref<boolean>(false);
 
-    const getInitialSelectedDate = (fromDate: TDatepickerValue): Date | Date[] | undefined => {
-
-      let selectedDate: Date | undefined | Date[] = isMultiple.value ? [] : undefined;
-
-      if (Array.isArray(fromDate)) {
-        selectedDate = (fromDate)
-          .map((value) => parseDate.value(value, configuration.dateFormat))
-          .filter((value) => value !== undefined) as Date[];
-
-      } else {
-        selectedDate = parseDate.value(fromDate, configuration.dateFormat) || selectedDate;
-      }
-
-      return selectedDate;
-    };
 
     const getInitialView = (): TDatepickerView => configuration.initialView!;
 
-    const getInitialActiveDate = (selectedDate: Date | Date[] | undefined): Date => {
+    const getInitialActiveDate = (): Date => {
       let activeDate: Date = new Date();
 
-      if (Array.isArray(selectedDate)) {
-        if (selectedDate.length > 0) {
-          activeDate = selectedDate[0];
+      if (Array.isArray(selectedDate.value)) {
+        if (selectedDate.value.length > 0) {
+          activeDate = selectedDate.value[0];
         }
-      } else if (selectedDate instanceof Date) {
-        activeDate = selectedDate;
+      } else if (selectedDate.value instanceof Date) {
+        activeDate = selectedDate.value;
       } else {
-        activeDate = parseDate.value(selectedDate, configuration.dateFormat) || new Date();
+        activeDate = parseDate.value(selectedDate.value, configuration.dateFormat) || new Date();
       }
 
       if (configuration.initialTime) {
@@ -389,9 +373,7 @@ export default defineComponent({
       return activeDate;
     };
 
-    const selectedDate = ref<Date | Date[] | undefined>(getInitialSelectedDate(props.modelValue));
-
-    const activeDate = ref<Date>(getInitialActiveDate(selectedDate.value));
+    const activeDate = ref<Date>(getInitialActiveDate());
 
     const currentView = ref<TDatepickerView>(getInitialView());
 
@@ -407,21 +389,10 @@ export default defineComponent({
       activeDate.value = date;
     };
 
-    const setSelectedDate = (date: Date | Date[] | undefined) => {
-      if (Array.isArray(date)) {
-        if (date.some((value) => !dateIsValid(value))) {
-          return;
-        }
-      } else if (!dateIsValid(date)) {
-        return;
-      }
-
-      selectedDate.value = date;
-    };
 
     const initViewData = () => {
       setCurrentView(getInitialView());
-      setActiveDate(getInitialActiveDate(selectedDate.value));
+      setActiveDate(getInitialActiveDate());
       showActiveDate.value = false;
     };
 
@@ -444,49 +415,6 @@ export default defineComponent({
         : formatDate.value(selectedDate.value, configuration.userFormat);
     });
 
-    const getNewSelectedDate = (day: Date): Date | Date[] => {
-      // If we are using multiple or range means that the day consists of an array
-      // of dates
-      if (isMultiple.value) {
-        // If not array or is empty initialize it with with the selected date
-        if (!Array.isArray(selectedDate.value) || selectedDate.value.length === 0) {
-          return [day];
-        }
-
-        // The ranges consists in a tuple of dates, we should fill the first 
-        // or the second element depending of the current state of the selection
-        if (configuration.range) {
-          // If the new day is before than the first element of the range we need
-          // to reinitialize the range
-          if (resetRange.value || diffInDays(selectedDate.value[0], day) < 0) {
-            if (resetRange.value) {
-              resetRange.value = false;
-            }
-
-            return [day];
-          }
-
-          // If the range is already full we are going to replace the second date
-          if (selectedDate.value.length === 2) {
-            return [selectedDate.value[0], day];
-          }
-            
-          // Otherwise just add the new day to the range
-          return [...selectedDate.value, day];
-        }
-
-        if (configuration.multiple) {
-          // If already selected, remove it
-          if (selectedDate.value.some(date => isSameDay(date, day))) {
-            return selectedDate.value.filter((date) => ! isSameDay(date, day));
-          }
-
-          return [...selectedDate.value, day];
-        }
-      }
-
-      return day;
-    };
 
     const doHide = async () => {
       shown.value = false;
@@ -516,7 +444,7 @@ export default defineComponent({
         return;
       }
       
-      const newSelectedDate = getNewSelectedDate(day);
+      const newSelectedDate = getSelectDayFromSelection(day);
 
       showActiveDate.value = false;
      
@@ -561,11 +489,16 @@ export default defineComponent({
 
       setCurrentView(TDatepickerView.Month);
     };
-    
 
     const selectActiveDate = () => {
       selectDay(activeDate.value);
     };
+
+    // const isDateSelectionComplete = computed<boolean>(() => {
+    //   if (configuration.range) {
+    //     return Array.isArray(selectedDate.value) && selectedDate.value.length === 2;
+    //   }
+    // });
 
     const clickHandler = (e: KeyboardEvent | MouseEvent) => {
       const input = e.target as (HTMLInputElement | HTMLButtonElement | undefined);
@@ -665,7 +598,7 @@ export default defineComponent({
       // If the range is complete we should start over again when user tries
       // to update the value
       if (configuration.range && Array.isArray(selectedDate.value) && selectedDate.value.length === 2) {
-        resetRange.value = true;
+        resetRangeSelection();
       }      
     };
 
@@ -731,7 +664,6 @@ export default defineComponent({
       selectedDate,
     };
   },
-
 });
 
 </script>
