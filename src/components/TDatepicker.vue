@@ -322,7 +322,6 @@ export default defineComponent({
     // - Add a clear button
     // - If users type a date and blur it should reset the v-model date
     // - Inside the dropdown refactor to reuse the dropdown view (recently duplciated with the teleport fix)
-    // - Not related to this component but passing from the modal page creates a `enableBodyScroll unsuccessful - targetElement must be provided when calling enableBodyScroll on IOS devices`
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
 
