@@ -113,7 +113,6 @@ import {
   addYears,
   addMonths,
   addDays,
-  dateIsValid,
   Data,
   WeekDay,
   dayIsPartOfTheConditions,
@@ -121,6 +120,7 @@ import {
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import useSelectedDate from '../use/useSelectedDate';
+import useActiveDate from '../use/useActiveDate';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { TDatepickerOptions, TDatepickerValue } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
@@ -328,6 +328,7 @@ export default defineComponent({
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
 
     const { selectedDate, setSelectedDate, getInitialSelectedDate, getSelectDayFromSelection, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
+    const { activeDate, showActiveDate, initActiveDate, setActiveDate } = useActiveDate(configuration, selectedDate, parseDate);
 
     const shown = ref<boolean>(configuration.show!);
     
@@ -341,39 +342,8 @@ export default defineComponent({
       return (configuration.locale || dateEnglishLocale).rangeSeparator || dateEnglishLocale.rangeSeparator;
     });
 
-    // The active date is usually hidden but shown when navigating with the keyboard
-    const showActiveDate = ref<boolean>(false);
-
-
+    
     const getInitialView = (): TDatepickerView => configuration.initialView!;
-
-    const getInitialActiveDate = (): Date => {
-      let activeDate: Date = new Date();
-
-      if (Array.isArray(selectedDate.value)) {
-        if (selectedDate.value.length > 0) {
-          activeDate = selectedDate.value[0];
-        }
-      } else if (selectedDate.value instanceof Date) {
-        activeDate = selectedDate.value;
-      } else {
-        activeDate = parseDate.value(selectedDate.value, configuration.dateFormat) || new Date();
-      }
-
-      if (configuration.initialTime) {
-        const parsedDateWithTime = parseDate.value(configuration.initialTime, configuration.amPm ? 'G:i:S K' : 'H:i:S');
-
-        if (parsedDateWithTime) {
-          activeDate.setHours(parsedDateWithTime.getHours());
-          activeDate.setMinutes(parsedDateWithTime.getMinutes());
-          activeDate.setSeconds(parsedDateWithTime.getSeconds());
-        }
-      }
-
-      return activeDate;
-    };
-
-    const activeDate = ref<Date>(getInitialActiveDate());
 
     const currentView = ref<TDatepickerView>(getInitialView());
 
@@ -381,18 +351,9 @@ export default defineComponent({
       currentView.value = view;
     };
 
-    const setActiveDate = (date: Date) => {
-      if (!dateIsValid(date)) {
-        return;
-      }
-
-      activeDate.value = date;
-    };
-
-
     const initViewData = () => {
       setCurrentView(getInitialView());
-      setActiveDate(getInitialActiveDate());
+      initActiveDate();
       showActiveDate.value = false;
     };
 
@@ -414,7 +375,6 @@ export default defineComponent({
           .join(configuration.range ? dateRangeSeparator.value : ', ')
         : formatDate.value(selectedDate.value, configuration.userFormat);
     });
-
 
     const doHide = async () => {
       shown.value = false;
