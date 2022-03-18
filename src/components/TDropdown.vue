@@ -418,11 +418,6 @@ export default defineComponent({
           resolve(popper);
         };
 
-        if (this.configuration.teleportTo && this.configuration.teleport) {
-          console.log(':D2', document.querySelector(this.configuration.teleportTo));
-          console.log(':D3', this.getDropdownElement());
-        }
-
         popper = createPopper(this.getTriggerElement(), this.getDropdownElement(), this.fullPopperOptions);
       });
     },
