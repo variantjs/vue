@@ -198,6 +198,8 @@ export default defineComponent({
 
     const showModel = useVModel(props, 'modelValue');
 
+    const scrollIsDisabled = ref<boolean>(false);
+    
     const showComponent = ref(showModel.value);
 
     const showOverlay = ref(showModel.value);
@@ -224,14 +226,32 @@ export default defineComponent({
       overlay.value!.focus();
     };
 
+    const disableBodyScrollIfNeccesary = () => {
+      if (!configuration.disableBodyScroll || scrollIsDisabled.value) {
+        return ;
+      }
+
+      disableBodyScroll(overlay.value!, configuration.bodyScrollLockOptions);
+      
+      scrollIsDisabled.value = true;
+    };
+
+    const enableBodyScrollIfNeccesary = () => {
+      if (! scrollIsDisabled.value) {
+        return;
+      }
+
+      enableBodyScroll(overlay.value!);
+      
+      scrollIsDisabled.value = false;
+    };
+
     const initModal = () :void => {
       if (configuration.focusOnOpen) {
         focusModal();
       }
 
-      if (configuration.disableBodyScroll) {
-        disableBodyScroll(overlay.value!, configuration.bodyScrollLockOptions);
-      }
+      disableBodyScrollIfNeccesary();      
     };
 
     const reset = () :void => {
@@ -254,9 +274,7 @@ export default defineComponent({
         reason: hideReason.value,
       });
 
-      if (configuration.disableBodyScroll) {
-        enableBodyScroll(overlay.value!);
-      }
+      enableBodyScrollIfNeccesary();
 
       resolve();
     });
@@ -351,9 +369,7 @@ export default defineComponent({
     onBeforeUnmount(() => {
       reset();
 
-      if (configuration.disableBodyScroll) {
-        enableBodyScroll(overlay.value!);
-      }
+      enableBodyScrollIfNeccesary();
     });
 
     if (configuration.name) {
