@@ -43,7 +43,7 @@ export default defineComponent({
   },
   setup(props) {
     const configuration = inject<TDatepickerOptions>('configuration')!;
-    const showActiveDate = inject<Ref<boolean>>('showActiveDate')!;
+    const activeDateIsVisible = inject<Ref<boolean>>('activeDateIsVisible')!;
     const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
     const activeDate = inject<Ref<Date>>('activeDate')!;
     const parseDate = inject<Ref<DateParser>>('parseDate')!;
@@ -124,7 +124,7 @@ export default defineComponent({
         return configuration.classesList?.selectedDay;
       }
 
-      if (isActive.value && showActiveDate.value) {
+      if (isActive.value && activeDateIsVisible.value) {
         return configuration.classesList?.activeDay;
       }
 

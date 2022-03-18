@@ -121,6 +121,7 @@ import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
 import useSelectedDate from '../use/useSelectedDate';
 import useActiveDate from '../use/useActiveDate';
+import useCalendarView from '../use/useCalendarView';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { TDatepickerOptions, TDatepickerValue } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
@@ -328,7 +329,8 @@ export default defineComponent({
     const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
 
     const { selectedDate, setSelectedDate, getInitialSelectedDate, getSelectDayFromSelection, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
-    const { activeDate, showActiveDate, initActiveDate, setActiveDate } = useActiveDate(configuration, selectedDate, parseDate);
+    const { activeDate, activeDateIsVisible, initActiveDate, setActiveDate, hideActiveDate, showActiveDate } = useActiveDate(configuration, selectedDate, parseDate);
+    const { currentView, initView, setCurrentView } = useCalendarView(configuration);
 
     const shown = ref<boolean>(configuration.show!);
     
@@ -342,19 +344,11 @@ export default defineComponent({
       return (configuration.locale || dateEnglishLocale).rangeSeparator || dateEnglishLocale.rangeSeparator;
     });
 
-    
-    const getInitialView = (): TDatepickerView => configuration.initialView!;
 
-    const currentView = ref<TDatepickerView>(getInitialView());
-
-    const setCurrentView = (view: TDatepickerView) => {
-      currentView.value = view;
-    };
-
-    const initViewData = () => {
-      setCurrentView(getInitialView());
+    const initAllViewData = () => {
+      initView();
       initActiveDate();
-      showActiveDate.value = false;
+      hideActiveDate();
     };
 
     watch(() => props.modelValue, (value: TDatepickerValue) => {
@@ -406,7 +400,7 @@ export default defineComponent({
       
       const newSelectedDate = getSelectDayFromSelection(day);
 
-      showActiveDate.value = false;
+      hideActiveDate();
      
       setActiveDate(day);
 
@@ -543,11 +537,11 @@ export default defineComponent({
         setActiveDate(addDays(activeDate.value, daysPerView));
       }
 
-      showActiveDate.value = true;
+      showActiveDate();
     };
 
     const beforeShowHandler = () => {
-      initViewData();
+      initAllViewData();
     };
 
     const shownHandler = () => {
@@ -572,14 +566,15 @@ export default defineComponent({
       const parsedDate = parseDate.value(input.value, configuration.userFormat);
       
       if (parsedDate !== undefined) {
-        showActiveDate.value = true;
+        showActiveDate();
+        
         setActiveDate(parsedDate);
       }
     };
 
     provide('activeDate', activeDate);
 
-    provide('showActiveDate', showActiveDate);
+    provide('activeDateIsVisible', activeDateIsVisible);
 
     provide('selectedDate', selectedDate);
     

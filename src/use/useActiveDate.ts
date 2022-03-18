@@ -12,12 +12,14 @@ export default function useActiveDate<C extends {
   parseDate: ComputedRef<DateParser>,
 ): {
     activeDate: Ref<Date>
-    showActiveDate: Ref<boolean>
+    activeDateIsVisible: Ref<boolean>
     setActiveDate: (date: Date) => void,
     initActiveDate: () => void,
+    hideActiveDate: () => void,
+    showActiveDate: () => void,
   } {
   // The active date is usually hidden but shown when navigating with the keyboard
-  const showActiveDate = ref<boolean>(false);
+  const activeDateIsVisible = ref<boolean>(false);
 
   const getInitialActiveDate = (): Date => {
     let activeDate: Date = new Date();
@@ -59,10 +61,20 @@ export default function useActiveDate<C extends {
     setActiveDate(getInitialActiveDate());
   };
 
+  const hideActiveDate = () => {
+    activeDateIsVisible.value = false;
+  };
+  
+  const showActiveDate = () => {
+    activeDateIsVisible.value = true;
+  };
+
   return {
     activeDate,
-    showActiveDate,
+    activeDateIsVisible,
     setActiveDate,
     initActiveDate,
+    hideActiveDate,
+    showActiveDate,
   };
 }
