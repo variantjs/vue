@@ -106,10 +106,7 @@ import {
   DateConditions,
   DateFormatter,
   DateParser,
-  buildDateParser,
   DateLocale,
-  buildDateFormatter,
-  dateEnglishLocale,
   addYears,
   addMonths,
   addDays,
@@ -119,9 +116,7 @@ import {
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
-import useSelectedDate from '../use/useSelectedDate';
-import useActiveDate from '../use/useActiveDate';
-import useCalendarView from '../use/useCalendarView';
+import { useSelectedDate, useActiveDate, useCalendarView, useDateFormatting, useDateParsing, useCalendarState } from '../use/datepicker';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { TDatepickerOptions, TDatepickerValue } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
@@ -324,26 +319,13 @@ export default defineComponent({
     // - Inside the dropdown refactor to reuse the dropdown view (recently duplciated with the teleport fix)
     
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
-
-    const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
-
+    const { parseDate } = useDateParsing(configuration);
     const { selectedDate, setSelectedDate, getInitialSelectedDate, getSelectDayFromSelection, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
+    const { formatDate, formattedDate, userFormattedDate } = useDateFormatting(configuration, selectedDate);
     const { activeDate, activeDateIsVisible, initActiveDate, setActiveDate, hideActiveDate, showActiveDate } = useActiveDate(configuration, selectedDate, parseDate);
     const { currentView, initView, setCurrentView } = useCalendarView(configuration);
-
-    const shown = ref<boolean>(configuration.show!);
+    const { shown, isMultiple, isDropdownClosed, isDropdownOpened } = useCalendarState(configuration);
     
-    const formatDate = computed<DateFormatter>(() => buildDateFormatter(configuration.locale || dateEnglishLocale, configuration.dateFormatter));
-    
-    const isMultiple = computed<boolean>(() => !! (configuration.multiple || configuration.range));
-    const isDropdownClosed = computed<boolean>(() => shown.value === false);
-    const isDropdownOpened = computed<boolean>(() => !isDropdownClosed.value);
-    
-    const dateRangeSeparator = computed<string>(() => {
-      return (configuration.locale || dateEnglishLocale).rangeSeparator || dateEnglishLocale.rangeSeparator;
-    });
-
-
     const initAllViewData = () => {
       initView();
       initActiveDate();
@@ -354,21 +336,6 @@ export default defineComponent({
       setSelectedDate(getInitialSelectedDate(value));
     });
     
-    const formattedDate = computed<string | string[]>(() => {
-      return Array.isArray(selectedDate.value) 
-        ? selectedDate.value.map((dateItem) => formatDate.value(dateItem, configuration.dateFormat))
-        : formatDate.value(selectedDate.value, configuration.dateFormat);
-    });
-
-    const userFormattedDate = computed<string>(() => {
-      return Array.isArray(selectedDate.value) 
-        ? selectedDate.value
-          .map((dateItem) => formatDate.value(dateItem, configuration.userFormat))
-          // @TODO: Date separator comes from the configuration
-          .join(configuration.range ? dateRangeSeparator.value : ', ')
-        : formatDate.value(selectedDate.value, configuration.userFormat);
-    });
-
     const doHide = async () => {
       shown.value = false;
     };
@@ -446,12 +413,6 @@ export default defineComponent({
     const selectActiveDate = () => {
       selectDay(activeDate.value);
     };
-
-    // const isDateSelectionComplete = computed<boolean>(() => {
-    //   if (configuration.range) {
-    //     return Array.isArray(selectedDate.value) && selectedDate.value.length === 2;
-    //   }
-    // });
 
     const clickHandler = (e: KeyboardEvent | MouseEvent) => {
       const input = e.target as (HTMLInputElement | HTMLButtonElement | undefined);
