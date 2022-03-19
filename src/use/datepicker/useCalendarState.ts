@@ -8,6 +8,8 @@ export default function useCalendarState<C extends Pick<TDatepickerOptions, 'sho
     isMultiple: ComputedRef<boolean>,
     isDropdownClosed: ComputedRef<boolean>,
     isDropdownOpened: ComputedRef<boolean>,    
+    doShow: () => void,
+    doHide: () => void,
   } {
   const shown = ref<boolean>(configuration.show!);
 
@@ -17,8 +19,19 @@ export default function useCalendarState<C extends Pick<TDatepickerOptions, 'sho
     
   const isDropdownOpened = computed<boolean>(() => !isDropdownClosed.value);
 
+  const doHide = () => {
+    shown.value = false;
+  };
+
+  const doShow = () => {
+    shown.value = true;
+  };
+
+
   return {
     shown,
+    doHide,
+    doShow,
     isMultiple,
     isDropdownClosed,
     isDropdownOpened,    

@@ -324,7 +324,7 @@ export default defineComponent({
     const { formatDate, formattedDate, userFormattedDate } = useDateFormatting(configuration, selectedDate);
     const { activeDate, activeDateIsVisible, initActiveDate, setActiveDate, hideActiveDate, showActiveDate } = useActiveDate(configuration, selectedDate, parseDate);
     const { currentView, initView, setCurrentView } = useCalendarView(configuration);
-    const { shown, isMultiple, isDropdownClosed, isDropdownOpened } = useCalendarState(configuration);
+    const { shown, doShow, doHide, isMultiple, isDropdownClosed, isDropdownOpened } = useCalendarState(configuration);
     
     const initAllViewData = () => {
       initView();
@@ -335,14 +335,6 @@ export default defineComponent({
     watch(() => props.modelValue, (value: TDatepickerValue) => {
       setSelectedDate(getInitialSelectedDate(value));
     });
-    
-    const doHide = async () => {
-      shown.value = false;
-    };
-
-    const doShow = async () => {
-      shown.value = true;
-    };
 
     watch(shown, () => {
       emit('update:show', shown.value);
