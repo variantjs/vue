@@ -1,18 +1,18 @@
-import { dateIsValid, DateParser, diffInDays, isSameDay } from '@variantjs/core';
+import { dateIsValid, DateParser, dayIsPartOfTheConditions, diffInDays, isSameDay } from '@variantjs/core';
 import { computed, ComputedRef, Ref, ref } from 'vue';
 import { TDatepickerOptions, TDatepickerValue } from '../../types/components/t-datepicker';
 
 export default function useSelectedDate<P extends {
   modelValue?: TDatepickerValue, 
-}, C extends Pick<TDatepickerOptions, 'multiple' | 'range' | 'dateFormat'>>(
+}, C extends Pick<TDatepickerOptions, 'multiple' | 'range' | 'dateFormat' | 'disabledDates'>>(
   props: P,
   configuration: C,
   parseDate: ComputedRef<DateParser>,
 ): {
+    selectDate: (date: Date) => Date | Date[] | undefined,
     selectedDate: Ref<Date | Date[] | undefined>
     setSelectedDate: ((date: Date | Date[] | undefined) => void),
     getInitialSelectedDate: (fromDate: TDatepickerValue) => Date | Date[] | undefined,
-    getSelectDayFromSelection: (day: Date) => Date | Date[],
     resetRangeSelection: () => void,
   } {
   const isMultiple = computed<boolean>(() => !! (configuration.multiple || configuration.range));
@@ -35,7 +35,7 @@ export default function useSelectedDate<P extends {
 
   const selectedDate = ref<Date | Date[] | undefined>(getInitialSelectedDate(props.modelValue));
 
-  const getSelectDayFromSelection = (day: Date): Date | Date[] => {
+  const parseDateToSelect = (day: Date): Date | Date[] => {
     // If we are using multiple or range means that the day consists of an array
     // of dates
     if (isMultiple.value) {
@@ -95,11 +95,30 @@ export default function useSelectedDate<P extends {
     resetRange.value = true;
   };
 
+  const selectDate = (date: Date): Date | Date[] | undefined => {
+    const dateIsDisabled: boolean = dayIsPartOfTheConditions(
+      date,
+      configuration.disabledDates,
+      parseDate.value,
+      configuration.dateFormat,
+    );
+
+    if (dateIsDisabled) {
+      return;
+    }
+    
+    const newSelectedDate = parseDateToSelect(date);
+
+    setSelectedDate(newSelectedDate);
+
+    return newSelectedDate;
+  };
+
   return {
+    selectDate,
     selectedDate,
     setSelectedDate,
     getInitialSelectedDate,
-    getSelectDayFromSelection,
     resetRangeSelection,
   };
 }

@@ -91,9 +91,7 @@
 import {
   defineComponent,
   PropType,
-  ref,
   provide,
-  computed,
   watch,
   InputHTMLAttributes,
 } from 'vue';
@@ -112,7 +110,6 @@ import {
   addDays,
   Data,
   WeekDay,
-  dayIsPartOfTheConditions,
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
@@ -317,10 +314,9 @@ export default defineComponent({
     // - Add a clear button
     // - If users type a date and blur it should reset the v-model date
     // - Inside the dropdown refactor to reuse the dropdown view (recently duplciated with the teleport fix)
-    
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
     const { parseDate } = useDateParsing(configuration);
-    const { selectedDate, setSelectedDate, getInitialSelectedDate, getSelectDayFromSelection, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
+    const { selectDate, selectedDate, setSelectedDate, getInitialSelectedDate, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
     const { formatDate, formattedDate, userFormattedDate } = useDateFormatting(configuration, selectedDate);
     const { activeDate, activeDateIsVisible, initActiveDate, setActiveDate, hideActiveDate, showActiveDate } = useActiveDate(configuration, selectedDate, parseDate);
     const { currentView, initView, setCurrentView } = useCalendarView(configuration);
@@ -344,25 +340,34 @@ export default defineComponent({
       shown.value = configuration.show!;
     });
 
-    const selectDay = (day: Date) => {
-      const dayIsDisabled: boolean = dayIsPartOfTheConditions(
-        day,
-        configuration.disabledDates,
-        parseDate.value,
-        configuration.dateFormat,
-      );
 
-      if (dayIsDisabled) {
+    // Note about `selectMonth` and `selectYear` methods:
+    // In most cases selecting a month or year only changes the active date which
+    // means it doesnt trigger an input event (since day still needs to be selected).
+    // In the future we may consider allowing the user to select only month and/or
+    // year which means we should also handle the input event
+    const selectMonth = (month: Date) => {
+      setActiveDate(month);
+
+      setCurrentView(TDatepickerView.Day);
+    };
+
+    const selectYear = (year: Date) => {
+      setActiveDate(year);
+
+      setCurrentView(TDatepickerView.Month);
+    };
+
+    const updateSelectedDate = (date: Date) => {
+      const newSelectedDate = selectDate(date);
+
+      if (newSelectedDate === undefined) {
         return;
       }
-      
-      const newSelectedDate = getSelectDayFromSelection(day);
+
+      setActiveDate(date);
 
       hideActiveDate();
-     
-      setActiveDate(day);
-
-      setSelectedDate(newSelectedDate);
       
       if (configuration.range && !(Array.isArray(newSelectedDate) && newSelectedDate.length === 2)) {
         return;
@@ -385,27 +390,12 @@ export default defineComponent({
       }
     };
 
-    // Note about `selectMonth` and `selectYear` methods:
-    // In most cases selecting a month or year only changes the active date which
-    // means it doesnt trigger an input event (since day still needs to be selected).
-    // In the future we may consider allowing the user to select only month and/or
-    // year which means we should also handle the input event
-    const selectMonth = (month: Date) => {
-      setActiveDate(month);
-
-      setCurrentView(TDatepickerView.Day);
-    };
-
-    const selectYear = (year: Date) => {
-      setActiveDate(year);
-
-      setCurrentView(TDatepickerView.Month);
-    };
 
     const selectActiveDate = () => {
-      selectDay(activeDate.value);
+      updateSelectedDate(activeDate.value);
     };
 
+    // Handlers
     const clickHandler = (e: KeyboardEvent | MouseEvent) => {
       const input = e.target as (HTMLInputElement | HTMLButtonElement | undefined);
 
@@ -492,6 +482,21 @@ export default defineComponent({
       showActiveDate();
     };
 
+    const userInputHandler = (e: Event) => {
+      const input = e.target as HTMLInputElement;
+      
+      const parsedDate = parseDate.value(input.value, configuration.userFormat);
+      
+      if (parsedDate !== undefined) {
+        showActiveDate();
+        
+        setActiveDate(parsedDate);
+      }
+    };
+
+    /**
+     * Dropdown state handlers
+     */
     const beforeShowHandler = () => {
       initAllViewData();
     };
@@ -512,18 +517,6 @@ export default defineComponent({
       // TBD
     };
 
-    const userInputHandler = (e: Event) => {
-      const input = e.target as HTMLInputElement;
-      
-      const parsedDate = parseDate.value(input.value, configuration.userFormat);
-      
-      if (parsedDate !== undefined) {
-        showActiveDate();
-        
-        setActiveDate(parsedDate);
-      }
-    };
-
     provide('activeDate', activeDate);
 
     provide('activeDateIsVisible', activeDateIsVisible);
@@ -540,7 +533,7 @@ export default defineComponent({
 
     provide('formatDate', formatDate);
     
-    provide('selectDay', selectDay);
+    provide('updateSelectedDate', updateSelectedDate);
     
     provide('selectMonth', selectMonth);
     

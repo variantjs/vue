@@ -47,7 +47,7 @@ export default defineComponent({
     const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
     const activeDate = inject<Ref<Date>>('activeDate')!;
     const parseDate = inject<Ref<DateParser>>('parseDate')!;
-    const selectDay = inject<(day: Date) => void>('selectDay')!;
+    const updateSelectedDate = inject<(day: Date) => void>('updateSelectedDate')!;
     const formatDate = inject<ComputedRef<DateFormatter>>('formatDate')!;
 
     const ariaLabel = formatDate.value(props.day, 'F d, Y');
@@ -144,7 +144,7 @@ export default defineComponent({
     });
 
     const daySelectedHandler = ()  => {
-      selectDay(props.day);
+      updateSelectedDate(props.day);
     };
 
     const showEmptyPlaceholder =  computed<boolean>(() => {
