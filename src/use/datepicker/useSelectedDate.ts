@@ -1,14 +1,10 @@
 import { dateIsValid, DateParser, diffInDays, isSameDay } from '@variantjs/core';
 import { computed, ComputedRef, Ref, ref } from 'vue';
-import { TDatepickerValue } from '../types';
+import { TDatepickerOptions, TDatepickerValue } from '../../types/components/t-datepicker';
 
 export default function useSelectedDate<P extends {
   modelValue?: TDatepickerValue, 
-}, C extends {
-  multiple?: boolean,
-  range?: boolean,
-  dateFormat?: string,
-}>(
+}, C extends Pick<TDatepickerOptions, 'multiple' | 'range' | 'dateFormat'>>(
   props: P,
   configuration: C,
   parseDate: ComputedRef<DateParser>,

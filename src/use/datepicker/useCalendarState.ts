@@ -1,5 +1,5 @@
 import { computed, ComputedRef, ref, Ref } from 'vue';
-import { TDatepickerOptions } from '../../types';
+import { TDatepickerOptions } from '../../types/components/t-datepicker';
 
 export default function useCalendarState<C extends Pick<TDatepickerOptions, 'show' | 'multiple' | 'range'>>(
   configuration: C,

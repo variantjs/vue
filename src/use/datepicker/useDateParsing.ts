@@ -1,6 +1,6 @@
 import { dateEnglishLocale, DateParser, buildDateParser } from '@variantjs/core';
 import { computed, ComputedRef } from 'vue';
-import { TDatepickerOptions } from '../../types';
+import { TDatepickerOptions } from '../../types/components/t-datepicker';
 
 export default function useDateParsing<C extends Pick<TDatepickerOptions, 'locale' | 'dateParser'>>(configuration: C): {
   parseDate: ComputedRef<DateParser>,

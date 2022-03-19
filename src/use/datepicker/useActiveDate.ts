@@ -1,12 +1,8 @@
 import { dateIsValid, DateParser } from '@variantjs/core';
 import { ComputedRef, Ref, ref } from 'vue';
-import { TDatepickerSingleValue } from '../types/components/t-datepicker';
+import { TDatepickerOptions } from '../../types/components/t-datepicker';
 
-export default function useActiveDate<C extends {
-  initialTime?: TDatepickerSingleValue,
-  dateFormat?: string,
-  amPm?: boolean,
-}>(
+export default function useActiveDate<C extends Pick<TDatepickerOptions, 'initialTime' | 'dateFormat' | 'amPm'>>(
   configuration: C,
   selectedDate: Ref<Date | Date[] | undefined>,
   parseDate: ComputedRef<DateParser>,

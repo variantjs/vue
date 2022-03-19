@@ -1,6 +1,6 @@
 import { buildDateFormatter, DateFormatter, dateEnglishLocale } from '@variantjs/core';
 import { computed, ComputedRef, Ref } from 'vue';
-import { TDatepickerOptions } from '../../types';
+import { TDatepickerOptions } from '../../types/components/t-datepicker';
 
 export default function useDateFormatting<C extends Pick<TDatepickerOptions, 'locale' | 'dateFormatter' | 'dateFormat' | 'userFormat' | 'range' | 'dateParser'>>(
   configuration: C,

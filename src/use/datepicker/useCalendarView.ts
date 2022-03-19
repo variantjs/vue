@@ -1,11 +1,7 @@
 import { Ref, ref } from 'vue';
-import { TDatepickerView } from '../types/components/t-datepicker';
+import { TDatepickerView, TDatepickerOptions } from '../../types/components/t-datepicker';
 
-export default function useCalendarView<C extends {
-  initialView?: TDatepickerView,
-  dateFormat?: string,
-  amPm?: boolean,
-}>(
+export default function useCalendarView<C extends Pick<TDatepickerOptions, 'initialView' | 'dateFormat' | 'amPm'>>(
   configuration: C,
 ): {
     currentView: Ref<TDatepickerView>
