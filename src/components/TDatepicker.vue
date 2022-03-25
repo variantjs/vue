@@ -20,9 +20,7 @@
     :teleport-to="configuration.teleportTo"
     @blur-on-child="blurOnChildHandler"
     @hidden="hiddenHandler"
-    @shown="shownHandler"
     @before-show="beforeShowHandler"
-    @before-hide="beforeHideHandler"
   >
     <template #trigger="{ focusHandler, blurHandler }">
       <slot
@@ -501,20 +499,12 @@ export default defineComponent({
       initAllViewData();
     };
 
-    const shownHandler = () => {
-      // TBD
-    };
-
     const hiddenHandler = () => {
       // If the range is complete we should start over again when user tries
       // to update the value
       if (configuration.range && Array.isArray(selectedDate.value) && selectedDate.value.length === 2) {
         resetRangeSelection();
       }      
-    };
-
-    const beforeHideHandler = () => {
-      // TBD
     };
 
     provide('activeDate', activeDate);
@@ -552,9 +542,7 @@ export default defineComponent({
       clickHandler,
       keyboardNavigationHandler,
       beforeShowHandler,
-      shownHandler,
       hiddenHandler,
-      beforeHideHandler,
       userInputHandler,
       doHide,
       doShow,
