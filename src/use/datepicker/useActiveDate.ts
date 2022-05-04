@@ -6,11 +6,9 @@ export default function useActiveDate<C extends Pick<TDatepickerOptions, 'initia
   configuration,
   selectedDate,
   parseDate,
-  addSelectedDate,
 }: {
   configuration: C,
   selectedDate: Ref<Date | Date[] | undefined>,
-  addSelectedDate: (date: Date) => void,
   parseDate: ComputedRef<DateParser>,
 },
   
@@ -21,7 +19,6 @@ export default function useActiveDate<C extends Pick<TDatepickerOptions, 'initia
     initActiveDate: () => void,
     hideActiveDate: () => void,
     showActiveDate: () => void,
-    selectActiveDate: () => void,
   } {
   // The active date is usually hidden but shown when navigating with the keyboard
   const activeDateIsVisible = ref<boolean>(false);
@@ -74,10 +71,6 @@ export default function useActiveDate<C extends Pick<TDatepickerOptions, 'initia
     activeDateIsVisible.value = true;
   };
 
-  const selectActiveDate = () => {
-    addSelectedDate(activeDate.value);
-  };
-
   return {
     activeDate,
     activeDateIsVisible,
@@ -85,6 +78,5 @@ export default function useActiveDate<C extends Pick<TDatepickerOptions, 'initia
     initActiveDate,
     hideActiveDate,
     showActiveDate,
-    selectActiveDate,
   };
 }

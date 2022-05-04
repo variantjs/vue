@@ -316,8 +316,8 @@ export default defineComponent({
     const { parseDate } = useDateParsing(configuration);
     
     const { selectedDate, selectedDateHolder, setSelectedDate, addSelectedDate, getInitialSelectedDate, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
-    const { activeDate, activeDateIsVisible, initActiveDate, setActiveDate, hideActiveDate, showActiveDate, selectActiveDate } = useActiveDate({
-      configuration, selectedDate, parseDate, addSelectedDate,
+    const { activeDate, activeDateIsVisible, initActiveDate, setActiveDate, hideActiveDate, showActiveDate } = useActiveDate({
+      configuration, selectedDate, parseDate,
     });
     const { formatDate, formattedDate, userFormattedDate } = useDateFormatting(configuration, selectedDate);
     const { currentView, initView, setCurrentView } = useCalendarView(configuration);
@@ -377,6 +377,7 @@ export default defineComponent({
     };
 
     const selectDate = (date: Date) => {
+      console.log(date);
       addSelectedDate(date);
 
       setActiveDate(date);
@@ -391,13 +392,22 @@ export default defineComponent({
         // Will try to set the data by using the user manual input
         const parsedDate = input && input.value ? parseDate.value(input.value, configuration.userFormat) : undefined;
 
-        if (parsedDate !== undefined) {
-          addSelectedDate(parsedDate);
+        // If the user clicks while the input is closed could mean the user
+        // manually edited the date (if a date was parsed). If that is the case
+        // we only want to set the date if the date is different from the current
+        if (
+          parsedDate !== undefined
+          && (
+            selectedDate.value === undefined
+            || selectedDate.value instanceof Date && parsedDate.getTime() !== selectedDate.value.getTime()
+          )
+        ) {
+          setSelectedDate(parsedDate);
         }
       }
 
       if (isDropdownOpened.value) {
-        selectActiveDate();
+        addSelectedDate(activeDate.value);
       } else if (configuration.toggleOnClick) {
         doShow();
       }
