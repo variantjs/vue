@@ -1,7 +1,7 @@
 <template>
   <div class="w-64">
     <datepicker-view-controls
-      v-if="isActiveMonth"
+      v-if="first"
       :date="month"
     />
     <div
@@ -15,13 +15,13 @@
     </div>
 
     <datepicker-view-month
-      v-if="isMonthView"
+      v-if="isMonthView || !first"
       :month="month"
     />
 
     <datepicker-view-year v-else-if="isYearView" />
 
-    <DatepickerViewMultipleYears v-else />
+    <datepicker-view-multiple-years v-else />
   </div>
 </template>
 
@@ -33,8 +33,6 @@ import DatepickerViewYear from './DatepickerViewYear.vue';
 import DatepickerViewMultipleYears from './DatepickerViewMultipleYears.vue';
 import DatepickerViewControls from './DatepickerViewControls.vue';
 import DatepickerViewControlsLabel from './DatepickerViewControlsLabel.vue';
-
-import { isSameMonth } from '@variantjs/core';
 
 export default defineComponent({
   name: 'DatepickerView',
@@ -50,19 +48,19 @@ export default defineComponent({
       type: Date,
       required: true,
     },
+    first: {
+      type: Boolean,
+      required: true,
+    },
   },
-  setup(props) {
-    const activeDate = inject<Ref<Date>>('activeDate')!;
-
+  setup() {
     const currentView = inject<Ref<TDatepickerView>>('currentView')!;
     
-    const isActiveMonth = computed<boolean>(() => isSameMonth(props.month, activeDate.value));
-    
-    const isMonthView = computed<boolean>(() => !isActiveMonth.value || currentView.value === TDatepickerView.Day);
+    const isMonthView = computed<boolean>(() => currentView.value === TDatepickerView.Day);
     
     const isYearView = computed<boolean>(() => currentView.value === TDatepickerView.Month);
 
-    return { isMonthView, isYearView, isActiveMonth };
+    return { isMonthView, isYearView };
   },
 });
 </script>

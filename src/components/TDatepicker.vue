@@ -111,7 +111,7 @@ import {
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
-import { useSelectedDate, useActiveDate, useCalendarView, useDateFormatting, useDateParsing, useCalendarState } from '../use/datepicker';
+import { useSelectedDate, useActiveDate, useCalendarView, useDateFormatting, useDateParsing, useCalendarState, useVisibleDate } from '../use/datepicker';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { TDatepickerOptions, TDatepickerValue } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
@@ -314,7 +314,6 @@ export default defineComponent({
     // - Inside the dropdown refactor to reuse the dropdown view (recently duplciated with the teleport fix)
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
     const { parseDate } = useDateParsing(configuration);
-    
     const { selectedDate, selectedDateHolder, setSelectedDate, addSelectedDate, getInitialSelectedDate, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
     const { activeDate, activeDateIsVisible, initActiveDate, setActiveDate, hideActiveDate, showActiveDate } = useActiveDate({
       configuration, selectedDate, parseDate,
@@ -322,6 +321,8 @@ export default defineComponent({
     const { formatDate, formattedDate, userFormattedDate } = useDateFormatting(configuration, selectedDate);
     const { currentView, initView, setCurrentView } = useCalendarView(configuration);
     const { shown, doShow, doHide, isMultiple, isDropdownClosed, isDropdownOpened } = useCalendarState(configuration);
+
+    const { visibleDate, resetVisibleDate } = useVisibleDate({ activeDate, configuration });
 
     const initAllViewData = () => {
       initView();
@@ -368,12 +369,16 @@ export default defineComponent({
       setActiveDate(month);
 
       setCurrentView(TDatepickerView.Day);
+
+      resetVisibleDate();
     };
 
     const selectYear = (year: Date) => {
       setActiveDate(year);
 
       setCurrentView(TDatepickerView.Month);
+
+      resetVisibleDate();
     };
 
     const selectDate = (date: Date) => {
@@ -388,7 +393,6 @@ export default defineComponent({
         setActiveDate(date);
       }
     };
-
 
     // Handlers
     const clickHandler = (e: KeyboardEvent | MouseEvent) => {
@@ -511,15 +515,19 @@ export default defineComponent({
       }      
     };
 
+    provide('visibleDate', visibleDate);
+    
+    provide('resetVisibleDate', resetVisibleDate);
+    
     provide('activeDate', activeDate);
 
     provide('activeDateIsVisible', activeDateIsVisible);
     
+    provide('setActiveDate', setActiveDate);
+    
     provide('selectedDateHolder', selectedDateHolder);
 
     provide('selectedDate', selectedDate);
-    
-    provide('setActiveDate', setActiveDate);
     
     provide('configuration', configuration);
 

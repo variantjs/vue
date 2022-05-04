@@ -2,9 +2,10 @@
   <div class="inline-flex flex-col mt-1 bg-white border rounded">
     <div class="inline-flex flex-wrap ">
       <datepicker-view
-        v-for="month in visibleMonths"
+        v-for="(month, index) in visibleMonths"
         :key="month.toISOString"
         :month="month"
+        :first="index === 0"
       />
     </div>
   </div>
@@ -25,13 +26,14 @@ export default defineComponent({
   },
   setup() {
     const configuration = inject<TDatepickerOptions>('configuration')!;
+    
     const monthsPerView = configuration.monthsPerView!;
 
-    const activeDate = inject<Ref<Date>>('activeDate')!;
+    const visibleDate = inject<Ref<Date>>('visibleDate')!;
 
     const visibleMonths = computed<Date[]>(() => 
       range(0, monthsPerView - 1)
-        .map((i) => addMonths(activeDate.value, i)));
+        .map((i) => addMonths(visibleDate.value, i)));
 
     return { visibleMonths };
   },

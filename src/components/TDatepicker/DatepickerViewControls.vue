@@ -75,6 +75,7 @@ export default defineComponent({
     const activeDate = inject<Ref<Date>>('activeDate')!;
     const setCurrentView = inject<(view: TDatepickerView) => void>('setCurrentView')!;
     const setActiveDate = inject<(date: Date) => void>('setActiveDate')!;
+    const resetVisibleDate = inject<() => void>('resetVisibleDate')!;
     const currentView = inject<Ref<TDatepickerView>>('currentView')!;
 
     const isMonthView = computed<boolean>(() => currentView.value === TDatepickerView.Day);
@@ -92,6 +93,8 @@ export default defineComponent({
       } else  {
         setActiveDate(addMonths(activeDate.value, 1));
       }
+
+      resetVisibleDate();
     };
 
     const prevGroupHandler = () => {
@@ -102,6 +105,8 @@ export default defineComponent({
       } else {
         setActiveDate(addMonths(activeDate.value, -1));
       }
+
+      resetVisibleDate();
     };
 
     const toggleView = () => {

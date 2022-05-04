@@ -4,5 +4,6 @@ import useSelectedDate from './useSelectedDate';
 import useDateFormatting from './useDateFormatting';
 import useDateParsing from './useDateParsing';
 import useCalendarState from './useCalendarState';
+import useVisibleDate from './useVisibleDate';
 
-export { useActiveDate, useCalendarView, useSelectedDate, useDateFormatting, useDateParsing, useCalendarState }; 
+export { useActiveDate, useCalendarView, useSelectedDate, useDateFormatting, useDateParsing, useCalendarState, useVisibleDate }; 
