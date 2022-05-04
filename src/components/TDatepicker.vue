@@ -314,12 +314,15 @@ export default defineComponent({
     // - Inside the dropdown refactor to reuse the dropdown view (recently duplciated with the teleport fix)
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
     const { parseDate } = useDateParsing(configuration);
-    const { selectDate, selectedDate, setSelectedDate, getInitialSelectedDate, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
+    
+    const { selectedDate, selectedDateHolder, setSelectedDate, addSelectedDate, getInitialSelectedDate, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
+    const { activeDate, activeDateIsVisible, initActiveDate, setActiveDate, hideActiveDate, showActiveDate, selectActiveDate } = useActiveDate({
+      configuration, selectedDate, parseDate, addSelectedDate,
+    });
     const { formatDate, formattedDate, userFormattedDate } = useDateFormatting(configuration, selectedDate);
-    const { activeDate, activeDateIsVisible, initActiveDate, setActiveDate, hideActiveDate, showActiveDate } = useActiveDate(configuration, selectedDate, parseDate);
     const { currentView, initView, setCurrentView } = useCalendarView(configuration);
     const { shown, doShow, doHide, isMultiple, isDropdownClosed, isDropdownOpened } = useCalendarState(configuration);
-    
+
     const initAllViewData = () => {
       initView();
       initActiveDate();
@@ -338,6 +341,23 @@ export default defineComponent({
       shown.value = configuration.show!;
     });
 
+    watch(selectedDate, (newSelectedDate) => {
+      const event = new CustomEvent('input', {
+        detail: {
+          value: formattedDate.value,
+          formattedDate: userFormattedDate.value,
+          date: newSelectedDate,
+        },
+      });
+      
+      emit('change', event);
+      emit('input', event);
+      emit('update:modelValue', formattedDate.value);      
+
+      if (configuration.closeOnSelect && isDropdownOpened.value) {
+        doHide();
+      }
+    });
 
     // Note about `selectMonth` and `selectYear` methods:
     // In most cases selecting a month or year only changes the active date which
@@ -356,42 +376,12 @@ export default defineComponent({
       setCurrentView(TDatepickerView.Month);
     };
 
-    const updateSelectedDate = (date: Date) => {
-      const newSelectedDate = selectDate(date);
-
-      if (newSelectedDate === undefined) {
-        return;
-      }
+    const selectDate = (date: Date) => {
+      addSelectedDate(date);
 
       setActiveDate(date);
-
-      hideActiveDate();
-      
-      if (configuration.range && !(Array.isArray(newSelectedDate) && newSelectedDate.length === 2)) {
-        return;
-      }
-
-      const event = new CustomEvent('input', {
-        detail: {
-          value: formattedDate.value,
-          formattedDate: userFormattedDate.value,
-          date: newSelectedDate,
-        },
-      });
-      
-      emit('change', event);
-      emit('input', event);
-      emit('update:modelValue', formattedDate.value);      
-
-      if (configuration.closeOnSelect && isDropdownOpened.value) {
-        doHide();
-      }
     };
 
-
-    const selectActiveDate = () => {
-      updateSelectedDate(activeDate.value);
-    };
 
     // Handlers
     const clickHandler = (e: KeyboardEvent | MouseEvent) => {
@@ -402,9 +392,7 @@ export default defineComponent({
         const parsedDate = input && input.value ? parseDate.value(input.value, configuration.userFormat) : undefined;
 
         if (parsedDate !== undefined) {
-          setActiveDate(parsedDate);
-
-          selectActiveDate();
+          addSelectedDate(parsedDate);
         }
       }
 
@@ -510,10 +498,10 @@ export default defineComponent({
     provide('activeDate', activeDate);
 
     provide('activeDateIsVisible', activeDateIsVisible);
+    
+    provide('selectedDateHolder', selectedDateHolder);
 
     provide('selectedDate', selectedDate);
-    
-    provide('setSelectedDate', setSelectedDate);
     
     provide('setActiveDate', setActiveDate);
     
@@ -523,7 +511,7 @@ export default defineComponent({
 
     provide('formatDate', formatDate);
     
-    provide('updateSelectedDate', updateSelectedDate);
+    provide('selectDate', selectDate);
     
     provide('selectMonth', selectMonth);
     

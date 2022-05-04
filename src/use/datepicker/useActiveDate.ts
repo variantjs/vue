@@ -2,10 +2,18 @@ import { dateIsValid, DateParser } from '@variantjs/core';
 import { ComputedRef, Ref, ref } from 'vue';
 import { TDatepickerOptions } from '../../types/components/t-datepicker';
 
-export default function useActiveDate<C extends Pick<TDatepickerOptions, 'initialTime' | 'dateFormat' | 'amPm'>>(
+export default function useActiveDate<C extends Pick<TDatepickerOptions, 'initialTime' | 'dateFormat' | 'amPm'>>({
+  configuration,
+  selectedDate,
+  parseDate,
+  addSelectedDate,
+}: {
   configuration: C,
   selectedDate: Ref<Date | Date[] | undefined>,
+  addSelectedDate: (date: Date) => void,
   parseDate: ComputedRef<DateParser>,
+},
+  
 ): {
     activeDate: Ref<Date>
     activeDateIsVisible: Ref<boolean>
@@ -13,6 +21,7 @@ export default function useActiveDate<C extends Pick<TDatepickerOptions, 'initia
     initActiveDate: () => void,
     hideActiveDate: () => void,
     showActiveDate: () => void,
+    selectActiveDate: () => void,
   } {
   // The active date is usually hidden but shown when navigating with the keyboard
   const activeDateIsVisible = ref<boolean>(false);
@@ -65,6 +74,10 @@ export default function useActiveDate<C extends Pick<TDatepickerOptions, 'initia
     activeDateIsVisible.value = true;
   };
 
+  const selectActiveDate = () => {
+    addSelectedDate(activeDate.value);
+  };
+
   return {
     activeDate,
     activeDateIsVisible,
@@ -72,5 +85,6 @@ export default function useActiveDate<C extends Pick<TDatepickerOptions, 'initia
     initActiveDate,
     hideActiveDate,
     showActiveDate,
+    selectActiveDate,
   };
 }
