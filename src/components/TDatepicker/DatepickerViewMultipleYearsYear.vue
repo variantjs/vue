@@ -28,7 +28,7 @@ export default defineComponent({
     const formatDate = inject<ComputedRef<DateFormatter>>('formatDate')!;
     const activeDate = inject<Ref<Date>>('activeDate')!;
     const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
-    const selectYear = inject<(day: Date) => void>('selectYear')!;
+    const selectDate = inject<(day: Date) => void>('selectDate')!;
 
     const yearLabel = formatDate.value(props.year, 'Y');
 
@@ -55,7 +55,7 @@ export default defineComponent({
     });
 
     const yearSelectedHandler = ()  => {
-      selectYear(props.year);
+      selectDate(props.year);
     };
 
     return { yearLabel, buttonClass, yearSelectedHandler };

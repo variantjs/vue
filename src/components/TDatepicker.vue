@@ -377,10 +377,16 @@ export default defineComponent({
     };
 
     const selectDate = (date: Date) => {
-      console.log(date);
-      addSelectedDate(date);
+      // Depending of the view (year view, month view or day views the amount of days is different)
+      if (currentView.value === TDatepickerView.Year) {
+        selectYear(date);
+      } else if (currentView.value === TDatepickerView.Month) {
+        selectMonth(date);
+      } else {
+        addSelectedDate(date);
 
-      setActiveDate(date);
+        setActiveDate(date);
+      }
     };
 
 
@@ -407,7 +413,7 @@ export default defineComponent({
       }
 
       if (isDropdownOpened.value) {
-        addSelectedDate(activeDate.value);
+        selectDate(activeDate.value);
       } else if (configuration.toggleOnClick) {
         doShow();
       }
@@ -522,10 +528,6 @@ export default defineComponent({
     provide('formatDate', formatDate);
     
     provide('selectDate', selectDate);
-    
-    provide('selectMonth', selectMonth);
-    
-    provide('selectYear', selectYear);
     
     provide('setCurrentView', setCurrentView);
     

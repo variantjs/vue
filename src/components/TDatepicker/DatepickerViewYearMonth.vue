@@ -28,7 +28,7 @@ export default defineComponent({
     const formatDate = inject<ComputedRef<DateFormatter>>('formatDate')!;
     const activeDate = inject<Ref<Date>>('activeDate')!;
     const selectedDate = inject<Ref<Date | Date[]>>('selectedDate')!;
-    const selectMonth = inject<(day: Date) => void>('selectMonth')!;
+    const selectDate = inject<(day: Date) => void>('selectDate')!;
 
     const ariaLabel = formatDate.value(props.month, 'F, Y');
     const dataDate = formatDate.value(props.month, 'Y-m');
@@ -57,7 +57,7 @@ export default defineComponent({
     });
 
     const monthSelectedHandler = ()  => {
-      selectMonth(props.month);
+      selectDate(props.month);
     };
 
     return { ariaLabel, dataDate, monthLabel, buttonClass, monthSelectedHandler };
