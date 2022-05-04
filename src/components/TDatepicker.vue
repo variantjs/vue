@@ -300,18 +300,13 @@ export default defineComponent({
   setup(props, { emit }) {
     // @TODOS:
     // - In general check which dropdown options/events are usable
-    // - Add selectOnClose, closeOnSelected and see if something from the rich select can be used
-    // - Show active date should be reset in some cases TBD
+    // - Add selectOnClose and see if something from the rich select can be used
     // - Check aria labels on buttons 
     // - Replace svg icons with icon component
-    // - Selecting in different view with enter closes the dropdown
-    // - When press enten in month or year views it immediatly closes the dropdown and closed the field 
     // - The click handler depnds of shown consider the case when using inline
-    // - Consider using an undefined default value for toggling and, in cases like multiple or range keep the modal opened by default
+    // - Consider using an undefined default value for togglin and, in cases like multiple or range keep the dropdown opened by default
     // - In multiple add an ok button
     // - Add a clear button
-    // - If users type a date and blur it should reset the v-model date
-    // - Inside the dropdown refactor to reuse the dropdown view (recently duplciated with the teleport fix)
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
     const { parseDate } = useDateParsing(configuration);
     const { selectedDate, selectedDateHolder, setSelectedDate, addSelectedDate, getInitialSelectedDate, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
