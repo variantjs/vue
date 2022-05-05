@@ -99,7 +99,6 @@ export default function useSelectedDate<P extends {
       }
 
       if (isMultiple.value) {
-        // @TODO: consider user option like an "Ok" button to confirm the selection
         return true;
       }
 

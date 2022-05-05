@@ -52,4 +52,5 @@ export type TDatepickerOptions = WithVariantPropsAndClassesList<{
   addFormInput?: boolean,  
   teleport?: boolean,
   teleportTo?: string | HTMLElement,
+  showOkButton?: boolean,
 } & HTMLAttributes & Data, TDatepickerClassesValidKeys>;

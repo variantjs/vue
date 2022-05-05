@@ -22,6 +22,8 @@
     <datepicker-view-year v-else-if="isYearView" />
 
     <datepicker-view-multiple-years v-else />
+
+    <datepicker-view-footer v-if="first" />
   </div>
 </template>
 
@@ -33,6 +35,7 @@ import DatepickerViewYear from './DatepickerViewYear.vue';
 import DatepickerViewMultipleYears from './DatepickerViewMultipleYears.vue';
 import DatepickerViewControls from './DatepickerViewControls.vue';
 import DatepickerViewControlsLabel from './DatepickerViewControlsLabel.vue';
+import DatepickerViewFooter from './DatepickerViewFooter.vue';
 
 export default defineComponent({
   name: 'DatepickerView',
@@ -42,6 +45,7 @@ export default defineComponent({
     DatepickerViewMultipleYears,
     DatepickerViewControls,
     DatepickerViewControlsLabel,
+    DatepickerViewFooter,
   },
   props: {
     month: {

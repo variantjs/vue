@@ -1,6 +1,6 @@
 <template>
   <div class="inline-flex flex-col mt-1 bg-white border rounded">
-    <div class="inline-flex flex-wrap ">
+    <div class="inline-flex flex-wrap">
       <datepicker-view
         v-for="(month, index) in visibleMonths"
         :key="month.toISOString"

@@ -92,6 +92,7 @@ import {
   provide,
   watch,
   InputHTMLAttributes,
+  computed,
 } from 'vue';
 
 import {
@@ -111,7 +112,7 @@ import {
 } from '@variantjs/core';
 import { Options, Placement } from '@popperjs/core';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
-import { useSelectedDate, useActiveDate, useCalendarView, useDateFormatting, useDateParsing, useCalendarState, useVisibleDate } from '../use/datepicker';
+import { useSelectedDate, useActiveDate, useCalendarView, useDateFormatting, useDateParsing, useCalendarState, useVisibleDate, useDateLocale } from '../use/datepicker';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import { TDatepickerOptions, TDatepickerValue } from '../types';
 import DatepickerDropdown from './TDatepicker/DatepickerDropdown.vue';
@@ -275,7 +276,7 @@ export default defineComponent({
     },
     closeOnSelect: {
       type: Boolean,
-      default: true,
+      default: undefined,
     },
     show: {
       type: Boolean,
@@ -288,6 +289,10 @@ export default defineComponent({
     teleportTo: {
       type: [String, Object] as PropType<string | HTMLElement>,
       default: 'body',
+    },
+    showOkButton: {
+      type: Boolean,
+      default: undefined,
     },
   },
   emits: {
@@ -308,17 +313,28 @@ export default defineComponent({
     // - In multiple add an ok button
     // - Add a clear button
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
-    const { parseDate } = useDateParsing(configuration);
+    const locale = useDateLocale({ configuration });
+    const { parseDate } = useDateParsing({ configuration, locale });
     const { selectedDate, selectedDateHolder, setSelectedDate, addSelectedDate, getInitialSelectedDate, resetRangeSelection } = useSelectedDate(props, configuration, parseDate);
     const { activeDate, activeDateIsVisible, initActiveDate, setActiveDate, hideActiveDate, showActiveDate } = useActiveDate({
       configuration, selectedDate, parseDate,
     });
-    const { formatDate, formattedDate, userFormattedDate } = useDateFormatting(configuration, selectedDate);
+    const { formatDate, formattedDate, userFormattedDate } = useDateFormatting({ configuration, selectedDate, locale });
     const { currentView, initView, setCurrentView } = useCalendarView(configuration);
-    const { shown, doShow, doHide, isMultiple, isDropdownClosed, isDropdownOpened } = useCalendarState(configuration);
-
+    const { shown, doShow, doHide, isMultiple, isRange, isDropdownClosed, isDropdownOpened } = useCalendarState(configuration);
     const { visibleDate, resetVisibleDate } = useVisibleDate({ activeDate, configuration });
+    const shouldCloseOnSelect = computed<boolean>(() => {
+      if (configuration.closeOnSelect === undefined) {
+        return isRange.value || !isMultiple.value;
+      }
 
+      return configuration.closeOnSelect;
+    });
+
+    const okButtonHandler = () => {
+      doHide();
+    };
+    
     const initAllViewData = () => {
       initView();
       initActiveDate();
@@ -350,7 +366,7 @@ export default defineComponent({
       emit('input', event);
       emit('update:modelValue', formattedDate.value);      
 
-      if (configuration.closeOnSelect && isDropdownOpened.value) {
+      if (shouldCloseOnSelect.value && isDropdownOpened.value) {
         doHide();
       }
     });
@@ -537,6 +553,10 @@ export default defineComponent({
     provide('currentView', currentView);
     
     provide('userFormattedDate', userFormattedDate);
+    
+    provide('locale', locale);
+    
+    provide('okButtonHandler', okButtonHandler);
 
     return {
       configuration,

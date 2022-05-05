@@ -1,11 +1,17 @@
-import { dateEnglishLocale, DateParser, buildDateParser } from '@variantjs/core';
+import { DateParser, buildDateParser, DateLocale } from '@variantjs/core';
 import { computed, ComputedRef } from 'vue';
 import { TDatepickerOptions } from '../../types/components/t-datepicker';
 
-export default function useDateParsing<C extends Pick<TDatepickerOptions, 'locale' | 'dateParser'>>(configuration: C): {
-  parseDate: ComputedRef<DateParser>,
-} {
-  const parseDate = computed<DateParser>(() => buildDateParser(configuration.locale || dateEnglishLocale, configuration.dateParser));
+export default function useDateParsing<C extends Pick<TDatepickerOptions, 'locale' | 'dateParser'>>({
+  configuration,
+  locale,
+}: {
+  configuration: C,
+  locale: ComputedRef<DateLocale>
+}): {
+    parseDate: ComputedRef<DateParser>,
+  } {
+  const parseDate = computed<DateParser>(() => buildDateParser(locale.value, configuration.dateParser));
 
   return { parseDate };
 }
