@@ -33,6 +33,9 @@
     <t-button to="/dialog">
       Dialog
     </t-button>
+    <t-button to="/datepicker">
+      Datepicker
+    </t-button>
     <t-button to="/about">
       About
     </t-button>

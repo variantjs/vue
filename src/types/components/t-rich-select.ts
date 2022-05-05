@@ -1,7 +1,7 @@
 import {
   Data, InputOptions, Measure, NormalizedOption, NormalizedOptions, TRichSelectClassesValidKeys, WithVariantPropsAndClassesList,
 } from '@variantjs/core';
-import { HTMLAttributes } from 'vue';
+import { HTMLAttributes, InputHTMLAttributes } from 'vue';
 import { Placement, Options } from '@popperjs/core';
 import { TSelectValue } from './t-select';
 import { FetchOptionsFn, PreFetchOptionsFn } from '../misc';
@@ -41,4 +41,7 @@ export type TRichSelectOptions = WithVariantPropsAndClassesList<{
   dropdownPopperOptions?: Options,
   teleport?: boolean,
   teleportTo?: string | HTMLElement,
+  inputType?: string,
+  formInputAttributes?: InputHTMLAttributes & Data,
+  addFormInput?: boolean,
 } & HTMLAttributes & Data, TRichSelectClassesValidKeys>;

@@ -4,6 +4,7 @@ export { TTextareaValue, TTextareaOptions } from './components/t-textarea';
 export { TRadioValue, TRadioOptions } from './components/t-radio';
 export { TCheckboxValue, TCheckboxOptions } from './components/t-checkbox';
 export { TSelectValue, TSelectOptions } from './components/t-select';
+export { TDatepickerValue, TDatepickerOptions } from './components/t-datepicker';
 export { TButtonOptions } from './components/t-button';
 export { TCardOptions } from './components/t-card';
 export { TModalOptions } from './components/t-modal';

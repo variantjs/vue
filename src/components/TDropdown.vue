@@ -7,26 +7,28 @@
     :class="configuration.classesList?.trigger"
     :disabled="configuration.disabled"
     v-bind="{...attributes, ...$attrs}"
-    @click="clickHandler"
     @focus="focusHandler"
     @blur="blurHandler"
     @mouseover="mouseoverHandler"
     @mouseleave="mouseleaveHandler"
+    @mousedown="clickHandler"
+    @keydown.enter="clickHandler"
+    @keydown.space="clickHandler"
   >
     <slot
       :configuration="configuration"
       :is-show="shown"
       :popper="popper"
       name="trigger"
+      :focus-handler="focusHandler"
+      :blur-handler="blurHandler"
+      :click-handler="clickHandler"
     >
       {{ configuration.text }}
     </slot>
   </component>
 
-  <teleport
-    :to="configuration.teleportTo"
-    :disabled="! configuration.teleport"
-  >
+  <template v-if="!usesTeleport">
     <transitionable
       :enabled="popperIsAdjusted || !initAsShow"
       :classes-list="configuration.classesList"
@@ -54,7 +56,38 @@
         />
       </component>
     </transitionable>
-  </teleport>
+  </template>
+  <template v-else-if="isMounted">
+    <teleport :to="configuration.teleportTo">
+      <transitionable
+        :enabled="popperIsAdjusted || !initAsShow"
+        :classes-list="configuration.classesList"
+        @after-leave="dropdownAfterLeave"
+      >
+        <component
+          :is="dropdownTagName"
+          v-show="shown || adjustingPopper || initAsShow"
+          ref="dropdown"
+          :style="adjustingPopper ? 'opacity:0' : undefined"
+          :class="configuration.classesList?.dropdown"
+          :aria-hidden="!shown"
+          tabindex="-1"
+          v-bind="dropdownAttributes"
+          @blur="blurHandler"
+          @mouseover="mouseoverHandler"
+          @mouseleave="mouseleaveHandler"
+        >
+          <slot
+            :show="doShow"
+            :hide="doHide"
+            :toggle="doToggle"
+            :configuration="configuration"
+            :popper="popper"
+          />
+        </component>
+      </transitionable>
+    </teleport>
+  </template>
 </template>
 
 <script lang="ts">
@@ -68,16 +101,16 @@ import {
   debounce,
   elementIsTargetOrTargetChild,
   getFocusableElements,
-  isTouchOnlyDevice as getIsTouch,
   throttle,
   TDropdownPopperDefaultOptions as defaultPopperOptions,
   DebouncedFn,
 } from '@variantjs/core';
 import {
-  defineComponent, PropType, onMounted, ref,
+  defineComponent, PropType, 
 } from 'vue';
 import { TDropdownOptions } from '../types';
 import useConfigurationWithClassesList from '../use/useConfigurationWithClassesList';
+import useIsTouchOnlyDevice from '../use/useIsTouchOnlyDevice';
 import { getVariantPropsWithClassesList } from '../utils/getVariantProps';
 import Transitionable from './misc/Transitionable.vue';
 
@@ -172,7 +205,7 @@ export default defineComponent({
     focus: (e: FocusEvent) => e instanceof FocusEvent,
     blur: (e: FocusEvent) => e instanceof FocusEvent,
     'blur-on-child': (e: FocusEvent) => e instanceof FocusEvent,
-    click: (e: MouseEvent) => e instanceof MouseEvent,
+    click: (e: MouseEvent | KeyboardEvent) => e instanceof Event,
     mouseover: (e: MouseEvent) => e instanceof MouseEvent,
     mouseleave: (e: MouseEvent) => e instanceof MouseEvent,
     touchstart: (e: TouchEvent) => e instanceof TouchEvent,
@@ -184,22 +217,20 @@ export default defineComponent({
   setup() {
     const { configuration, attributes } = useConfigurationWithClassesList<TDropdownOptions>(TDropdownConfig, TDropdownClassesKeys);
 
-    const isTouchOnlyDevice = ref<boolean>(false);
-
-    onMounted(() => {
-      isTouchOnlyDevice.value = getIsTouch();
-    });
+    const isTouchOnlyDevice = useIsTouchOnlyDevice();
 
     return { configuration, attributes, isTouchOnlyDevice };
   },
   data({ configuration }) {
     return {
+      isMounted: false,
       shown: (configuration as unknown as TDropdownOptions).show,
       // Disables the animation while the dropdown is being shown
       initAsShow: (configuration as unknown as TDropdownOptions).show,
       hideTimeout: null as ReturnType<typeof setTimeout> | null,
       focusableElements: [] as Array<HTMLElement>,
-      throttledToggle: null as null | (() => void),
+      throttledShow: null as null | (() => void),
+      throttledHide: null as null | (() => void),
       adjustingPopper: false,
       popperIsAdjusted: false,
       popperAdjusterListener: null as null | DebouncedFn,
@@ -207,6 +238,9 @@ export default defineComponent({
     };
   },
   computed: {
+    usesTeleport(): boolean {
+      return !! (this.configuration.teleport && this.configuration.teleportTo);
+    },
     fullPopperOptions(): Options {
       const popperOptions = this.configuration.popperOptions as Options;
 
@@ -217,7 +251,8 @@ export default defineComponent({
       return popperOptions;
     },
     shouldShowWhenClicked(): boolean {
-      return this.isTouchOnlyDevice
+      return !this.shown
+        && this.isTouchOnlyDevice
         && (this.configuration.toggleOnFocus === true || this.configuration.toggleOnHover === true);
     },
   },
@@ -231,13 +266,15 @@ export default defineComponent({
     },
     'configuration.show': function configurationShowWatch(show: boolean): void {
       if (show) {
-        this.doShow();
+        this.throttledShow!();
       } else {
-        this.doHide();
+        this.throttledHide!();
       }
     },
   },
   mounted() {
+    this.isMounted = true;
+    
     if (this.isTouchOnlyDevice && this.shown) {
       window.addEventListener('touchstart', this.touchstartHandler);
     }
@@ -249,7 +286,8 @@ export default defineComponent({
     }
   },
   created() {
-    this.throttledToggle = throttle(this.doToggle, 200);
+    this.throttledShow = throttle(this.doShow, 200);
+    this.throttledHide = throttle(this.doHide, 200);
 
     this.popperAdjusterListener = debounce(() => {
       this.popperIsAdjusted = false;
@@ -403,6 +441,13 @@ export default defineComponent({
       const { trigger } = this.$refs;
       return trigger as HTMLButtonElement;
     },
+    throttledToggle(): void {
+      if (!this.shown) {
+        this.throttledShow!();
+      } else {
+        this.throttledHide!();
+      }
+    },
     doToggle(): void {
       if (!this.shown) {
         this.doShow();
@@ -434,24 +479,20 @@ export default defineComponent({
 
       this.onHidden();
     },
-    clickHandler(e: MouseEvent): void {
+    clickHandler(e: MouseEvent | KeyboardEvent): void {
       this.$emit('click', e);
 
       if (this.configuration.toggleOnClick) {
         this.throttledToggle!();
       } else if (this.shouldShowWhenClicked) {
-        this.doShow();
+        this.throttledShow!();
       }
     },
     focusHandler(e: FocusEvent): void {
       this.$emit('focus', e);
 
-      if (this.isTouchOnlyDevice) {
-        return;
-      }
-
-      if (this.configuration.toggleOnFocus) {
-        this.throttledToggle!();
+      if (this.configuration.toggleOnFocus && !this.shown) {
+        this.throttledShow!();
       }
     },
     blurHandler(e: FocusEvent): void {
@@ -463,12 +504,8 @@ export default defineComponent({
         this.$emit('blur-on-child', e);
       }
 
-      if (this.isTouchOnlyDevice) {
-        return;
-      }
-
-      if (this.configuration.toggleOnFocus && !isChild) {
-        this.doHide();
+      if (this.shown && this.configuration.toggleOnFocus && !isChild) {
+        this.throttledHide!();
       }
     },
     targetIsChild(target: EventTarget | null): boolean {
@@ -482,7 +519,7 @@ export default defineComponent({
         return;
       }
 
-      if (this.configuration.toggleOnHover) {
+      if (this.configuration.toggleOnHover && !this.shown) {
         this.doShow();
       }
     },
@@ -493,7 +530,7 @@ export default defineComponent({
         return;
       }
 
-      if (this.configuration.toggleOnHover && !this.targetIsChild(e.relatedTarget)) {
+      if (this.shown && this.configuration.toggleOnHover && !this.targetIsChild(e.relatedTarget)) {
         this.hideAfterTimeout();
       }
     },
@@ -504,7 +541,7 @@ export default defineComponent({
         return;
       }
 
-      if (this.configuration.toggleOnFocus || this.configuration.toggleOnHover) {
+      if (this.shown && (this.configuration.toggleOnFocus || this.configuration.toggleOnHover)) {
         this.doHide();
       }
     },
