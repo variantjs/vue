@@ -45,6 +45,7 @@
           :readonly="configuration.readonly"
           :placeholder="configuration.placeholder"
           v-bind="configuration.userInputAttributes"
+          data-datepicker-focusable
           @input="userInputHandler"
           @focus="focusHandler"
           @blur="blurHandler"
@@ -310,7 +311,6 @@ export default defineComponent({
     // - Replace svg icons with icon component
     // - The click handler depnds of shown consider the case when using inline
     // - Consider using an undefined default value for togglin and, in cases like multiple or range keep the dropdown opened by default
-    // - In multiple add an ok button
     // - Add a clear button
     const { configuration, attributes } = useConfigurationWithClassesList<TDatepickerOptions>(TDatepickerConfig, TDatepickerClassesKeys);
     const locale = useDateLocale({ configuration });
@@ -435,13 +435,22 @@ export default defineComponent({
     };
 
     // If the date field is blurred (date clicked for example) we should focus
-    // the field again
-    // @TODO: Consider the case when other elements should keep the focus
-    // like the eventual time picker
-    const blurOnChildHandler = (e: Event) => {
+    // the field again unless is a child element
+    const blurOnChildHandler = (e: FocusEvent) => {
       const target = e.target as HTMLButtonElement | HTMLInputElement;
 
-      target.focus();
+      const relatedTarget = e.relatedTarget as HTMLElement | EventTarget;
+      const relatedTargetDataset: Data | undefined = relatedTarget instanceof HTMLElement
+        ? relatedTarget.dataset
+        : undefined;
+      
+      if (
+        target.dataset.datepickerFocusable !== undefined
+        && relatedTargetDataset
+        && relatedTargetDataset.datepickerFocusable === undefined
+      ) {
+        target.focus();
+      }
     };
 
     const keyboardNavigationHandler = (e: KeyboardEvent) => {

@@ -30,6 +30,7 @@
     <button
       type="button"
       class="text-blue-600 text-sm uppercase font-semibold transition duration-100 ease-in-out border border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 rounded cursor-pointer ml-auto"
+      data-datepicker-focusable
       @click="okButtonHandler"
       v-text="locale.okLabel"
     />
